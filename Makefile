@@ -1,8 +1,10 @@
 PREFIX = `python -c "from invenio.config import CFG_PREFIX; print CFG_PREFIX"`
+# PREFIX = /opt/invenio
 LIBDIR = $(PREFIX)/lib
 ETCDIR = $(PREFIX)/etc
-WWWDIR = $(PREFIX)/www
+WWWDIR = $(PREFIX)/var/www
 APACHE = `python -c "from invenio.bibtask import guess_apache_process_user; print guess_apache_process_user()"`
+# APACHE = www-data
 INSTALL = install -g $(APACHE) -m 775
 
 scoap3dtdsdir = $(ETCDIR)/scoap3dtds
@@ -12,10 +14,11 @@ scoap3utils = scoap3utils.py
 
 
 install:
-	$(INSTALL) -m 664 $(scoap3dtds_DATA) $(scoap3dtdsdir)
-	$(INSTALL) -m 664 $(scoap3utils) $(LIBDIR)/invenio
-	$(INSTALL) -m 664 robots.txt $(WWWDIR)
-	$(INSTALL) -m 664 scoap3_logo.png favicon.ico invenio_scoap3.css $(WWWDIR)/img
+	$(INSTALL) -d $(scoap3dtdsdir)
+	$(INSTALL) -t $(scoap3dtdsdir) $(scoap3dtds_DATA)
+	$(INSTALL) -t $(LIBDIR)/python/invenio $(scoap3utils)
+	$(INSTALL) -t $(WWWDIR) robots.txt
+	$(INSTALL) -t $(WWWDIR)/img scoap3_logo.png favicon.ico invenio_scoap3.css
 
 install-conf:
-	$(INSTALL) -m 664 invenio-local.conf $(ETCDIR)
+	$(INSTALL) -t $(ETCDIR) invenio-local.conf
