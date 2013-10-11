@@ -62,6 +62,25 @@ def get_value_in_tag(xml, tag):
     else:
         return ""
 
+def get_attribute_in_tag(xml, tag, attr):
+    tag_elements = xml.getElementsByTagName(tag)
+    tag_attributes = [] 
+    for tag_element in tag_elements:
+            if tag_element.hasAttribute(attr):
+                tag_attributes.append(tag_element.getAttribute(attr))
+            else:
+                # Dunno if it should be locked at this level
+                lock_issue()
+    return tag_attributes
+
+
+def lock_issue():
+    """
+    Locks the issu in case of error.
+    """
+    # TODO
+    print >> sys.stderr, "locking issue"
+
 class ElsevierPackage(object):
     """
     This class is specialized in parsing an Elsevier package
@@ -178,6 +197,7 @@ class ElsevierPackage(object):
             volume = get_value_in_tag(xml, "vol-first")
             issue = get_value_in_tag(xml, "iss-first")
             year = get_value_in_tag(xml, "start-date")[:4]
+            doi = get_value_in_tag(xml, "start-date")
             for included_item in xml.getElementsByTagName("ce:include-item"):
                 doi = get_value_in_tag(included_item, "ce:doi")
                 first_page = get_value_in_tag(included_item, "ce:first-page")
@@ -189,6 +209,19 @@ class ElsevierPackage(object):
             return get_value_in_tag(xml, "ce:doi")
         except Exception, err:
             print >> sys.stderr, "Can't find doi"
+
+    def get_preprint_ids(self, xml):
+        tag_elements = xml.getElementsByTagName("ce:preprint")
+        preprint_ids = []
+        if tag_elements:
+            for tag_element in tag_elements:
+                for child in tag_element.childNodes:
+                    if child.nodeName == "ce:inter-ref":
+                        try:
+                            preprint_ids.append(child.getAttribute("xlink:href").encode())
+                        except:
+                            print >> sys.stderr, "Can't find arXive id"
+        return preprint_ids
 
     def get_title(self, xml):
         try:
@@ -261,7 +294,8 @@ class ElsevierPackage(object):
 
     def get_publication_information(self, xml):
         doi = self._get_doi(xml)
-        return self._dois[doi] + (doi, )
+        if doi is not '':
+            return self._dois[doi] + (doi, )
 
     def get_references(self, xml):
         references = []
@@ -323,6 +357,11 @@ class ElsevierPackage(object):
             for keyword in keywords:
                 record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
         record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
+        preprints = self.get_preprint_ids(xml)
+        if preprints:
+            for preprint in preprints:
+                record_add_field(rec, '037', subfields=[('a', preprint), ('9', 'arXiv')])
+
         references = self.get_references(xml)
         for label, authors, doi, issue, page, title, volume, year in references:
             subfields = []
@@ -355,6 +394,7 @@ class ElsevierPackage(object):
         out = fdopen(fd, 'w')
         print >> out, "<collection>"
         for i, path in enumerate(self.found_articles):
+            print path
             print >> out, self.get_record(path)
             print path, i + 1, "out of", len(self.found_articles)
         print >> out, "</collection>"

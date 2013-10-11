@@ -1,10 +1,10 @@
-PREFIX = `python -c "from invenio.config import CFG_PREFIX; print CFG_PREFIX"`
-# PREFIX = /opt/invenio
+#PREFIX = `python -c "from invenio.config import CFG_PREFIX; print CFG_PREFIX"`
+PREFIX = $(CFG_INVENIO_PREFIX)
 LIBDIR = $(PREFIX)/lib
 ETCDIR = $(PREFIX)/etc
 WWWDIR = $(PREFIX)/var/www
-APACHE = `python -c "from invenio.bibtask import guess_apache_process_user; print guess_apache_process_user()"`
-# APACHE = www-data
+#APACHE = `python -c "from invenio.bibtask import guess_apache_process_user; print guess_apache_process_user()"`
+APACHE = wziolek
 INSTALL = install -g $(APACHE) -m 775
 
 scoap3dtdsdir = $(ETCDIR)/scoap3dtds
