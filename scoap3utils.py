@@ -357,33 +357,31 @@ class ElsevierPackage(object):
             for keyword in keywords:
                 record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
         record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
-        preprints = self.get_preprint_ids(xml)
-        if preprints:
-            for preprint in preprints:
-                record_add_field(rec, '037', subfields=[('a', preprint), ('9', 'arXiv')])
 
-        references = self.get_references(xml)
-        for label, authors, doi, issue, page, title, volume, year in references:
-            subfields = []
-            if doi:
-                subfields.append(('a', doi))
-            for author in authors:
-                subfields.append(('h', author))
-            if issue:
-                subfields.append(('n', issue))
-            if label:
-                subfields.append(('o', label))
-            if page:
-                subfields.append(('p', page))
-            subfields.append(('s', '%s %s (%s) %s' % (title, volume, year, page)))
-            if title:
-                subfields.append(('t', title))
-            if volume:
-                subfields.append(('v', volume))
-            if year:
-                subfields.append(('y', year))
-            if subfields:
-                record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
+        # Temporarily disabled
+        # references = self.get_references(xml)
+        # for label, authors, doi, issue, page, title, volume, year in references:
+        #     subfields = []
+        #     if doi:
+        #         subfields.append(('a', doi))
+        #     for author in authors:
+        #         subfields.append(('h', author))
+        #     if issue:
+        #         subfields.append(('n', issue))
+        #     if label:
+        #         subfields.append(('o', label))
+        #     if page:
+        #         subfields.append(('p', page))
+        #     subfields.append(('s', '%s %s (%s) %s' % (title, volume, year, page)))
+        #     if title:
+        #         subfields.append(('t', title))
+        #     if volume:
+        #         subfields.append(('v', volume))
+        #     if year:
+        #         subfields.append(('y', year))
+        #     if subfields:
+        #         record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
+
         record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
         record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.xml'))])
         record_add_field(rec, '980', subfields=[('a', 'SCOAP3')])
