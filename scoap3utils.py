@@ -22,7 +22,7 @@ Set of utilities for the SCOAP3 project.
 """
 
 import time
-import sys
+import sys, traceback
 from os import listdir, rename, fdopen
 from os.path import join, exists, walk
 from tarfile import TarFile
@@ -48,12 +48,18 @@ CFG_ELSEVIER_JID_MAP = {'PLB': 'Physics letters B',
                         'SOLMAT': 'Solar Energy Materials & Solar Cells',
                         'APCATB': 'Applied Catalysis B: Environmental',
                         'NUMA': 'Journal of Nuclear Materials'}
+
+
 def xml_to_text(xml):
     if xml.nodeType == xml.TEXT_NODE:
         return xml.wholeText.encode('utf-8')
+    elif 'mml:' in xml.nodeName:
+        return xml.toxml().replace('mml:','').encode('utf-8')
     elif xml.hasChildNodes():
-        return ''.join(xml_to_text(child) for child in xml.childNodes)
+        for child in xml.childNodes:
+            return ''.join(xml_to_text(child) for child in xml.childNodes)
     return ''
+
 
 def get_value_in_tag(xml, tag):
     tag_elements = xml.getElementsByTagName(tag)
@@ -80,6 +86,7 @@ def lock_issue():
     """
     # TODO
     print >> sys.stderr, "locking issue"
+
 
 class ElsevierPackage(object):
     """
@@ -231,7 +238,8 @@ class ElsevierPackage(object):
 
     def get_abstract(self, xml):
         try:
-            return get_value_in_tag(xml.getElementsByTagName("ce:abstract-sec")[0], "ce:simple-para")
+            tmp = get_value_in_tag(xml.getElementsByTagName("ce:abstract-sec")[0], "ce:simple-para")
+            return tmp
         except Exception, err:
             print >> sys.stderr, "Can't find abstract"
 
