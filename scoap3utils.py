@@ -54,7 +54,7 @@ def xml_to_text(xml):
     if xml.nodeType == xml.TEXT_NODE:
         return xml.wholeText.encode('utf-8')
     elif 'mml:' in xml.nodeName:
-        return xml.toxml().replace('mml:','').encode('utf-8')
+        return xml.toxml().replace('mml:','').replace('xmlns:mml','xmlns').encode('utf-8')
     elif xml.hasChildNodes():
         for child in xml.childNodes:
             return ''.join(xml_to_text(child) for child in xml.childNodes)
