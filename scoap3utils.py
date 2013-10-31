@@ -22,7 +22,9 @@ Set of utilities for the SCOAP3 project.
 """
 
 import time
-import sys, traceback
+import sys
+import traceback
+
 from os import listdir, rename, fdopen
 from os.path import join, exists, walk
 from tarfile import TarFile
@@ -39,9 +41,11 @@ from invenio.bibtask import task_low_level_submission
 
 CFG_SCOAP3DTDS_PATH = join(CFG_ETCDIR, 'scoap3dtds')
 
+CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
 CFG_ELSEVIER_ART510_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art510.zip')
 CFG_ELSEVIER_ART520_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art520.zip')
 CFG_ELSEVIER_SI510_PATH = join(CFG_SCOAP3DTDS_PATH, 'si510.zip')
+CFG_ELSEVIER_SI520_PATH = join(CFG_SCOAP3DTDS_PATH, 'si520.zip')
 CFG_ELSEVIER_JID_MAP = {'PLB': 'Physics letters B',
                         'NUPHB': 'Nuclear Physics B',
                         'CEMGE': 'Chemical Geology',
@@ -67,6 +71,7 @@ def get_value_in_tag(xml, tag):
         return xml_to_text(tag_elements[0])
     else:
         return ""
+
 
 def get_attribute_in_tag(xml, tag, attr):
     tag_elements = xml.getElementsByTagName(tag)
@@ -108,11 +113,13 @@ class ElsevierPackage(object):
         if not path and package_name:
             self._extract_package()
         elif not path and not package_name:
-            raise ValueError("At least the package_name or the path should be specified")
+            print "Starting harves"
+            from invenio.contrast_out import ContrastOutConnector
+            self.conn = ContrastOutConnector()
+            self.conn.run()
         self._crawl_elsevier_and_find_main_xml()
         self._crawl_elsevier_and_find_issue_xml()
         self._build_doi_mapping()
-
 
     def _extract_package(self):
         """
@@ -128,15 +135,25 @@ class ElsevierPackage(object):
         a main.xml in agiven directory.
         """
         self.found_articles = []
-        def visit(arg, dirname, names):
-            if "main.xml" in names and "main.pdf" in names:
+        if not self.path and not self.package_name:
+            for doc in self.conn.found_articles:
+                dirname = doc['xml'].rstrip('/main.xml')
                 try:
                     self._normalize_article_dir_with_dtd(dirname)
                     self.found_articles.append(dirname)
                 except Exception, err:
                     register_exception()
                     print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
-        walk(self.path, visit, None)
+        else:
+            def visit(arg, dirname, names):
+                if "main.xml" in names and "main.pdf" in names:
+                    try:
+                        self._normalize_article_dir_with_dtd(dirname)
+                        self.found_articles.append(dirname)
+                    except Exception, err:
+                        register_exception()
+                        print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
+            walk(self.path, visit, None)
 
     def _crawl_elsevier_and_find_issue_xml(self):
         """
@@ -144,15 +161,25 @@ class ElsevierPackage(object):
         called issue.xml that is available in a higher directory.
         """
         self._found_issues = []
-        def visit(arg, dirname, names):
-            if "issue.xml" in names:
+        if not self.path and not self.package_name:
+            for issue in self.conn._get_issues():
+                dirname = issue.rstrip('/issue.xml')
                 try:
                     self._normalize_issue_dir_with_dtd(dirname)
                     self._found_issues.append(dirname)
                 except Exception, err:
                     register_exception()
                     print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
-        walk(self.path, visit, None)
+        else:
+            def visit(arg, dirname, names):
+                if "issue.xml" in names:
+                    try:
+                        self._normalize_issue_dir_with_dtd(dirname)
+                        self._found_issues.append(dirname)
+                    except Exception, err:
+                        register_exception()
+                        print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
+            walk(self.path, visit, None)
 
     def _normalize_issue_dir_with_dtd(self, path):
         """
@@ -167,6 +194,10 @@ class ElsevierPackage(object):
             ZipFile(CFG_ELSEVIER_SI510_PATH).extractall(path)
             for filename in listdir(join(path, 'si510')):
                 rename(join(path, 'si510', filename), join(path, filename))
+        elif 'si520.dtd' in open(join(path, 'issue.xml')).read():
+            ZipFile(CFG_ELSEVIER_SI520_PATH).extractall(path)
+            for filename in listdir(join(path, 'si520')):
+                rename(join(path, 'si520', filename), join(path, filename))
         else:
             raise ValueError("It looks like the path %s does not contain an si510 issue.xml file" % path)
         cmd_exit_code, cmd_out, cmd_err = run_shell_command("xmllint --format --loaddtd %s --output %s", (join(path, 'issue.xml'), join(path, 'resolved_issue.xml')))
@@ -187,6 +218,10 @@ class ElsevierPackage(object):
             ZipFile(CFG_ELSEVIER_ART520_PATH).extractall(path)
             for filename in listdir(join(path, 'art520')):
                 rename(join(path, 'art520', filename), join(path, filename))
+        elif 'art501' in open(join(path, 'main.xml')).read():
+            ZipFile(CFG_ELSEVIER_ART501_PATH).extractall(path)
+            for filename in listdir(join(path, 'art501')):
+                rename(join(path, 'art501', filename), join(path, filename))
         else:
             raise ValueError("It looks like the path %s does not contain an art520 main.xml file" % path)
 
@@ -302,8 +337,10 @@ class ElsevierPackage(object):
 
     def get_publication_information(self, xml):
         doi = self._get_doi(xml)
-        if doi is not '':
+        try:
             return self._dois[doi] + (doi, )
+        except:
+            return ('', '', '', '', '', '', '', doi)
 
     def get_references(self, xml):
         references = []
@@ -407,6 +444,7 @@ class ElsevierPackage(object):
         out.close()
         task_low_level_submission("bibupload", "Elsevier", "-i", "-r", name)
 
+
 def main():
     try:
         if len(sys.argv) == 2:
@@ -415,10 +453,13 @@ def main():
                 els = ElsevierPackage(package_name=path_or_package)
             else:
                 els = ElsevierPackage(path=path_or_package)
+        else:
+            els = ElsevierPackage()
         els.bibupload_it()
     except Exception, err:
         register_exception()
         print >> sys.stderr, "ERROR: Exception captured: %s" % err
+        traceback.print_exc(file=sys.stdout)
         sys.exit(1)
 
 if __name__ == "__main__":

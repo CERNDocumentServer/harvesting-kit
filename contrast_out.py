@@ -4,7 +4,7 @@ import sys
 
 from functools import partial
 from ftplib import FTP
-from os.path import join
+from os.path import join, walk
 from tarfile import TarFile
 from tempfile import mkdtemp
 from xml.dom.minidom import parseString, parse
@@ -25,6 +25,7 @@ class ContrastOutConnector(object):
         self.path_tar = None
         self.retrieved_packages_unpacked = []
         self.found_articles = []
+        self.found_issues = []
 
     def connect(self):
         """Logs into the specified ftp server and returns connector."""
@@ -36,6 +37,7 @@ class ContrastOutConnector(object):
             self.files_list = filter(lambda x: phrase in x, self.ftp.nlst())
         else:
             self.files_list = self.ftp.nlst()
+        return self.files_list
 
     def _read_file_listing(self):
         # Prints stuff
@@ -53,6 +55,7 @@ class ContrastOutConnector(object):
             # Print stuff
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
+        return self.ready_xml
 
     def _get_packages(self):
         # Prints stuff
@@ -72,6 +75,8 @@ class ContrastOutConnector(object):
              # Print stuff
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
+
+        return self.retrieved_packages
 
     def _download_tars(self):
         self.path_tar = mkdtemp(prefix="scoap3_tar", dir=CFG_TMPSHAREDDIR)
@@ -99,6 +104,8 @@ class ContrastOutConnector(object):
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
 
+        return self.retrieved_packages_unpacked
+
     def _check_md5(self):
         import hashlib
 
@@ -116,9 +123,29 @@ class ContrastOutConnector(object):
         for path in self.retrieved_packages_unpacked:
             TarFile.open(path).extractall(self.path_unpacked)
 
+        return self.path_unpacked
+
+    def _get_issues(self):
+        for name in self.files_list:
+            dataset_link = join(self.path_unpacked, name.split('.')[0], 'dataset.xml')
+            dataset_xml = parse(dataset_link)
+            journal_issues = dataset_xml.getElementsByTagName('journal-issue')
+            print journal_issues
+            if journal_issues:
+                for journal_issue in journal_issues:
+                    pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(journal_issue.getElementsByTagName('ml')[0].getElementsByTagName('pathname')[0]))
+                    self.found_issues.append(pathname)
+            else:
+                def visit(arg, dirname, names):
+                    print "Walking %s" %(dirname,)
+                    if "issue.xml" in names:
+                        self.found_issues.append(join(dirname,"issue.xml"))
+                walk(join(self.path_unpacked, name.split('.')[0]), visit, None)
+        return self.found_issues
+
     def _get_metadata_and_fulltex_dir(self):
         # Prints stuff
-        print >> sys.stdout, "\nRetrieving jurnal items directories."
+        print >> sys.stdout, "\nRetrieving journal items directories."
         # Create progrss bar
         p_bar = self._progress_bar(len(self.files_list))
         # Print stuff
@@ -129,14 +156,16 @@ class ContrastOutConnector(object):
             dataset_link = join(self.path_unpacked, name.split('.')[0], 'dataset.xml')
 
             dataset_xml = parse(dataset_link)
-            jurnal_items = dataset_xml.getElementsByTagName('journal-item')
-            for jurnal_item in jurnal_items:
-                xml_pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(jurnal_item.getElementsByTagName('ml')[0].getElementsByTagName('pathname')[0]))
-                pdf_pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(jurnal_item.getElementsByTagName('web-pdf')[0].getElementsByTagName('pathname')[0]))
+            journal_items = dataset_xml.getElementsByTagName('journal-item')
+            for journal_item in journal_items:
+                xml_pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(journal_item.getElementsByTagName('ml')[0].getElementsByTagName('pathname')[0]))
+                pdf_pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(journal_item.getElementsByTagName('web-pdf')[0].getElementsByTagName('pathname')[0]))
                 self.found_articles.append(dict(xml=xml_pathname, pdf=pdf_pathname))
             # Print stuff
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
+
+        return self.found_articles
 
     ## There should be way to change that but all the other things I've tried
     ## failed :(
@@ -152,7 +181,6 @@ class ContrastOutConnector(object):
         self._check_md5()
         self._extract_packages()
         self._get_metadata_and_fulltex_dir()
-        print self.found_articles
 
     def _progress_bar(self, n):
         num = 0
