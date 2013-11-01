@@ -17,8 +17,6 @@ class ContrastOutConnector(object):
     def __init__(self):
         self.ftp = None
         self.files_list = []
-        self.ready_xml = []
-        self.a = {}
         self.retrieved_packages = {}
         self.retrieved_packages_unpacked = []
         self.path = None
@@ -26,6 +24,7 @@ class ContrastOutConnector(object):
         self.retrieved_packages_unpacked = []
         self.found_articles = []
         self.found_issues = []
+        self.path_r_pkg = []
 
     def connect(self):
         """Logs into the specified ftp server and returns connector."""
@@ -39,23 +38,30 @@ class ContrastOutConnector(object):
             self.files_list = self.ftp.nlst()
         return self.files_list
 
-    def _read_file_listing(self):
+    def _download_file_listing(self):
+        path_ready_pkg = mkdtemp(prefix="scoap3_ready_pkg", dir=CFG_TMPSHAREDDIR)
         # Prints stuff
-        print >> sys.stdout, "\nReading %i files." % (len(self.files_list))
+        print >> sys.stdout, "\nDownloading %i files." % (len(self.files_list))
         # Create progrss bar
         p_bar = self._progress_bar(len(self.files_list))
         # Print stuff
         sys.stdout.write(p_bar.next())
         sys.stdout.flush()
 
-        for f in self.files_list:
-            self.a[f] = ""
-            self.ftp.retrlines('RETR %s' % (f,), partial(self._add_to_a, f))
-            self.ready_xml.append(parseString(self.a[f]))
+        for filename in self.files_list:
+            pkg_path = join(path_ready_pkg, filename)
+            self.path_r_pkg.append(pkg_path)
+            try:
+                ready_file = open(pkg_path, 'wb')
+                self.ftp.retrbinary('RETR %s' % (filename,), ready_file.write)
+                ready_file.close()
+            except:
+                print >> sys.stdout, "\nError downloading %s file!" % (filename,)
+                print >> sys.stdout, sys.exc_info()
             # Print stuff
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
-        return self.ready_xml
+        return self.path_r_pkg
 
     def _get_packages(self):
         # Prints stuff
@@ -66,8 +72,9 @@ class ContrastOutConnector(object):
         sys.stdout.write(p_bar.next())
         sys.stdout.flush()
 
-        for pack in self.ready_xml:
-            package_file = pack.getElementsByTagName('dataset-package-file')
+        for pack in self.path_r_pkg:
+            pack_xml = parse(pack)
+            package_file = pack_xml.getElementsByTagName('dataset-package-file')
             for pf in package_file:
                 filename = pf.getElementsByTagName('filename')[0]
                 md5_val = pf.getElementsByTagName('md5')[0]
@@ -91,9 +98,9 @@ class ContrastOutConnector(object):
         sys.stdout.flush()
 
         for filename in self.retrieved_packages.iterkeys():
+            unpack_path = join(self.path_tar, filename)
+            self.retrieved_packages_unpacked.append(unpack_path)
             try:
-                unpack_path = join(self.path_tar, filename)
-                self.retrieved_packages_unpacked.append(unpack_path)
                 tar_file = open(unpack_path, 'wb')
                 self.ftp.retrbinary('RETR %s' % filename, tar_file.write)
                 tar_file.close()
@@ -167,15 +174,10 @@ class ContrastOutConnector(object):
 
         return self.found_articles
 
-    ## There should be way to change that but all the other things I've tried
-    ## failed :(
-    def _add_to_a(self, key, val):
-        self.a[key] += val
-
     def run(self):
         self.connect()
         self._get_file_listing('.ready')
-        self._read_file_listing()
+        self._download_file_listing()
         self._get_packages()
         self._download_tars()
         self._check_md5()
