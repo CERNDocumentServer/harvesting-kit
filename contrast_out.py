@@ -1,7 +1,9 @@
 from __future__ import division
 
+import logging
 import sys
 
+from datetime import datetime
 from functools import partial
 from ftplib import FTP
 from os.path import join, walk
@@ -10,7 +12,7 @@ from tempfile import mkdtemp
 from xml.dom.minidom import parseString, parse
 
 from contrast_out_config import *
-from invenio.config import CFG_TMPSHAREDDIR
+from invenio.config import CFG_TMPSHAREDDIR, CFG_LOGDIR
 from scoap3utils import xml_to_text
 
 class ContrastOutConnector(object):
@@ -25,11 +27,16 @@ class ContrastOutConnector(object):
         self.found_articles = []
         self.found_issues = []
         self.path_r_pkg = []
+        logging.basicConfig(filename=join(CFG_LOGDIR, 'elsevier_harvesting_'+str(datetime.now())+'.log'),level=logging.DEBUG)
 
     def connect(self):
         """Logs into the specified ftp server and returns connector."""
-        self.ftp = FTP(CFG_CONTRAST_OUT_URL)
-        self.ftp.login(user=CFG_CONTRAST_OUT_LOGIN, passwd=CFG_CONTRAST_OUT_PASSWORD)
+        try:
+            self.ftp = FTP(CFG_CONTRAST_OUT_URL)
+            self.ftp.login(user=CFG_CONTRAST_OUT_LOGIN, passwd=CFG_CONTRAST_OUT_PASSWORD)
+            logging.debug("Succesful connection to the Elsevier server")
+        except:
+            logging.error("Faild to connect to the Elsevier server.")
 
     def _get_file_listing(self, phrase=None):
         if phrase:
