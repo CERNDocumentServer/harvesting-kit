@@ -27,16 +27,25 @@ class ContrastOutConnector(object):
         self.found_articles = []
         self.found_issues = []
         self.path_r_pkg = []
-        logging.basicConfig(filename=join(CFG_LOGDIR, 'elsevier_harvesting_'+str(datetime.now())+'.log'),level=logging.DEBUG)
+        self.logger = self._create_logger(join(CFG_LOGDIR, 'elsevier_harvesting_'+str(datetime.now())+'.log'))
+
+    def _create_logger(self, name):
+        logger = logging.getLogger('contrast_out_connector')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fh = logging.FileHandler(filename=name)
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
+        logger.setLevel(logging.DEBUG)
+        return logger
 
     def connect(self):
         """Logs into the specified ftp server and returns connector."""
         try:
             self.ftp = FTP(CFG_CONTRAST_OUT_URL)
             self.ftp.login(user=CFG_CONTRAST_OUT_LOGIN, passwd=CFG_CONTRAST_OUT_PASSWORD)
-            logging.debug("Succesful connection to the Elsevier server")
+            self.logger.debug("Succesful connection to the Elsevier server")
         except:
-            logging.error("Faild to connect to the Elsevier server.")
+            self.logger.error("Faild to connect to the Elsevier server.")
 
     def _get_file_listing(self, phrase=None):
         if phrase:
@@ -56,6 +65,7 @@ class ContrastOutConnector(object):
         sys.stdout.flush()
 
         for filename in self.files_list:
+            self.logger.info("Downloading: %s" % (filename,))
             pkg_path = join(path_ready_pkg, filename)
             self.path_r_pkg.append(pkg_path)
             try:
@@ -63,6 +73,7 @@ class ContrastOutConnector(object):
                 self.ftp.retrbinary('RETR %s' % (filename,), ready_file.write)
                 ready_file.close()
             except:
+                self.logger.error("Error downloading file: %s" % (filename,))
                 print >> sys.stdout, "\nError downloading %s file!" % (filename,)
                 print >> sys.stdout, sys.exc_info()
             # Print stuff
@@ -80,6 +91,7 @@ class ContrastOutConnector(object):
         sys.stdout.flush()
 
         for pack in self.path_r_pkg:
+            self.logger.info("Retrieved package name: %s" % (pack,))
             pack_xml = parse(pack)
             package_file = pack_xml.getElementsByTagName('dataset-package-file')
             for pf in package_file:
@@ -105,6 +117,7 @@ class ContrastOutConnector(object):
         sys.stdout.flush()
 
         for filename in self.retrieved_packages.iterkeys():
+            self.logger.info("Downloading tar package: %s" % (filename,))
             unpack_path = join(self.path_tar, filename)
             self.retrieved_packages_unpacked.append(unpack_path)
             try:
@@ -112,6 +125,7 @@ class ContrastOutConnector(object):
                 self.ftp.retrbinary('RETR %s' % filename, tar_file.write)
                 tar_file.close()
             except:
+                self.logger.error("Error downloading tar file: %s" % (filename,))
                 print >> sys.stdout, "\nError downloading %s file!" % (filename,)
                 print >> sys.stdout, sys.exc_info()
             # Print stuff
@@ -126,6 +140,7 @@ class ContrastOutConnector(object):
         for filename, md5 in self.retrieved_packages.iteritems():
             our_md5 = hashlib.md5(open(join(self.path_tar, filename)).read()).hexdigest()
             if our_md5 != md5:
+                self.logger.error("MD5 error: %s" % (filename,))
                 print >> sys.stdout, "Error in MD5 of %s" % (filename,)
                 print >> sys.stdout, "oryginal: %s, ours: %s" % (md5, our_md5)
 
@@ -144,10 +159,11 @@ class ContrastOutConnector(object):
             dataset_link = join(self.path_unpacked, name.split('.')[0], 'dataset.xml')
             dataset_xml = parse(dataset_link)
             journal_issues = dataset_xml.getElementsByTagName('journal-issue')
-            print journal_issues
             if journal_issues:
                 for journal_issue in journal_issues:
-                    pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(journal_issue.getElementsByTagName('ml')[0].getElementsByTagName('pathname')[0]))
+                    filename = xml_to_text(journal_issue.getElementsByTagName('ml')[0].getElementsByTagName('pathname')[0])
+                    self.logger.info("Found issue %s in %s." % (filename, name))
+                    pathname = join(self.path_unpacked, name.split('.')[0], filename)
                     self.found_issues.append(pathname)
             else:
                 def visit(arg, dirname, names):
@@ -175,6 +191,7 @@ class ContrastOutConnector(object):
                 xml_pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(journal_item.getElementsByTagName('ml')[0].getElementsByTagName('pathname')[0]))
                 pdf_pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(journal_item.getElementsByTagName('web-pdf')[0].getElementsByTagName('pathname')[0]))
                 self.found_articles.append(dict(xml=xml_pathname, pdf=pdf_pathname))
+                self.logger.info("Getting metadata and fulltex directories: %s." % (xml_pathname,))
             # Print stuff
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
