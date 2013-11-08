@@ -25,6 +25,7 @@ import time
 import sys
 import traceback
 
+from datetime import datetime
 from os import listdir, rename, fdopen
 from os.path import join, exists, walk
 from tarfile import TarFile
@@ -35,9 +36,10 @@ from xml.dom.minidom import parse
 
 from invenio.errorlib import register_exception
 from invenio.bibrecord import record_add_field, record_xml_output
-from invenio.config import CFG_TMPSHAREDDIR, CFG_ETCDIR
+from invenio.config import CFG_TMPSHAREDDIR, CFG_ETCDIR, CFG_LOGDIR
 from invenio.shellutils import run_shell_command
 from invenio.bibtask import task_low_level_submission
+from invenio.contrast_out_utils import create_logger
 
 CFG_SCOAP3DTDS_PATH = join(CFG_ETCDIR, 'scoap3dtds')
 
@@ -109,13 +111,14 @@ class ElsevierPackage(object):
         self.path = path
         self.found_articles = []
         self._found_issues = []
+        self.logger = create_logger(join(CFG_LOGDIR, 'elsevier_harvesting_'+str(datetime.now())+'.log'))
 
         if not path and package_name:
             self._extract_package()
         elif not path and not package_name:
             print "Starting harves"
             from invenio.contrast_out import ContrastOutConnector
-            self.conn = ContrastOutConnector()
+            self.conn = ContrastOutConnector(self.logger)
             self.conn.run()
         self._crawl_elsevier_and_find_main_xml()
         self._crawl_elsevier_and_find_issue_xml()
@@ -126,6 +129,7 @@ class ElsevierPackage(object):
         Extract a package in a new temporary directory.
         """
         self.path = mkdtemp(prefix="scoap3", dir=CFG_TMPSHAREDDIR)
+        self.logger.debug("Extracting package: %s" % (self.package_name,))
         TarFile.open(self.package_name).extractall(self.path)
 
     def _crawl_elsevier_and_find_main_xml(self):
@@ -199,9 +203,11 @@ class ElsevierPackage(object):
             for filename in listdir(join(path, 'si520')):
                 rename(join(path, 'si520', filename), join(path, filename))
         else:
-            raise ValueError("It looks like the path %s does not contain an si510 issue.xml file" % path)
+            self.logger.error("It looks like the path %s does not contain an si510 or si520 issue.xml file" % path)
+            raise ValueError("It looks like the path %s does not contain an si510 or si520 issue.xml file" % path)
         cmd_exit_code, cmd_out, cmd_err = run_shell_command("xmllint --format --loaddtd %s --output %s", (join(path, 'issue.xml'), join(path, 'resolved_issue.xml')))
         if cmd_err:
+            self.logger.error("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
             raise ValueError("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
 
 
@@ -223,10 +229,12 @@ class ElsevierPackage(object):
             for filename in listdir(join(path, 'art501')):
                 rename(join(path, 'art501', filename), join(path, filename))
         else:
-            raise ValueError("It looks like the path %s does not contain an art520 main.xml file" % path)
+            self.logger.error("It looks like the path %s does not contain an art520 or art501 main.xml file" % path)
+            raise ValueError("It looks like the path %s does not contain an art520 or art501 main.xml file" % path)
 
         cmd_exit_code, cmd_out, cmd_err = run_shell_command("xmllint --format --loaddtd %s --output %s", (join(path, 'main.xml'), join(path, 'resolved_main.xml')))
         if cmd_err:
+            self.logger.error("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
             raise ValueError("Error in cleaning %s: %s" % (join(path, 'main.xml'), cmd_err))
 
     def _build_doi_mapping(self):
@@ -368,6 +376,7 @@ class ElsevierPackage(object):
         return parse(open(join(path, "resolved_main.xml")))
 
     def get_record(self, path):
+        self.logger.info("Creating record: %s" % (path,))
         xml = self.get_article(path)
         rec = {}
         title = self.get_title(xml)
@@ -433,6 +442,7 @@ class ElsevierPackage(object):
         return record_xml_output(rec)
 
     def bibupload_it(self):
+        self.logger.debug("Preparing bibupload.")
         fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
         out = fdopen(fd, 'w')
         print >> out, "<collection>"

@@ -16,6 +16,7 @@ scoap3utils = scoap3utils.py
 scoap3tests = scoap3_unit_tests.py
 contrast_out = contrast_out.py
 contrast_out_config = contrast_out_config.py
+contrast_out_utils = contrast_out_utils.py
 
 
 install:
@@ -25,6 +26,7 @@ install:
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(scoap3tests)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(contrast_out)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(contrast_out_config)
+	$(INSTALL) -t $(LIBDIR)/python/invenio $(contrast_out_utils)
 	$(INSTALL) -t $(WWWDIR) robots.txt
 	$(INSTALL) -t $(WWWDIR)/img scoap3_logo.png favicon.ico invenio_scoap3.css
 

@@ -1,6 +1,5 @@
 from __future__ import division
 
-import logging
 import sys
 
 from datetime import datetime
@@ -12,11 +11,11 @@ from tempfile import mkdtemp
 from xml.dom.minidom import parseString, parse
 
 from contrast_out_config import *
-from invenio.config import CFG_TMPSHAREDDIR, CFG_LOGDIR
+from invenio.config import CFG_TMPSHAREDDIR
 from scoap3utils import xml_to_text
 
 class ContrastOutConnector(object):
-    def __init__(self):
+    def __init__(self, logger):
         self.ftp = None
         self.files_list = []
         self.retrieved_packages = {}
@@ -27,16 +26,7 @@ class ContrastOutConnector(object):
         self.found_articles = []
         self.found_issues = []
         self.path_r_pkg = []
-        self.logger = self._create_logger(join(CFG_LOGDIR, 'elsevier_harvesting_'+str(datetime.now())+'.log'))
-
-    def _create_logger(self, name):
-        logger = logging.getLogger('contrast_out_connector')
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        fh = logging.FileHandler(filename=name)
-        fh.setFormatter(formatter)
-        logger.addHandler(fh)
-        logger.setLevel(logging.DEBUG)
-        return logger
+        self.logger = logger
 
     def connect(self):
         """Logs into the specified ftp server and returns connector."""
@@ -187,11 +177,12 @@ class ContrastOutConnector(object):
 
             dataset_xml = parse(dataset_link)
             journal_items = dataset_xml.getElementsByTagName('journal-item')
+            self.logger.info("Getting metadata and fulltex directories for %i journal items." % (len(journal_items),))
             for journal_item in journal_items:
                 xml_pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(journal_item.getElementsByTagName('ml')[0].getElementsByTagName('pathname')[0]))
                 pdf_pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(journal_item.getElementsByTagName('web-pdf')[0].getElementsByTagName('pathname')[0]))
                 self.found_articles.append(dict(xml=xml_pathname, pdf=pdf_pathname))
-                self.logger.info("Getting metadata and fulltex directories: %s." % (xml_pathname,))
+            self.logger.info("Got metadata and fulltex directories of %i journals." % (len(self.found_articles),))
             # Print stuff
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
