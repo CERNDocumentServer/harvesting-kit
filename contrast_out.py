@@ -13,6 +13,8 @@ from xml.dom.minidom import parseString, parse
 from contrast_out_config import *
 from invenio.config import CFG_TMPSHAREDDIR
 from scoap3utils import xml_to_text
+from invenio.errorlib import register_exception
+from contrast_out_utils import MD5Error
 
 class ContrastOutConnector(object):
     def __init__(self, logger):
@@ -129,9 +131,13 @@ class ContrastOutConnector(object):
 
         for filename, md5 in self.retrieved_packages.iteritems():
             our_md5 = hashlib.md5(open(join(self.path_tar, filename)).read()).hexdigest()
-            if our_md5 != md5:
+            try:
+                if our_md5 != md5:
+                    raise MD5Error(filename)
+            except MD5Error as e:
+                register_exception(alert_admin=True, prefix="Elsevier MD5 error")
                 self.logger.error("MD5 error: %s" % (filename,))
-                print >> sys.stdout, "Error in MD5 of %s" % (filename,)
+                print >> sys.stdout, "\nError in MD5 of %s" % (filename,)
                 print >> sys.stdout, "oryginal: %s, ours: %s" % (md5, our_md5)
 
     def _extract_packages(self):
