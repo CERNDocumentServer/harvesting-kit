@@ -18,6 +18,8 @@ contrast_out = contrast_out.py
 contrast_out_config = contrast_out_config.py
 contrast_out_utils = contrast_out_utils.py
 
+elsevier_data_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/elsevier
+
 
 install:
 	$(INSTALL) -d $(scoap3dtdsdir)
@@ -29,6 +31,7 @@ install:
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(contrast_out_utils)
 	$(INSTALL) -t $(WWWDIR) robots.txt
 	$(INSTALL) -t $(WWWDIR)/img scoap3_logo.png favicon.ico invenio_scoap3.css
+	$(INSTALL) -d $(elsevier_data_files)
 
 install-conf:
 	$(INSTALL) -t $(ETCDIR) invenio-local.conf
