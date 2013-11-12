@@ -335,12 +335,16 @@ class ElsevierPackage(object):
             matching_ref = [ref for ref in author.get("cross_ref", []) if ref in affiliations]
             if matching_ref:
                 implicit_affilations = False
-                author["affiliation"] = affiliations[matching_ref[0]]
+                author["affiliation"] = []
+                for i in xrange(0,len(matching_ref)):
+                    author["affiliation"].append(affiliations[matching_ref[i]])
         if implicit_affilations and len(affiliations) > 1:
             print >> sys.stderr, "Implicit affiliations are used, but there's more than one affiliation: %s" % affiliations
         if implicit_affilations and len(affiliations) >= 1:
             for author in authors:
-                author["affiliation"] = affiliations.values()[0]
+                author["affiliation"] = []
+                for aff in affiliations.values():
+                    author["affiliation"].append(aff)
         return authors
 
     def get_publication_information(self, xml):
@@ -393,7 +397,8 @@ class ElsevierPackage(object):
             if 'orcid' in author:
                 subfields.append(('j', author['orcid']))
             if 'affiliation' in author:
-                subfields.append(('u', author['affiliation']))
+                for aff in author["affiliation"]:
+                    subfields.append(('u', aff))
             if first_author:
                 record_add_field(rec, '100', subfields=subfields)
                 first_author = False
