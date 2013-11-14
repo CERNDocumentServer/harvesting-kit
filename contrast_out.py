@@ -14,7 +14,7 @@ from contrast_out_config import *
 from invenio.config import CFG_CONTRASTOUT_DOWNLOADDIR
 from scoap3utils import xml_to_text
 from invenio.errorlib import register_exception
-from contrast_out_utils import MD5Error
+from scoap3utils import MD5Error
 
 class ContrastOutConnector(object):
     def __init__(self, logger):
