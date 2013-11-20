@@ -10,8 +10,8 @@ from invenio.config import (CFG_LOGDIR, CFG_SPRINGER_DOWNLOADDIR, CFG_ETCDIR,
                             CFG_TMPSHAREDDIR)
 from invenio.errorlib import register_exception
 from invenio.shellutils import run_shell_command
-from os import listdir, rename, fdopen
-from os.path import join, walk, exists
+from os import listdir, rename, fdopen, pardir
+from os.path import join, walk, exists, abspath
 from scoap3utils import (create_logger, get_value_in_tag, xml_to_text)
 from tarfile import TarFile
 from tempfile import mkdtemp, mkstemp
@@ -57,7 +57,7 @@ class SpringerPackage(object):
         fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
         out = fdopen(fd, 'w')
         print >> out, "<collection>"
-        for i, path in enumerate(self.found_articles):
+        for i, path in enumerate(self.found_articles_names):
             print >> out, self.get_record(path)
             print path, i + 1, "out of", len(self.found_articles)
         print >> out, "</collection>"
@@ -86,7 +86,7 @@ class SpringerPackage(object):
         a main.xml in agiven directory.
         """
         self.found_articles = []
-        #self.found_articles_names = []
+        self.found_articles_names = []
         # if not self.path and not self.package_name:
         #     for doc in self.conn.found_articles:
         #         dirname = doc['xml'].rstrip('/main.xml')
@@ -104,7 +104,7 @@ class SpringerPackage(object):
                 try:
                     self._normalize_article_dir_with_dtd(dirname)
                     self.found_articles.append(dirname)
-                    #self.found_articles_names.extend(map(partial(join(dirname)), files))
+                    self.found_articles_names.extend(map(partial(join,dirname), files))
                 except Exception, err:
                     register_exception()
                     print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
@@ -131,8 +131,7 @@ class SpringerPackage(object):
         #    self.logger.error("It looks like the path %s does not contain an art520 or art501 main.xml file" % path)
         #    raise ValueError("It looks like the path %s does not contain an art520 or art501 main.xml file" % path)
 
-        print >> sys.stdout, join(path, files[0])
-        print >> sys.stdout, join(path, 'resolved_main.xml')
+        print >> sys.stdout, "Normalizing %s" % (join(path, files[0]), )
         cmd_exit_code, cmd_out, cmd_err = run_shell_command("xmllint --format --loaddtd %s --output %s", (join(path, files[0]), join(path, 'resolved_main.xml')))
         if cmd_err:
             self.logger.error("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
@@ -169,7 +168,7 @@ class SpringerPackage(object):
                 tmp["surname"] = surname
             given_name = get_value_in_tag(author, "GivenName")
             if given_name:
-                tmp["given_name"] = " ".join(given_name)
+                tmp["given_name"] = given_name.replace('\n', ' ')
             # initials = get_value_in_tag(author, "ce:initials")
             # if initials:
             #     tmp["initials"] = initials
@@ -187,7 +186,10 @@ class SpringerPackage(object):
             #     tmp["cross_ref"] = []
             #     for cross_ref in cross_refs:
             #         tmp["cross_ref"].append(cross_ref.getAttribute("refid").encode('utf-8'))
-            tmp["affiliations_ids"] = author.getAttribute("AffiliationIDS").split().encode('utf-8')
+            tmp["affiliations_ids"] = []
+            aids = author.getAttribute("AffiliationIDS").split()
+            for aid in aids:
+                tmp["affiliations_ids"].append(aid.encode('utf-8'))
             authors.append(tmp)
         affiliations = {}
         for affiliation in xml.getElementsByTagName("Affiliation"):
@@ -219,7 +221,7 @@ class SpringerPackage(object):
 
     def get_copyright(self, xml):
         try:
-            return get_value_in_tag(xml.getElementsByTagName("ArticleCopyright", "CopyrightHolderName"))
+            return get_value_in_tag(xml.getElementsByTagName("ArticleCopyright"), "CopyrightHolderName")
         except Exception, err:
             print >> sys.stderr, "Can't find copyright"
 
@@ -229,7 +231,39 @@ class SpringerPackage(object):
         except Exception, err:
             print >> sys.stderr, "Can't find keywords"
 
-    def get_record(self, path):
+    def get_references(self, xml):
+        references = []
+        for reference in xml.getElementsByTagName("Citation"):
+            if not reference.getElementsByTagName("BibArticle"):
+                references.append((get_value_in_tag(reference, "BibUnstructured"), '','','','','','',''))
+            else:
+                label = get_value_in_tag(reference, "ArticleTitle")
+                authors = []
+                for author in reference.getElementsByTagName("BibAuthorName"):
+                    given_name = get_value_in_tag(author, "Initials")
+                    surname = get_value_in_tag(author, "FamilyName")
+                    if given_name:
+                        name = "%s, %s" % (surname, given_name)
+                    else:
+                        name = surname
+                    authors.append(name)
+                doi_tag = reference.getElementsByTagName("Occurrence")
+                doi = ""
+                for tag in doi_tag:
+                    if tag.getAttribute("Type") == "DOI":
+                        doi = xml_to_text(tag)
+                ## What is it exactly?
+                # issue = get_value_in_tag(reference, "sb:issue")
+                issue = ""
+                page = get_value_in_tag(reference, "FirstPage")
+                title = get_value_in_tag(reference, "JournalTitle")
+                volume = get_value_in_tag(reference, "VolumeID")
+                year = get_value_in_tag(reference, "Year")
+                references.append((label, authors, doi, issue, page, title, volume, year))
+        return references
+
+    def get_record(self, f_path):
+        path = abspath(join(f_path, pardir))
         self.logger.info("Creating record: %s" % (path,))
         xml = self.get_article(join(path, "resolved_main.xml"))
         rec = {}
@@ -288,8 +322,8 @@ class SpringerPackage(object):
                 subfields.append(('y', year))
             if subfields:
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-        record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
-        record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.xml'))])
+        # record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
+        record_add_field(rec, 'FFT', subfields=[('a', f_path)])
         record_add_field(rec, '980', subfields=[('a', 'SCOAP3')])
         return record_xml_output(rec)
 
