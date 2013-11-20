@@ -23,16 +23,31 @@ import unittest
 
 from invenio.testutils import make_test_suite, run_test_suite
 
-
+## Tests need to work for harvesting Elsevier and Springer
 class TestArxivIds(unittest.TestCase):
     """Test SCOAP3"""
 
-    def test_arxiv_ids_are_correctly_extracted(self):
+    def test_arxiv_ids_are_extracted(self):
         pass
 
     def test_record_has_correctly_added_arxiv_id(self):
         pass
 
+
+class TestMathMl(unittest.TestCase):
+    """Test MathML support"""
+
+    def test_mathml_has_namespace_correctly_changed(self):
+        pass
+
+    def test_mathml_is_added_to_title(self):
+        pass
+
+    def test_mathml_is_added_to_abstract(self):
+        pass
+
+    def test_mathml_is_added_to_keywords(self):
+        pass
 
 TEST_SUITE = make_test_suite(TestArxivIds,)
 
