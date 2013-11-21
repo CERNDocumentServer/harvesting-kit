@@ -39,7 +39,11 @@ class SpringerPackage(object):
         self.path = path
         self._dois = []
         self.articles_normalized = []
-        self.logger = create_logger(join(CFG_LOGDIR, 'springer_harvesting_'+str(datetime.now())+'.log'))
+        self.logger = create_logger(join(CFG_LOGDIR,
+                                         'springer_harvesting_%s.log' %
+                                         (str(datetime.now()),)
+                                         )
+                                    )
 
         if not path and package_name:
             self.path = self._extract_package()
@@ -50,23 +54,13 @@ class SpringerPackage(object):
         #     self.conn.run()
         self._crawl_springer_and_find_main_xml()
 
-    def bibupload_it(self):
-        self.logger.debug("Preparing bibupload.")
-        fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
-        out = fdopen(fd, 'w')
-        print >> out, "<collection>"
-        for i, path in enumerate(self.articles_normalized):
-            print >> out, self.get_record(join(path,"resolved_main.xml"))
-            print path, i + 1, "out of", len(self.found_articles)
-        print >> out, "</collection>"
-        out.close()
-        task_low_level_submission("bibupload", "Elsevier", "-i", "-r", name)
-
     def _extract_package(self):
         """
         Extract a package in a new directory.
         """
-        self.path_unpacked = mkdtemp(prefix="scoap3_package_", dir=CFG_SPRINGER_DOWNLOADDIR)
+        self.path_unpacked = mkdtemp(prefix="scoap3_package_",
+                                     dir=CFG_SPRINGER_DOWNLOADDIR)
+        self.logger.debug("Extracting package: %s" % (self.package_name,))
         if not hasattr(self, "retrieved_packages_unpacked"):
             self.retrieved_packages_unpacked = [self.package_name]
         for path in self.retrieved_packages_unpacked:
@@ -115,17 +109,12 @@ class SpringerPackage(object):
         files = [filename for filename in listdir(path) if ".xml.meta" in filename]
         if exists(join(path, 'resolved_main.xml')):
             return
-        # Add looking for a xml.meta file
-        # if 'art520' in open(join(path, 'main.xml')).read():
 
-        ZipFile(CFG_SPRINGER_AV24_PATH).extractall(path_normalized)
-        # for filename in listdir(join(path, '')):
-        #     print >> sys.stderr, filename
-        #     rename(join(path, 'A++V2.4', filename), join(path, filename))
-        #else:
-        #    self.logger.error("It looks like the path %s does not contain an art520 or art501 main.xml file" % path)
-        #    raise ValueError("It looks like the path %s does not contain an art520 or art501 main.xml file" % path)
-
+        if 'A++V2.4.dtd' in open(join(path, files[0])).read():
+            ZipFile(CFG_SPRINGER_AV24_PATH).extractall(path_normalized)
+        else:
+            self.logger.error("It looks like the path %s does not contain an A++V2.4.dtd XML file." % path)
+            raise ValueError("It looks like the path %s does not contain an A++V2.4.dtd XML file." % path)
         print >> sys.stdout, "Normalizing %s" % (join(path, files[0]), )
         cmd_exit_code, cmd_out, cmd_err = run_shell_command("xmllint --format --loaddtd %s --output %s", (join(path, files[0]), join(path_normalized, 'resolved_main.xml')))
         if cmd_err:
@@ -230,7 +219,9 @@ class SpringerPackage(object):
         references = []
         for reference in xml.getElementsByTagName("Citation"):
             if not reference.getElementsByTagName("BibArticle"):
-                references.append((get_value_in_tag(reference, "BibUnstructured"), '','','','','','',''))
+                references.append((get_value_in_tag(reference,
+                                                    "BibUnstructured"),
+                                   '', '', '', '', '', '', ''))
             else:
                 label = get_value_in_tag(reference, "ArticleTitle")
                 authors = []
@@ -321,6 +312,18 @@ class SpringerPackage(object):
         record_add_field(rec, 'FFT', subfields=[('a', f_path)])
         record_add_field(rec, '980', subfields=[('a', 'SCOAP3')])
         return record_xml_output(rec)
+
+    def bibupload_it(self):
+        self.logger.debug("Preparing bibupload.")
+        fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
+        out = fdopen(fd, 'w')
+        print >> out, "<collection>"
+        for i, path in enumerate(self.articles_normalized):
+            print >> out, self.get_record(join(path, "resolved_main.xml"))
+            print path, i + 1, "out of", len(self.found_articles)
+        print >> out, "</collection>"
+        out.close()
+        task_low_level_submission("bibupload", "Elsevier", "-i", "-r", name)
 
 
 def main():
