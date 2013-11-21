@@ -38,6 +38,7 @@ class SpringerPackage(object):
         self.package_name = package_name
         self.path = path
         self._dois = []
+        self.articles_normalized = []
         self.logger = create_logger(join(CFG_LOGDIR, 'springer_harvesting_'+str(datetime.now())+'.log'))
 
         if not path and package_name:
@@ -54,8 +55,8 @@ class SpringerPackage(object):
         fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
         out = fdopen(fd, 'w')
         print >> out, "<collection>"
-        for i, path in enumerate(self.found_articles_names):
-            print >> out, self.get_record(path)
+        for i, path in enumerate(self.articles_normalized):
+            print >> out, self.get_record(join(path,"resolved_main.xml"))
             print path, i + 1, "out of", len(self.found_articles)
         print >> out, "</collection>"
         out.close()
@@ -80,7 +81,6 @@ class SpringerPackage(object):
         a main.xml in agiven directory.
         """
         self.found_articles = []
-        self.found_articles_names = []
         # if not self.path and not self.package_name:
         #     for doc in self.conn.found_articles:
         #         dirname = doc['xml'].rstrip('/main.xml')
@@ -98,7 +98,6 @@ class SpringerPackage(object):
                 try:
                     self._normalize_article_dir_with_dtd(dirname)
                     self.found_articles.append(dirname)
-                    self.found_articles_names.extend(map(partial(join,dirname), files))
                 except Exception, err:
                     register_exception()
                     print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
@@ -106,18 +105,20 @@ class SpringerPackage(object):
 
     def _normalize_article_dir_with_dtd(self, path):
         """
-        main.xml from Elsevier assume the existence of a local DTD.
+        TODO: main.xml from Springer assume the existence of a local DTD.
         This procedure install the DTDs next to the main.xml file
         and normalize it using xmllint in order to resolve all namespaces
         and references.
         """
+        path_normalized = mkdtemp(prefix="scoap3_normalized_", dir=CFG_TMPSHAREDDIR)
+        self.articles_normalized.append(path_normalized)
         files = [filename for filename in listdir(path) if ".xml.meta" in filename]
         if exists(join(path, 'resolved_main.xml')):
             return
         # Add looking for a xml.meta file
         # if 'art520' in open(join(path, 'main.xml')).read():
 
-        ZipFile(CFG_SPRINGER_AV24_PATH).extractall(path)
+        ZipFile(CFG_SPRINGER_AV24_PATH).extractall(path_normalized)
         # for filename in listdir(join(path, '')):
         #     print >> sys.stderr, filename
         #     rename(join(path, 'A++V2.4', filename), join(path, filename))
@@ -126,7 +127,7 @@ class SpringerPackage(object):
         #    raise ValueError("It looks like the path %s does not contain an art520 or art501 main.xml file" % path)
 
         print >> sys.stdout, "Normalizing %s" % (join(path, files[0]), )
-        cmd_exit_code, cmd_out, cmd_err = run_shell_command("xmllint --format --loaddtd %s --output %s", (join(path, files[0]), join(path, 'resolved_main.xml')))
+        cmd_exit_code, cmd_out, cmd_err = run_shell_command("xmllint --format --loaddtd %s --output %s", (join(path, files[0]), join(path_normalized, 'resolved_main.xml')))
         if cmd_err:
             self.logger.error("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
             raise ValueError("Error in cleaning %s: %s" % (join(path, 'main.xml'), cmd_err))
