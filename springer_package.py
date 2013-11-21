@@ -38,18 +38,15 @@ class SpringerPackage(object):
         self.package_name = package_name
         self.path = path
         self._dois = []
-        print >> sys.stderr, "aa"
         self.logger = create_logger(join(CFG_LOGDIR, 'springer_harvesting_'+str(datetime.now())+'.log'))
 
         if not path and package_name:
-            print >> sys.stderr, "bb"
             self.path = self._extract_package()
         # elif not path and not package_name:
         #     print "Starting harves"
         #     from invenio.contrast_out import ContrastOutConnector
         #     self.conn = ContrastOutConnector(self.logger)
         #     self.conn.run()
-        print >> sys.stderr, "cc"
         self._crawl_springer_and_find_main_xml()
 
     def bibupload_it(self):
@@ -68,13 +65,10 @@ class SpringerPackage(object):
         """
         Extract a package in a new directory.
         """
-        print >> sys.stderr, "dd"
         self.path_unpacked = mkdtemp(prefix="scoap3_package_", dir=CFG_SPRINGER_DOWNLOADDIR)
         if not hasattr(self, "retrieved_packages_unpacked"):
-            print >> sys.stderr, "e"
             self.retrieved_packages_unpacked = [self.package_name]
         for path in self.retrieved_packages_unpacked:
-            print >> sys.stderr, "f"
             ZipFile(path).extractall(self.path_unpacked)
 
         return self.path_unpacked

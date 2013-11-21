@@ -25,7 +25,7 @@ from invenio.testutils import make_test_suite, run_test_suite
 
 ## Tests need to work for harvesting Elsevier and Springer
 class TestArxivIds(unittest.TestCase):
-    """Test SCOAP3"""
+    """Test arXiv IDs"""
 
     def test_arxiv_ids_are_extracted(self):
         pass
@@ -35,7 +35,7 @@ class TestArxivIds(unittest.TestCase):
 
 
 class TestMathMl(unittest.TestCase):
-    """Test MathML support"""
+    """Test MathML support."""
 
     def test_mathml_has_namespace_correctly_changed(self):
         pass
@@ -49,7 +49,30 @@ class TestMathMl(unittest.TestCase):
     def test_mathml_is_added_to_keywords(self):
         pass
 
-TEST_SUITE = make_test_suite(TestArxivIds,)
+
+class TestPackages(unittest.TestCase):
+    """Test packages harvest, extraction, normalization."""
+
+    def test_packages_were_harvested(self):
+        pass
+
+    def test_package_was_extracted(self):
+        pass
+
+    def test_package_was_normalized(self):
+        pass
+
+class TestRecordCreation(unittest.TestCase):
+    """Test the creation of bibrecord."""
+
+    def test_record_created(self):
+        pass
+
+
+TEST_SUITE = make_test_suite(TestArxivIds,
+                             TestMathMl,
+                             TestPackages,
+                             TestRecordCreation)
 
 if __name__ == "__main__":
 
