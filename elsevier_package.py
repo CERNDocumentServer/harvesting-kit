@@ -299,7 +299,7 @@ class ElsevierPackage(object):
     def get_references(self, xml):
         references = []
         for reference in xml.getElementsByTagName("ce:bib-reference"):
-            label = get_value_in_tag(reference, "label")
+            label = get_value_in_tag(reference, "ce:label")
             authors = []
             for author in reference.getElementsByTagName("sb:author"):
                 given_name = get_value_in_tag(author, "ce:given-name")
@@ -315,7 +315,8 @@ class ElsevierPackage(object):
             title = get_value_in_tag(reference, "sb:maintitle")
             volume = get_value_in_tag(reference, "sb:volume-nr")
             year = get_value_in_tag(reference, "sb:date")[:4]
-            references.append((label, authors, doi, issue, page, title, volume, year))
+            textref = get_value_in_tag(reference, "ce:textref")
+            references.append((label, authors, doi, issue, page, title, volume, year, textref))
         return references
 
     def get_article(self, path):
@@ -359,7 +360,7 @@ class ElsevierPackage(object):
                 record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
         record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
         references = self.get_references(xml)
-        for label, authors, doi, issue, page, title, volume, year in references:
+        for label, authors, doi, issue, page, title, volume, year, textref in references:
             subfields = []
             if doi:
                 subfields.append(('a', doi))
@@ -371,7 +372,10 @@ class ElsevierPackage(object):
                 subfields.append(('o', label))
             if page:
                 subfields.append(('p', page))
-            subfields.append(('s', '%s %s (%s) %s' % (title, volume, year, page)))
+            if title or volume or year or page:
+                subfields.append(('s', '%s %s (%s) %s' % (title, volume, year, page)))
+            elif textref:
+                subfields.append(('m', textref))
             if title:
                 subfields.append(('t', title))
             if volume:

@@ -49,7 +49,7 @@ class ContrastOutConnector(object):
     def _download_file_listing(self):
         path_ready_pkg = mkdtemp(prefix="scoap3_ready_pkg", dir=CFG_CONTRASTOUT_DOWNLOADDIR)
         # Prints stuff
-        print >> sys.stdout, "\nDownloading %i files." % (len(self.files_list))
+        print >> sys.stdout, "\nDownloading %i \".ready\" files." % (len(self.files_list))
         # Create progrss bar
         p_bar = self._progress_bar(len(self.files_list))
         # Print stuff
