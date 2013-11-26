@@ -32,7 +32,7 @@ def xml_to_text(xml):
         return xml.toxml().replace('mml:', '').replace('xmlns:mml', 'xmlns').encode('utf-8')
     elif xml.hasChildNodes():
         for child in xml.childNodes:
-            return ''.join(xml_to_text(child) for child in xml.childNodes)
+            return ' '.join(''.join(xml_to_text(child) for child in xml.childNodes).split())
     return ''
 
 

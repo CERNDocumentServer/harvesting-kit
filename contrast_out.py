@@ -163,7 +163,6 @@ class ContrastOutConnector(object):
                     self.found_issues.append(pathname)
             else:
                 def visit(arg, dirname, names):
-                    print "Walking %s" %(dirname,)
                     if "issue.xml" in names:
                         self.found_issues.append(join(dirname,"issue.xml"))
                 walk(join(self.path_unpacked, name.split('.')[0]), visit, None)
