@@ -11,7 +11,7 @@ from tempfile import mkdtemp
 from xml.dom.minidom import parseString, parse
 
 from contrast_out_config import *
-from invenio.config import CFG_CONTRASTOUT_DOWNLOADDIR
+from invenio.config import (CFG_CONTRASTOUT_DOWNLOADDIR, CFG_TMPSHAREDDIR)
 from scoap3utils import xml_to_text
 from invenio.errorlib import register_exception
 from scoap3utils import MD5Error
@@ -47,7 +47,7 @@ class ContrastOutConnector(object):
         return self.files_list
 
     def _download_file_listing(self):
-        path_ready_pkg = mkdtemp(prefix="scoap3_ready_pkg", dir=CFG_CONTRASTOUT_DOWNLOADDIR)
+        path_ready_pkg = mkdtemp(prefix="scoap3_ready_pkg_%s_" % (datetime.now(),), dir=CFG_CONTRASTOUT_DOWNLOADDIR)
         # Prints stuff
         print >> sys.stdout, "\nDownloading %i \".ready\" files." % (len(self.files_list))
         # Create progrss bar
@@ -97,7 +97,7 @@ class ContrastOutConnector(object):
         return self.retrieved_packages
 
     def _download_tars(self):
-        self.path_tar = mkdtemp(prefix="scoap3_tar", dir=CFG_CONTRASTOUT_DOWNLOADDIR)
+        self.path_tar = mkdtemp(prefix="scoap3_tar_%s_" % (datetime.now(),), dir=CFG_CONTRASTOUT_DOWNLOADDIR)
 
         # Prints stuff
         print >> sys.stdout, "\nDownloading %i tar packages." \
@@ -144,7 +144,7 @@ class ContrastOutConnector(object):
         """
         Extract a package in a new temporary directory.
         """
-        self.path_unpacked = mkdtemp(prefix="scoap3_package", dir=CFG_CONTRASTOUT_DOWNLOADDIR)
+        self.path_unpacked = mkdtemp(prefix="scoap3_package_", dir=CFG_TMPSHAREDDIR)
         for path in self.retrieved_packages_unpacked:
             TarFile.open(path).extractall(self.path_unpacked)
 

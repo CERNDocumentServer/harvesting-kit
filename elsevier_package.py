@@ -31,7 +31,7 @@ from xml.dom.minidom import parse
 
 from invenio.errorlib import register_exception
 from invenio.bibrecord import record_add_field, record_xml_output
-from invenio.config import (CFG_TMPSHAREDDIR, CFG_ETCDIR, CFG_LOGDIR,
+from invenio.config import (CFG_TMPSHAREDDIR, CFG_ETCDIR,
                             CFG_CONTRASTOUT_DOWNLOADDIR)
 from invenio.shellutils import run_shell_command
 from invenio.bibtask import task_low_level_submission
@@ -68,9 +68,10 @@ class ElsevierPackage(object):
         self.path = path
         self.found_articles = []
         self._found_issues = []
-        self.logger = create_logger(join(CFG_LOGDIR, 'elsevier_harvesting_'+str(datetime.now())+'.log'))
+        self.logger = create_logger("Elsevier")
 
         if not path and package_name:
+            self.logger.info("Got package: %s" % (package_name,))
             self._extract_package()
         elif not path and not package_name:
             print "Starting harves"
@@ -85,7 +86,7 @@ class ElsevierPackage(object):
         """
         Extract a package in a new temporary directory.
         """
-        self.path = mkdtemp(prefix="scoap3_package", dir=CFG_CONTRASTOUT_DOWNLOADDIR)
+        self.path = mkdtemp(prefix="scoap3_package_", dir=CFG_TMPSHAREDDIR)
         self.logger.debug("Extracting package: %s" % (self.package_name,))
         TarFile.open(self.package_name).extractall(self.path)
 
@@ -323,7 +324,6 @@ class ElsevierPackage(object):
         return parse(open(join(path, "resolved_main.xml")))
 
     def get_record(self, path):
-        self.logger.info("Creating record: %s" % (path,))
         xml = self.get_article(path)
         rec = {}
         title = self.get_title(xml)
@@ -333,6 +333,7 @@ class ElsevierPackage(object):
         journal, issn, volume, issue, first_page, last_page, year, doi = self.get_publication_information(xml)
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
+        self.logger.info("Creating record: %s %s" % (path,doi))
         authors = self.get_authors(xml)
         first_author = True
         for author in authors:

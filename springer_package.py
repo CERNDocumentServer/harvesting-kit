@@ -55,8 +55,8 @@ class SpringerPackage(object):
         """
         Extract a package in a new directory.
         """
-        self.path_unpacked = mkdtemp(prefix="scoap3_package_",
-                                     dir=CFG_SPRINGER_DOWNLOADDIR)
+        self.path_unpacked = mkdtemp(prefix="scoap3_package_%s" % (datetime.now(),),
+                                     dir=CFG_TMPSHAREDDIR)
         self.logger.debug("Extracting package: %s" % (self.package_name,))
         if not hasattr(self, "retrieved_packages_unpacked"):
             self.retrieved_packages_unpacked = [self.package_name]
