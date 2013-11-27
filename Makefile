@@ -21,6 +21,8 @@ elsevier_pkg = elsevier_package.py
 springer_pkg = springer_package.py
 
 elsevier_data_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/elsevier
+elsevier_ready_packages = $(CFG_INVENIO_PREFIX)/var/data/scoap3/elsevier/ready_pkgs
+elsevier_tar_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/elsevier/tar_files
 springer_data_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/springer
 
 
@@ -37,6 +39,8 @@ install:
 	$(INSTALL) -t $(WWWDIR) robots.txt
 	$(INSTALL) -t $(WWWDIR)/img scoap3_logo.png favicon.ico invenio_scoap3.css
 	$(INSTALL) -d $(elsevier_data_files)
+	$(INSTALL) -d $(elsevier_ready_packages)
+	$(INSTALL) -d $(elsevier_tar_files)
 	$(INSTALL) -d $(springer_data_files)
 
 install-conf:

@@ -81,3 +81,7 @@ def create_logger(publisher, filename=join(CFG_LOGDIR, 'scoap3_harvesting.log'))
 class MD5Error(Exception):
     def __init__(self, value):
         self.value = value
+
+class NoNewFiles(Exception):
+    def __init__(self, value=None):
+        self.value = value

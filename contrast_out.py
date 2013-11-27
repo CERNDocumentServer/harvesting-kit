@@ -5,6 +5,7 @@ import sys
 from datetime import datetime
 from functools import partial
 from ftplib import FTP
+from os import listdir
 from os.path import join, walk
 from tarfile import TarFile
 from tempfile import mkdtemp
@@ -14,7 +15,9 @@ from contrast_out_config import *
 from invenio.config import (CFG_CONTRASTOUT_DOWNLOADDIR, CFG_TMPSHAREDDIR)
 from scoap3utils import xml_to_text
 from invenio.errorlib import register_exception
-from scoap3utils import MD5Error
+from scoap3utils import MD5Error, NoNewFiles
+
+CFG_READY_PACKAGES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "ready_pkgs")
 
 class ContrastOutConnector(object):
     def __init__(self, logger):
@@ -39,39 +42,45 @@ class ContrastOutConnector(object):
         except:
             self.logger.error("Faild to connect to the Elsevier server.")
 
-    def _get_file_listing(self, phrase=None):
+    def _get_file_listing(self, phrase=None, new_only=True):
         if phrase:
             self.files_list = filter(lambda x: phrase in x, self.ftp.nlst())
         else:
             self.files_list = self.ftp.nlst()
+        if new_only:
+            self.files_list = set(self.files_list) - set(listdir(CFG_READY_PACKAGES))
         return self.files_list
 
     def _download_file_listing(self):
-        path_ready_pkg = mkdtemp(prefix="scoap3_ready_pkg_%s_" % (datetime.now(),), dir=CFG_CONTRASTOUT_DOWNLOADDIR)
-        # Prints stuff
-        print >> sys.stdout, "\nDownloading %i \".ready\" files." % (len(self.files_list))
-        # Create progrss bar
-        p_bar = self._progress_bar(len(self.files_list))
-        # Print stuff
-        sys.stdout.write(p_bar.next())
-        sys.stdout.flush()
-
-        for filename in self.files_list:
-            self.logger.info("Downloading: %s" % (filename,))
-            pkg_path = join(path_ready_pkg, filename)
-            self.path_r_pkg.append(pkg_path)
-            try:
-                ready_file = open(pkg_path, 'wb')
-                self.ftp.retrbinary('RETR %s' % (filename,), ready_file.write)
-                ready_file.close()
-            except:
-                self.logger.error("Error downloading file: %s" % (filename,))
-                print >> sys.stdout, "\nError downloading %s file!" % (filename,)
-                print >> sys.stdout, sys.exc_info()
+        if self.files_list:
+            # Prints stuff
+            print >> sys.stdout, "\nDownloading %i \".ready\" files." % (len(self.files_list))
+            # Create progrss bar
+            p_bar = self._progress_bar(len(self.files_list))
             # Print stuff
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
-        return self.path_r_pkg
+
+            for filename in self.files_list:
+                self.logger.info("Downloading: %s" % (filename,))
+                pkg_path = join(CFG_READY_PACKAGES, filename)
+                self.path_r_pkg.append(pkg_path)
+                try:
+                    ready_file = open(pkg_path, 'wb')
+                    self.ftp.retrbinary('RETR %s' % (filename,), ready_file.write)
+                    ready_file.close()
+                except:
+                    self.logger.error("Error downloading file: %s" % (filename,))
+                    print >> sys.stdout, "\nError downloading %s file!" % (filename,)
+                    print >> sys.stdout, sys.exc_info()
+                # Print stuff
+                sys.stdout.write(p_bar.next())
+                sys.stdout.flush()
+            return self.path_r_pkg
+        else:
+            print >> sys.stdout, "No new packages to download."
+            self.logger.info("No new packages to download.")
+            raise NoNewFiles
 
     def _get_packages(self):
         # Prints stuff
