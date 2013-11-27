@@ -6,7 +6,7 @@ from datetime import datetime
 from functools import partial
 from invenio.bibrecord import record_add_field, record_xml_output
 from invenio.bibtask import task_low_level_submission
-from invenio.config import (CFG_LOGDIR, CFG_SPRINGER_DOWNLOADDIR, CFG_ETCDIR,
+from invenio.config import (CFG_SPRINGER_DOWNLOADDIR, CFG_ETCDIR,
                             CFG_TMPSHAREDDIR)
 from invenio.errorlib import register_exception
 from invenio.shellutils import run_shell_command
@@ -39,13 +39,10 @@ class SpringerPackage(object):
         self.path = path
         self._dois = []
         self.articles_normalized = []
-        self.logger = create_logger(join(CFG_LOGDIR,
-                                         'springer_harvesting_%s.log' %
-                                         (str(datetime.now()),)
-                                         )
-                                    )
+        self.logger = create_logger("Springer")
 
         if not path and package_name:
+            self.logger.info("Got package: %s" % (package_name,))
             self.path = self._extract_package()
         # elif not path and not package_name:
         #     print "Starting harves"
@@ -250,7 +247,6 @@ class SpringerPackage(object):
 
     def get_record(self, f_path):
         path = abspath(join(f_path, pardir))
-        self.logger.info("Creating record: %s" % (path,))
         xml = self.get_article(join(path, "resolved_main.xml"))
         rec = {}
         title = self.get_title(xml)
@@ -260,6 +256,7 @@ class SpringerPackage(object):
         journal, issn, volume, issue, first_page, last_page, year, doi = self.get_publication_information(xml)
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
+        self.logger.info("Creating record: %s %s" % (path,doi))
         authors = self.get_authors(xml)
         first_author = True
         for author in authors:

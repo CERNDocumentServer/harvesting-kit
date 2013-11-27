@@ -24,6 +24,9 @@ Set of utilities for the SCOAP3 project.
 import sys
 import logging
 
+from invenio.config import CFG_LOGDIR
+from os.path import join
+
 
 def xml_to_text(xml):
     if xml.nodeType == xml.TEXT_NODE:
@@ -65,10 +68,10 @@ def lock_issue():
 
 
 # Creates a logger object
-def create_logger(name):
-    logger = logging.getLogger('contrast_out_connector')
+def create_logger(publisher, filename=join(CFG_LOGDIR, 'scoap3_harvesting.log')):
+    logger = logging.getLogger(publisher)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    fh = logging.FileHandler(filename=name)
+    fh = logging.FileHandler(filename=filename)
     fh.setFormatter(formatter)
     logger.addHandler(fh)
     logger.setLevel(logging.DEBUG)
