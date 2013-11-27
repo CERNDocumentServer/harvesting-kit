@@ -18,6 +18,7 @@ from invenio.errorlib import register_exception
 from scoap3utils import MD5Error, NoNewFiles
 
 CFG_READY_PACKAGES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "ready_pkgs")
+CFG_TAR_FILES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "tar_files")
 
 class ContrastOutConnector(object):
     def __init__(self, logger):
@@ -26,7 +27,6 @@ class ContrastOutConnector(object):
         self.retrieved_packages = {}
         self.retrieved_packages_unpacked = []
         self.path = None
-        self.path_tar = None
         self.retrieved_packages_unpacked = []
         self.found_articles = []
         self.found_issues = []
@@ -106,8 +106,6 @@ class ContrastOutConnector(object):
         return self.retrieved_packages
 
     def _download_tars(self):
-        self.path_tar = mkdtemp(prefix="scoap3_tar_%s_" % (datetime.now(),), dir=CFG_CONTRASTOUT_DOWNLOADDIR)
-
         # Prints stuff
         print >> sys.stdout, "\nDownloading %i tar packages." \
                  % (len(self.retrieved_packages))
@@ -119,7 +117,7 @@ class ContrastOutConnector(object):
 
         for filename in self.retrieved_packages.iterkeys():
             self.logger.info("Downloading tar package: %s" % (filename,))
-            unpack_path = join(self.path_tar, filename)
+            unpack_path = join(CFG_TAR_FILES, filename)
             self.retrieved_packages_unpacked.append(unpack_path)
             try:
                 tar_file = open(unpack_path, 'wb')
@@ -139,7 +137,7 @@ class ContrastOutConnector(object):
         import hashlib
 
         for filename, md5 in self.retrieved_packages.iteritems():
-            our_md5 = hashlib.md5(open(join(self.path_tar, filename)).read()).hexdigest()
+            our_md5 = hashlib.md5(open(join(CFG_TAR_FILES, filename)).read()).hexdigest()
             try:
                 if our_md5 != md5:
                     raise MD5Error(filename)
