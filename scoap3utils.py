@@ -77,6 +77,12 @@ def create_logger(publisher, filename=join(CFG_LOGDIR, 'scoap3_harvesting.log'))
     logger.setLevel(logging.DEBUG)
     return logger
 
+def progress_bar(n):
+    num = 0
+    while num <= n:
+        yield "\r%i%% [%s%s]" % (num/n*100, "="*num, '.'*(n-num))
+        num += 1
+
 
 class MD5Error(Exception):
     def __init__(self, value):

@@ -13,9 +13,11 @@ from xml.dom.minidom import parseString, parse
 
 from contrast_out_config import *
 from invenio.config import (CFG_CONTRASTOUT_DOWNLOADDIR, CFG_TMPSHAREDDIR)
-from scoap3utils import xml_to_text
+from invenio.scoap3utils import (xml_to_text,
+                                 MD5Error,
+                                 NoNewFiles,
+                                 progress_bar)
 from invenio.errorlib import register_exception
-from scoap3utils import MD5Error, NoNewFiles
 
 CFG_READY_PACKAGES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "ready_pkgs")
 CFG_TAR_FILES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "tar_files")
@@ -56,7 +58,7 @@ class ContrastOutConnector(object):
             # Prints stuff
             print >> sys.stdout, "\nDownloading %i \".ready\" files." % (len(self.files_list))
             # Create progrss bar
-            p_bar = self._progress_bar(len(self.files_list))
+            p_bar = progress_bar(len(self.files_list))
             # Print stuff
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
@@ -86,7 +88,7 @@ class ContrastOutConnector(object):
         # Prints stuff
         print >> sys.stdout, "\nRetrieving packages names."
         # Create progrss bar
-        p_bar = self._progress_bar(len(self.files_list))
+        p_bar = progress_bar(len(self.files_list))
         # Print stuff
         sys.stdout.write(p_bar.next())
         sys.stdout.flush()
@@ -110,7 +112,7 @@ class ContrastOutConnector(object):
         print >> sys.stdout, "\nDownloading %i tar packages." \
                  % (len(self.retrieved_packages))
         # Create progrss bar
-        p_bar = self._progress_bar(len(self.files_list))
+        p_bar = progress_bar(len(self.files_list))
         # Print stuff
         sys.stdout.write(p_bar.next())
         sys.stdout.flush()
@@ -171,7 +173,7 @@ class ContrastOutConnector(object):
             else:
                 def visit(arg, dirname, names):
                     if "issue.xml" in names:
-                        self.found_issues.append(join(dirname,"issue.xml"))
+                        self.found_issues.append(join(dirname, "issue.xml"))
                 walk(join(self.path_unpacked, name.split('.')[0]), visit, None)
         return self.found_issues
 
@@ -179,7 +181,7 @@ class ContrastOutConnector(object):
         # Prints stuff
         print >> sys.stdout, "\nRetrieving journal items directories."
         # Create progrss bar
-        p_bar = self._progress_bar(len(self.files_list))
+        p_bar = progress_bar(len(self.files_list))
         # Print stuff
         sys.stdout.write(p_bar.next())
         sys.stdout.flush()
@@ -210,9 +212,3 @@ class ContrastOutConnector(object):
         self._check_md5()
         self._extract_packages()
         self._get_metadata_and_fulltex_dir()
-
-    def _progress_bar(self, n):
-        num = 0
-        while num <= n:
-            yield "\r%i%% [%s%s]" % (num/n*100, "="*num, '.'*(n-num))
-            num += 1

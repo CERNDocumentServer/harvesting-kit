@@ -10,7 +10,7 @@ APACHE = wziolek
 INSTALL = install -g $(APACHE) -m 775
 
 scoap3dtdsdir = $(ETCDIR)/scoap3dtds
-scoap3dtds_DATA = ja5_art501.zip ja5_art510.zip ja5_art520.zip si510.zip si520.zip A++V2.4.zip
+scoap3dtds_DATA = ja5_art501.zip ja5_art510.zip ja5_art520.zip si510.zip si520.zip A++V2.4.zip jats-archiving-dtd-1.0.zip
 
 scoap3utils = scoap3utils.py
 scoap3tests = scoap3_unit_tests.py
@@ -19,11 +19,13 @@ contrast_out_config = contrast_out_config.py
 contrast_out_utils = contrast_out_utils.py
 elsevier_pkg = elsevier_package.py
 springer_pkg = springer_package.py
+springer_config = springer_config.py
 
 elsevier_data_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/elsevier
 elsevier_ready_packages = $(CFG_INVENIO_PREFIX)/var/data/scoap3/elsevier/ready_pkgs
 elsevier_tar_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/elsevier/tar_files
 springer_data_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/springer
+springer_tar_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/springer/tar_files
 
 
 install:
@@ -36,12 +38,14 @@ install:
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(contrast_out_utils)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(elsevier_pkg)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(springer_pkg)
+	$(INSTALL) -t $(LIBDIR)/python/invenio $(springer_config)
 	$(INSTALL) -t $(WWWDIR) robots.txt
 	$(INSTALL) -t $(WWWDIR)/img scoap3_logo.png favicon.ico invenio_scoap3.css
 	$(INSTALL) -d $(elsevier_data_files)
 	$(INSTALL) -d $(elsevier_ready_packages)
 	$(INSTALL) -d $(elsevier_tar_files)
 	$(INSTALL) -d $(springer_data_files)
+	$(INSTALL) -d $(springer_tar_files)
 
 install-conf:
 	$(INSTALL) -t $(ETCDIR) invenio-local.conf

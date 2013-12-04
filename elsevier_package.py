@@ -35,7 +35,10 @@ from invenio.config import (CFG_TMPSHAREDDIR, CFG_ETCDIR,
                             CFG_CONTRASTOUT_DOWNLOADDIR)
 from invenio.shellutils import run_shell_command
 from invenio.bibtask import task_low_level_submission
-from invenio.scoap3utils import (create_logger, get_value_in_tag, xml_to_text)
+from invenio.scoap3utils import (create_logger,
+                                 get_value_in_tag,
+                                 xml_to_text,
+                                 progress_bar)
 CFG_SCOAP3DTDS_PATH = join(CFG_ETCDIR, 'scoap3dtds')
 
 CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
@@ -60,7 +63,7 @@ class ElsevierPackage(object):
     @param package_name: the path to a tar.gz file to expand and parse
     @param path: the actual path of an already expanded package.
 
-    @note: either C{package_name} or C{path} don't have to be passed to the 
+    @note: either C{package_name} or C{path} don't have to be passed to the
     constructor, in this case the Elsevier server will be harvested.
     """
     def __init__(self, package_name=None, path=None):
@@ -387,7 +390,7 @@ class ElsevierPackage(object):
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
         record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
         record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.xml'))])
-        record_add_field(rec, '980', subfields=[('a', 'SCOAP3')])
+        record_add_field(rec, '980', subfields=[('a', 'SCOAP3'), ('b', 'Elsevier')])
         return record_xml_output(rec)
 
     def bibupload_it(self):

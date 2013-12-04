@@ -2,6 +2,7 @@ import sys
 import time
 import traceback
 
+
 from datetime import datetime
 from functools import partial
 from invenio.bibrecord import record_add_field, record_xml_output
@@ -10,16 +11,28 @@ from invenio.config import (CFG_SPRINGER_DOWNLOADDIR, CFG_ETCDIR,
                             CFG_TMPSHAREDDIR)
 from invenio.errorlib import register_exception
 from invenio.shellutils import run_shell_command
+from ftplib import FTP
 from os import listdir, rename, fdopen, pardir
 from os.path import join, walk, exists, abspath
-from scoap3utils import (create_logger, get_value_in_tag, xml_to_text)
+from scoap3utils import (create_logger,
+                         get_value_in_tag,
+                         xml_to_text,
+                         progress_bar)
+from shutil import copyfile
 from tarfile import TarFile
 from tempfile import mkdtemp, mkstemp
 from xml.dom.minidom import parse
 from zipfile import ZipFile
+from invenio.springer_config import (CFG_LOGIN,
+                                     CFG_PASSWORD,
+                                     CFG_URL)
+
 CFG_SCOAP3DTDS_PATH = join(CFG_ETCDIR, 'scoap3dtds')
 
 CFG_SPRINGER_AV24_PATH = join(CFG_SCOAP3DTDS_PATH, 'A++V2.4.zip')
+CFG_SPRINGER_JATS_PATH = join(CFG_SCOAP3DTDS_PATH, 'jats-archiving-dtd-1.0.zip')
+
+CFG_TAR_FILES = join(CFG_SPRINGER_DOWNLOADDIR, "tar_files")
 
 
 class SpringerPackage(object):
@@ -34,6 +47,59 @@ class SpringerPackage(object):
     @note: either C{package_name} or C{path} don't have to be passed to the
     constructor, in this case the Springer server will be harvested.
     """
+    def connect(self):
+        """Logs into the specified ftp server and returns connector."""
+        try:
+            self.ftp = FTP(CFG_URL)
+            self.ftp.login(user=CFG_LOGIN, passwd=CFG_PASSWORD)
+            self.logger.debug("Succesful connection to the Springer server")
+        except:
+            self.logger.error("Faild to connect to the Springer server.")
+
+    def _get_file_listing(self, phrase=None, new_only=True):
+        try:
+            self.ftp.pwd()
+            self.ftp.cwd('data/in/EPJC/SCOAP3_sample')
+        except:
+            raise Exception
+
+        if phrase:
+            self.files_list = filter(lambda x: phrase in x, self.ftp.nlst())
+        else:
+            self.files_list = self.ftp.nlst()
+        if new_only:
+            self.files_list = set(self.files_list) - set(listdir(CFG_SPRINGER_DOWNLOADDIR))
+        return self.files_list
+
+    def _download_tars(self):
+        self.retrieved_packages_unpacked = []
+        # Prints stuff
+        print >> sys.stdout, "\nDownloading %i tar packages." \
+                             % (len(self.files_list))
+        # Create progrss bar
+        p_bar = progress_bar(len(self.files_list))
+        # Print stuff
+        sys.stdout.write(p_bar.next())
+        sys.stdout.flush()
+
+        for filename in self.files_list:
+            self.logger.info("Downloading tar package: %s" % (filename,))
+            unpack_path = join(CFG_TAR_FILES, filename)
+            self.retrieved_packages_unpacked.append(unpack_path)
+            try:
+                tar_file = open(unpack_path, 'wb')
+                self.ftp.retrbinary('RETR %s' % filename, tar_file.write)
+                tar_file.close()
+            except:
+                self.logger.error("Error downloading tar file: %s" % (filename,))
+                print >> sys.stdout, "\nError downloading %s file!" % (filename,)
+                print >> sys.stdout, sys.exc_info()
+            # Print stuff
+            sys.stdout.write(p_bar.next())
+            sys.stdout.flush()
+
+        return self.retrieved_packages_unpacked
+
     def __init__(self, package_name=None, path=None):
         self.package_name = package_name
         self.path = path
@@ -43,24 +109,29 @@ class SpringerPackage(object):
 
         if not path and package_name:
             self.logger.info("Got package: %s" % (package_name,))
-            self.path = self._extract_package()
-        # elif not path and not package_name:
-        #     print "Starting harves"
-        #     from invenio.contrast_out import ContrastOutConnector
-        #     self.conn = ContrastOutConnector(self.logger)
-        #     self.conn.run()
+            self.path = self._extract_packages()
+        elif not path and not package_name:
+            print "Starting harves"
+            self.run()
         self._crawl_springer_and_find_main_xml()
+        print >> sys.stdout, self.found_articles
 
-    def _extract_package(self):
+    def run(self):
+        self.connect()
+        self._get_file_listing()
+        self._download_tars()
+        self._extract_packages()
+
+    def _extract_packages(self):
         """
         Extract a package in a new directory.
         """
-        self.path_unpacked = mkdtemp(prefix="scoap3_package_%s" % (datetime.now(),),
+        self.path_unpacked = mkdtemp(prefix="scoap3_package_%s_" % (datetime.now(),),
                                      dir=CFG_TMPSHAREDDIR)
-        self.logger.debug("Extracting package: %s" % (self.package_name,))
         if not hasattr(self, "retrieved_packages_unpacked"):
             self.retrieved_packages_unpacked = [self.package_name]
         for path in self.retrieved_packages_unpacked:
+            self.logger.debug("Extracting package: %s" % (path.split("/")[-1],))
             ZipFile(path).extractall(self.path_unpacked)
 
         return self.path_unpacked
@@ -72,19 +143,9 @@ class SpringerPackage(object):
         a main.xml in agiven directory.
         """
         self.found_articles = []
-        # if not self.path and not self.package_name:
-        #     for doc in self.conn.found_articles:
-        #         dirname = doc['xml'].rstrip('/main.xml')
-        #         try:
-        #             self._normalize_article_dir_with_dtd(dirname)
-        #             self.found_articles.append(dirname)
-        #         except Exception, err:
-        #             register_exception()
-        #             print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
-        # else:
 
         def visit(arg, dirname, names):
-            files = [filename for filename in names if ".xml.meta" in filename]
+            files = [filename for filename in names if ".xml" in filename]
             if files:
                 try:
                     self._normalize_article_dir_with_dtd(dirname)
@@ -92,7 +153,11 @@ class SpringerPackage(object):
                 except Exception, err:
                     register_exception()
                     print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
-        walk(self.path, visit, None)
+
+        if self.path_unpacked:
+                walk(self.path_unpacked, visit, None)
+        else:
+            walk(self.path, visit, None)
 
     def _normalize_article_dir_with_dtd(self, path):
         """
@@ -103,16 +168,17 @@ class SpringerPackage(object):
         """
         path_normalized = mkdtemp(prefix="scoap3_normalized_", dir=CFG_TMPSHAREDDIR)
         self.articles_normalized.append(path_normalized)
-        files = [filename for filename in listdir(path) if ".xml.meta" in filename]
+        files = [filename for filename in listdir(path) if "nlm.xml" in filename]
         if exists(join(path, 'resolved_main.xml')):
             return
 
-        if 'A++V2.4.dtd' in open(join(path, files[0])).read():
-            ZipFile(CFG_SPRINGER_AV24_PATH).extractall(path_normalized)
+        #print join(path, files[0])
+        if 'JATS-archivearticle1.dtd' in open(join(path, files[0])).read():
+            ZipFile(CFG_SPRINGER_JATS_PATH).extractall(path_normalized)
         else:
-            self.logger.error("It looks like the path %s does not contain an A++V2.4.dtd XML file." % path)
-            raise ValueError("It looks like the path %s does not contain an A++V2.4.dtd XML file." % path)
-        print >> sys.stdout, "Normalizing %s" % (join(path, files[0]), )
+            self.logger.error("It looks like the path %s does not contain an JATS-archivearticle1.dtd XML file." % path)
+            raise ValueError("It looks like the path %s does not contain an JATS-archivearticle1.dtd XML file." % path)
+        print >> sys.stdout, "Normalizing %s" % (files[0],)
         cmd_exit_code, cmd_out, cmd_err = run_shell_command("xmllint --format --loaddtd %s --output %s", (join(path, files[0]), join(path_normalized, 'resolved_main.xml')))
         if cmd_err:
             self.logger.error("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
@@ -123,7 +189,7 @@ class SpringerPackage(object):
 
     def get_title(self, xml):
         try:
-            return get_value_in_tag(xml, "ArticleTitle")
+            return get_value_in_tag(xml, "article-title")
         except Exception, err:
             print >> sys.stderr, "Can't find title"
 
@@ -135,19 +201,22 @@ class SpringerPackage(object):
             return ('', '', '', '', '', '', '', doi)
 
     def _get_doi(self, xml):
-        try:
-            return get_value_in_tag(xml, "ArticleDOI")
-        except Exception, err:
-            print >> sys.stderr, "Can't find doi"
+        ids = xml.getElementsByTagName('article-id')
+        for i in ids:
+            if i.getAttribute('pub-id-type') == 'doi':
+                return xml_to_text(i)
+            else:
+                print >> sys.stderr, "Can't find doi"
+                raise Exception
 
     def get_authors(self, xml):
         authors = []
-        for author in xml.getElementsByTagName("Author"):
+        for author in xml.getElementsByTagName("contrib"):
             tmp = {}
-            surname = get_value_in_tag(author, "FamilyName")
+            surname = get_value_in_tag(author, "surname")
             if surname:
                 tmp["surname"] = surname
-            given_name = get_value_in_tag(author, "GivenName")
+            given_name = get_value_in_tag(author, "given-names")
             if given_name:
                 tmp["given_name"] = given_name.replace('\n', ' ')
             # initials = get_value_in_tag(author, "ce:initials")
@@ -307,7 +376,7 @@ class SpringerPackage(object):
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
         # record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
         record_add_field(rec, 'FFT', subfields=[('a', f_path)])
-        record_add_field(rec, '980', subfields=[('a', 'SCOAP3')])
+        record_add_field(rec, '980', subfields=[('a', 'SCOAP3'), ('b', 'Springer')])
         return record_xml_output(rec)
 
     def bibupload_it(self):
@@ -327,7 +396,7 @@ def main():
     try:
         if len(sys.argv) == 2:
             path_or_package = sys.argv[1]
-            if path_or_package.endswith(".tar") or path_or_package.endswith(".zip"):
+            if path_or_package.endswith(".zip"):
                 els = SpringerPackage(package_name=path_or_package)
             else:
                 els = SpringerPackage(path=path_or_package)
