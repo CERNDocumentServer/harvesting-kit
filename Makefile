@@ -1,11 +1,11 @@
-PREFIX = $(CFG_INVENIO_PREFIX)
+PREFIX = `python -c "from invenio.config import CFG_PREFIX; print CFG_PREFIX"`
 LIBDIR = $(PREFIX)/lib
 ETCDIR = $(PREFIX)/etc
 WWWDIR = $(PREFIX)/var/www
 APACHE = `python -c "from invenio.bibtask import guess_apache_process_user; print guess_apache_process_user()"`
 # APACHE = www-data
 # APACHE = wziolek
-INSTALL = install -g $(APACHE) -m 775
+INSTALL = install -g $(APACHE)
 
 scoap3dtdsdir = $(ETCDIR)/scoap3dtds
 scoap3dtds_DATA = ja5_art501.zip ja5_art510.zip ja5_art520.zip si510.zip si520.zip A++V2.4.zip jats-archiving-dtd-1.0.zip
