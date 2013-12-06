@@ -1,12 +1,10 @@
-# PREFIX = `python -c "from invenio.config import CFG_PREFIX; print CFG_PREFIX"`
-# PREFIX = /opt/invenio
 PREFIX = $(CFG_INVENIO_PREFIX)
 LIBDIR = $(PREFIX)/lib
 ETCDIR = $(PREFIX)/etc
 WWWDIR = $(PREFIX)/var/www
-# APACHE = `python -c "from invenio.bibtask import guess_apache_process_user; print guess_apache_process_user()"`
+APACHE = `python -c "from invenio.bibtask import guess_apache_process_user; print guess_apache_process_user()"`
 # APACHE = www-data
-APACHE = wziolek
+# APACHE = wziolek
 INSTALL = install -g $(APACHE) -m 775
 
 scoap3dtdsdir = $(ETCDIR)/scoap3dtds
@@ -20,6 +18,7 @@ contrast_out_utils = contrast_out_utils.py
 elsevier_pkg = elsevier_package.py
 springer_pkg = springer_package.py
 springer_config = springer_config.py
+templates = websearch_templates_scoap3.py webstyle_templates_scoap3.py
 
 elsevier_data_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/elsevier
 elsevier_ready_packages = $(CFG_INVENIO_PREFIX)/var/data/scoap3/elsevier/ready_pkgs
@@ -39,6 +38,7 @@ install:
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(elsevier_pkg)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(springer_pkg)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(springer_config)
+	$(INSTALL) -t $(LIBDIR)/python/invenio $(templates)
 	$(INSTALL) -t $(WWWDIR) robots.txt
 	$(INSTALL) -t $(WWWDIR)/img scoap3_logo.png favicon.ico invenio_scoap3.css
 	$(INSTALL) -d $(elsevier_data_files)
