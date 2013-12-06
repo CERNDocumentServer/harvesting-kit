@@ -20,11 +20,11 @@ springer_pkg = springer_package.py
 springer_config = springer_config.py
 templates = websearch_templates_scoap3.py webstyle_templates_scoap3.py
 
-elsevier_data_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/elsevier
-elsevier_ready_packages = $(CFG_INVENIO_PREFIX)/var/data/scoap3/elsevier/ready_pkgs
-elsevier_tar_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/elsevier/tar_files
-springer_data_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/springer
-springer_tar_files = $(CFG_INVENIO_PREFIX)/var/data/scoap3/springer/tar_files
+elsevier_data_files = $(PREFIX)/var/data/scoap3/elsevier
+elsevier_ready_packages = $(PREFIX)/var/data/scoap3/elsevier/ready_pkgs
+elsevier_tar_files = $(PREFIX)/var/data/scoap3/elsevier/tar_files
+springer_data_files = $(PREFIX)/var/data/scoap3/springer
+springer_tar_files = $(PREFIX)/var/data/scoap3/springer/tar_files
 
 
 install:
