@@ -14,10 +14,11 @@ from invenio.shellutils import run_shell_command
 from ftplib import FTP
 from os import listdir, rename, fdopen, pardir
 from os.path import join, walk, exists, abspath
-from scoap3utils import (create_logger,
+from invenio.scoap3utils import (create_logger,
                          get_value_in_tag,
                          xml_to_text,
-                         progress_bar)
+                         progress_bar,
+                         NoDOIError)
 from shutil import copyfile
 from tarfile import TarFile
 from tempfile import mkdtemp, mkstemp
@@ -202,12 +203,14 @@ class SpringerPackage(object):
 
     def _get_doi(self, xml):
         ids = xml.getElementsByTagName('article-id')
+        ret = ""
         for i in ids:
-            if i.getAttribute('pub-id-type') == 'doi':
-                return xml_to_text(i)
-            else:
-                print >> sys.stderr, "Can't find doi"
-                raise Exception
+            if i.getAttribute('pub-id-type').encode('utf-8') == 'doi':
+                ret = xml_to_text(i)
+
+        if not ret:
+            print >> sys.stdout, "Can't find DOI."
+        return ret
 
     def get_authors(self, xml):
         authors = []
@@ -226,26 +229,42 @@ class SpringerPackage(object):
             # orcid = author.getAttribute('orcid').encode('utf-8')
             # if orcid:
             #     tmp["orcid"] = orcid
-            emails = author.getElementsByTagName("Email")
-            for email in emails:
-                if email.getAttribute("type").encode('utf-8') in ('email', ''):
-                    tmp["email"] = xml_to_text(email)
-                    break
+
+            # emails = author.getElementsByTagName("Email")
+            # for email in emails:
+            #     if email.getAttribute("type").encode('utf-8') in ('email', ''):
+            #         tmp["email"] = xml_to_text(email)
+            #         break
+
             # cross_refs = author.getElementsByTagName("ce:cross-ref")
             # if cross_refs:
             #     tmp["cross_ref"] = []
             #     for cross_ref in cross_refs:
             #         tmp["cross_ref"].append(cross_ref.getAttribute("refid").encode('utf-8'))
             tmp["affiliations_ids"] = []
-            aids = author.getAttribute("AffiliationIDS").split()
-            for aid in aids:
-                tmp["affiliations_ids"].append(aid.encode('utf-8'))
+            tmp["contact_ids"] = []
+
+            xrefs = author.getElementsByTagName("xref")
+            for x in xrefs:
+                if x.getAttribute('ref-type').encode('utf-8') == 'aff':
+                    tmp["affiliations_ids"].extend([a.encode('utf-8') for a in x.getAttribute('rid').split()])
+                if x.getAttribute('ref-type').encode('utf-8') == 'corresp':
+                    tmp["contact_ids"].extend([a.encode('utf-8') for a in x.getAttribute('rid').split()])
+
             authors.append(tmp)
+
         affiliations = {}
-        for affiliation in xml.getElementsByTagName("Affiliation"):
-            aff_id = affiliation.getAttribute("ID").encode('utf-8')
+        for affiliation in xml.getElementsByTagName("aff"):
+            aff_id = affiliation.getAttribute("id").encode('utf-8')
             text = xml_to_text(affiliation)
             affiliations[aff_id] = text
+
+        emails = {}
+        for contact in xml.getElementsByTagName("corresp"):
+            contact_id = contact.getAttribute("id").encode('utf-8')
+            text = xml_to_text(contact.getElementsByTagName('email')[0])
+            emails[contact_id] = text
+
         implicit_affilations = True
         for author in authors:
             matching_ref = [ref for ref in author.get("affiliations_ids") if ref in affiliations]
@@ -254,6 +273,10 @@ class SpringerPackage(object):
                 author["affiliation"] = []
                 for i in xrange(0, len(matching_ref)):
                     author["affiliation"].append(affiliations[matching_ref[i]])
+            matching_contact = [cont for cont in author.get('contact_ids') if cont in emails]
+            if matching_contact:
+                author["email"] = emails[matching_contact[0]]
+
         if implicit_affilations and len(affiliations) > 1:
             print >> sys.stderr, "Implicit affiliations are used, but there's more than one affiliation: %s" % affiliations
         if implicit_affilations and len(affiliations) >= 1:
@@ -265,53 +288,56 @@ class SpringerPackage(object):
 
     def get_abstract(self, xml):
         try:
-            return get_value_in_tag(xml, "Abstract")
+            return get_value_in_tag(xml, "abstract").replace("Abstract", "", 1)
         except Exception, err:
             print >> sys.stderr, "Can't find abstract"
 
     def get_copyright(self, xml):
         try:
-            return get_value_in_tag(xml.getElementsByTagName("ArticleCopyright"), "CopyrightHolderName")
+            return get_value_in_tag(xml.getElementsByTagName("copyright-holder")[0])
         except Exception, err:
             print >> sys.stderr, "Can't find copyright"
 
     def get_keywords(self, xml):
         try:
-            return [get_value_in_tag(keyword, "ce:text") for keyword in xml.getElementsByTagName("ce:keyword")]
+            kwd_groups = xml.getElementsByTagName('kwd-group')
+            pacs = []
+            other = []
+            for kwd_group in kwd_groups:
+                if kwd_group.getAttribute('kwd-group-type').encode('utf-8') == "pacs":
+                    pacs = [xml_to_text(keyword) for keyword in xml.getElementsByTagName("kwd")]
+                else:
+                    other = [xml_to_text(keyword) for keyword in xml.getElementsByTagName("kwd")]
+            return {"pacs": pacs, "other": other}
         except Exception, err:
             print >> sys.stderr, "Can't find keywords"
 
     def get_references(self, xml):
         references = []
-        for reference in xml.getElementsByTagName("Citation"):
-            if not reference.getElementsByTagName("BibArticle"):
-                references.append((get_value_in_tag(reference,
-                                                    "BibUnstructured"),
-                                   '', '', '', '', '', '', ''))
-            else:
-                label = get_value_in_tag(reference, "ArticleTitle")
-                authors = []
-                for author in reference.getElementsByTagName("BibAuthorName"):
-                    given_name = get_value_in_tag(author, "Initials")
-                    surname = get_value_in_tag(author, "FamilyName")
-                    if given_name:
-                        name = "%s, %s" % (surname, given_name)
-                    else:
-                        name = surname
-                    authors.append(name)
-                doi_tag = reference.getElementsByTagName("Occurrence")
-                doi = ""
-                for tag in doi_tag:
-                    if tag.getAttribute("Type") == "DOI":
-                        doi = xml_to_text(tag)
-                ## What is it exactly?
-                # issue = get_value_in_tag(reference, "sb:issue")
-                issue = ""
-                page = get_value_in_tag(reference, "FirstPage")
-                title = get_value_in_tag(reference, "JournalTitle")
-                volume = get_value_in_tag(reference, "VolumeID")
-                year = get_value_in_tag(reference, "Year")
-                references.append((label, authors, doi, issue, page, title, volume, year))
+        for reference in xml.getElementsByTagName("ref"):
+            label = get_value_in_tag(reference, "article-title")
+            authors = []
+            for author in reference.getElementsByTagName("name"):
+                given_name = get_value_in_tag(author, "given-names")
+                surname = get_value_in_tag(author, "surname")
+                if given_name:
+                    name = "%s, %s" % (surname, given_name)
+                else:
+                    name = surname
+                if name.strip().split() == []:
+                    name = get_value_in_tag(author, "string-name")
+                authors.append(name)
+            doi_tag = reference.getElementsByTagName("pub-id")
+            doi = ""
+            for tag in doi_tag:
+                if tag.getAttribute("pub-id-type") == "doi":
+                    doi = xml_to_text(tag)
+            issue = get_value_in_tag(reference, "issue")
+            page = get_value_in_tag(reference, "fpage")
+            title = get_value_in_tag(reference, "source")
+            volume = get_value_in_tag(reference, "volume")
+            year = get_value_in_tag(reference, "year")
+            references.append((label, authors, doi, issue, page, title, volume, year))
         return references
 
     def get_record(self, f_path):
@@ -325,11 +351,14 @@ class SpringerPackage(object):
         journal, issn, volume, issue, first_page, last_page, year, doi = self.get_publication_information(xml)
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
-        self.logger.info("Creating record: %s %s" % (path,doi))
+        self.logger.info("Creating record: %s %s" % (path, doi))
         authors = self.get_authors(xml)
         first_author = True
         for author in authors:
-            subfields = [('a', '%s, %s' % (author['surname'], author.get('given_name') or author.get('initials')))]
+            if author.get('surname'):
+                subfields = [('a', '%s, %s' % (author.get('surname'), author.get('given_name') or author.get('initials', '')))]
+            else:
+                subfields = [('a', '%s' % (author.get('name', '')))]
             if 'orcid' in author:
                 subfields.append(('j', author['orcid']))
             if 'affiliation' in author:
@@ -337,9 +366,14 @@ class SpringerPackage(object):
                     subfields.append(('u', aff))
             if first_author:
                 record_add_field(rec, '100', subfields=subfields)
+                if author.get('email'):
+                    record_add_field(rec, '100', subfields=[('m', author['email'])])
                 first_author = False
             else:
                 record_add_field(rec, '700', subfields=subfields)
+                if author.get('email'):
+                    record_add_field(rec, '700', subfields=[('m', author['email'])])
+
         abstract = self.get_abstract(xml)
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract)])
@@ -348,7 +382,10 @@ class SpringerPackage(object):
         if copyright:
             record_add_field(rec, '542', subfields=[('f', copyright)])
         keywords = self.get_keywords(xml)
-        if keywords:
+        if keywords['pacs']:
+            for keyword in keywords:
+                record_add_field(rec, '084', ind1='1', subfields=[('a', keyword), ('9', 'PACS')])
+        if keywords['other']:
             for keyword in keywords:
                 record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
         record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
