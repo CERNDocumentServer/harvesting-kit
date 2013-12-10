@@ -17,6 +17,7 @@ contrast_out_config = contrast_out_config.py
 contrast_out_utils = contrast_out_utils.py
 elsevier_pkg = elsevier_package.py
 springer_pkg = springer_package.py
+hindawi_bibfilter = hindawi_bibfilter.py
 springer_config = springer_config.py
 templates = websearch_templates_scoap3.py webstyle_templates_scoap3.py
 
@@ -38,6 +39,7 @@ install:
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(elsevier_pkg)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(springer_pkg)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(springer_config)
+	$(INSTALL) -t $(LIBDIR)/python/invenio $(hindawi_bibfilter)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(templates)
 	$(INSTALL) -t $(WWWDIR) robots.txt
 	$(INSTALL) -t $(WWWDIR)/img scoap3_logo.png favicon.ico invenio_scoap3.css
