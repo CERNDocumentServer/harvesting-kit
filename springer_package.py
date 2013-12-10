@@ -1,3 +1,4 @@
+import re
 import sys
 import time
 import traceback
@@ -194,12 +195,53 @@ class SpringerPackage(object):
         except Exception, err:
             print >> sys.stderr, "Can't find title"
 
+    def get_issn(self, xml):
+        issns = xml.getElementsByTagName('issn')
+        ret = None
+
+        for issn in issns:
+            if issn.getAttribute("pub-type").encode('utf-8') == 'epub':
+                ret = issn.getAttribute("pub-type").encode('utf-8')
+
+        if not ret and issns:
+            ret = xml_to_text(issns[0])
+
+        return ret
+
+    def get_date(self, xml):
+        dates = xml.getElementsByTagName('pub-date')
+        ret = None
+        for date in dates:
+            if date.getAttribute('pub-type').encode('utf-8') == 'epub':
+                ret = get_value_in_tag(date, 'year')
+
+        if not ret and dates:
+            return dates[0]
+        else:
+            return ret
+
     def get_publication_information(self, xml):
-        doi = self._get_doi(xml)
+        jid = get_value_in_tag(xml, "journal-id")
+        journal = ""
+        #journal = CFG_ELSEVIER_JID_MAP.get(jid, jid)
         try:
-            return self._dois[doi] + (doi, )
-        except:
-            return ('', '', '', '', '', '', '', doi)
+            art = xml.getElementsByTagName('article-meta')[0]
+        except IndexError, err:
+            register_exception()
+            print >> sys.stderr, "ERROR: XML corupted: %s" % err
+        except Exception, err:
+            register_exception()
+            print >> sys.stderr, "ERROR: Exception captured: %s" % err
+
+        issn = self.get_issn(art)
+        volume = get_value_in_tag(art, "volume")
+        issue = get_value_in_tag(art, "issue")
+        year = self.get_date(art)
+        first_page = get_value_in_tag(art, "fpage")
+        last_page = get_value_in_tag(art, "lpage")
+        doi = self._get_doi(art)
+
+        return (journal, issn, volume, issue, first_page, last_page, year, doi)
 
     def _get_doi(self, xml):
         ids = xml.getElementsByTagName('article-id')
@@ -222,19 +264,11 @@ class SpringerPackage(object):
             given_name = get_value_in_tag(author, "given-names")
             if given_name:
                 tmp["given_name"] = given_name.replace('\n', ' ')
-            # initials = get_value_in_tag(author, "ce:initials")
-            # if initials:
-            #     tmp["initials"] = initials
+
             # It's not there
             # orcid = author.getAttribute('orcid').encode('utf-8')
             # if orcid:
             #     tmp["orcid"] = orcid
-
-            # emails = author.getElementsByTagName("Email")
-            # for email in emails:
-            #     if email.getAttribute("type").encode('utf-8') in ('email', ''):
-            #         tmp["email"] = xml_to_text(email)
-            #         break
 
             # cross_refs = author.getElementsByTagName("ce:cross-ref")
             # if cross_refs:
@@ -256,7 +290,8 @@ class SpringerPackage(object):
         affiliations = {}
         for affiliation in xml.getElementsByTagName("aff"):
             aff_id = affiliation.getAttribute("id").encode('utf-8')
-            text = xml_to_text(affiliation)
+            # removes numbering in from affiliations
+            text = re.sub(r'^(\d+\ )', "", xml_to_text(affiliation))
             affiliations[aff_id] = text
 
         emails = {}
@@ -312,10 +347,26 @@ class SpringerPackage(object):
         except Exception, err:
             print >> sys.stderr, "Can't find keywords"
 
+    def get_ref_link(self, xml, name):
+        links = xml.getElementsByTagName('ext-link')
+        ret = None
+        for link in links:
+            if name in link.getAttribute("xlink:href").encode('utf-8'):
+                ret = xml_to_text(link).strip()
+        return ret
+
+    def format_arxiv_id(self, arxiv_id):
+        if arxiv_id and not "/" in arxiv_id and "arXiv" not in arxiv_id:
+            return "arXiv:%s" % (arxiv_id,)
+        else:
+            return arxiv_id
+
     def get_references(self, xml):
         references = []
         for reference in xml.getElementsByTagName("ref"):
-            label = get_value_in_tag(reference, "article-title")
+            plain_text = None
+            ref_type = reference.getElementsByTagName('mixed-citation')[0].getAttribute('publication-type').encode('utf-8')
+            label = get_value_in_tag(reference, "label").strip('.')
             authors = []
             for author in reference.getElementsByTagName("name"):
                 given_name = get_value_in_tag(author, "given-names")
@@ -334,10 +385,14 @@ class SpringerPackage(object):
                     doi = xml_to_text(tag)
             issue = get_value_in_tag(reference, "issue")
             page = get_value_in_tag(reference, "fpage")
+            page_last = get_value_in_tag(reference, "lpage")
             title = get_value_in_tag(reference, "source")
             volume = get_value_in_tag(reference, "volume")
             year = get_value_in_tag(reference, "year")
-            references.append((label, authors, doi, issue, page, title, volume, year))
+            ext_link = self.format_arxiv_id(self.get_ref_link(reference, "arxiv"))
+            if ref_type != 'journal':
+                plain_text = get_value_in_tag(reference, "mixed-citation")
+            references.append((label, authors, doi, issue, page, page_last, title, volume, year, ext_link, plain_text))
         return references
 
     def get_record(self, f_path):
@@ -363,16 +418,14 @@ class SpringerPackage(object):
                 subfields.append(('j', author['orcid']))
             if 'affiliation' in author:
                 for aff in author["affiliation"]:
-                    subfields.append(('u', aff))
+                    subfields.append(('v', aff))
+            if author.get('email'):
+                    subfields.append(('m', author['email']))
             if first_author:
                 record_add_field(rec, '100', subfields=subfields)
-                if author.get('email'):
-                    record_add_field(rec, '100', subfields=[('m', author['email'])])
                 first_author = False
             else:
                 record_add_field(rec, '700', subfields=subfields)
-                if author.get('email'):
-                    record_add_field(rec, '700', subfields=[('m', author['email'])])
 
         abstract = self.get_abstract(xml)
         if abstract:
@@ -390,7 +443,7 @@ class SpringerPackage(object):
                 record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
         record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
         references = self.get_references(xml)
-        for label, authors, doi, issue, page, title, volume, year in references:
+        for label, authors, doi, issue, page, page_last, title, volume, year, ext_link, plain_text in references:
             subfields = []
             if doi:
                 subfields.append(('a', doi))
@@ -400,15 +453,15 @@ class SpringerPackage(object):
                 subfields.append(('n', issue))
             if label:
                 subfields.append(('o', label))
-            if page:
-                subfields.append(('p', page))
-            subfields.append(('s', '%s %s (%s) %s' % (title, volume, year, page)))
-            if title:
-                subfields.append(('t', title))
-            if volume:
-                subfields.append(('v', volume))
             if year:
                 subfields.append(('y', year))
+            if ext_link:
+                subfields.append(('r', ext_link))
+            # should we be strict about it?
+            if title and volume and year:
+                subfields.append(('s', '%s %s (%s) %s' % (title, volume, year, page)))
+            if plain_text:
+                subfields.append(('m', plain_text))
             if subfields:
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
         # record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
