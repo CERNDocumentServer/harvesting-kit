@@ -77,6 +77,7 @@ def create_logger(publisher, filename=join(CFG_LOGDIR, 'scoap3_harvesting.log'))
     logger.setLevel(logging.DEBUG)
     return logger
 
+
 def progress_bar(n):
     num = 0
     while num <= n:
@@ -84,13 +85,22 @@ def progress_bar(n):
         num += 1
 
 
+def format_arxiv_id(arxiv_id):
+    if arxiv_id and not "/" in arxiv_id and "arXiv" not in arxiv_id:
+        return "arXiv:%s" % (arxiv_id,)
+    else:
+        return arxiv_id
+
+
 class MD5Error(Exception):
     def __init__(self, value):
         self.value = value
 
+
 class NoDOIError(Exception):
     def __init__(self, value):
         self.value = value
+
 
 class NoNewFiles(Exception):
     def __init__(self, value=None):
