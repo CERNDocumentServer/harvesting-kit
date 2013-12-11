@@ -21,6 +21,7 @@ hindawi_bibfilter = hindawi_bibfilter.py
 springer_config = springer_config.py
 templates = websearch_templates_scoap3.py webstyle_templates_scoap3.py
 jats_utils = jats_utils.py
+minidom_utils = minidom_utils.py
 
 elsevier_data_files = $(PREFIX)/var/data/scoap3/elsevier
 elsevier_ready_packages = $(PREFIX)/var/data/scoap3/elsevier/ready_pkgs
@@ -43,6 +44,8 @@ install:
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(hindawi_bibfilter)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(templates)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(jats_utils)
+	$(INSTALL) -t $(LIBDIR)/python/invenio $(minidom_utils)
+
 	$(INSTALL) -t $(WWWDIR) robots.txt
 	$(INSTALL) -t $(WWWDIR)/img scoap3_logo.png favicon.ico invenio_scoap3.css
 	$(INSTALL) -d $(elsevier_data_files)

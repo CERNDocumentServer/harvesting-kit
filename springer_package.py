@@ -180,7 +180,6 @@ class SpringerPackage(object):
             self.logger.error("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
             raise ValueError("Error in cleaning %s: %s" % (join(path, 'main.xml'), cmd_err))
 
-
     def bibupload_it(self):
         self.logger.debug("Preparing bibupload.")
         fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)

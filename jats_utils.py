@@ -8,7 +8,7 @@ from os.path import join, walk, exists, abspath
 
 from invenio.bibrecord import record_add_field, record_xml_output
 from invenio.errorlib import register_exception
-from invenio.scoap3utils import (get_value_in_tag,
+from invenio.minidom_utils import (get_value_in_tag,
                                  xml_to_text,
                                  NoDOIError,
                                  format_arxiv_id)
@@ -230,9 +230,8 @@ def get_references(xml):
     return references
 
 
-def get_record(f_path, publisher=None, repository=None, logger=None):
-    path = abspath(join(f_path, pardir))
-    xml = get_article(join(path, "resolved_main.xml"))
+def get_record(f_path, publisher=None, collection=None, logger=None):
+    xml = get_article(f_path)
     rec = {}
     title = get_title(xml)
     if title:
@@ -241,7 +240,7 @@ def get_record(f_path, publisher=None, repository=None, logger=None):
     journal, issn, volume, issue, first_page, last_page, year, doi = get_publication_information(xml)
 
     if logger:
-        logger.info("Creating record: %s %s" % (path, doi))
+        logger.info("Creating record: %s %s" % (join(f_path, pardir), doi))
 
     if doi:
         record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
@@ -305,8 +304,8 @@ def get_record(f_path, publisher=None, repository=None, logger=None):
     # record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
     record_add_field(rec, 'FFT', subfields=[('a', f_path)])
     extra_subfields = []
-    if repository:
-        extra_subfields.append(('a', repository))
+    if collection:
+        extra_subfields.append(('a', collection))
     if publisher:
         extra_subfields.append(('b', publisher))
     record_add_field(rec, '980', subfields=extra_subfields)
