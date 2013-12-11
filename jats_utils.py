@@ -126,7 +126,7 @@ def get_authors(xml):
     for affiliation in xml.getElementsByTagName("aff"):
         aff_id = affiliation.getAttribute("id").encode('utf-8')
         # removes numbering in from affiliations
-        text = re.sub(r'^(\d+\ )', "", xml_to_text(affiliation))
+        text = re.sub(r'^(\d+\ ?)', "", xml_to_text(affiliation))
         affiliations[aff_id] = text
 
     emails = {}
@@ -178,9 +178,9 @@ def get_keywords(xml):
         other = []
         for kwd_group in kwd_groups:
             if kwd_group.getAttribute('kwd-group-type').encode('utf-8') == "pacs":
-                pacs = [xml_to_text(keyword) for keyword in xml.getElementsByTagName("kwd")]
+                pacs = [xml_to_text(keyword) for keyword in kwd_group.getElementsByTagName("kwd")]
             else:
-                other = [xml_to_text(keyword) for keyword in xml.getElementsByTagName("kwd")]
+                other = [xml_to_text(keyword) for keyword in kwd_group.getElementsByTagName("kwd")]
         return {"pacs": pacs, "other": other}
     except Exception, err:
         print >> sys.stderr, "Can't find keywords"
@@ -273,10 +273,10 @@ def get_record(f_path, publisher=None, collection=None, logger=None):
         record_add_field(rec, '542', subfields=[('f', copyright)])
     keywords = get_keywords(xml)
     if keywords['pacs']:
-        for keyword in keywords:
+        for keyword in keywords['pacs']:
             record_add_field(rec, '084', ind1='1', subfields=[('a', keyword), ('9', 'PACS')])
     if keywords['other']:
-        for keyword in keywords:
+        for keyword in keywords['other']:
             record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
     record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
     references = get_references(xml)
@@ -295,8 +295,10 @@ def get_record(f_path, publisher=None, collection=None, logger=None):
         if ext_link:
             subfields.append(('r', ext_link))
         # should we be strict about it?
-        if title and volume and year:
+        if title and volume and year and page:
             subfields.append(('s', '%s %s (%s) %s' % (title, volume, year, page)))
+        elif not plain_text:
+            subfields.append(('m', ('%s %s %s %s' % (title, volume, year, page))))
         if plain_text:
             subfields.append(('m', plain_text))
         if subfields:
