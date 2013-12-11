@@ -36,9 +36,9 @@ from invenio.config import (CFG_TMPSHAREDDIR, CFG_ETCDIR,
 from invenio.shellutils import run_shell_command
 from invenio.bibtask import task_low_level_submission
 from invenio.scoap3utils import (create_logger,
-                                 get_value_in_tag,
-                                 xml_to_text,
                                  progress_bar)
+from invenio.minidom_utils import (get_value_in_tag,
+                                   xml_to_text,)
 CFG_SCOAP3DTDS_PATH = join(CFG_ETCDIR, 'scoap3dtds')
 
 CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')

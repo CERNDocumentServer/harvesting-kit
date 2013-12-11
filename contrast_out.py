@@ -1,5 +1,3 @@
-from __future__ import division
-
 import sys
 
 from datetime import datetime
@@ -13,10 +11,10 @@ from xml.dom.minidom import parseString, parse
 
 from contrast_out_config import *
 from invenio.config import (CFG_CONTRASTOUT_DOWNLOADDIR, CFG_TMPSHAREDDIR)
-from invenio.scoap3utils import (xml_to_text,
-                                 MD5Error,
+from invenio.scoap3utils import (MD5Error,
                                  NoNewFiles,
                                  progress_bar)
+from invenio.minidom_utils import xml_to_text
 from invenio.errorlib import register_exception
 
 CFG_READY_PACKAGES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "ready_pkgs")
@@ -126,6 +124,7 @@ class ContrastOutConnector(object):
                 self.ftp.retrbinary('RETR %s' % filename, tar_file.write)
                 tar_file.close()
             except:
+                register_exception(alert_admin=True, prefix="Elsevier package download faild.")
                 self.logger.error("Error downloading tar file: %s" % (filename,))
                 print >> sys.stdout, "\nError downloading %s file!" % (filename,)
                 print >> sys.stdout, sys.exc_info()
@@ -144,7 +143,7 @@ class ContrastOutConnector(object):
                 if our_md5 != md5:
                     raise MD5Error(filename)
             except MD5Error as e:
-                register_exception(alert_admin=True, prefix="Elsevier MD5 error")
+                register_exception(alert_admin=True, prefix="Elsevier MD5 error.")
                 self.logger.error("MD5 error: %s" % (filename,))
                 print >> sys.stdout, "\nError in MD5 of %s" % (filename,)
                 print >> sys.stdout, "oryginal: %s, ours: %s" % (md5, our_md5)
@@ -155,14 +154,27 @@ class ContrastOutConnector(object):
         """
         self.path_unpacked = mkdtemp(prefix="scoap3_package_", dir=CFG_TMPSHAREDDIR)
         for path in self.retrieved_packages_unpacked:
-            TarFile.open(path).extractall(self.path_unpacked)
+            try:
+                TarFile.open(path).extractall(self.path_unpacked)
+            except:
+                register_exception(alert_admin=True, prefix="Elsevier error extracting package.")
+                self.logger.error("Error extraction package file: %s" % (path,))
+                print >> sys.stdout, "\nError extracting package file: %s" % (path,)
 
         return self.path_unpacked
 
     def _get_issues(self):
         for name in self.files_list:
             dataset_link = join(self.path_unpacked, name.split('.')[0], 'dataset.xml')
-            dataset_xml = parse(dataset_link)
+
+            try:
+                dataset_xml = parse(dataset_link)
+            except Exception, err:
+                register_exception(alert_admin=True, prefix="Elsevier error reading dataset.xml file.")
+                self.logger.error("Error reading dataset.xml file: %s" % (dataset_link,))
+                print >> sys.stdout, "\nError reading dataset.xml file: %s" % (dataset_link,)
+                continue
+
             journal_issues = dataset_xml.getElementsByTagName('journal-issue')
             if journal_issues:
                 for journal_issue in journal_issues:
@@ -189,7 +201,14 @@ class ContrastOutConnector(object):
         for name in self.files_list:
             dataset_link = join(self.path_unpacked, name.split('.')[0], 'dataset.xml')
 
-            dataset_xml = parse(dataset_link)
+            try:
+                dataset_xml = parse(dataset_link)
+            except Exception, err:
+                register_exception(alert_admin=True, prefix="Elsevier error reading dataset.xml file.")
+                self.logger.error("Error reading dataset.xml file: %s" % (dataset_link,))
+                print >> sys.stdout, "\nError reading dataset.xml file: %s" % (dataset_link,)
+                continue
+
             journal_items = dataset_xml.getElementsByTagName('journal-item')
             self.logger.info("Getting metadata and fulltex directories for %i journal items." % (len(journal_items),))
             for journal_item in journal_items:

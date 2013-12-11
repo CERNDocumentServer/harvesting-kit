@@ -21,6 +21,8 @@
 Set of utilities for the SCOAP3 project.
 """
 
+from __future__ import division
+
 import sys
 import logging
 
@@ -50,7 +52,7 @@ def create_logger(publisher, filename=join(CFG_LOGDIR, 'scoap3_harvesting.log'))
 def progress_bar(n):
     num = 0
     while num <= n:
-        yield "\r%i%% [%s%s]" % (num/n*100, "="*num, '.'*(n-num))
+        yield "\r%d%% [%s%s]" % (num/n*100, "="*num, '.'*(n-num))
         num += 1
 
 
