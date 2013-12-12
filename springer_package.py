@@ -13,7 +13,7 @@ from os import listdir, rename, fdopen, pardir
 from os.path import join, walk, exists, abspath
 from invenio.scoap3utils import (create_logger,
                                  progress_bar)
-from invenio.jats_utils import get_record
+from invenio.jats_utils import JATSParser
 from shutil import copyfile
 from tarfile import TarFile
 from tempfile import mkdtemp, mkstemp
@@ -128,7 +128,12 @@ class SpringerPackage(object):
             self.retrieved_packages_unpacked = [self.package_name]
         for path in self.retrieved_packages_unpacked:
             self.logger.debug("Extracting package: %s" % (path.split("/")[-1],))
-            ZipFile(path).extractall(self.path_unpacked)
+            try:
+                ZipFile(path).extractall(self.path_unpacked)
+            except Exception, err:
+                register_exception(alert_admin=True, prefix="Springer error extracting package.")
+                self.logger.error("Error extraction package file: %s" % (path,))
+                print >> sys.stdout, "\nError extracting package file: %s" % (path,)
 
         return self.path_unpacked
 
@@ -182,12 +187,13 @@ class SpringerPackage(object):
 
     def bibupload_it(self):
         if self.articles_normalized:
+            jats_parser = JATSParser()
             self.logger.debug("Preparing bibupload.")
             fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
             out = fdopen(fd, 'w')
             print >> out, "<collection>"
             for i, path in enumerate(self.articles_normalized):
-                print >> out, get_record(join(path, "resolved_main.xml"), publisher='Springer', collection='SCOAP3', logger=self.logger)
+                print >> out, jats_parser.get_record(join(path, "resolved_main.xml"), publisher='Springer', collection='SCOAP3', logger=self.logger)
                 print path, i + 1, "out of", len(self.found_articles)
             print >> out, "</collection>"
             out.close()
