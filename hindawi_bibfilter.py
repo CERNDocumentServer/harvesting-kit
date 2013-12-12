@@ -28,7 +28,7 @@ from xml.dom.minidom import parse
 
 from invenio.bibupload import find_records_from_extoaiid
 from invenio.bibrecord import record_add_field, record_xml_output
-from invenio.scoap3utils import xml_to_text, get_value_in_tag, get_attribute_in_tag
+from invenio.minidom_utils import xml_to_text, get_value_in_tag, get_attribute_in_tag
 
 def get_xml(input=sys.stdin):
     return parse(input)

@@ -166,7 +166,7 @@ def get_abstract(xml):
 
 def get_copyright(xml):
     try:
-        return get_value_in_tag(xml.getElementsByTagName("copyright-holder")[0])
+        return get_value_in_tag(xml, "copyright-holder")
     except Exception, err:
         print >> sys.stderr, "Can't find copyright"
 

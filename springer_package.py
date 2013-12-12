@@ -186,7 +186,7 @@ class SpringerPackage(object):
         out = fdopen(fd, 'w')
         print >> out, "<collection>"
         for i, path in enumerate(self.articles_normalized):
-            print >> out, get_record(join(path, "resolved_main.xml"), publisher='Springer', repository='SCOAP3', logger=self.logger)
+            print >> out, get_record(join(path, "resolved_main.xml"), publisher='Springer', collection='SCOAP3', logger=self.logger)
             print path, i + 1, "out of", len(self.found_articles)
         print >> out, "</collection>"
         out.close()
