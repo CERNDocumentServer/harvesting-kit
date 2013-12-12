@@ -39,8 +39,9 @@ class ContrastOutConnector(object):
             self.ftp = FTP(CFG_CONTRAST_OUT_URL)
             self.ftp.login(user=CFG_CONTRAST_OUT_LOGIN, passwd=CFG_CONTRAST_OUT_PASSWORD)
             self.logger.debug("Succesful connection to the Elsevier server")
-        except:
-            self.logger.error("Faild to connect to the Elsevier server.")
+        except Exception, err:
+            self.logger.error("Faild to connect to the Elsevier server: %s" % err)
+            raise
 
     def _get_file_listing(self, phrase=None, new_only=True):
         if phrase:
