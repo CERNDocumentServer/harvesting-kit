@@ -266,7 +266,7 @@ def get_record(f_path, publisher=None, collection=None, logger=None):
 
     abstract = get_abstract(xml)
     if abstract:
-        record_add_field(rec, '520', subfields=[('a', abstract)])
+        record_add_field(rec, '520', subfields=[('a', abstract),('9', publisher)])
     record_add_field(rec, '540', subfields=[('a', 'CC-BY-3.0'), ('u', 'http://creativecommons.org/licenses/by/3.0/')])
     copyright = get_copyright(xml)
     if copyright:

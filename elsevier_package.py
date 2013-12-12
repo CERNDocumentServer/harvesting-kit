@@ -17,6 +17,7 @@
 ## along with Invenio; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
+import re
 import time
 import sys
 import traceback
@@ -38,7 +39,8 @@ from invenio.bibtask import task_low_level_submission
 from invenio.scoap3utils import (create_logger,
                                  progress_bar)
 from invenio.minidom_utils import (get_value_in_tag,
-                                   xml_to_text,)
+                                   xml_to_text,
+                                   format_arxiv_id)
 CFG_SCOAP3DTDS_PATH = join(CFG_ETCDIR, 'scoap3dtds')
 
 CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
@@ -244,6 +246,14 @@ class ElsevierPackage(object):
         except Exception, err:
             print >> sys.stderr, "Can't find copyright"
 
+    def get_ref_link(self, xml, name):
+        links = xml.getElementsByTagName('ce:inter-ref')
+        ret = None
+        for link in links:
+            if name in link.getAttribute("xlink:href").encode('utf-8'):
+                ret = xml_to_text(link).strip()
+        return ret
+
     def get_authors(self, xml):
         authors = []
         for author in xml.getElementsByTagName("ce:author"):
@@ -274,7 +284,7 @@ class ElsevierPackage(object):
         affiliations = {}
         for affiliation in xml.getElementsByTagName("ce:affiliation"):
             aff_id = affiliation.getAttribute("id").encode('utf-8')
-            text = get_value_in_tag(affiliation, "ce:textfn")
+            text = re.sub(r'^(\d+\ ?)', "", get_value_in_tag(affiliation, "ce:textfn"))
             affiliations[aff_id] = text
         implicit_affilations = True
         for author in authors:
@@ -320,7 +330,8 @@ class ElsevierPackage(object):
             volume = get_value_in_tag(reference, "sb:volume-nr")
             year = get_value_in_tag(reference, "sb:date")[:4]
             textref = get_value_in_tag(reference, "ce:textref")
-            references.append((label, authors, doi, issue, page, title, volume, year, textref))
+            ext_link = format_arxiv_id(self.get_ref_link(reference, 'arxiv'))
+            references.append((label, authors, doi, issue, page, title, volume, year, textref, ext_link))
         return references
 
     def get_article(self, path):
@@ -336,7 +347,7 @@ class ElsevierPackage(object):
         journal, issn, volume, issue, first_page, last_page, year, doi = self.get_publication_information(xml)
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
-        self.logger.info("Creating record: %s %s" % (path,doi))
+        self.logger.info("Creating record: %s %s" % (path, doi))
         authors = self.get_authors(xml)
         first_author = True
         for author in authors:
@@ -345,7 +356,9 @@ class ElsevierPackage(object):
                 subfields.append(('j', author['orcid']))
             if 'affiliation' in author:
                 for aff in author["affiliation"]:
-                    subfields.append(('u', aff))
+                    subfields.append(('v', aff))
+            if author.get('email'):
+                subfields.append(('m', author['email']))
             if first_author:
                 record_add_field(rec, '100', subfields=subfields)
                 first_author = False
@@ -353,7 +366,7 @@ class ElsevierPackage(object):
                 record_add_field(rec, '700', subfields=subfields)
         abstract = self.get_abstract(xml)
         if abstract:
-            record_add_field(rec, '520', subfields=[('a', abstract)])
+            record_add_field(rec, '520', subfields=[('a', abstract),('9', 'Elsevier')])
         record_add_field(rec, '540', subfields=[('a', 'CC-BY-3.0'), ('u', 'http://creativecommons.org/licenses/by/3.0/')])
         copyright = self.get_copyright(xml)
         if copyright:
@@ -364,7 +377,7 @@ class ElsevierPackage(object):
                 record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
         record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
         references = self.get_references(xml)
-        for label, authors, doi, issue, page, title, volume, year, textref in references:
+        for label, authors, doi, issue, page, title, volume, year, textref, ext_link in references:
             subfields = []
             if doi:
                 subfields.append(('a', doi))
@@ -376,7 +389,9 @@ class ElsevierPackage(object):
                 subfields.append(('o', label))
             if page:
                 subfields.append(('p', page))
-            if title or volume or year or page:
+            if ext_link:
+                subfields.append(('r', ext_link))
+            if title and volume and year and page:
                 subfields.append(('s', '%s %s (%s) %s' % (title, volume, year, page)))
             elif textref:
                 subfields.append(('m', textref))
