@@ -39,9 +39,9 @@ class ContrastOutConnector(object):
             self.ftp = FTP(CFG_CONTRAST_OUT_URL)
             self.ftp.login(user=CFG_CONTRAST_OUT_LOGIN, passwd=CFG_CONTRAST_OUT_PASSWORD)
             self.logger.debug("Succesful connection to the Elsevier server")
-        except Exception, err:
-            self.logger.error("Faild to connect to the Elsevier server: %s" % err)
-            raise
+        except Exception as err:
+            self.logger.error("Faild to connect to the Elsevier server. %s" % (err,))
+            raise Exception
 
     def _get_file_listing(self, phrase=None, new_only=True):
         if phrase:
@@ -226,7 +226,12 @@ class ContrastOutConnector(object):
     def run(self):
         self.connect()
         self._get_file_listing('.ready')
-        self._download_file_listing()
+        try:
+            self._download_file_listing()
+        except:
+            self.logger.info("No new packages to process.")
+            print >> sys.stdout, "No new packages to process."
+            return
         self._get_packages()
         self._download_tars()
         self._check_md5()

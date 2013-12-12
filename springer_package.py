@@ -181,16 +181,17 @@ class SpringerPackage(object):
             raise ValueError("Error in cleaning %s: %s" % (join(path, 'main.xml'), cmd_err))
 
     def bibupload_it(self):
-        self.logger.debug("Preparing bibupload.")
-        fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
-        out = fdopen(fd, 'w')
-        print >> out, "<collection>"
-        for i, path in enumerate(self.articles_normalized):
-            print >> out, get_record(join(path, "resolved_main.xml"), publisher='Springer', collection='SCOAP3', logger=self.logger)
-            print path, i + 1, "out of", len(self.found_articles)
-        print >> out, "</collection>"
-        out.close()
-        task_low_level_submission("bibupload", "Elsevier", "-i", "-r", name)
+        if self.articles_normalized:
+            self.logger.debug("Preparing bibupload.")
+            fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
+            out = fdopen(fd, 'w')
+            print >> out, "<collection>"
+            for i, path in enumerate(self.articles_normalized):
+                print >> out, get_record(join(path, "resolved_main.xml"), publisher='Springer', collection='SCOAP3', logger=self.logger)
+                print path, i + 1, "out of", len(self.found_articles)
+            print >> out, "</collection>"
+            out.close()
+            task_low_level_submission("bibupload", "admin", "-N", "Springer", "-i", "-r", name)
 
 
 def main():

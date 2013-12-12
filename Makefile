@@ -29,6 +29,9 @@ elsevier_ready_packages = $(PREFIX)/var/data/scoap3/elsevier/ready_pkgs
 elsevier_tar_files = $(PREFIX)/var/data/scoap3/elsevier/tar_files
 springer_data_files = $(PREFIX)/var/data/scoap3/springer
 springer_tar_files = $(PREFIX)/var/data/scoap3/springer/tar_files
+oxford_data_files = $(PREFIX)/var/data/scoap3/oxford
+oxford_tar_files = $(PREFIX)/var/data/scoap3/springer/tar_files
+oxford_unpacked_files = $(PREFIX)/var/data/scoap3/springer/unpacked_files
 
 
 install:
@@ -55,6 +58,9 @@ install:
 	$(INSTALL) -d $(elsevier_tar_files)
 	$(INSTALL) -d $(springer_data_files)
 	$(INSTALL) -d $(springer_tar_files)
+	$(INSTALL) -d $(oxford_data_files)
+	$(INSTALL) -d $(oxford_tar_files)
+	$(INSTALL) -d $(oxford_unpacked_files)
 
 install-conf:
 	$(INSTALL) -t $(ETCDIR) invenio-local.conf

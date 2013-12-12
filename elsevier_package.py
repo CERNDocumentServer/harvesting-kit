@@ -409,16 +409,17 @@ class ElsevierPackage(object):
         return record_xml_output(rec)
 
     def bibupload_it(self):
-        self.logger.debug("Preparing bibupload.")
-        fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
-        out = fdopen(fd, 'w')
-        print >> out, "<collection>"
-        for i, path in enumerate(self.found_articles):
-            print >> out, self.get_record(path)
-            print path, i + 1, "out of", len(self.found_articles)
-        print >> out, "</collection>"
-        out.close()
-        task_low_level_submission("bibupload", "Elsevier", "-i", "-r", name)
+        if self.found_articles:
+            self.logger.debug("Preparing bibupload.")
+            fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
+            out = fdopen(fd, 'w')
+            print >> out, "<collection>"
+            for i, path in enumerate(self.found_articles):
+                print >> out, self.get_record(path)
+                print path, i + 1, "out of", len(self.found_articles)
+            print >> out, "</collection>"
+            out.close()
+            task_low_level_submission("bibupload", "admin", "-N", "Elsevier", "-i", "-r", name)
 
 
 def main():
