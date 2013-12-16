@@ -30,8 +30,11 @@ import itertools
 import datetime
 from xml.dom.minidom import parse
 
-from invenio.search_engine import get_collection_reclist
+from invenio.search_engine import get_collection_reclist, get_record
 from invenio.config import CFG_LOGDIR, CFG_CROSSREF_USERNAME, CFG_CROSSREF_PASSWORD, CFG_SITE_NAME
+from invenio.dbquery import run_sql
+from invenio.intbitset import intbitset
+from invenio.bibrecord import record_extract_dois, record_get_field_values
 from os.path import join
 
 CFG_CROSSREF_DOIS_PER_REQUEST = 10
@@ -45,6 +48,8 @@ def init_db():
 CREATE TABLE IF NOT EXISTS bibrec_scoap3check (
   id_bibrec mediumint(8) unsigned NOT NULL,
   doi varchar(255) NOT NULL,
+  publisher varchar(255) NOT NULL,
+  journal varchar(255) NOT NULL,
   arxiv varchar(255) NULL default NULL,
   doi_timestamp datetime NULL default NULL,
   last_verification datetime NOT NULL,
@@ -54,7 +59,9 @@ CREATE TABLE IF NOT EXISTS bibrec_scoap3check (
   KEY arxiv(arxiv),
   KEY doi_timestamp(doi_timestamp),
   KEY last_verification(last_verification),
-  KEY valid_record(valid_record)
+  KEY valid_record(valid_record),
+  KEY publisher(publisher),
+  KEY journal(journal)
 ) ENGINE=MyISAM;""")
 
 def get_all_recids_to_check():
@@ -63,10 +70,31 @@ def get_all_recids_to_check():
     verified_recids = intbitset(run_sql("SELECT id_bibrec FROM bibrec_scoap3check WHERE doi_timestamp IS NOT NULL AND arxiv IS NOT NULL AND valid_record"))
     unverified_recids = all_recids - verified_recids
     modified_recids = all_recids & run_sql("SELECT bibrec.id FROM bibrec, bibrec_scoap3check WHERE bibrec.id=id_bibrec AND modification_date>last_verification")
-    return new_recids | modified_recids
+    return unverified_recids | modified_recids
 
 def get_all_info_from_recid(recid):
-    
+    def get_arxiv(rec):
+        values = record_get_field_values(rec, '037', code='a')
+        for value in values:
+            if value.startswith("arxiv:"):
+                ## To work around Acta:
+                ## 'arxiv:arXiv:1301.7016 [hep-th]'
+                return value.split()[0]
+    rec = get_record(recid)
+    doi = record_extract_dois(rec)
+    arxiv = get_arxiv(rec)
+    try:
+        journal = record_get_field_values(rec, '773', code='p')[0]
+    except IndexError:
+        print >> sys.stderr, "No journal information for record %s: %s" % (recid, doi)
+        journal = None
+    try:
+        publisher = record_get_field_values(rec, '980', code='b')[0]
+    except IndexError:
+        print >> sys.stderr, "No publisher information for record %s: %s" % (recid, doi)
+        publisher = None
+    doi_timestamp = crossref_checker([doi]).get(doi)
+    return {'doi': doi, 'arxiv': arxiv, 'journal': journal, 'publisher': publisher, 'doi_timestamp': doi_timestamp}
 
 
 def crossref_checker(dois, username=CFG_CROSSREF_USERNAME, password=CFG_CROSSREF_PASSWORD):
