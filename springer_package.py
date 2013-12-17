@@ -12,7 +12,8 @@ from ftplib import FTP
 from os import listdir, rename, fdopen, pardir
 from os.path import join, walk, exists, abspath
 from invenio.scoap3utils import (create_logger,
-                                 progress_bar)
+                                 progress_bar,
+                                 NoNewFiles)
 from invenio.jats_utils import JATSParser
 from shutil import copyfile
 from tarfile import TarFile
@@ -63,38 +64,45 @@ class SpringerPackage(object):
             self.files_list = filter(lambda x: phrase in x, self.ftp.nlst())
         else:
             self.files_list = self.ftp.nlst()
+        print >> sys.stdout, self.files_list
+        print >> sys.stdout, listdir(CFG_TAR_FILES)
         if new_only:
-            self.files_list = set(self.files_list) - set(listdir(CFG_SPRINGER_DOWNLOADDIR))
+            self.files_list = set(self.files_list) - set(listdir(CFG_TAR_FILES))
         return self.files_list
 
     def _download_tars(self):
         self.retrieved_packages_unpacked = []
         # Prints stuff
-        print >> sys.stdout, "\nDownloading %i tar packages." \
-                             % (len(self.files_list))
-        # Create progrss bar
-        p_bar = progress_bar(len(self.files_list))
-        # Print stuff
-        sys.stdout.write(p_bar.next())
-        sys.stdout.flush()
-
-        for filename in self.files_list:
-            self.logger.info("Downloading tar package: %s" % (filename,))
-            unpack_path = join(CFG_TAR_FILES, filename)
-            self.retrieved_packages_unpacked.append(unpack_path)
-            try:
-                tar_file = open(unpack_path, 'wb')
-                self.ftp.retrbinary('RETR %s' % filename, tar_file.write)
-                tar_file.close()
-            except:
-                self.logger.error("Error downloading tar file: %s" % (filename,))
-                print >> sys.stdout, "\nError downloading %s file!" % (filename,)
-                print >> sys.stdout, sys.exc_info()
+        if self.files_list:
+            print >> sys.stdout, "\nDownloading %i tar packages." \
+                                 % (len(self.files_list))
+            # Create progrss bar
+            p_bar = progress_bar(len(self.files_list))
             # Print stuff
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
 
-        return self.retrieved_packages_unpacked
+            for filename in self.files_list:
+                self.logger.info("Downloading tar package: %s" % (filename,))
+                unpack_path = join(CFG_TAR_FILES, filename)
+                self.retrieved_packages_unpacked.append(unpack_path)
+                try:
+                    tar_file = open(unpack_path, 'wb')
+                    self.ftp.retrbinary('RETR %s' % filename, tar_file.write)
+                    tar_file.close()
+                except:
+                    self.logger.error("Error downloading tar file: %s" % (filename,))
+                    print >> sys.stdout, "\nError downloading %s file!" % (filename,)
+                    print >> sys.stdout, sys.exc_info()
+                # Print stuff
+                sys.stdout.write(p_bar.next())
+                sys.stdout.flush()
+
+            return self.retrieved_packages_unpacked
+        else:
+            print >> sys.stdout, "No new packages to download."
+            self.logger.info("No new packages to download.")
+            raise NoNewFiles
 
     def __init__(self, package_name=None, path=None):
         self.package_name = package_name
@@ -110,12 +118,14 @@ class SpringerPackage(object):
             print "Starting harves"
             self.run()
         self._crawl_springer_and_find_main_xml()
-        print >> sys.stdout, self.found_articles
 
     def run(self):
         self.connect()
         self._get_file_listing()
-        self._download_tars()
+        try:
+            self._download_tars()
+        except NoNewFiles:
+            return
         self._extract_packages()
 
     def _extract_packages(self):
@@ -155,10 +165,13 @@ class SpringerPackage(object):
                     register_exception()
                     print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
 
-        if self.path_unpacked:
+        if hasattr(self,'path_unpacked'):
                 walk(self.path_unpacked, visit, None)
-        else:
+        elif self.path:
             walk(self.path, visit, None)
+        else:
+            self.logger.info("Nothing to do.")
+            print >> sys.stdout, "Nothing to do."
 
     def _normalize_article_dir_with_dtd(self, path):
         """

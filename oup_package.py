@@ -15,7 +15,7 @@ from os import listdir, rename, fdopen, pardir
 from os.path import join, walk, exists, abspath, basename
 from invenio.scoap3utils import (create_logger,
                                  progress_bar)
-from invenio.jats_utils import JATSParser
+from invenio.nlm_utils import NLMParser
 from shutil import copyfile
 from tarfile import TarFile
 from tempfile import mkdtemp, mkstemp
@@ -165,45 +165,9 @@ class OxfordPackage(object):
         else:
             walk(self.path, visit, None)
 
-    # def _normalize_article_dir_with_dtd(self, path):
-    #     """
-    #     TODO: main.xml from Oxford assume the existence of a local DTD.
-    #     This procedure install the DTDs next to the main.xml file
-    #     and normalize it using xmllint in order to resolve all namespaces
-    #     and references.
-    #     """
-    #     path_normalized = mkdtemp(prefix="scoap3_normalized_", dir=CFG_TMPSHAREDDIR)
-    #     files = [filename for filename in listdir(path) if ".xml" in filename]
-
-    #     if 'journalpublishing.dtd' in open(join(path, files[0])).read():
-    #         try:
-    #             ZipFile(CFG_OXFORD_JATS_PATH).extractall(path_normalized)
-    #         except Exception, err:
-    #             print >> sys.stdout, err
-    #             raise Exception
-    #     else:
-    #         self.logger.error("It looks like the path %s does not contain an JATS-archivearticle1.dtd XML file." % path)
-    #         raise ValueError("It looks like the path %s does not contain an JATS-archivearticle1.dtd XML file." % path)
-
-    #     for f in files:
-    #         def conv_char_wrapper(code):
-    #             converted = name2codepoint.get(code.group(1), code.group(1))
-    #             return str(converted)
-
-    #         opened_file = open(join(path, f))
-    #         new_file = open(join(path_normalized, f), 'w')
-    #         new_file.write(re.sub(r"&(\w+);", lambda code: conv_char_wrapper(code), opened_file.read()))
-    #         new_file.close()
-
-    #         cmd_exit_code, cmd_out, cmd_err = run_shell_command("xmllint --format  --loaddtd %s --output %s", (join(path_normalized, f), join(path_normalized, 'resolved_%s' % (f,))))
-    #         if cmd_err:
-    #             self.logger.error("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
-    #             raise ValueError("Error in cleaning %s: %s" % (join(path, 'main.xml'), cmd_err))
-    #         self.articles_normalized.append(join(path_normalized, 'resolved_%s' % (f,)))
-
     def bibupload_it(self):
         if self.found_articles:
-            nlm_parser = JATSParser()
+            nlm_parser = NLMParser()
             self.logger.debug("Preparing bibupload.")
             fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
             out = fdopen(fd, 'w')

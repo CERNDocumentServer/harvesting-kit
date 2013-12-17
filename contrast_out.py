@@ -1,4 +1,5 @@
 import sys
+import time
 
 from datetime import datetime
 from functools import partial
@@ -50,6 +51,7 @@ class ContrastOutConnector(object):
             self.files_list = self.ftp.nlst()
         if new_only:
             self.files_list = set(self.files_list) - set(listdir(CFG_READY_PACKAGES))
+
         return self.files_list
 
     def _download_file_listing(self):
@@ -106,8 +108,57 @@ class ContrastOutConnector(object):
 
         return self.retrieved_packages
 
-    def _download_tars(self):
-        # Prints stuff
+    def get_remote_file_size(self, filename, storage):
+
+        def dir_callback(val):
+            storage.append(val.split()[4])
+        self.ftp.dir(filename, dir_callback)
+
+    def check_integrity(self, filelist, timeout=120, sleep_time=10):
+        """
+        Checks if files are not being uploaded to server.
+        @timeout - time after which the script will register an error.
+        """
+        ref_1 = []
+        ref_2 = []
+        i = 1
+        print >> sys.stdout, "\nChecking packages integrity."
+        print filelist
+        for filename in filelist:
+            # ref_1.append(self.get_remote_file_size(filename))
+            self.get_remote_file_size(filename, ref_1)
+        print ref_1
+        print >> sys.stdout, "\nGoing to sleep for %i sec." % (sleep_time,)
+        time.sleep(sleep_time)
+
+        while sleep_time*i < timeout:
+            for filename in filelist:
+                # ref_2.append(self.get_remote_file_size(filename))
+                self.get_remote_file_size(filename, ref_2)
+            print ref_2
+            if ref_1 == ref_2:
+                print >> sys.stdout, "\nIntegrity OK:)"
+                self.logger.info("Packages integrity OK.")
+                break
+            else:
+                print >> sys.stdout, "\nWaiting %d time for itegrity..." % (i,)
+                self.logger.info("\nWaiting %d time for itegrity..." % (i,))
+                i += 1
+                ref_1, ref_2 = ref_2, []
+                time.sleep(sleep_time)
+        else:
+            not_finished_files = []
+            for count, val1 in enumerate(ref_1):
+                if val1 != ref_2[count]:
+                    not_finished_files.append(filelist[count])
+
+            print >> sys.stdout, "\nOMG, OMG something wrong with integrity."
+            self.logger.error("Integrity check faild for files %s" % (not_finished_files,))
+
+    def _download_tars(self, check_integrity=True):
+        if check_integrity:
+            self.check_integrity(self.retrieved_packages)
+
         print >> sys.stdout, "\nDownloading %i tar packages." \
                  % (len(self.retrieved_packages))
         # Create progrss bar
