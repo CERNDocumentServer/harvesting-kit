@@ -81,7 +81,7 @@ def get_all_info_from_recid(recid):
                 ## 'arxiv:arXiv:1301.7016 [hep-th]'
                 return value.split()[0]
     rec = get_record(recid)
-    doi = record_extract_dois(rec)
+    doi = record_extract_dois(rec)[0]
     arxiv = get_arxiv(rec)
     try:
         journal = record_get_field_values(rec, '773', code='p')[0]
@@ -94,8 +94,16 @@ def get_all_info_from_recid(recid):
         print >> sys.stderr, "No publisher information for record %s: %s" % (recid, doi)
         publisher = None
     doi_timestamp = crossref_checker([doi]).get(doi)
-    return {'doi': doi, 'arxiv': arxiv, 'journal': journal, 'publisher': publisher, 'doi_timestamp': doi_timestamp}
+    creation_date = run_sql("SELECT creation_date FROM bibrec WHERE id=%s", (recid, ))[0][0]
+    return {'doi': doi, 'arxiv': arxiv, 'journal': journal, 'publisher': publisher, 'doi_timestamp': doi_timestamp, 'creation_date': creation_date}
 
+def main():
+    for recid in get_all_recids_to_check():
+        info = get_all_info_from_recid(recid)
+        if run_sql("SELECT id_bibrec FROM bibrec_scoap3check WHERE id_bibrec=%s", (recid, )):
+            run_sql("UPDATE bibrec_scoap3check SET doi=%s, publisher=%s, journal=%s, arxiv=%s, doi_timestamp=%s, last_verification=NOW() WHERE id_bibrec=%s", (info['doi'], info['publisher'], info['journal'], info['arxiv'], info['doi_timestamp'], recid))
+        else:
+            run_sql("INSERT INTO bibrec_scoap3check(id_bibrec, doi, publisher, journal, arxiv, doi_timestamp, last_verification) VALUES(%s, %s, %s, %s, %s, %s, %s, NOW()", (recid info['doi'], info['publisher'], info['journal'], info['arxiv'], info['doi_timestamp']))
 
 def crossref_checker(dois, username=CFG_CROSSREF_USERNAME, password=CFG_CROSSREF_PASSWORD):
     """
