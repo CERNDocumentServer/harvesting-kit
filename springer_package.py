@@ -13,7 +13,8 @@ from os import listdir, rename, fdopen, pardir
 from os.path import join, walk, exists, abspath
 from invenio.scoap3utils import (create_logger,
                                  progress_bar,
-                                 NoNewFiles)
+                                 NoNewFiles,
+                                 check_pkgs_integrity)
 from invenio.jats_utils import JATSParser
 from shutil import copyfile
 from tarfile import TarFile
@@ -70,10 +71,13 @@ class SpringerPackage(object):
             self.files_list = set(self.files_list) - set(listdir(CFG_TAR_FILES))
         return self.files_list
 
-    def _download_tars(self):
+    def _download_tars(self, check_integrity=True):
         self.retrieved_packages_unpacked = []
         # Prints stuff
         if self.files_list:
+            if check_integrity:
+                check_pkgs_integrity(self.files_list, self.logger, self.ftp)
+
             print >> sys.stdout, "\nDownloading %i tar packages." \
                                  % (len(self.files_list))
             # Create progrss bar

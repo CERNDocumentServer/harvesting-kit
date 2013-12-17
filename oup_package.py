@@ -45,29 +45,29 @@ class OxfordPackage(object):
     @note: either C{package_name} or C{path} don't have to be passed to the
     constructor, in this case the Oxford server will be harvested.
     """
-    # def connect(self):
-    #     """Logs into the specified ftp server and returns connector."""
-    #     try:
-    #         self.ftp = FTP(CFG_URL)
-    #         self.ftp.login(user=CFG_LOGIN, passwd=CFG_PASSWORD)
-    #         self.logger.debug("Succesful connection to the Oxford server")
-    #     except:
-    #         self.logger.error("Faild to connect to the Oxford server.")
+    def connect(self):
+        """Logs into the specified ftp server and returns connector."""
+        try:
+            self.ftp = FTP(CFG_URL)
+            self.ftp.login(user=CFG_LOGIN, passwd=CFG_PASSWORD)
+            self.logger.debug("Succesful connection to the Oxford server")
+        except:
+            self.logger.error("Faild to connect to the Oxford server.")
 
-    # def _get_file_listing(self, phrase=None, new_only=True):
-    #     try:
-    #         self.ftp.pwd()
-    #         self.ftp.cwd('data/in/EPJC/SCOAP3_sample')
-    #     except:
-    #         raise Exception
+    def _get_file_listing(self, phrase=None, new_only=True):
+        try:
+            self.ftp.pwd()
+            self.ftp.cwd('data/in/EPJC/SCOAP3_sample')
+        except:
+            raise Exception
 
-    #     if phrase:
-    #         self.files_list = filter(lambda x: phrase in x, self.ftp.nlst())
-    #     else:
-    #         self.files_list = self.ftp.nlst()
-    #     if new_only:
-    #         self.files_list = set(self.files_list) - set(listdir(CFG_Oxford_DOWNLOADDIR))
-    #     return self.files_list
+        if phrase:
+            self.files_list = filter(lambda x: phrase in x, self.ftp.nlst())
+        else:
+            self.files_list = self.ftp.nlst()
+        if new_only:
+            self.files_list = set(self.files_list) - set(listdir(CFG_OXFORD_DOWNLOADDIR))
+        return self.files_list
 
     # def _download_tars(self):
     #     self.retrieved_packages_unpacked = []
