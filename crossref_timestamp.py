@@ -30,13 +30,23 @@ def check_records(records):
     doi_to_record = {}
     for record in records:
         doi_found = False
-        for position, value in record.iterfield('0247_a'):
-            if value.startswith('10.'):
-                if doi_found:
-                    record.set_invalid("More than one DOI found")
-                    break
-                doi_to_record[value] = (record, position)
-                doi_found = True
+        doi_timestamp_found = False
+        for position, value in record.iterfield('0247_t'):
+            doi_timestamp_found = True
+            break
+        else:
+            for position, value in record.iterfield('0247_a'):
+                if value.startswith('10.'):
+                    if doi_found:
+                        record.set_invalid("More than one DOI found")
+                        break
+                    if value in doi_to_record:
+                        record.set_invalid("Found DOI %s that was already associated with a previous record!" % value)
+                        break
+                    doi_to_record[value] = (record, position)
+                    doi_found = True
+        if doi_timestamp_found:
+            continue
     doi_to_timestamp = get_registration_timestamp_for_dois(doi_to_record.keys())
     for doi, (record, position) in doi_to_record.iteritems():
         if doi_to_timestamp.get(doi):
