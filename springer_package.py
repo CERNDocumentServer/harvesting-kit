@@ -65,8 +65,6 @@ class SpringerPackage(object):
             self.files_list = filter(lambda x: phrase in x, self.ftp.nlst())
         else:
             self.files_list = self.ftp.nlst()
-        print >> sys.stdout, self.files_list
-        print >> sys.stdout, listdir(CFG_TAR_FILES)
         if new_only:
             self.files_list = set(self.files_list) - set(listdir(CFG_TAR_FILES))
         return self.files_list
@@ -158,7 +156,7 @@ class SpringerPackage(object):
         a main.xml in agiven directory.
         """
         self.found_articles = []
-
+        print "Crowling"
         def visit(arg, dirname, names):
             files = [filename for filename in names if ".xml" in filename]
             if files:
