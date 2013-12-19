@@ -13,11 +13,10 @@ scoap3dtds_DATA = ja5_art501.zip ja5_art510.zip ja5_art520.zip si510.zip si520.z
 scoap3utils = scoap3utils.py
 scoap3tests = scoap3_unit_tests.py
 contrast_out = contrast_out.py
-contrast_out_config = contrast_out_config.py
 contrast_out_utils = contrast_out_utils.py
 pkg = elsevier_package.py springer_package.py oup_package.py
 hindawi_bibfilter = hindawi_bibfilter.py
-springer_config = springer_config.py
+configs = contrast_out_config.py springer_config.py oup_config.py
 templates = websearch_templates_scoap3.py webstyle_templates_scoap3.py
 utils = jats_utils.py minidom_utils.py nlm_utils.py
 bibtasklets = bst_springer.py bst_elsevier.py
@@ -40,10 +39,9 @@ install:
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(scoap3utils)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(scoap3tests)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(contrast_out)
-	$(INSTALL) -t $(LIBDIR)/python/invenio $(contrast_out_config)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(contrast_out_utils)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(pkg)
-	$(INSTALL) -t $(LIBDIR)/python/invenio $(springer_config)
+	$(INSTALL) -t $(LIBDIR)/python/invenio $(configs)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(hindawi_bibfilter)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(templates)
 	$(INSTALL) -t $(LIBDIR)/python/invenio $(utils)

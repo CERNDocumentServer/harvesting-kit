@@ -140,11 +140,11 @@ class OxfordPackage(object):
         for path in self.retrieved_packages_unpacked:
             package_name = basename(path)
             self.path_unpacked = join(CFG_UNPACKED_FILES, package_name.split('.')[0])
-            print self.path_unpacked
             self.logger.debug("Extracting package: %s" % (path.split("/")[-1],))
             try:
                 if "_archival_pdf" in self.path_unpacked:
-                    ZipFile(path).extractall(join(self.path_unpacked.rstrip("_archival_pdf"), "archival_pdfs"))
+                    self.path_unpacked = self.path_unpacked.rstrip("_archival_pdf")
+                    ZipFile(path).extractall(join(self.path_unpacked, "archival_pdfs"))
                 else:
                     ZipFile(path).extractall(self.path_unpacked)
                 #TarFile.open(path).extractall(self.path_unpacked)
@@ -162,7 +162,6 @@ class OxfordPackage(object):
         a main.xml in agiven directory.
         """
         self.found_articles = []
-        self.normalized_articles = []
 
         def visit(arg, dirname, names):
             files = [filename for filename in names if ".xml" in filename]
