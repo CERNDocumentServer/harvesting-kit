@@ -156,7 +156,6 @@ class SpringerPackage(object):
         a main.xml in agiven directory.
         """
         self.found_articles = []
-        print "Crowling"
         def visit(arg, dirname, names):
             files = [filename for filename in names if ".xml" in filename]
             if files:

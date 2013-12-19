@@ -204,10 +204,11 @@ def main():
     try:
         if len(sys.argv) == 2:
             path_or_package = sys.argv[1]
-            if path_or_package.endswith(".tar.gz"):
+            if path_or_package.endswith(".zip"):
                 els = OxfordPackage(package_name=path_or_package)
             else:
-                els = OxfordPackage(path=path_or_package)
+                print "Try passing a ZIP file."
+                #els = OxfordPackage(path=path_or_package)
         else:
             els = OxfordPackage()
         els.bibupload_it()
