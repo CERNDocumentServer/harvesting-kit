@@ -120,7 +120,12 @@ class NLMParser(JATSParser):
                 subfields.append(('m', plain_text))
             if subfields:
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-        # record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
+        try:
+            f_path_pdf = f_path.replace('.xml', '.pdf')
+            with open(f_path_pdf):
+                record_add_field(rec, 'FFT', subfields=[('a', f_path_pdf)])
+        except:
+            pass
         record_add_field(rec, 'FFT', subfields=[('a', f_path)])
         extra_subfields = []
         if collection:
