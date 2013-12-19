@@ -56,17 +56,25 @@ class SpringerPackage(object):
 
     def _get_file_listing(self, phrase=None, new_only=True):
         try:
-            self.ftp.pwd()
-            self.ftp.cwd('data/in/EPJC/SCOAP3_sample')
-        except:
-            raise Exception
+            self.ftp.cwd('data/in/')
+        except Exception, err:
+            raise
 
+        self.files_list = []
         if phrase:
-            self.files_list = filter(lambda x: phrase in x, self.ftp.nlst())
+            self.files_list.extend(filter(lambda x: phrase in x and ".zip" in x, self.ftp.nlst("EPJC")))
+            self.files_list.extend(filter(lambda x: phrase in x and ".zip" in x, self.ftp.nlst("JHEP")))
         else:
-            self.files_list = self.ftp.nlst()
+            self.files_list.extend(filter(lambda x: ".zip" in x, self.ftp.nlst("EPJC")))
+            self.files_list.extend(filter(lambda x: ".zip" in x, self.ftp.nlst("JHEP")))
+
         if new_only:
-            self.files_list = set(self.files_list) - set(listdir(CFG_TAR_FILES))
+            tmp_our_dir = []
+            tmp_our_dir.extend(map(lambda x: "EPJC/"+x, listdir(join(CFG_TAR_FILES, "EPJC"))))
+            tmp_our_dir.extend(map(lambda x: "JHEP/"+x, listdir(join(CFG_TAR_FILES, "JHEP"))))
+            print tmp_our_dir
+            self.files_list = set(self.files_list) - set(tmp_our_dir)
+            print self.files_list
         return self.files_list
 
     def _download_tars(self, check_integrity=True):
