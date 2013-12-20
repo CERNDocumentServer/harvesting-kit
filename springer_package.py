@@ -16,6 +16,7 @@ from invenio.scoap3utils import (create_logger,
                                  NoNewFiles,
                                  check_pkgs_integrity)
 from invenio.jats_utils import JATSParser
+from invenio.app_utils import APPParser
 from shutil import copyfile
 from tarfile import TarFile
 from tempfile import mkdtemp, mkstemp
@@ -72,9 +73,7 @@ class SpringerPackage(object):
             tmp_our_dir = []
             tmp_our_dir.extend(map(lambda x: "EPJC/"+x, listdir(join(CFG_TAR_FILES, "EPJC"))))
             tmp_our_dir.extend(map(lambda x: "JHEP/"+x, listdir(join(CFG_TAR_FILES, "JHEP"))))
-            print tmp_our_dir
             self.files_list = set(self.files_list) - set(tmp_our_dir)
-            print self.files_list
         return self.files_list
 
     def _download_tars(self, check_integrity=True):
@@ -165,7 +164,9 @@ class SpringerPackage(object):
         """
         self.found_articles = []
         def visit(arg, dirname, names):
-            files = [filename for filename in names if ".xml" in filename]
+            files = [filename for filename in names if "nlm.xml" in filename]
+            if not files:
+                files = [filename for filename in names if ".xml.Meta" in filename]
             if files:
                 try:
                     self._normalize_article_dir_with_dtd(dirname)
@@ -189,34 +190,45 @@ class SpringerPackage(object):
         and normalize it using xmllint in order to resolve all namespaces
         and references.
         """
-        path_normalized = mkdtemp(prefix="scoap3_normalized_", dir=CFG_TMPSHAREDDIR)
-        self.articles_normalized.append(path_normalized)
         files = [filename for filename in listdir(path) if "nlm.xml" in filename]
+        if not files:
+                files = [filename for filename in listdir(path)  if ".xml.Meta" in filename]
         if exists(join(path, 'resolved_main.xml')):
             return
 
-        #print join(path, files[0])
         if 'JATS-archivearticle1.dtd' in open(join(path, files[0])).read():
+            path_normalized = mkdtemp(prefix="scoap3_normalized_jats_", dir=CFG_TMPSHAREDDIR)
             ZipFile(CFG_SPRINGER_JATS_PATH).extractall(path_normalized)
+        elif 'A++V2.4.dtd' in open(join(path, files[0])).read():
+            path_normalized = mkdtemp(prefix="scoap3_normalized_app_", dir=CFG_TMPSHAREDDIR)
+            ZipFile(CFG_SPRINGER_AV24_PATH).extractall(path_normalized)
         else:
-            self.logger.error("It looks like the path %s does not contain an JATS-archivearticle1.dtd XML file." % path)
-            raise ValueError("It looks like the path %s does not contain an JATS-archivearticle1.dtd XML file." % path)
+            self.logger.error("It looks like the path %s does not contain an JATS-archivearticle1.dtd nor A++V2.4.dtd XML file." % path)
+            raise ValueError("It looks like the path %s does not contain an JATS-archivearticle1.dtd nor A++V2.4.dtd XML file." % path)
         print >> sys.stdout, "Normalizing %s" % (files[0],)
         cmd_exit_code, cmd_out, cmd_err = run_shell_command("xmllint --format --loaddtd %s --output %s", (join(path, files[0]), join(path_normalized, 'resolved_main.xml')))
         if cmd_err:
             self.logger.error("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
             raise ValueError("Error in cleaning %s: %s" % (join(path, 'main.xml'), cmd_err))
+        self.articles_normalized.append(path_normalized)
 
     def bibupload_it(self):
         if self.articles_normalized:
-            jats_parser = JATSParser()
             self.logger.debug("Preparing bibupload.")
             fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
             out = fdopen(fd, 'w')
             print >> out, "<collection>"
             for i, path in enumerate(self.articles_normalized):
-                print >> out, jats_parser.get_record(join(path, "resolved_main.xml"), publisher='Springer', collection='SCOAP3', logger=self.logger)
-                print path, i + 1, "out of", len(self.found_articles)
+                try:
+                    if "jats" in path:
+                        jats_parser = JATSParser()
+                        print >> out, jats_parser.get_record(join(path, "resolved_main.xml"), publisher='Springer', collection='SCOAP3', logger=self.logger)
+                    else:
+                        app_parser = APPParser()
+                        print >> out, app_parser.get_record(join(path, "resolved_main.xml"), publisher='SISSA', collection='SCOAP3', logger=self.logger)
+                    print path, i + 1, "out of", len(self.found_articles)
+                except Exception, err:
+                    self.logger.error("Error creating record from: %s \n%s" % (join(path, 'resolved_main.xml'), err))
             print >> out, "</collection>"
             out.close()
             task_low_level_submission("bibupload", "admin", "-N", "Springer", "-i", "-r", name)

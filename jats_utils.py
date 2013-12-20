@@ -62,9 +62,11 @@ class JATSParser(object):
         except IndexError, err:
             register_exception()
             print >> sys.stderr, "ERROR: XML corupted: %s" % err
+            pass
         except Exception, err:
             register_exception()
             print >> sys.stderr, "ERROR: Exception captured: %s" % err
+            pass
 
         issn = self.get_issn(art)
         volume = get_value_in_tag(art, "volume")
@@ -229,6 +231,7 @@ class JATSParser(object):
         self.references = references
 
     def get_record(self, f_path, publisher=None, collection=None, logger=None):
+        print "I'm jats"
         xml = self.get_article(f_path)
         rec = {}
         title = self.get_title(xml)
