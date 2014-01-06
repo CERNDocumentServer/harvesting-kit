@@ -9,11 +9,13 @@ from os.path import join, walk
 from tarfile import TarFile
 from tempfile import mkdtemp
 from xml.dom.minidom import parseString, parse
+from zipfile import ZipFile
 
 from contrast_out_config import *
 from invenio.config import (CFG_CONTRASTOUT_DOWNLOADDIR, CFG_TMPSHAREDDIR)
 from invenio.scoap3utils import (MD5Error,
                                  NoNewFiles,
+                                 FileTypeError,
                                  progress_bar,
                                  check_pkgs_integrity)
 from invenio.minidom_utils import xml_to_text
@@ -161,7 +163,12 @@ class ContrastOutConnector(object):
         self.path_unpacked = mkdtemp(prefix="scoap3_package_", dir=CFG_TMPSHAREDDIR)
         for path in self.retrieved_packages_unpacked:
             try:
-                TarFile.open(path).extractall(self.path_unpacked)
+                if ".tar" in path:
+                    TarFile.open(path).extractall(self.path_unpacked)
+                elif ".zip" in path:
+                    ZipFile(path).extractall(self.path_unpacked)
+                else:
+                    raise FileTypeError("It's not a TAR or ZIP archive.")
             except:
                 register_exception(alert_admin=True, prefix="Elsevier error extracting package.")
                 self.logger.error("Error extraction package file: %s" % (path,))

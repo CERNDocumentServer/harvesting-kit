@@ -161,6 +161,16 @@ class NoNewFiles(Exception):
         self.value = value
 
 
+class FileTypeError(Exception):
+    def __init__(self, value=None):
+        self.value = value
+
+
+class MissingFFTError(Exception):
+    def __init__(self, value=None):
+        self.value = value
+
+
 def get_remote_file_size(ftp_connector, filename, storage):
 
         def dir_callback(val):

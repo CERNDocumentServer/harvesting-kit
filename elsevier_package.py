@@ -37,7 +37,9 @@ from invenio.config import (CFG_TMPSHAREDDIR, CFG_ETCDIR,
 from invenio.shellutils import run_shell_command
 from invenio.bibtask import task_low_level_submission
 from invenio.scoap3utils import (create_logger,
-                                 progress_bar)
+                                 progress_bar,
+                                 MissingFFTError,
+                                 FileTypeError)
 from invenio.minidom_utils import (get_value_in_tag,
                                    xml_to_text,
                                    format_arxiv_id)
@@ -93,7 +95,17 @@ class ElsevierPackage(object):
         """
         self.path = mkdtemp(prefix="scoap3_package_", dir=CFG_TMPSHAREDDIR)
         self.logger.debug("Extracting package: %s" % (self.package_name,))
-        TarFile.open(self.package_name).extractall(self.path)
+        try:
+            if ".tar" in self.package_name:
+                TarFile.open(self.package_name).extractall(self.path)
+            elif ".zip" in self.package_name:
+                ZipFile(self.package_name).extractall(self.path)
+            else:
+                raise FileTypeError("It's not a TAR or ZIP archive.")
+        except Exception, err:
+            register_exception(alert_admin=True, prefix="Elsevier error extracting package.")
+            self.logger.error("Error extraction package file: %s %s" % (self.path, err))
+            print >> sys.stdout, "\nError extracting package file: %s %s" % (self.path, err)
 
     def _crawl_elsevier_and_find_main_xml(self):
         """
@@ -377,10 +389,10 @@ class ElsevierPackage(object):
                 record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
         record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
         references = self.get_references(xml)
-        for label, authors, doi, issue, page, title, volume, year, textref, ext_link in references:
+        for label, authors, r_doi, issue, page, title, volume, year, textref, ext_link in references:
             subfields = []
             if doi:
-                subfields.append(('a', doi))
+                subfields.append(('a', r_doi))
             for author in authors:
                 subfields.append(('h', author))
             if issue:
@@ -403,7 +415,17 @@ class ElsevierPackage(object):
                 subfields.append(('y', year))
             if subfields:
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-        record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
+        try:
+            if open(join(path, 'main_a-2b.pdf')):
+                record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf'))])
+                self.logger.debug('Adding PDF/A to record: %s' % (doi,))
+        except:
+            try:
+                if open(join(path, 'main.pdf')):
+                    record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
+            except:
+                raise MissingFFTError("Record %s doesn't contain XML file." % (doi,))
+
         record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.xml'))])
         record_add_field(rec, '980', subfields=[('a', 'SCOAP3'), ('b', 'Elsevier')])
         return record_xml_output(rec)
@@ -426,7 +448,7 @@ def main():
     try:
         if len(sys.argv) == 2:
             path_or_package = sys.argv[1]
-            if path_or_package.endswith(".tar"):
+            if path_or_package.endswith((".tar", ".zip")):
                 els = ElsevierPackage(package_name=path_or_package)
             else:
                 els = ElsevierPackage(path=path_or_package)
