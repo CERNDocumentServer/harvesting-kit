@@ -415,16 +415,13 @@ class ElsevierPackage(object):
                 subfields.append(('y', year))
             if subfields:
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-        try:
-            if open(join(path, 'main_a-2b.pdf')):
-                record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf'))])
-                self.logger.debug('Adding PDF/A to record: %s' % (doi,))
-        except:
-            try:
-                if open(join(path, 'main.pdf')):
-                    record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
-            except:
-                raise MissingFFTError("Record %s doesn't contain XML file." % (doi,))
+        if exists(join(path, 'main_a-2b.pdf')):
+            record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf'), ('n', 'main'), ('f', '.pdf;pdfa'))])
+            self.logger.debug('Adding PDF/A to record: %s' % (doi,))
+        elif exists(join(path, 'main.pdf')):
+            record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
+        else:
+            raise MissingFFTError("Record %s doesn't contain XML file." % (doi,))
 
         record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.xml'))])
         record_add_field(rec, '980', subfields=[('a', 'SCOAP3'), ('b', 'Elsevier')])
