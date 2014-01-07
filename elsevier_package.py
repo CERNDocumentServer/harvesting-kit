@@ -347,9 +347,13 @@ class ElsevierPackage(object):
         return references
 
     def get_article(self, path):
-        return parse(open(join(path, "resolved_main.xml")))
+        if path.endswith('.xml'):
+            data_file = path
+        else:
+            data_file = open(join(path, "resolved_main.xml"))
+        return parse(data_file)
 
-    def get_record(self, path):
+    def get_record(self, path=None, xml=None):
         xml = self.get_article(path)
         rec = {}
         title = self.get_title(xml)
