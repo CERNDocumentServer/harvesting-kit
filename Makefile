@@ -20,7 +20,7 @@ configs = contrast_out_config.py springer_config.py oup_config.py
 templates = websearch_templates_scoap3.py webstyle_templates_scoap3.py
 utils = jats_utils.py minidom_utils.py nlm_utils.py app_utils.py
 bibtasklets = bst_springer.py bst_elsevier.py bst_oxford.py
-bibcheck_plugins = crossref_timestamp.py
+bibcheck_plugins = crossref_timestamp.py iop_issn.py iop_arxive_fix.py
 bibcheck_rules = rules.cfg
 
 elsevier_data_files = $(PREFIX)/var/data/scoap3/elsevier
