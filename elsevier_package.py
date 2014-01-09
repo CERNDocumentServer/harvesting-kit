@@ -355,7 +355,7 @@ class ElsevierPackage(object):
             data_file = open(join(path, "resolved_main.xml"))
         return parse(data_file)
 
-    def get_record(self, path=None, xml=None):
+    def get_record(self, path=None, no_pdf=False):
         xml = self.get_article(path)
         rec = {}
         title = self.get_title(xml)
@@ -424,13 +424,17 @@ class ElsevierPackage(object):
                 subfields.append(('y', year))
             if subfields:
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-        if exists(join(path, 'main_a-2b.pdf')):
-            record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf'), ('n', 'main'), ('f', '.pdf;pdfa'))])
-            self.logger.debug('Adding PDF/A to record: %s' % (doi,))
-        elif exists(join(path, 'main.pdf')):
-            record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
-        else:
-            raise MissingFFTError("Record %s doesn't contain XML file." % (doi,))
+        if not no_pdf:
+            try:
+                if exists(join(path, 'main_a-2b.pdf')):
+                    record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf'), ('n', 'main'), ('f', '.pdf;pdfa'))])
+                    self.logger.debug('Adding PDF/A to record: %s' % (doi,))
+                elif exists(join(path, 'main.pdf')):
+                    record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
+                else:
+                    raise MissingFFTError("Record %s doesn't contain PDF file." % (doi,))
+            except MissingFFTError, err:
+                self.logger.warning("Record %s doesn't contain PDF file." % (doi,))
 
         record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.xml'))])
         record_add_field(rec, '980', subfields=[('a', 'SCOAP3'), ('b', 'Elsevier')])
