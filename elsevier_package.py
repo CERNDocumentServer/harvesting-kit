@@ -21,6 +21,7 @@ import re
 import time
 import sys
 import traceback
+import time
 from datetime import datetime
 from os import listdir, rename, fdopen
 from os.path import join, exists, walk
@@ -222,11 +223,12 @@ class ElsevierPackage(object):
             volume = get_value_in_tag(xml, "vol-first")
             issue = get_value_in_tag(xml, "iss-first")
             year = get_value_in_tag(xml, "start-date")[:4]
+            start_date = time.strptime(get_value_in_tag(xml, "start-date"), '%Y%m%d')
             for included_item in xml.getElementsByTagName("ce:include-item"):
                 doi = get_value_in_tag(included_item, "ce:doi")
                 first_page = get_value_in_tag(included_item, "ce:first-page")
                 last_page = get_value_in_tag(included_item, "ce:last-page")
-                self._dois[doi] = (journal, issn, volume, issue, first_page, last_page, year)
+                self._dois[doi] = (journal, issn, volume, issue, first_page, last_page, year, start_date)
 
     def _get_doi(self, xml):
         try:
@@ -320,7 +322,7 @@ class ElsevierPackage(object):
         try:
             return self._dois[doi] + (doi, )
         except:
-            return ('', '', '', '', '', '', '', doi)
+            return ('', '', '', '', '', '', '', '', doi)
 
     def get_references(self, xml):
         references = []
@@ -359,8 +361,11 @@ class ElsevierPackage(object):
         title = self.get_title(xml)
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
-        record_add_field(rec, '260', subfields=[('c', time.strftime('%Y-%m-%d'))])
-        journal, issn, volume, issue, first_page, last_page, year, doi = self.get_publication_information(xml)
+        journal, issn, volume, issue, first_page, last_page, year, start_date, doi = self.get_publication_information(xml)
+        if start_date:
+            record_add_field(rec, '260', subfields=[('c', time.strftime('%Y-%m-%d', start_date))])
+        else:
+            record_add_field(rec, '260', subfields=[('c', time.strftime('%Y-%m-%d'))])
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
         self.logger.info("Creating record: %s %s" % (path, doi))
