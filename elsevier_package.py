@@ -223,7 +223,12 @@ class ElsevierPackage(object):
             volume = get_value_in_tag(xml, "vol-first")
             issue = get_value_in_tag(xml, "iss-first")
             year = get_value_in_tag(xml, "start-date")[:4]
-            start_date = time.strptime(get_value_in_tag(xml, "start-date"), '%Y%m%d')
+            start_date = get_value_in_tag(xml, "start-date")
+            if len(start_date) is 8:
+                start_date = time.strftime('%Y-%m-%d', time.strptime(start_date, '%Y%m%d'))
+            elif len(start_date) is 6:
+                start_date = time.strftime('%Y-%m', time.strptime(start_date, '%Y%m'))
+
             for included_item in xml.getElementsByTagName("ce:include-item"):
                 doi = get_value_in_tag(included_item, "ce:doi")
                 first_page = get_value_in_tag(included_item, "ce:first-page")
@@ -342,11 +347,18 @@ class ElsevierPackage(object):
             page = get_value_in_tag(reference, "sb:first-page")
             title = get_value_in_tag(reference, "sb:maintitle")
             volume = get_value_in_tag(reference, "sb:volume-nr")
-            year = get_value_in_tag(reference, "sb:date")[:4]
+            tmp_issues = reference.getElementsByTagName('sb:issue')
+            if tmp_issues:
+                year = get_value_in_tag(tmp_issues[0], "sb:date")[:4]
+            else:
+                year = None
             textref = get_value_in_tag(reference, "ce:textref")
             ext_link = format_arxiv_id(self.get_ref_link(reference, 'arxiv'))
             references.append((label, authors, doi, issue, page, title, volume, year, textref, ext_link))
         return references
+
+    def get_article_journal(self, xml):
+        return CFG_ELSEVIER_JID_MAP[get_value_in_tag(xml, "jid")]
 
     def get_article(self, path):
         if path.endswith('.xml'):
@@ -362,8 +374,10 @@ class ElsevierPackage(object):
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
         journal, issn, volume, issue, first_page, last_page, year, start_date, doi = self.get_publication_information(xml)
+        if not journal:
+            journal = self.get_article_journal(xml)
         if start_date:
-            record_add_field(rec, '260', subfields=[('c', time.strftime('%Y-%m-%d', start_date))])
+            record_add_field(rec, '260', subfields=[('c', start_date)])
         else:
             record_add_field(rec, '260', subfields=[('c', time.strftime('%Y-%m-%d'))])
         if doi:
