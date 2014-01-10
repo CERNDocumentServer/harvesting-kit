@@ -61,13 +61,18 @@ class SpringerPackage(object):
         except Exception, err:
             raise
 
+        self.jhep_list = []
+        self.epjc_list = []
         self.files_list = []
         if phrase:
-            self.files_list.extend(filter(lambda x: phrase in x and ".zip" in x, self.ftp.nlst("EPJC")))
-            self.files_list.extend(filter(lambda x: phrase in x and ".zip" in x, self.ftp.nlst("JHEP")))
+            self.epjc_list.extend(filter(lambda x: phrase in x and ".zip" in x, self.ftp.nlst("EPJC")))
+            self.jhep_list.extend(filter(lambda x: phrase in x and ".zip" in x, self.ftp.nlst("JHEP")))
         else:
-            self.files_list.extend(filter(lambda x: ".zip" in x, self.ftp.nlst("EPJC")))
-            self.files_list.extend(filter(lambda x: ".zip" in x, self.ftp.nlst("JHEP")))
+            self.epjc_list.extend(filter(lambda x: ".zip" in x, self.ftp.nlst("EPJC")))
+            self.jhep_list.extend(filter(lambda x: ".zip" in x, self.ftp.nlst("JHEP")))
+
+        self.files_list.extend(map(lambda x: "EPJC/"+x, self.epjc_list))
+        self.files_list.extend(map(lambda x: "JHEP/"+x, self.jhep_list))
 
         if new_only:
             tmp_our_dir = []
@@ -141,14 +146,21 @@ class SpringerPackage(object):
         """
         Extract a package in a new directory.
         """
-        self.path_unpacked = mkdtemp(prefix="scoap3_package_%s_" % (datetime.now(),),
-                                     dir=CFG_TMPSHAREDDIR)
+        self.path_unpacked = []
         if not hasattr(self, "retrieved_packages_unpacked"):
             self.retrieved_packages_unpacked = [self.package_name]
         for path in self.retrieved_packages_unpacked:
-            self.logger.debug("Extracting package: %s" % (path.split("/")[-1],))
+            self.logger.debug("Extracting package: %s" % (path,))
+
+            if 'EPJC' in path:
+                self.path_unpacked.append(mkdtemp(prefix="scoap3_package_%s_EPJC_" % (datetime.now(),),
+                                     dir=CFG_TMPSHAREDDIR))
+            else:
+                self.path_unpacked.append(mkdtemp(prefix="scoap3_package_%s_JHEP_" % (datetime.now(),),
+                                     dir=CFG_TMPSHAREDDIR))
             try:
-                ZipFile(path).extractall(self.path_unpacked)
+
+                ZipFile(path).extractall(self.path_unpacked[-1])
             except Exception, err:
                 register_exception(alert_admin=True, prefix="Springer error extracting package.")
                 self.logger.error("Error extraction package file: %s" % (path,))
@@ -166,17 +178,18 @@ class SpringerPackage(object):
         def visit(arg, dirname, names):
             files = [filename for filename in names if "nlm.xml" in filename]
             if not files:
-                files = [filename for filename in names if ".xml.Meta" in filename]
+                files = [filename for filename in names if ".xml.scoap" in filename]
             if files:
                 try:
-                    self._normalize_article_dir_with_dtd(dirname)
+                    # self._normalize_article_dir_with_dtd(dirname)
                     self.found_articles.append(dirname)
                 except Exception, err:
                     register_exception()
                     print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
 
         if hasattr(self,'path_unpacked'):
-                walk(self.path_unpacked, visit, None)
+            for path in self.path_unpacked:
+                walk(path, visit, None)
         elif self.path:
             walk(self.path, visit, None)
         else:
@@ -192,7 +205,7 @@ class SpringerPackage(object):
         """
         files = [filename for filename in listdir(path) if "nlm.xml" in filename]
         if not files:
-                files = [filename for filename in listdir(path)  if ".xml.Meta" in filename]
+                files = [filename for filename in listdir(path)  if ".xml.scoap" in filename]
         if exists(join(path, 'resolved_main.xml')):
             return
 
@@ -213,22 +226,45 @@ class SpringerPackage(object):
         self.articles_normalized.append(path_normalized)
 
     def bibupload_it(self):
-        if self.articles_normalized:
+        # if self.articles_normalized:
+        #     self.logger.debug("Preparing bibupload.")
+        #     fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
+        #     out = fdopen(fd, 'w')
+        #     print >> out, "<collection>"
+        #     for i, path in enumerate(self.articles_normalized):
+        #         try:
+        #             if "jats" in path:
+        #                 jats_parser = JATSParser()
+        #                 print >> out, jats_parser.get_record(join(path, "resolved_main.xml"), publisher='Springer', collection='SCOAP3', logger=self.logger)
+        #             else:
+        #                 app_parser = APPParser()
+        #                 print >> out, app_parser.get_record(join(path, "resolved_main.xml"), publisher='SISSA', collection='SCOAP3', logger=self.logger)
+        #             print path, i + 1, "out of", len(self.found_articles)
+        #         except Exception, err:
+        #             self.logger.error("Error creating record from: %s \n%s" % (join(path, 'resolved_main.xml'), err))
+        #     print >> out, "</collection>"
+        #     out.close()
+        #     task_low_level_submission("bibupload", "admin", "-N", "Springer", "-i", "-r", name)
+        if self.found_articles:
             self.logger.debug("Preparing bibupload.")
             fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
             out = fdopen(fd, 'w')
             print >> out, "<collection>"
-            for i, path in enumerate(self.articles_normalized):
+            for i, path in enumerate(self.found_articles):
                 try:
-                    if "jats" in path:
-                        jats_parser = JATSParser()
-                        print >> out, jats_parser.get_record(join(path, "resolved_main.xml"), publisher='Springer', collection='SCOAP3', logger=self.logger)
+                    if "EPJC" in path:
+                        for filename in listdir(path):
+                            if ".xml.scoap" in filename:
+                                jats_parser = JATSParser()
+                                print >> out, jats_parser.get_record(join(path, filename), publisher='Springer', collection='SCOAP3', logger=self.logger)
                     else:
-                        app_parser = APPParser()
-                        print >> out, app_parser.get_record(join(path, "resolved_main.xml"), publisher='SISSA', collection='SCOAP3', logger=self.logger)
+                        for filename in listdir(path):
+                            if ".xml.scoap" in filename:
+                                app_parser = APPParser()
+                                print >> out, app_parser.get_record(join(path, filename), publisher='SISSA', collection='SCOAP3', logger=self.logger)
                     print path, i + 1, "out of", len(self.found_articles)
                 except Exception, err:
-                    self.logger.error("Error creating record from: %s \n%s" % (join(path, 'resolved_main.xml'), err))
+                    self.logger.error("Error creating record from: %s \n%s" % (join(path, filename), err))
             print >> out, "</collection>"
             out.close()
             task_low_level_submission("bibupload", "admin", "-N", "Springer", "-i", "-r", name)

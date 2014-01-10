@@ -105,15 +105,23 @@ class APPParser(object):
 
     def get_copyright(self, xml):
         try:
-            return get_value_in_tag(xml.getElementsByTagName("ArticleCopyright"), "CopyrightHolderName")
+            return get_value_in_tag(xml.getElementsByTagName("ArticleCopyright")[0], "CopyrightHolderName")
         except Exception, err:
-            print >> sys.stderr, "Can't find copyright"
+            print >> sys.stderr, "Can't find copyright. %s" % (err, )
 
     def get_keywords(self, xml):
         try:
-            return [get_value_in_tag(keyword) for keyword in xml.getElementsByTagName("Keyword")]
+            return [xml_to_text(keyword) for keyword in xml.getElementsByTagName("Keyword")]
         except Exception, err:
-            print >> sys.stderr, "Can't find keywords"
+            print >> sys.stderr, "Can't find keywords. %s" % (err,)
+
+    def get_body_ref(self, xml):
+        try:
+            ref = xml.getElementsByTagName('BodyRef')[0]
+            return ref.getAttribute('FileRef').encode('utf-8')
+        except Exception, err:
+            print >> sys.stderr, "Can't find reference to XML file."
+
 
     def get_references(self, xml):
         references = []
@@ -149,8 +157,8 @@ class APPParser(object):
         return references
 
     def get_record(self, f_path, publisher=None, collection=None, logger=None):
-        path = abspath(join(f_path, pardir))
-        xml = self.get_article(join(path, "resolved_main.xml"))
+        #path = abspath(join(f_path, pardir))
+        xml = self.get_article(f_path)
         rec = {}
         title = self.get_title(xml)
         if title:
@@ -159,7 +167,8 @@ class APPParser(object):
         journal, issn, volume, issue, first_page, last_page, year, doi = self.get_publication_information(xml)
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
-        logger.info("Creating record: %s %s" % (path, doi))
+        if logger:
+            logger.info("Creating record: %s %s" % (f_path, doi))
         authors = self.get_authors(xml)
         first_author = True
         for author in authors:
@@ -208,7 +217,18 @@ class APPParser(object):
                 subfields.append(('y', year))
             if subfields:
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-        #record_add_field(rec, 'FFT', subfields=[('a', f_path.replace(".xml.Meta", ".pdf"))])
-        record_add_field(rec, 'FFT', subfields=[('a', f_path)])
+
+        folder_name = join('/', *(f_path.split('/')[0:-1]))
+        pdf_name = f_path.split('/')[-1].rstrip('.xml.scoap') + '.pdf'
+        pdf_path = join(folder_name, 'BodyRef/PDF', pdf_name)
+        print pdf_path
+        if exists(pdf_path):
+            record_add_field(rec, 'FFT', subfields=[('a', pdf_path), ('n', 'main'), ('f', '.pdf;pdfa')])
+        else:
+            # Don't know why it doesn't work????????????
+            # register_exception(alert_admin=True)
+            if logger:
+                logger.error("Record %s doesn't contain PDF file." % (doi,))
+        record_add_field(rec, 'FFT', subfields=[('a', self.get_body_ref(xml)), ('n', 'main')])
         record_add_field(rec, '980', subfields=[('a', collection), ('b', publisher)])
         return record_xml_output(rec)

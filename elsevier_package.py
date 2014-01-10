@@ -448,6 +448,7 @@ class ElsevierPackage(object):
                 else:
                     raise MissingFFTError("Record %s doesn't contain PDF file." % (doi,))
             except MissingFFTError, err:
+                register_exception(alert_admin=True, prefix="Elsevier paper: %s is missing PDF." % (doi,))
                 self.logger.warning("Record %s doesn't contain PDF file." % (doi,))
 
         record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.xml'))])
