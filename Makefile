@@ -22,6 +22,8 @@ utils = jats_utils.py minidom_utils.py nlm_utils.py app_utils.py
 bibtasklets = bst_springer.py bst_elsevier.py bst_oxford.py
 bibcheck_plugins = crossref_timestamp.py iop_issn.py iop_arxive_fix.py
 bibcheck_rules = rules.cfg
+bibformat_elements = bfe_publi_info.py
+bibformat_templates = Default_HTML_actions.bft Default_HTML_detailed.bft
 
 elsevier_data_files = $(PREFIX)/var/data/scoap3/elsevier
 elsevier_ready_packages = $(PREFIX)/var/data/scoap3/elsevier/ready_pkgs
@@ -50,6 +52,8 @@ install:
 	$(INSTALL) -t $(LIBDIR)/python/invenio/bibsched_tasklets $(bibtasklets)
 	$(INSTALL) -t $(LIBDIR)/python/invenio/bibcheck_plugins $(bibcheck_plugins)
 	$(INSTALL) -t $(ETCDIR)/bibcheck $(bibcheck_rules)
+	$(INSTALL) -t $(ETCDIR)/bibformat/format_templates $(bibformat_templates)
+	$(INSTALL) -t $(LIBDIR)/python/invenio/bibformat_elements $(bibformat_elements)
 
 	$(INSTALL) -t $(WWWDIR) robots.txt
 	$(INSTALL) -t $(WWWDIR)/img scoap3_logo.png favicon.ico invenio_scoap3.css
