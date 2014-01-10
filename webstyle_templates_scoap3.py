@@ -333,6 +333,27 @@ template function generated it.
  </div>
 <!-- replaced page footer -->
 </div>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(["trackPageView"]);
+  _paq.push(["enableLinkTracking"]);
+
+  (function() {
+    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://cds-piwik.cern.ch/";
+    _paq.push(["setTrackerUrl", u+"piwik.php"]);
+    _paq.push(["setSiteId", "10"]);
+    var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+    g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript>
+<!-- Piwik Image Tracker -->
+<img src="https://cds-piwik.cern.ch/piwik.php?idsite=10&amp;rec=1" style="border:0" alt="" />
+<!-- End Piwik -->
+</noscript>
+<!-- End Piwik Code -->
+
 </body>
 </html>
         """ % {
