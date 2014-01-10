@@ -168,6 +168,7 @@ template function generated it.
  <meta http-equiv="Content-Language" content="%(ln)s" />
  <meta name="description" content="%(description)s" />
  <meta name="keywords" content="%(keywords)s" />
+ <meta name="google-site-verification" content="mLqufkdPNxUHXFW4obCfN5NJXr4sD_SlnvsOla7RZAE" />
  <script type="text/javascript" src="%(cssurl)s/js/jquery.min.js"></script>
  %(hepDataAdditions)s
  %(metaheaderadd)s
