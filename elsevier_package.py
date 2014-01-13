@@ -441,7 +441,7 @@ class ElsevierPackage(object):
         if not no_pdf:
             try:
                 if exists(join(path, 'main_a-2b.pdf')):
-                    record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf'), ('n', 'main'), ('f', '.pdf;pdfa'))])
+                    record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf')), ('n', 'main'), ('f', '.pdf;pdfa')])
                     self.logger.debug('Adding PDF/A to record: %s' % (doi,))
                 elif exists(join(path, 'main.pdf')):
                     record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
