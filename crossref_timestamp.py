@@ -27,6 +27,7 @@ def check_records(records, recompute=0):
     """
     Amend the records to add the DOI registration timestamp.
     """
+    recompute = int(recompute)
     doi_to_record = {}
     for record in records:
         doi_found = False
@@ -53,6 +54,6 @@ def check_records(records, recompute=0):
     for doi, (record, position) in doi_to_record.iteritems():
         timestamp = run_sql("SELECT creation_date FROM doi WHERE doi=%s", (doi,))
         if timestamp:
-            record.add_subfield(position, 't', timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'))
+            record.add_subfield(position, 't', timestamp[0][0].strftime('%Y-%m-%dT%H:%M:%SZ'))
         else:
             record.warn("%s is not (yet) registered in CrossRef" % doi)
