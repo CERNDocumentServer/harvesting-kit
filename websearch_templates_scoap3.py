@@ -982,7 +982,7 @@ class Template(DefaultTemplate):
                     out += """ <small>%(link)s%(nbrec)s</small> """ % {
                         'link': grandson.nbrecs and (self.build_search_interface_url(c=grandson.name, ln=ln, aas=aas),
                                                  {},
-                                                 cgi.escape(grandson.get_name(ln))) or grandson.name,
+                                                 cgi.escape(grandson.get_name(ln))) or cgi.escape(grandson.get_name(ln)),
                         'nbrec' : self.tmpl_nbrecs_info(grandson.nbrecs, ln=ln, none_yet_support=True)}
                     # the following prints the "external collection" arrow just after the name and
                     # number of records of the hosted collection
