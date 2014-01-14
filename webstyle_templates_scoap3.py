@@ -163,6 +163,8 @@ template function generated it.
  <link rel="alternate" type="application/rss+xml" title="%(sitename)s RSS" href="%(rssurl)s" />
  <link rel="search" type="application/opensearchdescription+xml" href="%(siteurl)s/opensearchdescription" title="%(sitename)s" />
  <link rel="unapi-server" type="application/xml" title="unAPI" href="%(unAPIurl)s" />
+ <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+ <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
  %(linkbackTrackbackLink)s
  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  <meta http-equiv="Content-Language" content="%(ln)s" />
