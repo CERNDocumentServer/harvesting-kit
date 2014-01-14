@@ -107,3 +107,31 @@ class Template(DefaultTemplate):
           - 'display_email_alert_part' *bool* - whether to display email alert part
         """
         return ""
+
+    def tmpl_nbrecs_info(self, number, prolog=None, epilog=None, ln=CFG_SITE_LANG):
+        """
+        Return information on the number of records.
+
+        Parameters:
+
+        - 'number' *string* - The number of records
+
+        - 'prolog' *string* (optional) - An HTML code to prefix the number (if **None**, will be
+        '<small class="nbdoccoll">(')
+
+        - 'epilog' *string* (optional) - An HTML code to append to the number (if **None**, will be
+        ')</small>')
+        """
+        _ = gettext_set_language(ln)
+
+        if number is None:
+            number = 0
+        if prolog is None:
+            prolog = '''&nbsp;<small class="nbdoccoll">('''
+        if epilog is None:
+            epilog = ''')</small>'''
+
+        if number is 0:
+            return prolog + _("none yet") + epilog
+        else:
+            return prolog + self.tmpl_nice_number(number, ln) + epilog
