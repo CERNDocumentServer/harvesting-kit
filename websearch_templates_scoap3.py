@@ -25,6 +25,7 @@ from invenio.config import CFG_SITE_LANG, CFG_BASE_URL, CFG_SITE_NAME, CFG_SITE_
     CFG_WEBSEARCH_SIMPLESEARCH_PATTERN_BOX_WIDTH, CFG_WEBSEARCH_SPLIT_BY_COLLECTION
 from invenio.urlutils import drop_default_urlargd, create_html_link
 from invenio.messages import gettext_set_language
+from invenio.websearch_external_collections import external_collection_get_state, get_external_collection_engine
 from invenio.websearch_templates import Template as DefaultTemplate
 
 class Template(DefaultTemplate):
@@ -114,7 +115,7 @@ class Template(DefaultTemplate):
         """
         return ""
 
-    def tmpl_nbrecs_info(self, number, prolog=None, epilog=None, ln=CFG_SITE_LANG):
+    def tmpl_nbrecs_info(self, number, prolog=None, epilog=None, ln=CFG_SITE_LANG, none_yet_support=False):
         """
         Return information on the number of records.
 
@@ -137,7 +138,7 @@ class Template(DefaultTemplate):
         if epilog is None:
             epilog = ''')</small>'''
 
-        if number is 0:
+        if number is 0 and none_yet_support:
             return prolog + _("none yet") + epilog
         else:
             return prolog + self.tmpl_nice_number(number, ln) + epilog
@@ -878,4 +879,121 @@ class Template(DefaultTemplate):
                     'displayoptions' : displayoptions,
                     'formatoptions' : formatoptions
                   }
+        return out
+
+    def tmpl_narrowsearch(self, aas, ln, type, father,
+                          has_grandchildren, sons, display_grandsons,
+                          grandsons):
+
+        """
+        Creates list of collection descendants of type *type* under title *title*.
+        If aas==1, then links to Advanced Search interfaces; otherwise Simple Search.
+        Suitable for 'Narrow search' and 'Focus on' boxes.
+
+        Parameters:
+
+          - 'aas' *bool* - Should we display an advanced search box?
+
+          - 'ln' *string* - The language to display
+
+          - 'type' *string* - The type of the produced box (virtual collections or normal collections)
+
+          - 'father' *collection* - The current collection
+
+          - 'has_grandchildren' *bool* - If the current collection has grand children
+
+          - 'sons' *list* - The list of the sub-collections (first level)
+
+          - 'display_grandsons' *bool* - If the grand children collections should be displayed (2 level deep display)
+
+          - 'grandsons' *list* - The list of sub-collections (second level)
+        """
+
+        # load the right message language
+        _ = gettext_set_language(ln)
+
+        title = father.get_collectionbox_name(ln, type)
+
+        if has_grandchildren:
+            style_prolog = "<strong>"
+            style_epilog = "</strong>"
+        else:
+            style_prolog = ""
+            style_epilog = ""
+
+        out = """<table class="%(narrowsearchbox)s">
+                   <thead>
+                    <tr>
+                     <th colspan="2" align="left" class="%(narrowsearchbox)sheader">
+                      %(title)s
+                     </th>
+                    </tr>
+                   </thead>
+                   <tbody>""" % {'title' : title,
+                                 'narrowsearchbox': {'r': 'narrowsearchbox',
+                                                     'v': 'focusonsearchbox'}[type]}
+        # iterate through sons:
+        i = 0
+        for son in sons:
+            out += """<tr><td class="%(narrowsearchbox)sbody" valign="top">""" % \
+                   { 'narrowsearchbox': {'r': 'narrowsearchbox',
+                                         'v': 'focusonsearchbox'}[type]}
+
+            if type == 'r':
+                if son.restricted_p() and son.restricted_p() != father.restricted_p():
+                    out += """<input type="checkbox" name="c" value="%(name)s" /></td>""" % {'name' : cgi.escape(son.name) }
+                # hosted collections are checked by default only when configured so
+                elif str(son.dbquery).startswith("hostedcollection:"):
+                    external_collection_engine = get_external_collection_engine(str(son.name))
+                    if external_collection_engine and external_collection_engine.selected_by_default:
+                        out += """<input type="checkbox" name="c" value="%(name)s" checked="checked" /></td>""" % {'name' : cgi.escape(son.name) }
+                    elif external_collection_engine and not external_collection_engine.selected_by_default:
+                        out += """<input type="checkbox" name="c" value="%(name)s" /></td>""" % {'name' : cgi.escape(son.name) }
+                    else:
+                        # strangely, the external collection engine was never found. In that case,
+                        # why was the hosted collection here in the first place?
+                        out += """<input type="checkbox" name="c" value="%(name)s" /></td>""" % {'name' : cgi.escape(son.name) }
+                else:
+                    out += """<input type="checkbox" name="c" value="%(name)s" checked="checked" /></td>""" % {'name' : cgi.escape(son.name) }
+            else:
+                out += '</td>'
+            out += """<td valign="top">%(link)s%(recs)s """ % {
+                'link': son.nbrecs and create_html_link(self.build_search_interface_url(c=son.name, ln=ln, aas=aas),
+                                         {}, style_prolog + cgi.escape(son.get_name(ln)) + style_epilog) or style_prolog + cgi.escape(son.get_name(ln)) + style_epilog,
+                'recs' : self.tmpl_nbrecs_info(son.nbrecs, ln=ln, none_yet_support=True)}
+
+            # the following prints the "external collection" arrow just after the name and
+            # number of records of the hosted collection
+            # 1) we might want to make the arrow work as an anchor to the hosted collection as well.
+            # That would probably require a new separate function under invenio.urlutils
+            # 2) we might want to place the arrow between the name and the number of records of the hosted collection
+            # That would require to edit/separate the above out += ...
+            if type == 'r':
+                if str(son.dbquery).startswith("hostedcollection:"):
+                    out += """<img src="%(siteurl)s/img/external-icon-light-8x8.gif" border="0" alt="%(name)s"/>""" % \
+                           { 'siteurl' : CFG_BASE_URL, 'name' : cgi.escape(son.name), }
+
+            if son.restricted_p():
+                out += """ <small class="warning">[%(msg)s]</small> """ % { 'msg' : _("restricted") }
+            if display_grandsons and len(grandsons[i]):
+                # iterate trough grandsons:
+                out += """<br />"""
+                for grandson in grandsons[i]:
+                    out += """ <small>%(link)s%(nbrec)s</small> """ % {
+                        'link': grandson.nbrecs and (self.build_search_interface_url(c=grandson.name, ln=ln, aas=aas),
+                                                 {},
+                                                 cgi.escape(grandson.get_name(ln))) or grandson.name,
+                        'nbrec' : self.tmpl_nbrecs_info(grandson.nbrecs, ln=ln, none_yet_support=True)}
+                    # the following prints the "external collection" arrow just after the name and
+                    # number of records of the hosted collection
+                    # Some relatives comments have been made just above
+                    if type == 'r':
+                        if str(grandson.dbquery).startswith("hostedcollection:"):
+                            out += """<img src="%(siteurl)s/img/external-icon-light-8x8.gif" border="0" alt="%(name)s"/>""" % \
+                                    { 'siteurl' : CFG_BASE_URL, 'name' : cgi.escape(grandson.name), }
+
+            out += """</td></tr>"""
+            i += 1
+        out += "</tbody></table>"
+
         return out
