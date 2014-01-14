@@ -21,9 +21,9 @@
 Add the timestamp from CrossRef
 """
 
-from invenio.crossrefutils import get_registration_timestamp_for_dois
+from invenio.dbquery import run_sql
 
-def check_records(records):
+def check_records(records, recompute=0):
     """
     Amend the records to add the DOI registration timestamp.
     """
@@ -32,8 +32,11 @@ def check_records(records):
         doi_found = False
         doi_timestamp_found = False
         for position, value in record.iterfield('0247_t'):
-            doi_timestamp_found = True
-            break
+            if recompute:
+                record.delete_field(position, "Removing existing DOI timestamp")
+            else:
+                doi_timestamp_found = True
+                break
         else:
             for position, value in record.iterfield('0247_a'):
                 if value.startswith('10.'):
@@ -47,13 +50,9 @@ def check_records(records):
                     doi_found = True
         if doi_timestamp_found:
             continue
-    doi_to_timestamp = get_registration_timestamp_for_dois(doi_to_record.keys())
     for doi, (record, position) in doi_to_record.iteritems():
-        if doi_to_timestamp.get(doi):
-            timestamp = doi_to_timestamp[doi]
+        timestamp = run_sql("SELECT creation_date FROM doi WHERE doi=%s", (doi,))
+        if timestamp:
             record.add_subfield(position, 't', timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'))
         else:
             record.warn("%s is not (yet) registered in CrossRef" % doi)
-
-
-
