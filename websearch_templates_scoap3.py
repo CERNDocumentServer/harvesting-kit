@@ -22,7 +22,7 @@ import cgi
 
 from invenio.config import CFG_SITE_LANG, CFG_BASE_URL, CFG_SITE_NAME, CFG_SITE_NAME_INTL, CFG_WEBSEARCH_ADVANCEDSEARCH_PATTERN_BOX_WIDTH, \
     CFG_WEBSEARCH_ENABLED_SEARCH_INTERFACES, CFG_WEBSEARCH_LIGHTSEARCH_PATTERN_BOX_WIDTH, CFG_WEBSEARCH_MAX_RECORDS_IN_GROUPS, \
-    CFG_WEBSEARCH_SIMPLESEARCH_PATTERN_BOX_WIDTH
+    CFG_WEBSEARCH_SIMPLESEARCH_PATTERN_BOX_WIDTH, CFG_WEBSEARCH_SPLIT_BY_COLLECTION
 from invenio.urlutils import drop_default_urlargd, create_html_link
 from invenio.messages import gettext_set_language
 from invenio.websearch_templates import Template as DefaultTemplate
@@ -597,4 +597,80 @@ class Template(DefaultTemplate):
 
         ## last but not least, print end of search box:
         out += """</form>"""
+        return out
+
+    def tmpl_searchfor_simple(self, ln, collection_id, collection_name, record_count, middle_option):
+        """Produces simple *Search for* box for the current collection.
+
+        Parameters:
+
+          - 'ln' *string* - *str* The language to display
+
+          - 'collection_id' - *str* The collection id
+
+          - 'collection_name' - *str* The collection name in current language
+
+          - 'record_count' - *str* Number of records in this collection
+
+          - 'middle_option' *string* - HTML code for the options (any field, specific fields ...)
+        """
+
+        # load the right message language
+        _ = gettext_set_language(ln)
+
+        out = '''
+        <!--create_searchfor_simple()-->
+        '''
+
+        argd = drop_default_urlargd({'ln': ln, 'cc': collection_id, 'sc': CFG_WEBSEARCH_SPLIT_BY_COLLECTION},
+                                    self.search_results_default_urlargd)
+
+        # Only add non-default hidden values
+        for field, value in argd.items():
+            out += self.tmpl_input_hidden(field, value)
+
+
+        header = _("Search %s records for:") % \
+                 self.tmpl_nbrecs_info(record_count, "", "")
+        asearchurl = self.build_search_interface_url(c=collection_id,
+                                                     aas=max(CFG_WEBSEARCH_ENABLED_SEARCH_INTERFACES),
+                                                     ln=ln)
+        # print commentary start:
+        out += '''
+        <table class="searchbox simplesearch">
+         <thead>
+          <tr align="left">
+           <th colspan="3" class="searchboxheader">%(header)s</th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr valign="baseline">
+           <td class="searchboxbody" align="left"><input type="text" name="p" size="%(sizepattern)d" value="" class="simplesearchfield"/></td>
+           <td class="searchboxbody" align="left">%(middle_option)s</td>
+           <td class="searchboxbody" align="left">
+             <input class="formbutton" type="submit" name="action_search" value="%(msg_search)s" />
+             <!-- <input class="formbutton" type="submit" name="action_browse" value="%(msg_browse)s" /> --></td>
+          </tr>
+          <tr valign="baseline">
+           <td class="searchboxbody" colspan="3" align="right">
+             <small>
+               <a href="%(siteurl)s/help/search-tips%(langlink)s">%(msg_search_tips)s</a> ::
+               %(asearch)s
+             </small>
+           </td>
+          </tr>
+         </tbody>
+        </table>
+        <!--/create_searchfor_simple()-->
+        ''' % {'ln' : ln,
+               'sizepattern' : CFG_WEBSEARCH_SIMPLESEARCH_PATTERN_BOX_WIDTH,
+               'langlink': '?ln=' + ln,
+               'siteurl' : CFG_BASE_URL,
+               'asearch' : create_html_link(asearchurl, {}, _('Advanced Search')),
+               'header' : header,
+               'middle_option' : middle_option,
+               'msg_search' : _('Search'),
+               'msg_browse' : _('Browse'),
+               'msg_search_tips' : _('Search Tips')}
+
         return out
