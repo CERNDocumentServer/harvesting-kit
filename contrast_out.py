@@ -18,7 +18,9 @@ from invenio.scoap3utils import (MD5Error,
                                  FileTypeError,
                                  progress_bar,
                                  check_pkgs_integrity)
-from invenio.minidom_utils import xml_to_text
+from invenio.contrast_out_utils import contrast_out_cmp
+from invenio.minidom_utils import (xml_to_text,
+                                   get_value_in_tag)
 from invenio.errorlib import register_exception
 
 CFG_READY_PACKAGES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "ready_pkgs")
@@ -222,6 +224,7 @@ class ContrastOutConnector(object):
                 print >> sys.stdout, "\nError reading dataset.xml file: %s" % (dataset_link,)
                 continue
 
+            # created = get_value_in_tag(dataset_xml.getElementsByTagName('dataset-unique-ids')[0], 'timestamp')
             journal_items = dataset_xml.getElementsByTagName('journal-item')
             self.logger.info("Getting metadata and fulltex directories for %i journal items." % (len(journal_items),))
             for journal_item in journal_items:
@@ -233,7 +236,11 @@ class ContrastOutConnector(object):
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
 
+        self.sort_results()
         return self.found_articles
+
+    def sort_results(self):
+        self.found_articles = sorted(self.found_articles, key=lambda x: x['xml'].split('/')[8], cmp=contrast_out_cmp)
 
     def run(self):
         self.connect()
@@ -249,3 +256,4 @@ class ContrastOutConnector(object):
         self._check_md5()
         self._extract_packages()
         self._get_metadata_and_fulltex_dir()
+        print self.found_articles
