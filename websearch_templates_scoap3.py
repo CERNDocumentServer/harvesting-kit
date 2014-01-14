@@ -18,6 +18,7 @@
 WebSearch templates for SCOAP3
 """
 
+from invenio.config import CFG_SITE_LANG
 from invenio.messages import gettext_set_language
 from invenio.websearch_templates import Template as DefaultTemplate
 
