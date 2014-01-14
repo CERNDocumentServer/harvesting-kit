@@ -980,7 +980,7 @@ class Template(DefaultTemplate):
                 out += """<br />"""
                 for grandson in grandsons[i]:
                     out += """ <small>%(link)s%(nbrec)s</small> """ % {
-                        'link': grandson.nbrecs and (self.build_search_interface_url(c=grandson.name, ln=ln, aas=aas),
+                        'link': grandson.nbrecs and create_html_link(self.build_search_interface_url(c=grandson.name, ln=ln, aas=aas),
                                                  {},
                                                  cgi.escape(grandson.get_name(ln))) or cgi.escape(grandson.get_name(ln)),
                         'nbrec' : self.tmpl_nbrecs_info(grandson.nbrecs, ln=ln, none_yet_support=True)}
