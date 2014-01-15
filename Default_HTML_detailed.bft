@@ -38,6 +38,7 @@ suffix="<br />" />
 
 <BFE_PUBLI_INFO prefix="<br /><br /><strong>Published in: </strong>"/><br />
 <BFE_DOI tag="0247_" prefix="<small><strong>DOI: </strong>" suffix=" </small><br />" />
+<BFE_ARXIV_LINK prefix="<small><strong>arXiv: </strong>" suffix=" </small><br />" />
 <BFE_COPYRIGHT prefix="<small><strong>Copyright: </strong>" suffix=" </small><br />" />
 <BFE_PLOTS width="200px" caption="no"/>
 
