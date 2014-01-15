@@ -6,7 +6,7 @@ from invenio.minidom_utils import (get_value_in_tag,
 from invenio.bibrecord import record_add_field, record_xml_output
 import time
 from os import pardir
-from os.path import join
+from os.path import join, basename, dirname
 
 
 class NLMParser(JATSParser):
@@ -123,13 +123,11 @@ class NLMParser(JATSParser):
                 subfields.append(('m', plain_text))
             if subfields:
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-        try:
-            f_path_pdf = f_path.replace('.xml', '.pdf')
-            with open(f_path_pdf):
-                record_add_field(rec, 'FFT', subfields=[('a', f_path_pdf)])
-        except:
-            pass
-        record_add_field(rec, 'FFT', subfields=[('a', f_path)])
+        f_path_pdf = f_path[:-(len('.xml'))] + '.pdf'
+        f_path_pdfa = join(dirname(f_path), 'archival_pdfs', basename(f_path)[:-len('.xml')] + '-hires.pdf')
+        record_add_field(rec, 'FFT', subfields=[('a', f_path), ('n', 'main')])
+        record_add_field(rec, 'FFT', subfields=[('a', f_path_pdf), ('n', 'main')])
+        record_add_field(rec, 'FFT', subfields=[('a', f_path_pdfa), ('n', 'main'), ('f', '.pdf;pdfa')])
         extra_subfields = []
         if collection:
             extra_subfields.append(('a', collection))
