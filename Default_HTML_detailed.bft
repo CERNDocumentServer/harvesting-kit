@@ -1,8 +1,5 @@
 <name>Default HTML detailed</name>
 <description>This is the default HTML detailed format</description>
-<BFE_TOPBANNER
-prefix='<div style="padding-left:10px;padding-right:10px">'
-suffix='</div><hr/>'/>
 
 <div style="padding-left:10px;padding-right:10px">
 <BFE_TITLE prefix="<center><big><big><strong>" separator="<br /><br />" suffix="</strong></big></big></center>" />
