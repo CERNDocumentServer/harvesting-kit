@@ -22,7 +22,7 @@ import cgi
 
 from invenio.config import CFG_SITE_LANG, CFG_BASE_URL, CFG_SITE_NAME, CFG_SITE_NAME_INTL, CFG_WEBSEARCH_ADVANCEDSEARCH_PATTERN_BOX_WIDTH, \
     CFG_WEBSEARCH_ENABLED_SEARCH_INTERFACES, CFG_WEBSEARCH_LIGHTSEARCH_PATTERN_BOX_WIDTH, CFG_WEBSEARCH_MAX_RECORDS_IN_GROUPS, \
-    CFG_WEBSEARCH_SIMPLESEARCH_PATTERN_BOX_WIDTH, CFG_WEBSEARCH_SPLIT_BY_COLLECTION
+    CFG_WEBSEARCH_SIMPLESEARCH_PATTERN_BOX_WIDTH, CFG_WEBSEARCH_SPLIT_BY_COLLECTION, CFG_SITE_URL, CFG_SITE_RECORD
 from invenio.urlutils import drop_default_urlargd, create_html_link
 from invenio.messages import gettext_set_language
 from invenio.websearch_external_collections import external_collection_get_state, get_external_collection_engine
@@ -996,4 +996,43 @@ class Template(DefaultTemplate):
             i += 1
         out += "</tbody></table>"
 
+        return out
+
+    def tmpl_record_links(self, recid, ln, sf='', so='d', sp='', rm=''):
+        """
+          Displays the *More info* and *Find similar* links for a record
+
+        Parameters:
+
+          - 'ln' *string* - The language to display
+
+          - 'recid' *string* - the id of the displayed record
+        """
+
+        return ""
+
+    def tmpl_print_record_brief_links(self, ln, recID, sf='', so='d', sp='', rm='', display_claim_link=False, display_edit_link=False):
+        """Displays links for brief record on-the-fly
+
+        Parameters:
+
+          - 'ln' *string* - The language to display
+
+          - 'recID' *int* - The record id
+        """
+        from invenio.webcommentadminlib import get_nb_reviews, get_nb_comments
+
+        # load the right message language
+        _ = gettext_set_language(ln)
+
+        out = '<div class="moreinfo">'
+
+        if display_edit_link:
+            out += '<span class="moreinfo"> - %s</span>' % \
+                    create_html_link('%s/%s/edit/?ln=%s#state=edit&recid=%s' % \
+                                     (CFG_SITE_URL, CFG_SITE_RECORD, ln, str(recID)),
+                                     {},
+                                     link_label=_("Edit record"),
+                                     linkattrd={'class': "moreinfo"})
+        out += '</div>'
         return out
