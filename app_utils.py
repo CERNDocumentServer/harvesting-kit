@@ -14,11 +14,11 @@ from invenio.minidom_utils import (get_value_in_tag,
                                    format_arxiv_id)
 from xml.dom.minidom import parse
 
+RE_ARXIV_ID = re.compile(r"\d+.\d+")
 
 class APPParser(object):
     def __init__(self):
         self.references = None
-        self._dois = []
 
     def get_article(self, path):
         return parse(open(path))
@@ -30,18 +30,22 @@ class APPParser(object):
             print >> sys.stderr, "Can't find title"
 
     def get_publication_information(self, xml):
-        doi = self._get_doi(xml)
         try:
-            return self._dois[doi] + (doi, )
-        except:
-            return ('', '', '', '', '', '', '', doi)
-
-    def _get_doi(self, xml):
-            try:
-                return get_value_in_tag(xml, "ArticleDOI")
-            except:
-                print >> sys.stderr, "Can't find doi"
-                raise Exception
+            doi = get_value_in_tag(xml, "ArticleDOI")
+            if not doi:
+                raise ValueError("DOI not found")
+        except Exception, err:
+            print >> sys.stderr, "Can't find doi: %s" % err
+            raise
+        #journal, issn, volume, issue, first_page, last_page, year
+        journal = get_value_in_tag(xml, "JournalAbbreviatedTitle")
+        issn = get_value_in_tag(xml, "JournalAbbreviatedTitle")
+        volume = get_value_in_tag(xml, "VolumeIDStart")
+        issue = get_value_in_tag(xml, "VolumeIssueCount")
+        first_page = get_value_in_tag(xml, "ArticleFirstPage")
+        last_page = get_value_in_tag(xml, "ArticleLastPage")
+        year = get_value_in_tag(xml, "PricelistYear")
+        return journal, issn, volume, issue, first_page, last_page, year, doi
 
     def get_authors(self, xml):
         authors = []
@@ -97,6 +101,22 @@ class APPParser(object):
                     author["affiliation"].append(aff)
         return authors
 
+    def get_publication_date(self, xml):
+        article_info = xml.getElementsByTagName("ArticleInfo")[0]
+        article_history = article_info.getElementsByTagName("ArticleHistory")[0]
+        online_date = article_history.getElementsByTagName("OnlineDate")
+        if online_date:
+            online_date = online_date[0]
+            year = get_value_in_tag(online_date, "Year")
+            month = get_value_in_tag(online_date, "Month")
+            day = get_value_in_tag(online_date, "Day")
+            try:
+                return "%04d-%02d-%02d" % (int(year), int(month), int(day))
+            except Exception, err:
+                print >> sys.stderr, "Can't reliably extract the publication date: %s" % err
+                return ""
+        return err
+
     def get_abstract(self, xml):
         try:
             return get_value_in_tag(xml, "Abstract")
@@ -122,6 +142,16 @@ class APPParser(object):
         except Exception, err:
             print >> sys.stderr, "Can't find reference to XML file."
 
+    def get_arxiv_id(self, xml):
+        article_note = xml.getElementsByTagName('ArticleNote')
+        if article_note:
+            article_note = article_note[0]
+        else:
+            return ""
+        arxiv_id = get_value_in_tag(article_note, "RefSource")
+        if RE_ARXIV_ID.match(arxiv_id):
+            return "arXiv:%s" % arxiv_id
+        return ""
 
     def get_references(self, xml):
         references = []
@@ -163,10 +193,15 @@ class APPParser(object):
         title = self.get_title(xml)
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
-        record_add_field(rec, '260', subfields=[('c', time.strftime('%Y-%m-%d'))])
+        publication_date = self.get_publication_date(xml)
+        if publication_date:
+            record_add_field(rec, '260', subfields=[('c', publication_date)])
         journal, issn, volume, issue, first_page, last_page, year, doi = self.get_publication_information(xml)
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
+        arxiv_id = self.get_arxiv_id(xml)
+        if arxiv_id:
+            record_add_field(rec, '037', subfields=[('a', arxiv_id), ('9', 'arXiv')])
         if logger:
             logger.info("Creating record: %s %s" % (f_path, doi))
         authors = self.get_authors(xml)
