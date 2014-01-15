@@ -659,7 +659,7 @@ class Template(DefaultTemplate):
           <tr valign="baseline">
            <td class="searchboxbody" colspan="3" align="right">
              <small>
-               <a href="%(siteurl)s/help/search-tips%(langlink)s">%(msg_search_tips)s</a> ::
+               <!-- <a href="%(siteurl)s/help/search-tips%(langlink)s">%(msg_search_tips)s</a> :: -->
                %(asearch)s
              </small>
            </td>
@@ -771,7 +771,7 @@ class Template(DefaultTemplate):
           <tr valign="bottom">
             <td colspan="3" class="searchboxbody" align="right">
               <small>
-                <a href="%(siteurl)s/help/search-tips%(langlink)s">%(msg_search_tips)s</a> ::
+                <!-- <a href="%(siteurl)s/help/search-tips%(langlink)s">%(msg_search_tips)s</a> :: -->
                 %(ssearch)s
               </small>
             </td>
