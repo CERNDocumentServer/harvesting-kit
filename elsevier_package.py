@@ -367,6 +367,14 @@ class ElsevierPackage(object):
             data_file = open(join(path, "resolved_main.xml"))
         return parse(data_file)
 
+    def get_elsevier_version(self, path):
+        print path
+        ret = path.split('/')[-2][0:5]
+        print ret
+        if ret[4] is "A":
+            ret = ret + "B"
+        return ret
+
     def get_pdfa_record(self, path=None):
         xml = self.get_article(path)
         rec = {}
@@ -421,7 +429,7 @@ class ElsevierPackage(object):
                 record_add_field(rec, '700', subfields=subfields)
         abstract = self.get_abstract(xml)
         if abstract:
-            record_add_field(rec, '520', subfields=[('a', abstract),('9', 'Elsevier')])
+            record_add_field(rec, '520', subfields=[('a', abstract), ('9', 'Elsevier')])
         record_add_field(rec, '540', subfields=[('a', 'CC-BY-3.0'), ('u', 'http://creativecommons.org/licenses/by/3.0/')])
         copyright = self.get_copyright(xml)
         if copyright:
@@ -459,18 +467,36 @@ class ElsevierPackage(object):
             if subfields:
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
         if not no_pdf:
-            try:
-                if exists(join(path, 'main_a-2b.pdf')):
-                    record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf')), ('n', 'main'), ('f', '.pdf;pdfa')])
-                    self.logger.debug('Adding PDF/A to record: %s' % (doi,))
-                elif exists(join(path, 'main.pdf')):
-                    record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
-                else:
-                    raise MissingFFTError("Record %s doesn't contain PDF file." % (doi,))
-            except MissingFFTError, err:
-                register_exception(alert_admin=True, prefix="Elsevier paper: %s is missing PDF." % (doi,))
-                self.logger.warning("Record %s doesn't contain PDF file." % (doi,))
+            from invenio.search_engine import search_pattern
+            prev_version = search_pattern(p="024__:%s - 980__:deleted" % (doi,))
+            from invenio.bibdocfile import BibRecDocs
 
+            add_new_pdf = True
+
+            if prev_version:
+                prev_rec = BibRecDocs(prev_version[0])
+                try:
+                    pdf_path = prev_rec.get_bibdoc('main').get_file(".pdf;pdfa").fullpath
+                    record_add_field(rec, 'FFT', subfields=[('a', pdf_path), ('n', 'main'), ('f', '.pdf;pdfa')])
+                    add_new_pdf = False
+                    self.logger.warning('Leaving previously delivered PDF/A for: %s' % (doi,))
+                except:
+                    pass
+
+            if add_new_pdf:
+                try:
+                    if exists(join(path, 'main_a-2b.pdf')):
+                        record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf')), ('n', 'main'), ('f', '.pdf;pdfa')])
+                        self.logger.debug('Adding PDF/A to record: %s' % (doi,))
+                    elif exists(join(path, 'main.pdf')):
+                        record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
+                    else:
+                        raise MissingFFTError("Record %s doesn't contain PDF file." % (doi,))
+                except MissingFFTError, err:
+                    register_exception(alert_admin=True, prefix="Elsevier paper: %s is missing PDF." % (doi,))
+                    self.logger.warning("Record %s doesn't contain PDF file." % (doi,))
+
+        record_add_field(rec, '583', subfields=[('l', self.get_elsevier_version(path))])
         record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.xml'))])
         record_add_field(rec, '980', subfields=[('a', 'SCOAP3'), ('b', 'Elsevier')])
         return record_xml_output(rec)

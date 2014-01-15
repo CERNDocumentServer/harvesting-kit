@@ -240,7 +240,7 @@ class ContrastOutConnector(object):
         return self.found_articles
 
     def sort_results(self):
-        self.found_articles = sorted(self.found_articles, key=lambda x: [p_name for p_name in x['xml'].split('/') if "CERN" in p_name][0], cmp=contrast_out_cmp)   
+        self.found_articles = sorted(self.found_articles, key=lambda x: [p_name for p_name in x['xml'].split('/') if "CERN" in p_name][0], cmp=contrast_out_cmp)
 
     def run(self):
         self.connect()
