@@ -124,7 +124,7 @@ class OxfordPackage(object):
 
     def run(self):
         self.connect()
-        self._get_file_listing()
+        self._get_file_listing(".zip")
         try:
             self._download_tars()
         except NoNewFiles:

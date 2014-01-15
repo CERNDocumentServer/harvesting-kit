@@ -384,3 +384,49 @@ template function generated it.
           'pagefooteradd': pagefooteradd,
         }
         return out
+
+    def detailed_record_container_bottom(self, recid, tabs, ln=CFG_SITE_LANG,
+                                         show_similar_rec_p=True,
+                                         creationdate=None,
+                                         modificationdate=None, show_short_rec_p=True):
+        """Prints the box displayed in detailed records pages, with tabs at the top.
+
+        Returns content as it is if the number of tabs for this record
+        is smaller than 2
+
+           Parameters:
+
+         - recid *int* - the id of the displayed record
+         - tabs ** - the tabs displayed at the top of the box.
+         - ln *string* - the language of the page in which the box is displayed
+         - show_similar_rec_p *bool* print 'similar records' link in the box
+         - creationdate *string* - the creation date of the displayed record
+         - modificationdate *string* - the last modification date of the displayed record
+         - show_short_rec_p *boolean* - prints a very short version of the record as reminder.
+        """
+        # If no tabs, returns nothing
+        if len(tabs) <= 1:
+            return ''
+
+        # load the right message language
+        _ = gettext_set_language(ln)
+
+        similar = ""
+
+        out = """
+            <div class="bottom-left-folded">%(dates)s</div>
+            <div class="bottom-right-folded" style="text-align:right;padding-bottom:2px;">
+                <span class="moreinfo" style="margin-right:10px;">%(similar)s</span></div>
+          </div>
+      </div>
+    </div>
+    <br/>
+    """ % {'similar' : similar,
+           'dates' : creationdate and '<div class="recordlastmodifiedbox" style="position:relative;margin-left:1px">&nbsp;%(dates)s</div>' % {
+                'dates': _("Record created %(x_date_creation)s, last modified %(x_date_modification)s") % \
+                {'x_date_creation': creationdate,
+                 'x_date_modification': modificationdate},
+                } or ''
+           }
+
+        return out
