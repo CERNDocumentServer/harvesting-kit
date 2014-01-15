@@ -591,7 +591,7 @@ class Template(DefaultTemplate):
                                     'text' : _("single list")
                                   }, {
                                     'value' : 1,
-                                    'text' : _("split by collection")
+                                    'text' : _("split by publisher/journal")
                                   }], selected=sc, css_class='address'),
                   'select_of' : self.tmpl_select(
                                   fieldname='of',
