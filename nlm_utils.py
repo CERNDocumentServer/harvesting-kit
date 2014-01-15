@@ -55,6 +55,7 @@ class NLMParser(JATSParser):
             record_add_field(rec, '245', subfields=[('a', title)])
         record_add_field(rec, '260', subfields=[('c', time.strftime('%Y-%m-%d'))])
         journal, issn, volume, issue, first_page, last_page, year, doi = super(NLMParser, self).get_publication_information(xml)
+        journal = "PTEP" ## Let's override the journal information
 
         if logger:
             logger.info("Creating record: %s %s" % (join(f_path, pardir), doi))
@@ -92,9 +93,11 @@ class NLMParser(JATSParser):
         if keywords['pacs']:
             for keyword in keywords['pacs']:
                 record_add_field(rec, '084', ind1='1', subfields=[('a', keyword), ('9', 'PACS')])
-        if keywords['other']:
-            for keyword in keywords['other']:
-                record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
+
+        ## Oxford is giving us bad keywords. Better ignore them.
+        #if keywords['other']:
+            #for keyword in keywords['other']:
+                #record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
         record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
         self.get_references(xml)
         for label, authors, doi, issue, page, page_last, title, volume, year, ext_link, plain_text in self.references:
