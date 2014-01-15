@@ -367,6 +367,26 @@ class ElsevierPackage(object):
             data_file = open(join(path, "resolved_main.xml"))
         return parse(data_file)
 
+    def get_pdfa_record(self, path=None):
+        xml = self.get_article(path)
+        rec = {}
+        journal, issn, volume, issue, first_page, last_page, year, start_date, doi = self.get_publication_information(xml)
+        record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
+        try:
+            if exists(join(path, 'main_a-2b.pdf')):
+                record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf')), ('n', 'main'), ('f', '.pdf;pdfa')])
+                self.logger.debug('Adding PDF/A to record: %s' % (doi,))
+            elif exists(join(path, 'main.pdf')):
+                record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
+                self.logger.debug('No PDF/A in VTEX package for record: %s' % (doi,))
+            else:
+                raise MissingFFTError("Record %s doesn't contain PDF file." % (doi,))
+        except MissingFFTError, err:
+            register_exception(alert_admin=True, prefix="Elsevier paper: %s is missing PDF." % (doi,))
+            self.logger.warning("Record %s doesn't contain PDF file." % (doi,))
+
+        return record_xml_output(rec)
+
     def get_record(self, path=None, no_pdf=False):
         xml = self.get_article(path)
         rec = {}
@@ -457,16 +477,29 @@ class ElsevierPackage(object):
 
     def bibupload_it(self):
         if self.found_articles:
-            self.logger.debug("Preparing bibupload.")
-            fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
-            out = fdopen(fd, 'w')
-            print >> out, "<collection>"
-            for i, path in enumerate(self.found_articles):
-                print >> out, self.get_record(path)
-                print path, i + 1, "out of", len(self.found_articles)
-            print >> out, "</collection>"
-            out.close()
-            task_low_level_submission("bibupload", "admin", "-N", "Elsevier", "-i", "-r", name)
+            if [x for x in self.found_articles if "vtex" not in x]:
+                self.logger.debug("Preparing bibupload.")
+                fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
+                out = fdopen(fd, 'w')
+                print >> out, "<collection>"
+                for i, path in enumerate(self.found_articles):
+                    if "vtex" not in path:
+                        print >> out, self.get_record(path)
+                        print path, i + 1, "out of", len(self.found_articles)
+                print >> out, "</collection>"
+                out.close()
+                task_low_level_submission("bibupload", "admin", "-N", "Elsevier", "-i", "-r", name)
+            else:  # for VTEX files with PDF/A
+                fd_vtex, name_vtex = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
+                out = fdopen(fd_vtex, 'w')
+                print >> out, "<collection>"
+                for i, path in enumerate(self.found_articles):
+                    if "vtex" in path:
+                        print >> out, self.get_pdfa_record(path)
+                        print path, i + 1, "out of", len(self.found_articles)
+                print >> out, "</collection>"
+                out.close()
+                task_low_level_submission("bibupload", "admin", "-N", "Elsevier:VTEX", "-a", name_vtex)
 
 
 def main():
