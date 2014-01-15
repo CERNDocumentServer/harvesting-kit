@@ -42,7 +42,7 @@ class APPParser(object):
         if journal == 'J. High Energ. Phys.':
             journal = 'JHEP'
         issn = get_value_in_tag(xml, "JournalAbbreviatedTitle")
-        volume = get_value_in_tag(xml, "VolumeIDStart")[:2] + "%02d" % int(get_value_in_tag(xml, "IssueIDStart"))
+        volume = get_value_in_tag(xml, "VolumeIDStart")[2:] + "%02d" % int(get_value_in_tag(xml, "IssueIDStart"))
         issue = ""
         first_page = "%03d" % int(get_value_in_tag(xml, "ArticleSequenceNumber"))
         pages = get_value_in_tag(xml, "ArticleLastPage")
