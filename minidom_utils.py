@@ -37,14 +37,14 @@ def format_arxiv_id(arxiv_id):
         return arxiv_id
 
 
-def xml_to_text(xml):
+def xml_to_text(xml, delimiter=' '):
     if xml.nodeType == xml.TEXT_NODE:
         return xml.wholeText.encode('utf-8')
     elif 'mml:' in xml.nodeName:
         return xml.toxml().replace('mml:', '').replace('xmlns:mml', 'xmlns').encode('utf-8')
     elif xml.hasChildNodes():
         for child in xml.childNodes:
-            return ' '.join(''.join(xml_to_text(child) for child in xml.childNodes).split())
+            return delimiter.join(''.join(xml_to_text(child) for child in xml.childNodes).split())
     return ''
 
 

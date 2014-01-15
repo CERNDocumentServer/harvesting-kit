@@ -39,13 +39,15 @@ class APPParser(object):
             raise
         #journal, issn, volume, issue, first_page, last_page, year
         journal = get_value_in_tag(xml, "JournalAbbreviatedTitle")
+        if journal == 'J. High Energ. Phys.':
+            journal = 'JHEP'
         issn = get_value_in_tag(xml, "JournalAbbreviatedTitle")
-        volume = get_value_in_tag(xml, "VolumeIDStart")
-        issue = get_value_in_tag(xml, "VolumeIssueCount")
-        first_page = get_value_in_tag(xml, "ArticleFirstPage")
-        last_page = get_value_in_tag(xml, "ArticleLastPage")
-        year = get_value_in_tag(xml, "PricelistYear")
-        return journal, issn, volume, issue, first_page, last_page, year, doi
+        volume = get_value_in_tag(xml, "VolumeIDStart")[:2] + "%02d" % int(get_value_in_tag(xml, "IssueIDStart"))
+        issue = ""
+        first_page = "%03d" % int(get_value_in_tag(xml, "ArticleSequenceNumber"))
+        pages = get_value_in_tag(xml, "ArticleLastPage")
+        year = get_value_in_tag(xml, "VolumeIDStart")
+        return journal, issn, volume, issue, first_page, pages, year, doi
 
     def get_authors(self, xml):
         authors = []
@@ -82,7 +84,7 @@ class APPParser(object):
         affiliations = {}
         for affiliation in xml.getElementsByTagName("Affiliation"):
             aff_id = affiliation.getAttribute("ID").encode('utf-8')
-            text = xml_to_text(affiliation)
+            text = xml_to_text(affiliation, delimiter=', ')
             affiliations[aff_id] = text
         implicit_affilations = True
         for author in authors:
@@ -119,7 +121,7 @@ class APPParser(object):
 
     def get_abstract(self, xml):
         try:
-            return get_value_in_tag(xml, "Abstract")
+            return get_value_in_tag(xml.getElementsByTagName("Abstract")[0], "Para")
         except Exception, err:
             print >> sys.stderr, "Can't find abstract"
 
@@ -196,7 +198,7 @@ class APPParser(object):
         publication_date = self.get_publication_date(xml)
         if publication_date:
             record_add_field(rec, '260', subfields=[('c', publication_date)])
-        journal, issn, volume, issue, first_page, last_page, year, doi = self.get_publication_information(xml)
+        journal, issn, volume, issue, first_page, pages, year, doi = self.get_publication_information(xml)
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
         arxiv_id = self.get_arxiv_id(xml)
@@ -221,7 +223,7 @@ class APPParser(object):
         abstract = self.get_abstract(xml)
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract)])
-        record_add_field(rec, '540', subfields=[('a', 'CC-BY-3.0'), ('u', 'http://creativecommons.org/licenses/by/3.0/')])
+        record_add_field(rec, '540', subfields=[('a', 'CC-BY-4.0'), ('u', 'http://creativecommons.org/licenses/by/4.0/')])
         copyright = self.get_copyright(xml)
         if copyright:
             record_add_field(rec, '542', subfields=[('f', copyright)])
@@ -229,7 +231,9 @@ class APPParser(object):
         if keywords:
             for keyword in keywords:
                 record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
-        record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
+        record_add_field(rec, "260", subfields=[('c', year)])
+        record_add_field(rec, "300", subfields=[('a', pages)])
+        record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('c', first_page), ('y', year)])
         references = self.get_references(xml)
         for label, authors, doi, issue, page, title, volume, year in references:
             subfields = []
