@@ -475,7 +475,7 @@ class Template(DefaultTemplate):
                 </table>
                  """ % {
                    'leading' : leadingtext,
-                   'msg_coll' : _("collections"),
+                   'msg_coll' : _("journals or publishers"),
                    'colls' : selects,
                  }
 
