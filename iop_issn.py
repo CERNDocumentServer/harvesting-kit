@@ -22,7 +22,7 @@ Correct IOP ISSN into actual journal names
 """
 
 CFG_ISSN_MAP = {
-    '1475-7516': 'J. Cosmol. Astropart. Phys.',
+    '1475-7516': 'JCAP',
     '1367-2630': 'New J. Phys.',
     '1674-1137': 'Chinese Phys. C',
 }
