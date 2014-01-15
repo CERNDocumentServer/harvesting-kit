@@ -279,7 +279,7 @@ class Template(DefaultTemplate):
               <tr valign="bottom">
                 <td colspan="3" align="right" class="searchboxbody">
                   <small>
-                    <a href="%(siteurl)s/help/search-tips%(langlink)s">%(search_tips)s</a> ::
+                    <!-- <a href="%(siteurl)s/help/search-tips%(langlink)s">%(search_tips)s</a> :: -->
                     %(simple_search)s
                   </small>
                 </td>
@@ -356,7 +356,7 @@ class Template(DefaultTemplate):
               <tr valign="bottom">
                 <td colspan="3" align="right" class="searchboxbody">
                   <small>
-                    <a href="%(siteurl)s/help/search-tips%(langlink)s">%(search_tips)s</a> ::
+                    <!-- <a href="%(siteurl)s/help/search-tips%(langlink)s">%(search_tips)s</a> :: -->
                     %(advanced_search)s
                   </small>
                 </td>
@@ -414,7 +414,7 @@ class Template(DefaultTemplate):
                 </td>
                 <td class="searchboxbody" align="left" rowspan="2" valign="top">
                   <small><small>
-                  <a href="%(siteurl)s/help/search-tips%(langlink)s">%(search_tips)s</a><br/>
+                  <!-- <a href="%(siteurl)s/help/search-tips%(langlink)s">%(search_tips)s</a><br/> -->
                   %(advanced_search)s
                 </td>
               </tr>
@@ -1035,4 +1035,152 @@ class Template(DefaultTemplate):
                                      link_label=_("Edit record"),
                                      linkattrd={'class': "moreinfo"})
         out += '</div>'
+        return out
+
+    def tmpl_searchfor_light(self, ln, collection_id, collection_name, record_count,
+                             example_search_queries): # EXPERIMENTAL
+        """Produces light *Search for* box for the current collection.
+
+        Parameters:
+
+          - 'ln' *string* - *str* The language to display
+
+          - 'collection_id' - *str* The collection id
+
+          - 'collection_name' - *str* The collection name in current language
+
+          - 'example_search_queries' - *list* List of search queries given as example for this collection
+        """
+
+        # load the right message language
+        _ = gettext_set_language(ln)
+
+        out = '''
+        <!--create_searchfor_light()-->
+        '''
+
+        argd = drop_default_urlargd({'ln': ln, 'sc': CFG_WEBSEARCH_SPLIT_BY_COLLECTION},
+                                    self.search_results_default_urlargd)
+
+        # Only add non-default hidden values
+        for field, value in argd.items():
+            out += self.tmpl_input_hidden(field, value)
+
+
+        header = _("Search %s records for:") % \
+                 self.tmpl_nbrecs_info(record_count, "", "")
+        asearchurl = self.build_search_interface_url(c=collection_id,
+                                                     aas=max(CFG_WEBSEARCH_ENABLED_SEARCH_INTERFACES),
+                                                     ln=ln)
+
+        # Build example of queries for this collection
+        example_search_queries_links = [create_html_link(self.build_search_url(p=example_query,
+                                                                               ln=ln,
+                                                                               aas= -1,
+                                                                               c=collection_id),
+                                                         {},
+                                                         cgi.escape(example_query),
+                                                         {'class': 'examplequery'}) \
+                                        for example_query in example_search_queries]
+        example_query_html = ''
+        if len(example_search_queries) > 0:
+            example_query_link = example_search_queries_links[0]
+
+            # offers more examples if possible
+            more = ''
+            if len(example_search_queries_links) > 1:
+                more = '''
+                <script type="text/javascript">
+                function toggle_more_example_queries_visibility(){
+                    var more = document.getElementById('more_example_queries');
+                    var link = document.getElementById('link_example_queries');
+                    var sep = document.getElementById('more_example_sep');
+                    if (more.style.display=='none'){
+                        more.style.display = '';
+                        link.innerHTML = "%(show_less)s"
+                        link.style.color = "rgb(204,0,0)";
+                        sep.style.display = 'none';
+                    } else {
+                        more.style.display = 'none';
+                        link.innerHTML = "%(show_more)s"
+                        link.style.color = "rgb(0,0,204)";
+                        sep.style.display = '';
+                    }
+                    return false;
+                }
+                </script>
+                <span id="more_example_queries" style="display:none;text-align:right"><br/>%(more_example_queries)s<br/></span>
+                <a id="link_example_queries" href="#" onclick="toggle_more_example_queries_visibility()" style="display:none"></a>
+                <script type="text/javascript">
+                    var link = document.getElementById('link_example_queries');
+                    var sep = document.getElementById('more_example_sep');
+                    link.style.display = '';
+                    link.innerHTML = "%(show_more)s";
+                    sep.style.display = '';
+                </script>
+                ''' % {'more_example_queries': '<br/>'.join(example_search_queries_links[1:]),
+                       'show_less':_("less"),
+                       'show_more':_("more")}
+
+            example_query_html += '''<p style="text-align:right;margin:0px;">
+            %(example)s<span id="more_example_sep" style="display:none;">&nbsp;&nbsp;::&nbsp;</span>%(more)s
+            </p>
+            ''' % {'example': _("Example: %(x_sample_search_query)s") % \
+                   {'x_sample_search_query': example_query_link},
+                   'more': more}
+
+        # display options to search in current collection or everywhere
+        search_in = ''
+        if collection_name != CFG_SITE_NAME_INTL.get(ln, CFG_SITE_NAME):
+            search_in += '''
+           <input type="radio" name="cc" value="%(collection_id)s" id="searchCollection" checked="checked"/>
+           <label for="searchCollection">%(search_in_collection_name)s</label>
+           <input type="radio" name="cc" value="%(root_collection_name)s" id="searchEverywhere" />
+           <label for="searchEverywhere">%(search_everywhere)s</label>
+           ''' % {'search_in_collection_name': _("Search in %(x_collection_name)s") % \
+                  {'x_collection_name': collection_name},
+                  'collection_id': collection_id,
+                  'root_collection_name': CFG_SITE_NAME,
+                  'search_everywhere': _("Search everywhere")}
+
+        # print commentary start:
+        out += '''
+        <table class="searchbox lightsearch">
+         <tbody>
+          <tr valign="baseline">
+           <td class="searchboxbody" align="right"><input type="text" name="p" size="%(sizepattern)d" value="" class="lightsearchfield"/><br/>
+             <small><small>%(example_query_html)s</small></small>
+           </td>
+           <td class="searchboxbody" align="left">
+             <input class="formbutton" type="submit" name="action_search" value="%(msg_search)s" />
+           </td>
+           <td class="searchboxbody" align="left" rowspan="2" valign="top">
+             <small><small>
+             <!-- <a href="%(siteurl)s/help/search-tips%(langlink)s">%(msg_search_tips)s</a><br/> -->
+             %(asearch)s
+             </small></small>
+           </td>
+          </tr></table>
+          <!--<tr valign="baseline">
+           <td class="searchboxbody" colspan="2" align="left">
+             <small>
+               --><small>%(search_in)s</small><!--
+             </small>
+           </td>
+          </tr>
+         </tbody>
+        </table>-->
+        <!--/create_searchfor_light()-->
+        ''' % {'ln' : ln,
+               'sizepattern' : CFG_WEBSEARCH_LIGHTSEARCH_PATTERN_BOX_WIDTH,
+               'langlink': '?ln=' + ln,
+               'siteurl' : CFG_BASE_URL,
+               'asearch' : create_html_link(asearchurl, {}, _('Advanced Search')),
+               'header' : header,
+               'msg_search' : _('Search'),
+               'msg_browse' : _('Browse'),
+               'msg_search_tips' : _('Search Tips'),
+               'search_in': search_in,
+               'example_query_html': example_query_html}
+
         return out
