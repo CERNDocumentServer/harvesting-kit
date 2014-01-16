@@ -18,7 +18,8 @@ from invenio.scoap3utils import (MD5Error,
                                  FileTypeError,
                                  progress_bar,
                                  check_pkgs_integrity)
-from invenio.contrast_out_utils import contrast_out_cmp
+from invenio.contrast_out_utils import (contrast_out_cmp,
+                                        find_package_name)
 from invenio.minidom_utils import (xml_to_text,
                                    get_value_in_tag)
 from invenio.errorlib import register_exception
@@ -171,10 +172,10 @@ class ContrastOutConnector(object):
                     ZipFile(path).extractall(self.path_unpacked)
                 else:
                     raise FileTypeError("It's not a TAR or ZIP archive.")
-            except:
+            except Exception, err:
                 register_exception(alert_admin=True, prefix="Elsevier error extracting package.")
-                self.logger.error("Error extraction package file: %s" % (path,))
-                print >> sys.stdout, "\nError extracting package file: %s" % (path,)
+                self.logger.error("Error extraction package file: %s %s" % (path,err))
+                print >> sys.stdout, "\nError extracting package file: %s %s" % (path, err)
 
         return self.path_unpacked
 
@@ -213,6 +214,8 @@ class ContrastOutConnector(object):
         sys.stdout.write(p_bar.next())
         sys.stdout.flush()
 
+        print self.path_unpacked
+        print self.files_list
         for name in self.files_list:
             dataset_link = join(self.path_unpacked, name.split('.')[0], 'dataset.xml')
 
@@ -240,20 +243,28 @@ class ContrastOutConnector(object):
         return self.found_articles
 
     def sort_results(self):
-        self.found_articles = sorted(self.found_articles, key=lambda x: [p_name for p_name in x['xml'].split('/') if "CERN" in p_name][0], cmp=contrast_out_cmp)
+        self.found_articles = sorted(self.found_articles, key=lambda x: find_package_name(x['xml']), cmp=contrast_out_cmp)
 
-    def run(self):
-        self.connect()
-        self._get_file_listing('.ready')
-        try:
-            self._download_file_listing()
-        except:
-            self.logger.info("No new packages to process.")
-            print >> sys.stdout, "No new packages to process."
-            return
-        self._get_packages()
-        self._download_tars()
-        self._check_md5()
+    def run(self, run_localy=False):
+        if not run_localy:
+            self.connect()
+            self._get_file_listing('.ready')
+            try:
+                self._download_file_listing()
+            except:
+                self.logger.info("No new packages to process.")
+                print >> sys.stdout, "No new packages to process."
+                return
+            self._get_packages()
+            self._download_tars()
+            self._check_md5()
+        else:
+            self.logger.info("Running on local files.")
+            self.retrieved_packages_unpacked = []
+            self.files_list =[]
+            for p in listdir(CFG_TAR_FILES):
+                self.retrieved_packages_unpacked.append(join(CFG_TAR_FILES, p))
+            for p in listdir(CFG_READY_PACKAGES):
+                self.files_list.append(p.strip(".ready.xml"))
         self._extract_packages()
         self._get_metadata_and_fulltex_dir()
-        print self.found_articles

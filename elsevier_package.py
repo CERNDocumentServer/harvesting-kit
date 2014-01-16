@@ -41,6 +41,7 @@ from invenio.scoap3utils import (create_logger,
                                  progress_bar,
                                  MissingFFTError,
                                  FileTypeError)
+from invenio.contrast_out_utils import find_package_name
 from invenio.minidom_utils import (get_value_in_tag,
                                    xml_to_text,
                                    format_arxiv_id)
@@ -71,21 +72,26 @@ class ElsevierPackage(object):
     @note: either C{package_name} or C{path} don't have to be passed to the
     constructor, in this case the Elsevier server will be harvested.
     """
-    def __init__(self, package_name=None, path=None):
+    def __init__(self, package_name=None, path=None, run_localy=False):
         self.package_name = package_name
         self.path = path
         self.found_articles = []
         self._found_issues = []
         self.logger = create_logger("Elsevier")
 
-        if not path and package_name:
-            self.logger.info("Got package: %s" % (package_name,))
-            self._extract_package()
-        elif not path and not package_name:
-            print "Starting harves"
+        if run_localy:
             from invenio.contrast_out import ContrastOutConnector
             self.conn = ContrastOutConnector(self.logger)
-            self.conn.run()
+            self.conn.run(run_localy)
+        else:
+            if not path and package_name:
+                self.logger.info("Got package: %s" % (package_name,))
+                self._extract_package()
+            elif not path and not package_name:
+                print "Starting harves"
+                from invenio.contrast_out import ContrastOutConnector
+                self.conn = ContrastOutConnector(self.logger)
+                self.conn.run()
         self._crawl_elsevier_and_find_main_xml()
         self._crawl_elsevier_and_find_issue_xml()
         self._build_doi_mapping()
@@ -367,13 +373,14 @@ class ElsevierPackage(object):
             data_file = open(join(path, "resolved_main.xml"))
         return parse(data_file)
 
-    def get_elsevier_version(self, path):
-        print path
-        ret = path.split('/')[-2][0:5]
-        print ret
-        if ret[4] is "A":
-            ret = ret + "B"
-        return ret
+    def get_elsevier_version(self, name):
+        try:
+            ret = name[0:5]
+            if ret[4] is "A":
+                ret = ret + "B"
+            return ret
+        except Exception, err:
+            raise
 
     def get_pdfa_record(self, path=None):
         xml = self.get_article(path)
@@ -479,7 +486,7 @@ class ElsevierPackage(object):
                     pdf_path = prev_rec.get_bibdoc('main').get_file(".pdf;pdfa").fullpath
                     record_add_field(rec, 'FFT', subfields=[('a', pdf_path), ('n', 'main'), ('f', '.pdf;pdfa')])
                     add_new_pdf = False
-                    self.logger.warning('Leaving previously delivered PDF/A for: %s' % (doi,))
+                    self.logger.info('Leaving previously delivered PDF/A for: %s' % (doi,))
                 except:
                     pass
 
@@ -496,12 +503,13 @@ class ElsevierPackage(object):
                     register_exception(alert_admin=True, prefix="Elsevier paper: %s is missing PDF." % (doi,))
                     self.logger.warning("Record %s doesn't contain PDF file." % (doi,))
 
-        record_add_field(rec, '583', subfields=[('l', self.get_elsevier_version(path))])
+        record_add_field(rec, '583', subfields=[('l', self.get_elsevier_version(find_package_name(path)))])
         record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.xml'))])
         record_add_field(rec, '980', subfields=[('a', 'SCOAP3'), ('b', 'Elsevier')])
         return record_xml_output(rec)
 
     def bibupload_it(self):
+        print self.found_articles
         if self.found_articles:
             if [x for x in self.found_articles if "vtex" not in x]:
                 self.logger.debug("Preparing bibupload.")
@@ -515,10 +523,13 @@ class ElsevierPackage(object):
                 print >> out, "</collection>"
                 out.close()
                 task_low_level_submission("bibupload", "admin", "-N", "Elsevier", "-i", "-r", name)
-            else:  # for VTEX files with PDF/A
+
+            if [x for x in self.found_articles if "vtex" in x]:
+            # for VTEX files with PDF/A
                 fd_vtex, name_vtex = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
                 out = fdopen(fd_vtex, 'w')
                 print >> out, "<collection>"
+                # enumerate remember progres of prevoius one
                 for i, path in enumerate(self.found_articles):
                     if "vtex" in path:
                         print >> out, self.get_pdfa_record(path)
@@ -530,14 +541,21 @@ class ElsevierPackage(object):
 
 def main():
     try:
-        if len(sys.argv) == 2:
-            path_or_package = sys.argv[1]
-            if path_or_package.endswith((".tar", ".zip")):
-                els = ElsevierPackage(package_name=path_or_package)
-            else:
-                els = ElsevierPackage(path=path_or_package)
-        else:
+        if len(sys.argv) > 2:
+            print >> sys.stdout, "Unrecognized number of parameters."
+            print >> sys.stdout, "Try giving a package name or run with --run-localy."
+            sys.exit(1)
+        if len(sys.argv) < 2:
             els = ElsevierPackage()
+        elif len(sys.argv) == 2:
+            if sys.argv[1] == "--run-localy":
+                els = ElsevierPackage(run_localy=True)
+            else:
+                path_or_package = sys.argv[1]
+                if path_or_package.endswith((".tar", ".zip")):
+                    els = ElsevierPackage(package_name=path_or_package)
+                else:
+                    els = ElsevierPackage(path=path_or_package)
         els.bibupload_it()
     except Exception, err:
         register_exception()
