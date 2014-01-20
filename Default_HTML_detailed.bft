@@ -4,7 +4,7 @@
 <div style="padding-left:10px;padding-right:10px">
 <BFE_TITLE prefix="<center><big><big><strong>" separator="<br /><br />" suffix="</strong></big></big></center>" />
 <p align="center">
-<BFE_AUTHORS suffix="<br />" limit="25" interactive="yes" print_affiliations="yes" affiliation_prefix="<small> (" affiliation_suffix=")</small>"/>
+<BFE_AUTHORS suffix="<br />" limit="25" interactive="yes" print_affiliations="yes" affiliation_prefix="<small> (" affiliation_suffix=")</small>" multiple_affiliations="yes"/>
 <BFE_ADDRESSES />
 <BFE_AFFILIATION />
 <BFE_DATE prefix="<br />" suffix="<br />"/>
