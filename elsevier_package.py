@@ -388,7 +388,7 @@ class ElsevierPackage(object):
         rec = {}
         journal, issn, volume, issue, first_page, last_page, year, start_date, doi = self.get_publication_information(xml)
 
-        recid = search_pattern(p="024__:%s" % (doi,))
+        recid = search_pattern(p='0247_a:"%s" AND NOT 980:"DELETED"' % (doi,))
         if recid:
             record_add_field(rec, '001', controlfield_value=recid[0])
         else:
@@ -484,7 +484,7 @@ class ElsevierPackage(object):
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
         if not no_pdf:
             from invenio.search_engine import search_pattern
-            prev_version = search_pattern(p="024__:%s - 980__:deleted" % (doi,))
+            prev_version = search_pattern(p='0247_a:"%s" AND NOT 980:DELETED"' % (doi,))
             from invenio.bibdocfile import BibRecDocs
             old_pdf = False
 
