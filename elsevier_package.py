@@ -491,7 +491,7 @@ class ElsevierPackage(object):
             if prev_version:
                 prev_rec = BibRecDocs(prev_version[0])
                 try:
-                    pdf_path = prev_rec.get_bibdoc('main').get_file(".pdf;pdfa").fullpath
+                    pdf_path = prev_rec.get_bibdoc('main').get_file(".pdf;pdfa", exact_docformat=True).fullpath
                     old_pdf = True
                     record_add_field(rec, 'FFT', subfields=[('a', pdf_path), ('n', 'main'), ('f', '.pdf;pdfa')])
                     self.logger.info('Leaving previously delivered PDF/A for: %s' % (doi,))
