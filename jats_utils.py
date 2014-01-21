@@ -162,11 +162,26 @@ class JATSParser(object):
         except Exception, err:
             print >> sys.stderr, "Can't find abstract"
 
-    def get_copyright(self, xml):
-        try:
-            return get_value_in_tag(xml, "copyright-holder")
-        except Exception, err:
-            print >> sys.stderr, "Can't find copyright"
+    def get_copyright(self, xml, logger=None):
+        tags = ["copyright-holder", "copyright-statement"]
+        for tag in tags:
+            if tag is "copyright-holder":
+                ret = get_value_in_tag(xml, tag)
+                if not ret:
+                    if logger:
+                        logger.info("Can't find copyright, trying different tag.")
+                    print >> sys.stderr, "Can't find copyright, trying different tag."
+                else:
+                    return ret
+            else:
+                ret = get_value_in_tag(xml, tag)
+                if not ret:
+                    if logger:
+                        logger.info("Can't find copyright")
+                    print >> sys.stderr, "Can't find copyright"
+                else:
+                    ret = ret.split('.')
+                    return ret[0]
 
     def get_keywords(self, xml):
         try:
@@ -269,7 +284,7 @@ class JATSParser(object):
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract), ('9', publisher)])
         record_add_field(rec, '540', subfields=[('a', 'CC-BY-3.0'), ('u', 'http://creativecommons.org/licenses/by/3.0/')])
-        copyright = self.get_copyright(xml)
+        copyright = self.get_copyright(xml, logger)
         if copyright:
             record_add_field(rec, '542', subfields=[('f', copyright)])
         keywords = self.get_keywords(xml)

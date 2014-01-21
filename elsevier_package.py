@@ -447,7 +447,7 @@ class ElsevierPackage(object):
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract), ('9', 'Elsevier')])
         record_add_field(rec, '540', subfields=[('a', 'CC-BY-3.0'), ('u', 'http://creativecommons.org/licenses/by/3.0/')])
-        copyright = self.get_copyright(xml)
+        copyright = self.get_copyright(xml, self.logger)
         if copyright:
             record_add_field(rec, '542', subfields=[('f', copyright)])
         keywords = self.get_keywords(xml)

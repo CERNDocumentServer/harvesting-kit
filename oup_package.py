@@ -193,8 +193,9 @@ class OxfordPackage(object):
             for i, path in enumerate(self.found_articles):
                 try:
                     print >> out, nlm_parser.get_record(path, publisher='Oxford', collection='SCOAP3', logger=self.logger)
-                except:
-                    pass
+                except Exception, err:
+                    print >> sys.stderr, err
+                    raise Exception
                 print path, i + 1, "out of", len(self.found_articles)
             print >> out, "</collection>"
             out.close()

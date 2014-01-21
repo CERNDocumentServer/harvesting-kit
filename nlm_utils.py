@@ -86,7 +86,7 @@ class NLMParser(JATSParser):
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract), ('9', publisher)])
         record_add_field(rec, '540', subfields=[('a', 'CC-BY-3.0'), ('u', 'http://creativecommons.org/licenses/by/3.0/')])
-        copyright = super(NLMParser, self).get_copyright(xml)
+        copyright = super(NLMParser, self).get_copyright(xml, logger)
         if copyright:
             record_add_field(rec, '542', subfields=[('f', copyright)])
         keywords = super(NLMParser, self).get_keywords(xml)
