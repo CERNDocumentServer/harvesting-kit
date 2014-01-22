@@ -24,6 +24,7 @@ bibcheck_plugins = crossref_timestamp.py iop_issn.py iop_arxive_fix.py arxiv_pre
 bibcheck_rules = rules.cfg
 bibformat_elements = bfe_publi_info.py
 bibformat_templates = Default_HTML_actions.bft Default_HTML_detailed.bft Default_HTML_brief.bft
+www_scripts = nations.py
 
 elsevier_data_files = $(PREFIX)/var/data/scoap3/elsevier
 elsevier_ready_packages = $(PREFIX)/var/data/scoap3/elsevier/ready_pkgs
@@ -56,6 +57,7 @@ install:
 	$(INSTALL) -t $(LIBDIR)/python/invenio/bibformat_elements $(bibformat_elements)
 
 	$(INSTALL) -t $(WWWDIR) robots.txt
+	$(INSTALL) -t $(WWWDIR) $(www_scripts)
 	$(INSTALL) -t $(WWWDIR)/img scoap3_logo.png favicon.ico invenio_scoap3.css
 	$(INSTALL) -d $(elsevier_data_files)
 	$(INSTALL) -d $(elsevier_ready_packages)

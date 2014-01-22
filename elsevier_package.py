@@ -383,10 +383,19 @@ class ElsevierPackage(object):
             raise
 
     def get_pdfa_record(self, path=None):
+        from invenio.search_engine import search_pattern
         xml = self.get_article(path)
         rec = {}
         journal, issn, volume, issue, first_page, last_page, year, start_date, doi = self.get_publication_information(xml)
-        record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
+
+        recid = search_pattern(p='0247_a:"%s" AND NOT 980:"DELETED"' % (doi,))
+        if recid:
+            record_add_field(rec, '001', controlfield_value=recid[0])
+        else:
+            record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
+            self.logger.error('Adding PDF/A. No paper with this DOI: %s. Trying to add it anyway.' % (doi,))
+            register_exception(alert_admin=True, prefix="'Adding PDF/A. No paper with this DOI: %s. Trying to add it anyway.." % (doi,))
+
         try:
             if exists(join(path, 'main_a-2b.pdf')):
                 record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf')), ('n', 'main'), ('f', '.pdf;pdfa')])
@@ -475,33 +484,32 @@ class ElsevierPackage(object):
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
         if not no_pdf:
             from invenio.search_engine import search_pattern
-            prev_version = search_pattern(p="024__:%s - 980__:deleted" % (doi,))
+            prev_version = search_pattern(p='0247_a:"%s" AND NOT 980:DELETED"' % (doi,))
             from invenio.bibdocfile import BibRecDocs
-
-            add_new_pdf = True
+            old_pdf = False
 
             if prev_version:
                 prev_rec = BibRecDocs(prev_version[0])
                 try:
-                    pdf_path = prev_rec.get_bibdoc('main').get_file(".pdf;pdfa").fullpath
+                    pdf_path = prev_rec.get_bibdoc('main').get_file(".pdf;pdfa", exact_docformat=True).fullpath
+                    old_pdf = True
                     record_add_field(rec, 'FFT', subfields=[('a', pdf_path), ('n', 'main'), ('f', '.pdf;pdfa')])
-                    add_new_pdf = False
                     self.logger.info('Leaving previously delivered PDF/A for: %s' % (doi,))
                 except:
                     pass
 
-            if add_new_pdf:
-                try:
-                    if exists(join(path, 'main_a-2b.pdf')):
-                        record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf')), ('n', 'main'), ('f', '.pdf;pdfa')])
-                        self.logger.debug('Adding PDF/A to record: %s' % (doi,))
-                    elif exists(join(path, 'main.pdf')):
-                        record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
-                    else:
+            try:
+                if exists(join(path, 'main_a-2b.pdf')):
+                    record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf')), ('n', 'main'), ('f', '.pdf;pdfa')])
+                    self.logger.debug('Adding PDF/A to record: %s' % (doi,))
+                elif exists(join(path, 'main.pdf')):
+                    record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
+                else:
+                    if not old_pdf:
                         raise MissingFFTError("Record %s doesn't contain PDF file." % (doi,))
-                except MissingFFTError, err:
-                    register_exception(alert_admin=True, prefix="Elsevier paper: %s is missing PDF." % (doi,))
-                    self.logger.warning("Record %s doesn't contain PDF file." % (doi,))
+            except MissingFFTError, err:
+                register_exception(alert_admin=True, prefix="Elsevier paper: %s is missing PDF." % (doi,))
+                self.logger.warning("Record %s doesn't contain PDF file." % (doi,))
 
         record_add_field(rec, '583', subfields=[('l', self.get_elsevier_version(find_package_name(path)))])
         record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.xml'))])
@@ -526,6 +534,7 @@ class ElsevierPackage(object):
 
             if [x for x in self.found_articles if "vtex" in x]:
             # for VTEX files with PDF/A
+                self.logger.debug("Preparing bibupload for PDF/As.")
                 fd_vtex, name_vtex = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
                 out = fdopen(fd_vtex, 'w')
                 print >> out, "<collection>"

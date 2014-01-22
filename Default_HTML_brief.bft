@@ -2,7 +2,7 @@
 <description>Brief HTML format.</description>
 
 <strong><BFE_TITLE_BRIEF highlight="no" escape="no" link="yes"/></strong>
-<BFE_AUTHORS limit="4" prefix=" / " extension=" ;<em> et al</em> " highlight="no"/>
+<BFE_AUTHORS limit="4" prefix=" / " extension=" ;<em> et al</em> " highlight="no" multiple_affiliations="yes"/>
 
 <BFE_ADDITIONAL_REPORT_NUMBERS
 prefix = '<small class="quicknote"> ['

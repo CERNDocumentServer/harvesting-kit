@@ -73,7 +73,8 @@ class OxfordPackage(object):
     def _download_tars(self, check_integrity=True):
         self.retrieved_packages_unpacked = []
         # Prints stuff
-        if self.files_list:
+        if self.files_list and 'go.xml' in self.files_list:
+            ## If no 'go.xml' is there than we skip the task.
             if check_integrity:
                 check_pkgs_integrity(self.files_list, self.logger, self.ftp)
 
@@ -84,10 +85,10 @@ class OxfordPackage(object):
             # Print stuff
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
-
+            prefix = time.strftime("%Y%m%d%H%M%S-")
             for filename in self.files_list:
                 self.logger.info("Downloading tar package: %s" % (filename,))
-                unpack_path = join(CFG_TAR_FILES, filename)
+                unpack_path = join(CFG_TAR_FILES, prefix + filename)
                 self.retrieved_packages_unpacked.append(unpack_path)
                 try:
                     tar_file = open(unpack_path, 'wb')
@@ -199,6 +200,13 @@ class OxfordPackage(object):
             out.close()
             task_low_level_submission("bibupload", "admin", "-N" "OUP", "-i", "-r", name)
 
+    def empty_ftp(self):
+        if self.found_articles:
+            self.logger.info("Finishing UP. Emptying the FTP")
+            for filename in self.files_list:
+                self.logger.debug("Deleting %s" % filename)
+                self.ftp.delete(filename)
+
 
 def main():
     try:
@@ -212,6 +220,7 @@ def main():
         else:
             els = OxfordPackage()
         els.bibupload_it()
+        els.empty_ftp()
     except Exception, err:
         register_exception()
         print >> sys.stderr, "ERROR: Exception captured: %s" % err

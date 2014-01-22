@@ -26,4 +26,5 @@ from invenio.oup_package import OxfordPackage
 def bst_oxford():
     els = OxfordPackage()
     els.bibupload_it()
+    els.empty_ftp()
 
