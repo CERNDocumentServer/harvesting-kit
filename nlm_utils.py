@@ -6,7 +6,7 @@ from invenio.minidom_utils import (get_value_in_tag,
 from invenio.bibrecord import record_add_field, record_xml_output
 import time
 from os import pardir
-from os.path import join, basename, dirname
+from os.path import join, basename, dirname, exists
 
 
 class NLMParser(JATSParser):
@@ -53,9 +53,9 @@ class NLMParser(JATSParser):
         title = super(NLMParser, self).get_title(xml)
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
-        record_add_field(rec, '260', subfields=[('c', time.strftime('%Y-%m-%d'))])
+        record_add_field(rec, '260', subfields=[('c', super(NLMParser, self).get_publication_date(xml, logger))])
         journal, issn, volume, issue, first_page, last_page, year, doi = super(NLMParser, self).get_publication_information(xml)
-        journal = "PTEP" ## Let's override the journal information
+        journal = "PTEP"  ## Let's override the journal information
 
         if logger:
             logger.info("Creating record: %s %s" % (join(f_path, pardir), doi))
@@ -126,7 +126,8 @@ class NLMParser(JATSParser):
         f_path_pdf = f_path[:-(len('.xml'))] + '.pdf'
         f_path_pdfa = join(dirname(f_path), 'archival_pdfs', basename(f_path)[:-len('.xml')] + '-hires.pdf')
         record_add_field(rec, 'FFT', subfields=[('a', f_path), ('n', 'main')])
-        record_add_field(rec, 'FFT', subfields=[('a', f_path_pdf), ('n', 'main')])
+        if exists(f_path_pdf):
+            record_add_field(rec, 'FFT', subfields=[('a', f_path_pdf), ('n', 'main')])
         record_add_field(rec, 'FFT', subfields=[('a', f_path_pdfa), ('n', 'main'), ('f', '.pdf;pdfa')])
         extra_subfields = []
         if collection:

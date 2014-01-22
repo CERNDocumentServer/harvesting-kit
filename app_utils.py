@@ -231,7 +231,6 @@ class APPParser(object):
         if keywords:
             for keyword in keywords:
                 record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
-        record_add_field(rec, "260", subfields=[('c', year)])
         record_add_field(rec, "300", subfields=[('a', pages)])
         record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('c', first_page), ('y', year)])
         references = self.get_references(xml)

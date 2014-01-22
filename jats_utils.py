@@ -205,6 +205,32 @@ class JATSParser(object):
                 ret = xml_to_text(link).strip()
         return ret
 
+    def get_publication_date(self, xml, logger=None):
+        date_xmls = xml.getElementsByTagName('pub-date')
+        day = None
+        month = None
+        year = None
+        if date_xmls:
+            for date_xml in date_xmls:
+                if date_xml.hasAttribute('pub-type'):
+                    if date_xml.getAttribute('pub-type') == "epub":
+                        day = get_value_in_tag(date_xml, "day")
+                        month = get_value_in_tag(date_xml, "month")
+                        year = get_value_in_tag(date_xml, "year")
+                if not year:
+                    day = get_value_in_tag(date_xml, "day")
+                    month = get_value_in_tag(date_xml, "month")
+                    year = get_value_in_tag(date_xml, "year")
+            if logger:
+                logger.info('%s-%s-%s' % (year, month, day))
+            return '%s-%s-%s' % (year, month, day)
+        else:
+            print >> sys.stderr, "Can't find publication date. Using 'today'."
+            if logger:
+                logger.info("Can't find publication date. Using 'today'.")
+            return time.strftime('%Y-%m-%d')
+
+
     def get_references(self, xml):
         references = []
         for reference in xml.getElementsByTagName("ref"):
@@ -252,7 +278,8 @@ class JATSParser(object):
         title = self.get_title(xml)
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
-        record_add_field(rec, '260', subfields=[('c', time.strftime('%Y-%m-%d'))])
+
+        record_add_field(rec, '260', subfields=[('c', self.get_publication_date(xml, logger))])
         journal, issn, volume, issue, first_page, last_page, year, doi = self.get_publication_information(xml)
 
         if logger:
