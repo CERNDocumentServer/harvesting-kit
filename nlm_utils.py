@@ -47,6 +47,14 @@ class NLMParser(JATSParser):
             references.append((label, authors, doi, issue, page, page_last, title, volume, year, ext_link, plain_text))
         self.references = references
 
+    def get_arxiv_id(self, xml):
+        custom_metas = xml.getElementsByTagName("custom-meta")
+        ext_link = None
+        for meta in custom_metas:
+            if get_value_in_tag(meta, "meta-name") == "arxiv-id":
+                ext_link = format_arxiv_id(get_value_in_tag(meta, "meta-value").encode('utf-8'))
+        return ext_link
+
     def get_record(self, f_path, publisher=None, collection=None, logger=None):
         xml = super(NLMParser, self).get_article(f_path)
         rec = {}
@@ -62,6 +70,9 @@ class NLMParser(JATSParser):
 
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
+        arxiv = self.get_arxiv_id(xml)
+        if arxiv:
+            record_add_field(rec, '037', subfields=[('9', 'arXiv'), ('a', format_arxiv_id(arxiv))])
         authors = super(NLMParser, self).get_authors(xml)
         first_author = True
         for author in authors:

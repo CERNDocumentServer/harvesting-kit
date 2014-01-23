@@ -203,6 +203,11 @@ class JATSParser(object):
         for link in links:
             if name in link.getAttribute("xlink:href").encode('utf-8'):
                 ret = xml_to_text(link).strip()
+        if not ret:
+            links = xml.getElementsByTagName('elocation-id')
+            for link in links:
+                if name in link.getAttribute("content-type").encode('utf-8'):
+                    ret = xml_to_text(link).strip()
         return ret
 
     def get_publication_date(self, xml, logger=None):

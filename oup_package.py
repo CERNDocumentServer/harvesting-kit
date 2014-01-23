@@ -63,7 +63,7 @@ class OxfordPackage(object):
             raise
 
         if phrase:
-            self.files_list = filter(lambda x: phrase in x, self.ftp.nlst())
+            self.files_list = filter(lambda x: phrase in x or x == "go.xml", self.ftp.nlst())
         else:
             self.files_list = self.ftp.nlst()
         if new_only:
