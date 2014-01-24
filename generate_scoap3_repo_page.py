@@ -4,16 +4,16 @@ from invenio.htmlutils import remove_html_markup
 from invenio.search_engine import get_collection_reclist, get_coll_i18nname, get_record
 from invenio.bibrecord import record_get_field_value
 
-CFG_JOURNALS = ['Physics Letters B',
-                   'Nuclear Physics B',
-                   'Advances in High Energy Physics',
-                   'Chinese Physics C',
-                   'Journal of Cosmology and Astroparticle Physics',
-                   'New Journal of Physics',
-                   'Acta',
-                   'Progress of Theoretical and Experimental Physics',
-                   'European Physical Journal C',
-                   'Journal of High Energy Physics']
+CFG_JOURNALS = ['Acta',
+                'Advances in High Energy Physics',
+                'Chinese Physics C',
+                'European Physical Journal C',
+                'Journal of Cosmology and Astroparticle Physics',
+                'Journal of High Energy Physics',
+                'New Journal of Physics',
+                'Nuclear Physics B',
+                'Physics Letters B',
+                'Progress of Theoretical and Experimental Physics']
 
 def main():
     for journal in CFG_JOURNALS:
