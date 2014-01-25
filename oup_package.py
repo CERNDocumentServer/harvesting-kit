@@ -87,6 +87,9 @@ class OxfordPackage(object):
             sys.stdout.flush()
             prefix = time.strftime("%Y%m%d%H%M%S-")
             for filename in self.files_list:
+                if filename == 'go.xml':
+                    ## We don't download go.xml
+                    continue
                 self.logger.info("Downloading tar package: %s" % (filename,))
                 unpack_path = join(CFG_TAR_FILES, prefix + filename)
                 self.retrieved_packages_unpacked.append(unpack_path)
