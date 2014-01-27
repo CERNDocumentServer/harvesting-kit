@@ -114,7 +114,15 @@ class NLMParser(JATSParser):
         #if keywords['other']:
             #for keyword in keywords['other']:
                 #record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
-        record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
+        if first_page or last_page:
+            pages = '%s-%s' % (first_page, last_page)
+        else:
+            article_meta = xml.getElementsByTagName('article-meta')[0]
+            print article_meta
+            pages = get_value_in_tag(article_meta, "elocation-id")
+            print pages
+
+        record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', pages), ('y', year)])
         self.get_references(xml)
         for label, authors, doi, issue, page, page_last, title, volume, year, ext_link, plain_text in self.references:
             subfields = []
