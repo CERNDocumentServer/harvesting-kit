@@ -44,9 +44,9 @@ def check_records(records):
             ## last two year digits followed by issue number (to follow INSPIRE
             ## convention)
             tag_773 = dict([(position[0][5], (position, value)) for position, value in record.iterfield('773__%')])
-            if tag_773['v'].startswith('20'):
+            if tag_773['v'][1].startswith('20'):
                 position = tag_773['v'][0]
-                new_value = tag_773['v'][2:] + tag_773['n']
+                new_value = tag_773['v'][1][2:] + tag_773['n'][1]
                 record.amend_field(position, new_value)
 
 
