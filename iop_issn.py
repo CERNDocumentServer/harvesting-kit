@@ -32,7 +32,21 @@ def check_records(records):
     Amend the records to rename 773__p from issn to journal name
     """
     for record in records:
+        jcap_article = False
         for position, value in record.iterfield('773__p'):
+            if value in ('1475-7516', 'JCAP'):
+                jcap_article = True
             if value in CFG_ISSN_MAP:
                 record.amend_field(position, CFG_ISSN_MAP[value])
+
+        if jcap_article:
+            ## JCAP volumes should be changed from the full year to:
+            ## last two year digits followed by issue number (to follow INSPIRE
+            ## convention)
+            tag_773 = dict([(position[0][5], (position, value)) for position, value in record.iterfield('773__%')])
+            if tag_773['v'].startswith('20'):
+                position = tag_773['v'][0]
+                new_value = tag_773['v'][2:] + tag_773['n']
+                record.amend_field(position, new_value)
+
 
