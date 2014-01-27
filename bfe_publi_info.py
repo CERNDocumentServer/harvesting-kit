@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 ## This file is part of Invenio.
-## Copyright (C) 2006, 2007, 2008, 2010, 2011 CERN.
+## Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011 CERN.
 ##
 ## Invenio is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -16,73 +16,44 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Invenio; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
-"""BibFormat element - Prints publcation information and link to ejournal
+"""BibFormat element - Hep Erratum info
 """
-__revision__ = "$Id$"
 
-from urllib import quote
 import cgi
+
 
 def format_element(bfo):
     """
-    Displays inline publication information with html link to ejournal
-    (when available).
+    Prints Hep Erratum info
     """
+    pubinfos = bfo.fields('773__')
 
-
-    out = ''
-
-    publication_info = bfo.field('773__')
-    if publication_info == "":
+    if not pubinfos:
         return ""
 
-    journal_source = publication_info.get('p')
-    journal = bfo.kb('ejournals', journal_source)
-    volume = publication_info.get('v')
-    year = publication_info.get('y')
-    number = publication_info.get('n')
-    pages = publication_info.get('c')
-    doi = publication_info.get('a')
+    # Process pubnotes
+    newline = "<br />"
+    out = []
+    for pubinfo in pubinfos:
+        volume = cgi.escape(pubinfo.get('v', ''))
+        number = cgi.escape(pubinfo.get('n', ''))
+        pages = cgi.escape(pubinfo.get('c', ''))
+        doi = bfo.field('0247_a') or pubinfo.get('a', '')
+        if 'p' in pubinfo:
+            tmpout = []
+            if not (volume or number or pages or doi):
+                tmpout.append("Submitted to:")
+            tmpout.append(pubinfo.get('p', None))
+            tmpout.append(pubinfo.get('v', None))
+            if 'y' in pubinfo:
+                tmpout.append('(%s)' % (pubinfo.get('y'),))
+            tmpout.append(pubinfo.get('c', None))
+            out.append("<strong>%s</strong>" % (" ".join([a for a in tmpout if a]),))
+        if 'x' in pubinfo and ("In *".lower() in pubinfo['x'].lower() or "Also in *".lower() in pubinfo['x'].lower()):
+            out.append("<small>%s</small>" % (pubinfo['x'],))
 
-    if journal is not None:
-        journal = cgi.escape(journal)
-    if volume is not None:
-        volume = cgi.escape(volume)
-    if year is not None:
-        year = cgi.escape(year)
-    if number is not None:
-        number = cgi.escape(number)
-    if pages is not None:
-        pages = cgi.escape(pages)
-    if doi is not None:
-        doi = cgi.escape(doi)
+    return newline.join(out)
 
-    if journal != '' and volume is not None:
-
-        out += '<a href="https://cds.cern.ch/ejournals.py?publication='
-        out += quote(journal_source)
-        out += '&amp;volume=' + volume
-        out += '&amp;year=' + year
-        out += '&amp;page='
-        page = pages.split('-')# get first page from range
-        if len(page) > 0:
-            out += page[0]
-        out += '">%(journal)s :%(volume)s %(year)s %(page)s</a>' % {'journal': journal,
-                                                                    'volume': volume,
-                                                                    'year': year,
-                                                                    'page': pages}
-    else:
-        out += journal_source + ': '
-        if volume is not None:
-            out +=  volume
-        if year is not None:
-            out += ' (' + year + ') '
-        if number is not None:
-            out += 'no. ' + number + ', '
-        if pages is not None:
-            out += 'pp. ' + pages
-
-    return out
 
 def escape_values(bfo):
     """
@@ -90,8 +61,3 @@ def escape_values(bfo):
     should be escaped.
     """
     return 0
-
-
-
-
-
