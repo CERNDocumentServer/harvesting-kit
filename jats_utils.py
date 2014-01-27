@@ -210,6 +210,14 @@ class JATSParser(object):
                     ret = xml_to_text(link).strip()
         return ret
 
+    def get_page_count(self, xml):
+        counts = xml.getElementsByTagName("counts")
+        page_count = counts[0].getElementsByTagName("page-count")
+        if page_count:
+            return page_count[0].getAttribute("count").encode('utf-8')
+        else:
+            return None
+
     def get_publication_date(self, xml, logger=None):
         date_xmls = xml.getElementsByTagName('pub-date')
         day = None
@@ -312,6 +320,9 @@ class JATSParser(object):
             else:
                 record_add_field(rec, '700', subfields=subfields)
 
+        page_count = self.get_page_count(xml)
+        if page_count:
+            record_add_field(rec, '300', subfields=[('a', page_count)])
         abstract = self.get_abstract(xml)
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract), ('9', publisher)])

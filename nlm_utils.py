@@ -5,6 +5,7 @@ from invenio.minidom_utils import (get_value_in_tag,
                                    format_arxiv_id)
 from invenio.bibrecord import record_add_field, record_xml_output
 from invenio.errorlib import register_exception
+from invenio.scoap3utils import MissingFFTError
 import time
 from os import pardir
 from os.path import join, basename, dirname, exists
@@ -71,6 +72,9 @@ class NLMParser(JATSParser):
 
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
+        page_count = super(NLMParser, self).get_page_count(xml)
+        if page_count:
+            record_add_field(rec, '300', subfields=[('a', page_count)])
         arxiv = self.get_arxiv_id(xml)
         if arxiv:
             record_add_field(rec, '037', subfields=[('9', 'arXiv'), ('a', format_arxiv_id(arxiv))])
@@ -140,13 +144,19 @@ class NLMParser(JATSParser):
         if exists(f_path_pdf):
             record_add_field(rec, 'FFT', subfields=[('a', f_path_pdf), ('n', 'main')])
         else:
-            register_exception(alert_admin=True, prefix="Oxford paper: %s is missing PDF." % (doi,))
-            logger.warning("Record %s doesn't contain PDF file." % (doi,))
+            try:
+                raise MissingFFTError
+            except:
+                register_exception(alert_admin=True, prefix="Oxford paper: %s is missing PDF." % (doi,))
+                logger.warning("Record %s doesn't contain PDF file." % (doi,))
         if exists(f_path_pdfa):
             record_add_field(rec, 'FFT', subfields=[('a', f_path_pdfa), ('n', 'main'), ('f', '.pdf;pdfa')])
         else:
-            register_exception(alert_admin=True, prefix="Oxford paper: %s is missing PDF/A." % (doi,))
-            logger.warning("Record %s doesn't contain PDF/A file." % (doi,))
+            try:
+                raise MissingFFTError
+            except:
+                register_exception(alert_admin=True, prefix="Oxford paper: %s is missing PDF/A." % (doi,))
+                logger.warning("Record %s doesn't contain PDF/A file." % (doi,))
         record_add_field(rec, 'FFT', subfields=[('a', f_path), ('n', 'main')])
         extra_subfields = []
         if collection:
