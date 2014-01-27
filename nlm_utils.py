@@ -4,6 +4,7 @@ from invenio.minidom_utils import (get_value_in_tag,
                                    NoDOIError,
                                    format_arxiv_id)
 from invenio.bibrecord import record_add_field, record_xml_output
+from invenio.errorlib import register_exception
 import time
 from os import pardir
 from os.path import join, basename, dirname, exists
@@ -136,10 +137,17 @@ class NLMParser(JATSParser):
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
         f_path_pdf = f_path[:-(len('.xml'))] + '.pdf'
         f_path_pdfa = join(dirname(f_path), 'archival_pdfs', basename(f_path)[:-len('.xml')] + '-hires.pdf')
-        record_add_field(rec, 'FFT', subfields=[('a', f_path), ('n', 'main')])
         if exists(f_path_pdf):
             record_add_field(rec, 'FFT', subfields=[('a', f_path_pdf), ('n', 'main')])
-        record_add_field(rec, 'FFT', subfields=[('a', f_path_pdfa), ('n', 'main'), ('f', '.pdf;pdfa')])
+        else:
+            register_exception(alert_admin=True, prefix="Oxford paper: %s is missing PDF." % (doi,))
+            logger.warning("Record %s doesn't contain PDF file." % (doi,))
+        if exists(f_path_pdfa):
+            record_add_field(rec, 'FFT', subfields=[('a', f_path_pdfa), ('n', 'main'), ('f', '.pdf;pdfa')])
+        else:
+            register_exception(alert_admin=True, prefix="Oxford paper: %s is missing PDF/A." % (doi,))
+            logger.warning("Record %s doesn't contain PDF/A file." % (doi,))
+        record_add_field(rec, 'FFT', subfields=[('a', f_path), ('n', 'main')])
         extra_subfields = []
         if collection:
             extra_subfields.append(('a', collection))
