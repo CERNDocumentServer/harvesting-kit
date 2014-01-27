@@ -464,8 +464,8 @@ a.navtrail:hover {
 .pagebodystriperight {
    color: #000;
    background: #fff;
-   font-size: x-small;
-   width: 120px;
+   /* font-size: x-small; */
+   width: 240px;
    float: right;
 }
 .pageboxlefttop {
@@ -495,8 +495,9 @@ a.navtrail:hover {
 }
 .pageboxrighttopadd {
    color: #000;
-   background: transparent;
-   font-size: x-small;
+   background: #eee;
+   padding: 10px;
+   /* font-size: x-small; */
 }
 .pageboxrightbottom {
    color: #000;
