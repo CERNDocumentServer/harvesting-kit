@@ -375,10 +375,9 @@ class JATSParser(object):
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
         # record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
         pdf_path = join(dirname(f_path), 'BodyRef', 'PDF', basename(f_path)[:-len('_nlm.xml')] + '.pdf')
-        print pdf_path
         try:
             open(pdf_path)
-            record_add_field(rec, 'FFT', subfields=[('a', pdf_path), ('n', 'main')])
+            record_add_field(rec, 'FFT', subfields=[('a', pdf_path), ('n', 'main'), ('f', '.pdf;pdfa')])
         except:
             register_exception(alert_admin=True)
             logger.error("No PDF for paper: %s" % (doi,))
