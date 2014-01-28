@@ -143,3 +143,13 @@ def articles(req, i):
         ret.append("</ul></p>")
     body = '\n'.join(ret)
     return page(req=req, title=page_title, body=body)
+
+def csv(req):
+    req.content_type = 'text/csv'
+    req.headers_out['content-disposition'] = 'attachment; filename=scoap3.csv'
+    header = ','.join(['Nation'] + [get_coll_i18nname(journal) for journal in CFG_JOURNALS])
+    print >> req, header
+    for nation_tuple in _CFG_NATION_MAP:
+        query = _build_query(nation_tuple)
+        line = ','.join([nation_tuple[0]] + [str(len(perform_request_search(p=query, cc=journal, of='intbitset')))])
+        print >> req, line
