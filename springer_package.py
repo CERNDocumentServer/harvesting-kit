@@ -254,8 +254,8 @@ class SpringerPackage(object):
                 try:
                     if "EPJC" in path:
                         for filename in listdir(path):
-                            if ".xml.scoap" in filename:
-                                jats_parser = JATSParser()
+                            if "_nlm.xml" in filename:
+                                jats_parser = JATSParser(tag_to_remove="tex-math")
                                 print >> out, jats_parser.get_record(join(path, filename), publisher='Springer', collection='SCOAP3', logger=self.logger)
                     else:
                         for filename in listdir(path):
@@ -264,6 +264,7 @@ class SpringerPackage(object):
                                 print >> out, app_parser.get_record(join(path, filename), publisher='SISSA', collection='SCOAP3', logger=self.logger)
                     print path, i + 1, "out of", len(self.found_articles)
                 except Exception, err:
+                    register_exception(alert_admin=True)
                     self.logger.error("Error creating record from: %s \n%s" % (join(path, filename), err))
             print >> out, "</collection>"
             out.close()

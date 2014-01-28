@@ -118,9 +118,7 @@ class NLMParser(JATSParser):
             pages = '%s-%s' % (first_page, last_page)
         else:
             article_meta = xml.getElementsByTagName('article-meta')[0]
-            print article_meta
             pages = get_value_in_tag(article_meta, "elocation-id")
-            print pages
 
         record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', pages), ('y', year)])
         self.get_references(xml)

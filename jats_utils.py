@@ -4,7 +4,7 @@ import time
 import traceback
 
 from os import listdir, rename, fdopen, pardir
-from os.path import join, walk, exists, abspath
+from os.path import join, walk, exists, abspath, dirname, basename
 
 from invenio.bibrecord import record_add_field, record_xml_output
 from invenio.errorlib import register_exception
@@ -16,15 +16,16 @@ from xml.dom.minidom import parse
 
 
 class JATSParser(object):
-    def __init__(self):
+    def __init__(self, tag_to_remove=None):
         self.references = None
+        self.tag_to_remove = tag_to_remove
 
     def get_article(self, path):
         return parse(open(path))
 
     def get_title(self, xml):
         try:
-            return get_value_in_tag(xml, "article-title")
+            return get_value_in_tag(xml, "article-title", tag_to_remove=self.tag_to_remove)
         except Exception, err:
             print >> sys.stderr, "Can't find title"
 
@@ -54,9 +55,11 @@ class JATSParser(object):
             return ret
 
     def get_publication_information(self, xml):
-        jid = get_value_in_tag(xml, "journal-id")
+        jid = get_value_in_tag(xml, "journal-title")
         journal = ""
-        #journal = CFG_ELSEVIER_JID_MAP.get(jid, jid)
+        if "European Physical Journal" in jid:
+            journal = "EPJC"
+
         try:
             art = xml.getElementsByTagName('article-meta')[0]
         except IndexError, err:
@@ -158,7 +161,7 @@ class JATSParser(object):
 
     def get_abstract(self, xml):
         try:
-            return get_value_in_tag(xml, "abstract").replace("Abstract", "", 1)
+            return get_value_in_tag(xml, "abstract", tag_to_remove=self.tag_to_remove).replace("Abstract", "", 1)
         except Exception, err:
             print >> sys.stderr, "Can't find abstract"
 
@@ -190,9 +193,9 @@ class JATSParser(object):
             other = []
             for kwd_group in kwd_groups:
                 if kwd_group.getAttribute('kwd-group-type').encode('utf-8') == "pacs":
-                    pacs = [xml_to_text(keyword) for keyword in kwd_group.getElementsByTagName("kwd")]
+                    pacs = [xml_to_text(keyword, tag_to_remove=self.tag_to_remove) for keyword in kwd_group.getElementsByTagName("kwd")]
                 else:
-                    other = [xml_to_text(keyword) for keyword in kwd_group.getElementsByTagName("kwd")]
+                    other = [xml_to_text(keyword, tag_to_remove=self.tag_to_remove) for keyword in kwd_group.getElementsByTagName("kwd")]
             return {"pacs": pacs, "other": other}
         except Exception, err:
             print >> sys.stderr, "Can't find keywords"
@@ -212,9 +215,12 @@ class JATSParser(object):
 
     def get_page_count(self, xml):
         counts = xml.getElementsByTagName("counts")
-        page_count = counts[0].getElementsByTagName("page-count")
-        if page_count:
-            return page_count[0].getAttribute("count").encode('utf-8')
+        if counts:
+            page_count = counts[0].getElementsByTagName("page-count")
+            if page_count:
+                return page_count[0].getAttribute("count").encode('utf-8')
+            else:
+                return None
         else:
             return None
 
@@ -278,14 +284,13 @@ class JATSParser(object):
             ext_link = format_arxiv_id(self.get_ref_link(reference, "arxiv"))
             if ref_type != 'journal':
                 try:
-                    plain_text = get_value_in_tag(reference, "mixed-citation")
+                    plain_text = get_value_in_tag(reference, "mixed-citation", tag_to_remove=self.tag_to_remove)
                 except:
-                    plain_text = get_value_in_tag(reference, "citation")
+                    plain_text = get_value_in_tag(reference, "citation", tag_to_remove=self.tag_to_remove)
             references.append((label, authors, doi, issue, page, page_last, title, volume, year, ext_link, plain_text))
         self.references = references
 
     def get_record(self, f_path, publisher=None, collection=None, logger=None):
-        print "I'm jats"
         xml = self.get_article(f_path)
         rec = {}
         title = self.get_title(xml)
@@ -337,7 +342,13 @@ class JATSParser(object):
         if keywords['other']:
             for keyword in keywords['other']:
                 record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
-        record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
+        if first_page or last_page:
+            pages = '%s-%s' % (first_page, last_page)
+        else:
+            article_meta = xml.getElementsByTagName('article-meta')[0]
+            pages = get_value_in_tag(article_meta, "elocation-id")
+
+        record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', pages), ('y', year)])
         self.get_references(xml)
         for label, authors, doi, issue, page, page_last, title, volume, year, ext_link, plain_text in self.references:
             subfields = []
@@ -363,7 +374,15 @@ class JATSParser(object):
             if subfields:
                 record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
         # record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
-        record_add_field(rec, 'FFT', subfields=[('a', f_path)])
+        pdf_path = join(dirname(f_path), 'BodyRef', 'PDF', basename(f_path)[:-len('_nlm.xml')] + '.pdf')
+        print pdf_path
+        try:
+            open(pdf_path)
+            record_add_field(rec, 'FFT', subfields=[('a', pdf_path), ('n', 'main')])
+        except:
+            register_exception(alert_admin=True)
+            logger.error("No PDF for paper: %s" % (doi,))
+        record_add_field(rec, 'FFT', subfields=[('a', f_path), ('n', 'main')])
         extra_subfields = []
         if collection:
             extra_subfields.append(('a', collection))

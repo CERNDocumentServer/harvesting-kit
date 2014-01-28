@@ -37,21 +37,25 @@ def format_arxiv_id(arxiv_id):
         return arxiv_id
 
 
-def xml_to_text(xml, delimiter=' '):
+def xml_to_text(xml, delimiter=' ', tag_to_remove=None):
+    if tag_to_remove:
+        if tag_to_remove in xml.nodeName.encode('utf-8'):
+            return ''
+
     if xml.nodeType == xml.TEXT_NODE:
         return xml.wholeText.encode('utf-8')
     elif 'mml:' in xml.nodeName:
         return xml.toxml().replace('mml:', '').replace('xmlns:mml', 'xmlns').encode('utf-8')
     elif xml.hasChildNodes():
         for child in xml.childNodes:
-            return delimiter.join(''.join(xml_to_text(child) for child in xml.childNodes).split())
+            return delimiter.join(', '.join(xml_to_text(child, tag_to_remove=tag_to_remove) for child in xml.childNodes).split())
     return ''
 
 
-def get_value_in_tag(xml, tag):
+def get_value_in_tag(xml, tag, tag_to_remove=None):
     tag_elements = xml.getElementsByTagName(tag)
     if tag_elements:
-        return xml_to_text(tag_elements[0])
+        return xml_to_text(tag_elements[0], tag_to_remove=tag_to_remove)
     else:
         return ""
 
