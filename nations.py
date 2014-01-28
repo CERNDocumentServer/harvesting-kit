@@ -133,7 +133,7 @@ def articles(req, i):
         if not results:
             #ret.append("<p>No articles yet</p>")
             continue
-        ret.append("<h2>%s</h2" % escape(get_coll_i18nname(journal)))
+        ret.append("<h2>%s (%s)</h2" % (escape(get_coll_i18nname(journal)), len(results)))
         ret.append("<p><ul>")
         for recid in results:
             record = get_record(recid)
