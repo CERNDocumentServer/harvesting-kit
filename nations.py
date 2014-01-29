@@ -4,8 +4,9 @@ from urllib import urlencode
 from invenio.webinterface_handler_config import HTTP_BAD_REQUEST, SERVER_RETURN
 from invenio.webpage import pagefooteronly, pageheaderonly, page
 from invenio.search_engine import perform_request_search
-from invenio.search_engine import get_coll_i18nname, get_record
+from invenio.search_engine import get_coll_i18nname, get_record, get_collection_reclist
 from invenio.bibrecord import record_get_field_value
+from invenio.dbquery import run_sql
 
 
 _CFG_NATION_MAP = [
@@ -118,7 +119,42 @@ def index(req):
     req.write(pagefooteronly(req=req))
     return ""
 
+def late(req):
+    req.content_type = "text/html"
+    print >> req, pageheaderonly("Late journals", req=req)
+    for journal in CFG_JOURNALS:
+        print >> req, "<h2>%s</h2>" % escape(get_coll_i18nname(journal))
+        results = get_collection_reclist(journal)
+        print >> req, "<table>"
+        print >> req, "<tr><th>DOI</th><th>Title</th><th>DOI registration</th><th>Arrival in SCOAP3</th></tr>"
+        for recid in results:
+            creation_date = run_sql("SELECT creation_date FROM bibrec WHERE id=%s", (recid, ))[0][0]
+            record = get_record(recid)
+            doi = record_get_field_value(record, '024', '7', code='a')
+            title = record_get_field_value(record, '245', code='a')
+            doi_date = run_sql("SELECT creation_date FROM doi WHERE doi=%s", (doi, ))
+            background = "#eee"
+            if doi_date:
+                doi_date = doi_date[0][0]
+                if (creation_date - doi_date).days < 0:
+                    background = "#66FF00"
+                elif (creation_date - doi_date).days < 1:
+                    background = "#FF6600"
+                else:
+                    background = "#FF0000"
+            else:
+                doi_date = ''
+            print >> req, '<tr style="background-color: %s;"><td><a href="http://dx.doi.org/%s" target="_blank">%s</td><td>%s</td><td>%s</td><td>%s</td></tr>' % (
+                    background,
+                    escape(doi, True),
+                    escape(doi),
+                    title,
+                    doi_date,
+                    creation_date)
+        print >> req, "</table>"
+
 def articles(req, i):
+    req.content_type = "text/html"
     try:
         i = int(i)
         assert 0 <= i < len(_CFG_NATION_MAP)
