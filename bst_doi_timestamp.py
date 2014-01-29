@@ -36,7 +36,7 @@ CFG_SCOAP3_DOIS = {
     "10.5506": re.compile(r"^10\.5506\/APhysPolB\."), # Acta
     "10.1093": re.compile(r"^10\.1093\/ptep\/"), # Oxford
     "10.1140": re.compile(r"^10\.1140\/epjc\/"), # Springer EPJC
-    "10.1007": re.compile(r"^10\.1007\/JHEP\/") # Springer Sissa
+    "10.1007": re.compile(r"^10\.1007\/JHEP") # Springer Sissa
 }
 
 def prepate_doi_table():
