@@ -47,10 +47,12 @@ def prepate_doi_table():
         KEY (creation_date)
     ) ENGINE=MyISAM;""")
 
-def bst_doi_timestamp():
+def bst_doi_timestamp(reset=0):
     prepate_doi_table()
     now = datetime.now()
     last_run = ((run_sql("SELECT max(creation_date) FROM doi")[0][0] or datetime(2014, 1, 1)) - timedelta(days=4)).strftime("%Y-%m-%d")
+    if int(reset):
+        last_run = (datetime(2014, 1, 1) - timedelta(days=4)).strftime("%Y-%m-%d")
     write_message("Retrieving DOIs modified since %s" % last_run)
     for publisher, re_match in CFG_SCOAP3_DOIS.items():
         task_update_progress("Retrieving DOIs for %s" % publisher)
