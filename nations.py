@@ -111,8 +111,8 @@ def index(req):
     for i, nation_tuple in enumerate(_CFG_NATION_MAP):
         query = _build_query(nation_tuple)
         results = perform_request_search(p=query, of='intbitset')
-        req.write("""<tr><td>%s</td><td><a href="/search?%s&sc=1">%s</a></td><td><a href="/nations.py/articles?i=%s" target="_blank">Articles</td><tr>\n""" % (
-                escape(nation_tuple[0]), escape(urlencode([("p", query)]), True), len(results), i
+        req.write("""<tr><td>%s</td><td><a href="/search?%s&sc=1">%s</a></td><td><a href="/nations.py/articles?i=%s" target="_blank">Articles</a> (<a href="/nations.py/articles?mode=text&amp;i=%s">text</a>)</td><tr>\n""" % (
+                escape(nation_tuple[0]), escape(urlencode([("p", query)]), True), len(results), i, i
             ))
         req.flush()
     req.write("</table>\n")
@@ -153,8 +153,7 @@ def late(req):
                     creation_date)
         print >> req, "</table>"
 
-def articles(req, i):
-    req.content_type = "text/html"
+def articles(req, i, mode='html'):
     try:
         i = int(i)
         assert 0 <= i < len(_CFG_NATION_MAP)
@@ -163,6 +162,14 @@ def articles(req, i):
     nation_tuple = _CFG_NATION_MAP[i]
     ret = []
     page_title = "SCOAP3 Articles by authors from %s" % nation_tuple[0]
+    if mode == 'text':
+        req.content_type = "text/plain; charset=utf8"
+        req.headers_out['content-disposition'] = 'attachment; filename=%s.txt' % nation_tuple[0]
+    else:
+        req.content_type = "text/html"
+    if mode == 'text':
+        print >> req, page_title
+        print >> req, "-" * len(page_title)
     query = _build_query(nation_tuple)
     for journal in CFG_JOURNALS:
         results = perform_request_search(p=query, cc=journal, of='intbitset')
@@ -171,13 +178,20 @@ def articles(req, i):
             continue
         ret.append("<h2>%s (%s)</h2" % (escape(get_coll_i18nname(journal)), len(results)))
         ret.append("<p><ul>")
+        if mode == 'text':
+            print >> req, ""
+            print >> req, get_coll_i18nname(journal)
         for recid in results:
             record = get_record(recid)
             title = record_get_field_value(record, '245', code='a')
             doi = record_get_field_value(record, '024', '7', code='a')
+            if mode == 'text':
+                print >> req, "http://dx.doi.org/%s" % doi
             ret.append('<li><a href="http://dx.doi.org/%s" target="_blank">%s</a>: %s</li>' % (escape(doi, True), escape(doi), title))
         ret.append("</ul></p>")
     body = '\n'.join(ret)
+    if mode == 'text':
+        return ""
     return page(req=req, title=page_title, body=body)
 
 def csv(req):
