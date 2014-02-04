@@ -1184,3 +1184,180 @@ class Template(DefaultTemplate):
                'example_query_html': example_query_html}
 
         return out
+
+    def tmpl_print_search_info(self, ln, middle_only,
+                               collection, collection_name, collection_id,
+                               aas, sf, so, rm, rg, nb_found, of, ot, p, f, f1,
+                               f2, f3, m1, m2, m3, op1, op2, p1, p2,
+                               p3, d1y, d1m, d1d, d2y, d2m, d2d, dt,
+                               all_fieldcodes, cpu_time, pl_in_url,
+                               jrec, sc, sp):
+
+        """Prints stripe with the information on 'collection' and 'nb_found' results and CPU time.
+           Also, prints navigation links (beg/next/prev/end) inside the results set.
+           If middle_only is set to 1, it will only print the middle box information (beg/netx/prev/end/etc) links.
+           This is suitable for displaying navigation links at the bottom of the search results page.
+
+        Parameters:
+
+          - 'ln' *string* - The language to display
+
+          - 'middle_only' *bool* - Only display parts of the interface
+
+          - 'collection' *string* - the collection name
+
+          - 'collection_name' *string* - the i18nized current collection name
+
+          - 'aas' *bool* - if we display the advanced search interface
+
+          - 'sf' *string* - the currently selected sort format
+
+          - 'so' *string* - the currently selected sort order ("a" or "d")
+
+          - 'rm' *string* - selected ranking method
+
+          - 'rg' *int* - selected results/page
+
+          - 'nb_found' *int* - number of results found
+
+          - 'of' *string* - the selected output format
+
+          - 'ot' *string* - hidden values
+
+          - 'p' *string* - Current search words
+
+          - 'f' *string* - the fields in which the search was done
+
+          - 'f1, f2, f3, m1, m2, m3, p1, p2, p3, op1, op2' *strings* - the search parameters
+
+          - 'jrec' *int* - number of first record on this page
+
+          - 'd1y, d2y, d1m, d2m, d1d, d2d' *int* - the search between dates
+
+          - 'dt' *string* the dates' type (creation date, modification date)
+
+          - 'all_fieldcodes' *array* - all the available fields
+
+          - 'cpu_time' *float* - the time of the query in seconds
+
+        """
+
+        # load the right message language
+        _ = gettext_set_language(ln)
+
+        out = ""
+        # left table cells: print collection name
+        if not middle_only:
+            out += '''
+                  <a name="%(collection_id)s"></a>
+                  <form action="%(siteurl)s/search" method="get">
+                  <table class="searchresultsbox"><tr><td class="searchresultsboxheader" align="left">
+                  <strong><big>%(collection_link)s</big></strong></td>
+                  ''' % {
+                    'collection_id': collection_id,
+                    'siteurl' : CFG_BASE_URL,
+                    'collection_link': create_html_link(self.build_search_interface_url(c=collection, aas=aas, ln=ln),
+                                                        {}, cgi.escape(collection_name))
+                  }
+        else:
+            out += """
+                  <div style="clear:both"></div>
+                  <form action="%(siteurl)s/search" method="get"><div align="center">
+                  """ % { 'siteurl' : CFG_BASE_URL }
+
+        # middle table cell: print beg/next/prev/end arrows:
+        if not middle_only:
+            out += """<td class="searchresultsboxheader" align="center">
+                      %(recs_found)s &nbsp;""" % {
+                     'recs_found' : _("%s records found") % ('<strong>' + self.tmpl_nice_number(nb_found, ln) + '</strong>')
+                   }
+        else:
+            out += "<small>"
+            if nb_found > rg:
+                out += "" + cgi.escape(collection_name) + " : " + _("%s records found") % ('<strong>' + self.tmpl_nice_number(nb_found, ln) + '</strong>') + " &nbsp; "
+
+        if nb_found > rg: # navig.arrows are needed, since we have many hits
+
+            query = {'p': p, 'f': f,
+                     'cc': collection,
+                     'sf': sf, 'so': so,
+                     'sp': sp, 'rm': rm,
+                     'of': of, 'ot': ot,
+                     'aas': aas, 'ln': ln,
+                     'p1': p1, 'p2': p2, 'p3': p3,
+                     'f1': f1, 'f2': f2, 'f3': f3,
+                     'm1': m1, 'm2': m2, 'm3': m3,
+                     'op1': op1, 'op2': op2,
+                     'sc': 0,
+                     'd1y': d1y, 'd1m': d1m, 'd1d': d1d,
+                     'd2y': d2y, 'd2m': d2m, 'd2d': d2d,
+                     'dt': dt,
+                }
+
+            # @todo here
+            def img(gif, txt):
+                return '<img src="%(siteurl)s/img/%(gif)s.gif" alt="%(txt)s" border="0" />' % {
+                    'txt': txt, 'gif': gif, 'siteurl': CFG_BASE_URL}
+
+            if jrec - rg > 1:
+                out += create_html_link(self.build_search_url(query, jrec=1, rg=rg),
+                                        {}, img('sb', _("begin")),
+                                        {'class': 'img'})
+
+            if jrec > 1:
+                out += create_html_link(self.build_search_url(query, jrec=max(jrec - rg, 1), rg=rg),
+                                        {}, img('sp', _("previous")),
+                                        {'class': 'img'})
+
+            if jrec + rg - 1 < nb_found:
+                out += "%d - %d" % (jrec, jrec + rg - 1)
+            else:
+                out += "%d - %d" % (jrec, nb_found)
+
+            if nb_found >= jrec + rg:
+                out += create_html_link(self.build_search_url(query,
+                                                              jrec=jrec + rg,
+                                                              rg=rg),
+                                        {}, img('sn', _("next")),
+                                        {'class':'img'})
+
+            if nb_found >= jrec + rg + rg:
+                out += create_html_link(self.build_search_url(query,
+                                                            jrec=nb_found - rg + 1,
+                                                            rg=rg),
+                                        {}, img('se', _("end")),
+                                        {'class': 'img'})
+
+
+            # still in the navigation part
+            cc = collection
+            sc = 0
+            for var in ['p', 'cc', 'f', 'sf', 'so', 'of', 'rg', 'aas', 'ln', 'p1', 'p2', 'p3', 'f1', 'f2', 'f3', 'm1', 'm2', 'm3', 'op1', 'op2', 'sc', 'd1y', 'd1m', 'd1d', 'd2y', 'd2m', 'd2d', 'dt']:
+                out += self.tmpl_input_hidden(name=var, value=vars()[var])
+            for var in ['ot', 'sp', 'rm']:
+                if vars()[var]:
+                    out += self.tmpl_input_hidden(name=var, value=vars()[var])
+            if pl_in_url:
+                fieldargs = cgi.parse_qs(pl_in_url)
+                for fieldcode in all_fieldcodes:
+                    # get_fieldcodes():
+                    if fieldargs.has_key(fieldcode):
+                        for val in fieldargs[fieldcode]:
+                            out += self.tmpl_input_hidden(name=fieldcode, value=val)
+
+        if not middle_only:
+            out += "</td>"
+        else:
+            out += "</small>"
+
+        # right table cell: cpu time info
+        if not middle_only:
+            if cpu_time > -1:
+                out += """<td class="searchresultsboxheader" align="right"><small>%(time)s</small>&nbsp;</td>""" % {
+                         'time' : _("Search took %s seconds.") % ('%.2f' % cpu_time),
+                       }
+            out += "</tr></table>"
+        else:
+            out += "</div>"
+        out += "</form>"
+        return out
