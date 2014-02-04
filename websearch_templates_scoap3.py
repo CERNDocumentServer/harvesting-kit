@@ -841,7 +841,7 @@ class Template(DefaultTemplate):
                   <table class="searchbox">
                    <thead>
                     <tr>
-                      <!-->
+                      <!--
                       <th class="searchboxheader">
                         %(msg_sort)s
                       </th> -->
