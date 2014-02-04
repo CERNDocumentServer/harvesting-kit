@@ -1,3 +1,22 @@
+# -*- coding: utf-8 -*-
+##
+## This file is part of Invenio.
+## Copyright (C) 2013, 2014 CERN.
+##
+## Invenio is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public License as
+## published by the Free Software Foundation; either version 2 of the
+## License, or (at your option) any later version.
+##
+## Invenio is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Invenio; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
 import sys
 import time
 
@@ -11,21 +30,34 @@ from tempfile import mkdtemp
 from xml.dom.minidom import parseString, parse
 from zipfile import ZipFile
 
-from contrast_out_config import *
-from invenio.config import (CFG_CONTRASTOUT_DOWNLOADDIR, CFG_TMPSHAREDDIR)
-from invenio.scoap3utils import (MD5Error,
-                                 NoNewFiles,
-                                 FileTypeError,
-                                 progress_bar,
-                                 check_pkgs_integrity)
-from invenio.contrast_out_utils import (contrast_out_cmp,
-                                        find_package_name)
-from invenio.minidom_utils import (xml_to_text,
-                                   get_value_in_tag)
+try:
+    from contrast_out_config import *
+except ImportError:
+    pass
+
+
+from invenio.config import (CFG_TMPSHAREDDIR, CFG_PREFIX)
+
+try:
+    from invenio.config import CFG_CONTRASTOUT_DOWNLOADDIR
+except ImportError:
+    CFG_CONTRASTOUT_DOWNLOADDIR = join(CFG_PREFIX, "var", "data" "scoap3" "elsevier")
+
 from invenio.errorlib import register_exception
+
+from .scoap3utils import (MD5Error,
+                          NoNewFiles,
+                          FileTypeError,
+                          progress_bar,
+                          check_pkgs_integrity)
+from .contrast_out_utils import (contrast_out_cmp,
+                                 find_package_name)
+from .minidom_utils import (xml_to_text,
+                            get_value_in_tag)
 
 CFG_READY_PACKAGES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "ready_pkgs")
 CFG_TAR_FILES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "tar_files")
+
 
 class ContrastOutConnector(object):
     def __init__(self, logger):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 ## This file is part of Invenio.
-## Copyright (C) 2013 CERN.
+## Copyright (C) 2013, 2014 CERN.
 ##
 ## Invenio is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -37,15 +37,15 @@ from invenio.config import (CFG_TMPSHAREDDIR, CFG_ETCDIR,
                             CFG_CONTRASTOUT_DOWNLOADDIR)
 from invenio.shellutils import run_shell_command
 from invenio.bibtask import task_low_level_submission
-from invenio.scoap3utils import (create_logger,
-                                 progress_bar,
-                                 MissingFFTError,
-                                 FileTypeError)
-from invenio.contrast_out_utils import find_package_name
-from invenio.minidom_utils import (get_value_in_tag,
-                                   xml_to_text,
-                                   format_arxiv_id)
-CFG_SCOAP3DTDS_PATH = join(CFG_ETCDIR, 'scoap3dtds')
+from .scoap3utils import (create_logger,
+                          progress_bar,
+                          MissingFFTError,
+                          FileTypeError)
+from .contrast_out_utils import find_package_name
+from .minidom_utils import (get_value_in_tag,
+                            xml_to_text,
+                            format_arxiv_id)
+from .config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
 
 CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
 CFG_ELSEVIER_ART510_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art510.zip')

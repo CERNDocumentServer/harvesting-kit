@@ -1,3 +1,22 @@
+# -*- coding: utf-8 -*-
+##
+## This file is part of Invenio.
+## Copyright (C) 2013, 2014 CERN.
+##
+## Invenio is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public License as
+## published by the Free Software Foundation; either version 2 of the
+## License, or (at your option) any later version.
+##
+## Invenio is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Invenio; if not, write to the Free Software Foundation, Inc.,
+## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
 import re
 import sys
 import time
@@ -6,18 +25,26 @@ from htmlentitydefs import name2codepoint
 
 from datetime import datetime
 from invenio.bibtask import task_low_level_submission
-from invenio.config import (CFG_OXFORD_DOWNLOADDIR, CFG_ETCDIR,
+from invenio.config import (CFG_ETCDIR,
                             CFG_TMPSHAREDDIR)
+
+try:
+    from invenio.config import CFG_OXFORD_DOWNLOADDIR
+except ImportError:
+    CFG_OXFORD_DOWNLOADDIR = join(CFG_PREFIX, "var", "data" "scoap3" "oxford")
+
+
 from invenio.errorlib import register_exception
 from invenio.shellutils import run_shell_command
 from ftplib import FTP
 from os import listdir, rename, fdopen, pardir
 from os.path import join, walk, exists, abspath, basename
-from invenio.scoap3utils import (create_logger,
-                                 progress_bar,
-                                 NoNewFiles,
-                                 check_pkgs_integrity)
-from invenio.nlm_utils import NLMParser
+
+from .scoap3utils import (create_logger,
+                          progress_bar,
+                          NoNewFiles,
+                          check_pkgs_integrity)
+from .nlm_utils import NLMParser
 from shutil import copyfile
 from tarfile import TarFile
 from tempfile import mkdtemp, mkstemp
@@ -27,7 +54,7 @@ from invenio.oup_config import (CFG_LOGIN,
                                 CFG_PASSWORD,
                                 CFG_URL)
 
-CFG_SCOAP3DTDS_PATH = join(CFG_ETCDIR, 'scoap3dtds')
+from .config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
 
 CFG_OXFORD_JATS_PATH = join(CFG_SCOAP3DTDS_PATH, 'journal-publishing-dtd-2.3.zip')
 

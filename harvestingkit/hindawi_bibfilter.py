@@ -28,10 +28,14 @@ from xml.dom.minidom import parse
 
 from invenio.bibupload import find_records_from_extoaiid
 from invenio.bibrecord import record_add_field, record_xml_output
-from invenio.minidom_utils import xml_to_text, get_value_in_tag, get_attribute_in_tag
+from harvestingkit.minidom_utils import (xml_to_text,
+                                         get_value_in_tag,
+                                         get_attribute_in_tag)
+
 
 def get_xml(input=sys.stdin):
     return parse(input)
+
 
 def create_record_file(filename, records):
     if not records:
@@ -42,6 +46,7 @@ def create_record_file(filename, records):
     for record in records:
         print >> marcxml, record
     print >> marcxml, "</collection>"
+
 
 def bibfilter(filename):
     print >> sys.stderr, "Parsing %s" % filename
@@ -61,6 +66,7 @@ def bibfilter(filename):
             updated_records.append(marcxml)
     create_record_file(filename + '.insert.xml', new_records)
     create_record_file(filename + '.correct.xml', updated_records)
+
 
 def convert_record(record, response_date, request):
     header = record.getElementsByTagName("header")[0]
@@ -98,6 +104,7 @@ def convert_record(record, response_date, request):
             subfields.append((code, value))
         record_add_field(rec, tag=tag, ind1=ind1, ind2=ind2, subfields=subfields)
     return record_xml_output(rec), new
+
 
 def main():
     if len(sys.argv) == 2 and os.path.exists(sys.argv[1]):
