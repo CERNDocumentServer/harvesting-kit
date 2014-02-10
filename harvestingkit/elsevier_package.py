@@ -24,7 +24,7 @@ import traceback
 import time
 import requests
 import xml.dom.minidom
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 from datetime import datetime
 from os import listdir, rename, fdopen
 from os.path import join, exists, walk
