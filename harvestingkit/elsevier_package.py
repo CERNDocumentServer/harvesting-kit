@@ -249,8 +249,13 @@ class ElsevierPackage(object):
             for label, authors, r_doi, issue, page, title, volume, year, textref, ext_link, journal, links, comment, journal_title, publisher in references:
                 subfields = []
                 if textref and not authors:
-                    if label:
-                       subfields.append(('o', label))
+                    if label:                    
+                        if label[-1] == '.':
+                            subfields.append(('o', label[:-1]))
+                        elif label[-1] == ')':
+                            subfields.append(('o', label[:-1]))
+                        else:                        
+                            subfields.append(('o', label))
                     ref_xml = extract_references_from_string_xml(textref)
                     dom = xml.dom.minidom.parseString(ref_xml)
                     fields = dom.getElementsByTagName("datafield")[0].getElementsByTagName("subfield")
@@ -306,6 +311,8 @@ class ElsevierPackage(object):
                             subfields.append(('o', label[1:-1]))
                         elif label[-1] == '.':
                             subfields.append(('o', label[:-1]))
+                        elif label[-1] == ')':
+                            subfields.append(('o', label[:-1]))
                     if subfields:
                         record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
                 else:
@@ -315,8 +322,13 @@ class ElsevierPackage(object):
                         subfields.append(('h', author))
                     if issue:
                         subfields.append(('n', issue))
-                    if label:
-                        subfields.append(('o', label))
+                    if label:                        
+                        if label[-1] == '.':
+                            subfields.append(('o', label[:-1]))
+                        elif label[-1] == ')':
+                            subfields.append(('o', label[:-1]))
+                        else:
+                            subfields.append(('o', label))
                     if page:
                         subfields.append(('p', page))
                     if ext_link:
