@@ -43,7 +43,7 @@ from invenio.config import (CFG_TMPSHAREDDIR, CFG_ETCDIR,
 try:
     from invenio.config import CFG_CONTRASTOUT_DOWNLOADDIR
 except ImportError:
-    CFG_CONTRASTOUT_DOWNLOADDIR = os.path.join(CFG_TMPSHAREDDIR, "contrast_out")
+    CFG_CONTRASTOUT_DOWNLOADDIR = join(CFG_TMPSHAREDDIR, "contrast_out")
 
 from invenio.shellutils import run_shell_command
 from invenio.bibtask import task_low_level_submission
