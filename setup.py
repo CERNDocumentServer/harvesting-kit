@@ -25,6 +25,13 @@ from invenio.config import CFG_ETCDIR, CFG_PYLIBDIR
 dtd_path = os.path.join(CFG_ETCDIR, "harvestingdtd")
 bibtasklet_path = os.path.join(CFG_PYLIBDIR, 'invenio', 'bibsched_tasklets')
 
+req = open('requirements.txt','r')
+requirements = []
+for line in req:
+  if line:
+    requirements.append(line)
+req.close()
+
 setup(name="HarvestingKit",
       version="0.1",
       packages=find_packages(),
@@ -39,6 +46,7 @@ setup(name="HarvestingKit",
                               "dtds/A++V2.4.zip",
                               "dtds/jats-archiving-dtd-1.0.zip",
                               "dtds/journal-publishing-dtd-2.3.zip"])],
+      install_requires=requirements,
       author="CERN",
       author_email="admin@inspirehep.net",
       description="Kit containing scripts and utils for harvesting with Invenio Software.",
