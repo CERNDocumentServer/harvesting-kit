@@ -271,7 +271,7 @@ class ElsevierPackage(object):
                                     volume = journal_title[-1] + volume
                                     journal_title = journal_title[:-1]
                                 try:
-                                    journal_title = self.journal_mappings[journal_title].strip()
+                                    journal_title = self.journal_mappings[journal_title.upper()].strip()
                                 except:
                                     pass
                                 try:
@@ -298,10 +298,33 @@ class ElsevierPackage(object):
                             volume = journal_title[-1] + volume
                             journal_title = journal_title[:-1]
                         try:
-                            journal_title = self.journal_mappings[journal_title].strip()
+                            journal_title = self.journal_mappings[journal_title.upper()].strip()
                         except:
                             pass
                         subfields.append(('s', journal_title+","+volume+","+page))
+                    elif journal_title and volume:
+                        journal_title = journal_title.replace(". ",".")
+                        if journal_title[-1] >= 'A' and journal_title[-1] <='Z':
+                            volume = journal_title[-1] + volume
+                            journal_title = journal_title[:-1]
+                        try:
+                            journal_title = self.journal_mappings[journal_title.upper()].strip()
+                        except:
+                            pass
+                        subfields.append(('s', journal_title+","+volume))
+                    elif journal_title:
+                        journal_title = journal_title.replace(". ",".")
+                        if journal_title[-1] >= 'A' and journal_title[-1] <='Z':
+                            volume = journal_title[-1] + volume
+                            journal_title = journal_title[:-1]
+                        try:
+                            journal_title = self.journal_mappings[journal_title.upper()].strip()
+                        except:
+                            pass
+                        if volume:
+                            subfields.append(('s', journal_title+","+volume))
+                        else:
+                            subfields.append(('s', journal_title))
                     if ext_link:
                         subfields.append(('r', ext_link))
                     if year:
@@ -508,11 +531,11 @@ class ElsevierPackage(object):
             publicationName = get_value_in_tag(xml,"prism:publicationName")
             journal = publicationName.split(",")[0]
             try:
-                journal = journal_mappings[journal]
+                journal = self.journal_mappings[journal.upper()]
             except:
                 pass
             issn = get_value_in_tag(xml, "prism:issn")
-            issue = ""
+            issue = get_value_in_tag(xml, "prism:number")
             volume = ""
             try:
                 volume = publicationName.split(",")[1].lstrip()
@@ -541,7 +564,7 @@ class ElsevierPackage(object):
             if vol:
                 volume = volume + vol
             year = xml.getElementsByTagName('ce:copyright')[0].getAttribute("year")
-            start_date = ""
+            start_date = get_value_in_tag(xml, "prism:coverDate")
             if len(start_date) is 8:
                 start_date = time.strftime('%Y-%m-%d', time.strptime(start_date, '%Y%m%d'))
             elif len(start_date) is 6:
@@ -594,11 +617,28 @@ class ElsevierPackage(object):
                         title = title_container.getElementsByTagName("sb:maintitle")[0].firstChild.data
                     except:
                         pass
+
                 journal = len(reference.getElementsByTagName("sb:issue"))>0
                 journal_title = ""
                 if journal:
                     journal_title_container = reference.getElementsByTagName("sb:issue")[0]
                     journal_title = get_value_in_tag(journal_title_container, "sb:maintitle")
+                edited_book = len(reference.getElementsByTagName("sb:edited-book"))>0
+                if edited_book:
+                    #treat as a journal
+                    if len(reference.getElementsByTagName("sb:book-series"))>0:
+                        journal_title_container = reference.getElementsByTagName("sb:book-series")[0]
+                        journal_title = get_value_in_tag(journal_title_container, "sb:maintitle")
+                        year = get_value_in_tag(reference, "sb:date")
+                        journal = True
+                    #conference
+                    else:
+                        edited_book__container = reference.getElementsByTagName("sb:edited-book")[0]
+                        maintitle = get_value_in_tag(edited_book__container, "sb:maintitle")
+                        conference = get_value_in_tag(edited_book__container, "sb:conference")
+                        date = get_value_in_tag(edited_book__container, "sb:date")
+                        #use this variable in order to get in the 'm' marc field
+                        publisher = maintitle + ", " + conference + ", " + date
                 book = len(reference.getElementsByTagName("sb:book"))>0
                 publisher = ""
                 if book:
@@ -702,7 +742,6 @@ class ElsevierPackage(object):
         abstract = self.get_abstract(xml_doc)
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract), ('9', 'Elsevier')])
-        record_add_field(rec, '540', subfields=[('a', 'CC-BY-3.0'), ('u', 'http://creativecommons.org/licenses/by/3.0/')])
         copyright = self.get_copyright(xml_doc)
         if copyright:
             record_add_field(rec, '542', subfields=[('f', copyright)])
@@ -716,6 +755,7 @@ class ElsevierPackage(object):
             else:
                 record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', ''), ('y', year)])
         else:
+            record_add_field(rec, '540', subfields=[('a', 'CC-BY-3.0'), ('u', 'http://creativecommons.org/licenses/by/3.0/')])
             if keywords:
                 for keyword in keywords:
                     record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
