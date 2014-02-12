@@ -109,14 +109,12 @@ class ElsevierPackage(object):
         self._crawl_elsevier_and_find_issue_xml()
         self._build_doi_mapping()
 
-
     def _build_journal_mappings(self):
         try:
             self.journal_mappings = get_kbs()['journals'][1]
         except KeyError:
             self.journal_mappings = {}
             return
-
 
     def _extract_package(self):
         """
@@ -135,7 +133,6 @@ class ElsevierPackage(object):
             register_exception(alert_admin=True, prefix="Elsevier error extracting package.")
             self.logger.error("Error extraction package file: %s %s" % (self.path, err))
             print >> sys.stdout, "\nError extracting package file: %s %s" % (self.path, err)
-
 
     def _crawl_elsevier_and_find_main_xml(self):
         """
@@ -163,7 +160,6 @@ class ElsevierPackage(object):
                         register_exception()
                         print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
             walk(self.path, visit, None)
-
 
     def _crawl_elsevier_and_find_issue_xml(self):
         """
@@ -216,7 +212,6 @@ class ElsevierPackage(object):
             self.logger.error("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
             raise ValueError("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
 
-
     def _normalize_article_dir_with_dtd(self, path):
         """
         main.xml from Elsevier assume the existence of a local DTD.
@@ -243,8 +238,7 @@ class ElsevierPackage(object):
             self.logger.error("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
             raise ValueError("Error in cleaning %s: %s" % (join(path, 'main.xml'), cmd_err))
 
-
-    def _add_references(self,references,rec,doi):
+    def _add_references(self, references, rec, doi):
         if self.CONSYN:
             for label, authors, r_doi, issue, page, title, volume, year, textref, ext_link, journal, links, comment, journal_title, publisher, editors, book_title in references:
                 subfields = []
@@ -265,9 +259,9 @@ class ElsevierPackage(object):
                         if code == 's':
                             try:
                                 journal_title = data.split(',')[0]
-                                journal_title = journal_title.replace(". ",".")
+                                journal_title = journal_title.replace(". ", ".")
                                 volume = data.split(',')[1]
-                                if journal_title[-1] >= 'A' and journal_title[-1] <='Z':
+                                if journal_title[-1] >= 'A' and journal_title[-1] <= 'Z':
                                     volume = journal_title[-1] + volume
                                     journal_title = journal_title[:-1]
                                 try:
@@ -279,13 +273,13 @@ class ElsevierPackage(object):
                                         pass
                                 try:
                                     page = data.split(',')[2]
-                                    subfields.append((code,journal_title+", "+volume+", "+page))
+                                    subfields.append((code, journal_title + ", " + volume + ", " + page))
                                 except IndexError:
-                                    subfields.append((code,journal_title+", "+volume))
+                                    subfields.append((code, journal_title + ", " + volume))
                             except IndexError:
-                               subfields.append((code,data))
+                                subfields.append((code, data))
                         else:
-                            subfields.append((code,data))
+                            subfields.append((code, data))
                     if subfields:
                         record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
                 elif journal:
@@ -296,8 +290,8 @@ class ElsevierPackage(object):
                     if title:
                         subfields.append(('t', title))
                     if journal_title:
-                        journal_title = journal_title.replace(". ",".")
-                        if journal_title[-1] >= 'A' and journal_title[-1] <='Z':
+                        journal_title = journal_title.replace(". ", ".")
+                        if journal_title[-1] >= 'A' and journal_title[-1] <= 'Z':
                             volume = journal_title[-1] + volume
                             journal_title = journal_title[:-1]
                         try:
@@ -308,9 +302,9 @@ class ElsevierPackage(object):
                             except KeyError:
                                 pass
                         if volume and page:
-                            subfields.append(('s', journal_title+","+volume+","+page))
+                            subfields.append(('s', journal_title + "," + volume + "," + page))
                         elif volume:
-                            subfields.append(('s', journal_title+","+volume))
+                            subfields.append(('s', journal_title + "," + volume))
                         else:
                             subfields.append(('s', journal_title))
                     if ext_link:
@@ -349,7 +343,7 @@ class ElsevierPackage(object):
                     elif textref:
                         subfields.append(('m', textref))
                     if publisher:
-                        subfields.append(('m',publisher))
+                        subfields.append(('m', publisher))
                     if title:
                         subfields.append(('t', title))
                     if volume:
@@ -392,7 +386,6 @@ class ElsevierPackage(object):
                 if subfields:
                     record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
 
-
     def _build_doi_mapping(self):
         self._dois = {}
         for path in self._found_issues:
@@ -408,20 +401,17 @@ class ElsevierPackage(object):
                 start_date = time.strftime('%Y-%m-%d', time.strptime(start_date, '%Y%m%d'))
             elif len(start_date) is 6:
                 start_date = time.strftime('%Y-%m', time.strptime(start_date, '%Y%m'))
-
             for included_item in xml.getElementsByTagName("ce:include-item"):
                 doi = get_value_in_tag(included_item, "ce:doi")
                 first_page = get_value_in_tag(included_item, "ce:first-page")
                 last_page = get_value_in_tag(included_item, "ce:last-page")
                 self._dois[doi] = (journal, issn, volume, issue, first_page, last_page, year, start_date)
 
-    
     def _get_doi(self, xml):
         try:
             return get_value_in_tag(xml, "ce:doi")
         except Exception, err:
             print >> sys.stderr, "Can't find doi"
-
 
     def get_title(self, xml):
         try:
@@ -429,13 +419,11 @@ class ElsevierPackage(object):
         except Exception, err:
             print >> sys.stderr, "Can't find title"
 
-
     def get_abstract(self, xml):
         try:
             return get_value_in_tag(xml.getElementsByTagName("ce:abstract-sec")[0], "ce:simple-para")
         except Exception, err:
             print >> sys.stderr, "Can't find abstract"
-
 
     def get_keywords(self, xml):
         if self.CONSYN:
@@ -450,13 +438,11 @@ class ElsevierPackage(object):
             except Exception, err:
                 print >> sys.stderr, "Can't find keywords"
 
-
     def get_copyright(self, xml):
         try:
             return get_value_in_tag(xml, "ce:copyright")
         except Exception, err:
             print >> sys.stderr, "Can't find copyright"
-
 
     def get_ref_link(self, xml, name):
         links = xml.getElementsByTagName('ce:inter-ref')
@@ -465,7 +451,6 @@ class ElsevierPackage(object):
             if name in link.getAttribute("xlink:href").encode('utf-8'):
                 ret = xml_to_text(link).strip()
         return ret
-
 
     def get_authors(self, xml):
         authors = []
@@ -516,11 +501,10 @@ class ElsevierPackage(object):
                     author["affiliation"].append(aff)
         return authors
 
-
     def get_publication_information(self, xml):
         if self.CONSYN:
             jid = get_value_in_tag(xml, "ja:jid")
-            publicationName = get_value_in_tag(xml,"prism:publicationName")
+            publicationName = get_value_in_tag(xml, "prism:publicationName")
             journal = publicationName.split(",")[0]
             try:
                 journal = self.journal_mappings[journal.upper()]
@@ -538,7 +522,7 @@ class ElsevierPackage(object):
                 pass
             first_page = get_value_in_tag(xml, "prism:startingPage")
             last_page = get_value_in_tag(xml, "prism:endingPage")
-            doi = get_value_in_tag(xml,"prism:doi")
+            doi = get_value_in_tag(xml, "prism:doi")
             if volume.startswith("Section"):
                 volume = volume[7:].strip()
             vol = get_value_in_tag(xml, "prism:volume")
@@ -547,13 +531,13 @@ class ElsevierPackage(object):
                 try:
                     session = requests.session()
                     r = session.get("http://dx.doi.org/"+doi)
-                    parsed_html = BeautifulSoup(r.text)                
-                    info = parsed_html.body.find('p',attrs={'class':'volIssue'}).text.split()
+                    parsed_html = BeautifulSoup(r.text)
+                    info = parsed_html.body.find('p', attrs={'class': 'volIssue'}).text.split()
                     for s in info:
-                        if unicode(s).find(u'\xe2')>0:
+                        if unicode(s).find(u'\xe2') > 0:
                             first_page = s.rsplit(u'\xe2')[0]
                             last_page = s.rsplit(u'\x93')[1]
-                    vol=info[1][:-1]
+                    vol = info[1][:-1]
                 except:
                     pass
             if vol:
@@ -563,16 +547,15 @@ class ElsevierPackage(object):
             if len(start_date) is 8:
                 start_date = time.strftime('%Y-%m-%d', time.strptime(start_date, '%Y%m%d'))
             elif len(start_date) is 6:
-                start_date = time.strftime('%Y-%m', time.strptime(start_date, '%Y%m'))                
-            doi = get_value_in_tag(xml, "ce:doi")            
-            return (journal, issn, volume, issue, first_page, last_page, year, start_date,doi)
+                start_date = time.strftime('%Y-%m', time.strptime(start_date, '%Y%m'))
+            doi = get_value_in_tag(xml, "ce:doi")
+            return (journal, issn, volume, issue, first_page, last_page, year, start_date, doi)
         else:
             doi = self._get_doi(xml)
             try:
                 return self._dois[doi] + (doi, )
             except:
                 return ('', '', '', '', '', '', '', '', doi)
-
 
     def get_references(self, xml):
         references = []
@@ -604,7 +587,7 @@ class ElsevierPackage(object):
                 links = []
                 for link in reference.getElementsByTagName("ce:inter-ref"):
                     if link.firstChild:
-                        links.append(link.firstChild.data)                    
+                        links.append(link.firstChild.data)
                 title = ""
                 if len(reference.getElementsByTagName("sb:contribution")) > 0:
                     title_container = reference.getElementsByTagName("sb:contribution")[0]
@@ -613,24 +596,24 @@ class ElsevierPackage(object):
                     except:
                         pass
 
-                journal = len(reference.getElementsByTagName("sb:issue"))>0
+                journal = len(reference.getElementsByTagName("sb:issue")) > 0
                 journal_title = ""
                 if journal:
                     journal_title_container = reference.getElementsByTagName("sb:issue")[0]
                     journal_title = get_value_in_tag(journal_title_container, "sb:maintitle")
-                edited_book = len(reference.getElementsByTagName("sb:edited-book"))>0
+                edited_book = len(reference.getElementsByTagName("sb:edited-book")) > 0
                 editors = []
                 book_title = ""
                 publisher = ""
                 if edited_book:
                     #treat as a journal
-                    if len(reference.getElementsByTagName("sb:book-series"))>0:
+                    if len(reference.getElementsByTagName("sb:book-series")) > 0:
                         journal_title_container = reference.getElementsByTagName("sb:book-series")[0]
                         journal_title = get_value_in_tag(journal_title_container, "sb:maintitle")
                         year = get_value_in_tag(reference, "sb:date")
                         journal = True
                     #conference
-                    elif len(reference.getElementsByTagName("sb:conference"))>0:
+                    elif len(reference.getElementsByTagName("sb:conference")) > 0:
                         edited_book__container = reference.getElementsByTagName("sb:edited-book")[0]
                         maintitle = get_value_in_tag(edited_book__container, "sb:maintitle")
                         conference = get_value_in_tag(edited_book__container, "sb:conference")
@@ -639,7 +622,7 @@ class ElsevierPackage(object):
                         publisher = maintitle + ", " + conference + ", " + date
                     else:
                         edited_book__container = reference.getElementsByTagName("sb:edited-book")[0]
-                        if len(reference.getElementsByTagName("sb:editors"))>0:
+                        if len(reference.getElementsByTagName("sb:editors")) > 0:
                             for editor in reference.getElementsByTagName("sb:editor"):
                                 surname = get_value_in_tag(editor, "ce:surname")
                                 given_name = get_value_in_tag(editor, "ce:given-name")
@@ -655,17 +638,16 @@ class ElsevierPackage(object):
                             publisher = get_value_in_tag(publisher_container, "sb:name")
                             if location:
                                 publisher = location + ": " + publisher
-                book = len(reference.getElementsByTagName("sb:book"))>0
+                book = len(reference.getElementsByTagName("sb:book")) > 0
                 if book:
-                    if len(reference.getElementsByTagName("sb:book-series"))>0:
+                    if len(reference.getElementsByTagName("sb:book-series")) > 0:
                         book_series = reference.getElementsByTagName("sb:book-series")[0]
-                        title = title +", "+ get_value_in_tag(book_series, "sb:maintitle") +", "+ get_value_in_tag(book_series, "sb:volume-nr")
+                        title = title + ", " + get_value_in_tag(book_series, "sb:maintitle") + ", " + get_value_in_tag(book_series, "sb:volume-nr")
                     publisher = get_value_in_tag(reference, "sb:publisher")
-                references.append((label, authors, doi, issue, page, title, volume, year, textref, ext_link, journal, links, comment, journal_title, publisher,editors,book_title))
+                references.append((label, authors, doi, issue, page, title, volume, year, textref, ext_link, journal, links, comment, journal_title, publisher, editors, book_title))
             else:
                 references.append((label, authors, doi, issue, page, title, volume, year, textref, ext_link))
         return references
-
 
     def get_article_journal(self, xml):
         if self.CONSYN:
@@ -673,14 +655,12 @@ class ElsevierPackage(object):
         else:
             return CFG_ELSEVIER_JID_MAP[get_value_in_tag(xml, "jid")]
 
-
     def get_article(self, path):
         if path.endswith('.xml'):
             data_file = path
         else:
             data_file = open(join(path, "resolved_main.xml"))
         return parse(data_file)
-
 
     def get_elsevier_version(self, name):
         try:
@@ -690,7 +670,6 @@ class ElsevierPackage(object):
             return ret
         except Exception, err:
             raise
-
 
     def get_pdfa_record(self, path=None):
         from invenio.search_engine import search_pattern
@@ -705,7 +684,6 @@ class ElsevierPackage(object):
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
             self.logger.error('Adding PDF/A. No paper with this DOI: %s. Trying to add it anyway.' % (doi,))
             register_exception(alert_admin=True, prefix="'Adding PDF/A. No paper with this DOI: %s. Trying to add it anyway.." % (doi,))
-
         try:
             if exists(join(path, 'main_a-2b.pdf')):
                 record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf')), ('n', 'main'), ('f', '.pdf;pdfa')])
@@ -718,9 +696,7 @@ class ElsevierPackage(object):
         except MissingFFTError, err:
             register_exception(alert_admin=True, prefix="Elsevier paper: %s is missing PDF." % (doi,))
             self.logger.warning("Record %s doesn't contain PDF file." % (doi,))
-
         return record_xml_output(rec)
-
 
     def get_record(self, path=None, no_pdf=False):
         xml_doc = self.get_article(path)
@@ -776,8 +752,8 @@ class ElsevierPackage(object):
                     record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
             record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', '%s-%s' % (first_page, last_page)), ('y', year)])
         references = self.get_references(xml_doc)
-        self._add_references(references,rec,doi)        
-            
+        self._add_references(references, rec, doi)
+
         if not no_pdf:
             from invenio.search_engine import search_pattern
             prev_version = search_pattern(p='0247_a:"%s" AND NOT 980:DELETED"' % (doi,))
@@ -793,7 +769,6 @@ class ElsevierPackage(object):
                     self.logger.info('Leaving previously delivered PDF/A for: %s' % (doi,))
                 except:
                     pass
-
             try:
                 if exists(join(path, 'main_a-2b.pdf')):
                     record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf')), ('n', 'main'), ('f', '.pdf;pdfa')])
@@ -806,7 +781,6 @@ class ElsevierPackage(object):
             except MissingFFTError, err:
                 register_exception(alert_admin=True, prefix="Elsevier paper: %s is missing PDF." % (doi,))
                 self.logger.warning("Record %s doesn't contain PDF file." % (doi,))
-
         if self.CONSYN:
             record_add_field(rec, '980', subfields=[('a', 'HEP')])
             record_add_field(rec, '980', subfields=[('a', 'Citeable')])
@@ -819,8 +793,6 @@ class ElsevierPackage(object):
         except UnicodeDecodeError:
             sys.stderr.write("Found a bad char in the file for the article " + doi)
             return ""
-        
-
 
     def bibupload_it(self):
         print self.found_articles
@@ -837,7 +809,6 @@ class ElsevierPackage(object):
                 print >> out, "</collection>"
                 out.close()
                 task_low_level_submission("bibupload", "admin", "-N", "Elsevier", "-i", "-r", name)
-
             if [x for x in self.found_articles if "vtex" in x]:
             # for VTEX files with PDF/A
                 self.logger.debug("Preparing bibupload for PDF/As.")
