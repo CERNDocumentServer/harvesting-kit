@@ -110,9 +110,9 @@ class ElsevierPackage(object):
         self._build_doi_mapping()
 
 
-    def _build_journal_mappings(self):        
+    def _build_journal_mappings(self):
         try:
-            self.journal_mappings = get_kbs()['journals'][1]        
+            self.journal_mappings = get_kbs()['journals'][1]
         except KeyError:
             self.journal_mappings = {}
             return
@@ -246,15 +246,15 @@ class ElsevierPackage(object):
 
     def _add_references(self,references,rec,doi):
         if self.CONSYN:
-            for label, authors, r_doi, issue, page, title, volume, year, textref, ext_link, journal, links, comment, journal_title, publisher in references:
+            for label, authors, r_doi, issue, page, title, volume, year, textref, ext_link, journal, links, comment, journal_title, publisher, editors, book_title in references:
                 subfields = []
                 if textref and not authors:
-                    if label:                    
+                    if label:
                         if label[-1] == '.':
                             subfields.append(('o', label[:-1]))
                         elif label[-1] == ')':
                             subfields.append(('o', label[:-1]))
-                        else:                        
+                        else:
                             subfields.append(('o', label))
                     ref_xml = extract_references_from_string_xml(textref)
                     dom = xml.dom.minidom.parseString(ref_xml)
@@ -272,15 +272,18 @@ class ElsevierPackage(object):
                                     journal_title = journal_title[:-1]
                                 try:
                                     journal_title = self.journal_mappings[journal_title.upper()].strip()
-                                except:
-                                    pass
+                                except KeyError:
+                                    try:
+                                        journal_title = self.journal_mappings[journal_title].strip()
+                                    except KeyError:
+                                        pass
                                 try:
                                     page = data.split(',')[2]
                                     subfields.append((code,journal_title+", "+volume+", "+page))
-                                except:
+                                except IndexError:
                                     subfields.append((code,journal_title+", "+volume))
-                            except:
-                                pass
+                            except IndexError:
+                               subfields.append((code,data))
                         else:
                             subfields.append((code,data))
                     if subfields:
@@ -292,36 +295,21 @@ class ElsevierPackage(object):
                         subfields.append(('h', author))
                     if title:
                         subfields.append(('t', title))
-                    if journal_title and volume and page:
+                    if journal_title:
                         journal_title = journal_title.replace(". ",".")
                         if journal_title[-1] >= 'A' and journal_title[-1] <='Z':
                             volume = journal_title[-1] + volume
                             journal_title = journal_title[:-1]
                         try:
                             journal_title = self.journal_mappings[journal_title.upper()].strip()
-                        except:
-                            pass
-                        subfields.append(('s', journal_title+","+volume+","+page))
-                    elif journal_title and volume:
-                        journal_title = journal_title.replace(". ",".")
-                        if journal_title[-1] >= 'A' and journal_title[-1] <='Z':
-                            volume = journal_title[-1] + volume
-                            journal_title = journal_title[:-1]
-                        try:
-                            journal_title = self.journal_mappings[journal_title.upper()].strip()
-                        except:
-                            pass
-                        subfields.append(('s', journal_title+","+volume))
-                    elif journal_title:
-                        journal_title = journal_title.replace(". ",".")
-                        if journal_title[-1] >= 'A' and journal_title[-1] <='Z':
-                            volume = journal_title[-1] + volume
-                            journal_title = journal_title[:-1]
-                        try:
-                            journal_title = self.journal_mappings[journal_title.upper()].strip()
-                        except:
-                            pass
-                        if volume:
+                        except KeyError:
+                            try:
+                                journal_title = self.journal_mappings[journal_title].strip()
+                            except KeyError:
+                                pass
+                        if volume and page:
+                            subfields.append(('s', journal_title+","+volume+","+page))
+                        elif volume:
                             subfields.append(('s', journal_title+","+volume))
                         else:
                             subfields.append(('s', journal_title))
@@ -345,7 +333,7 @@ class ElsevierPackage(object):
                         subfields.append(('h', author))
                     if issue:
                         subfields.append(('n', issue))
-                    if label:                        
+                    if label:
                         if label[-1] == '.':
                             subfields.append(('o', label[:-1]))
                         elif label[-1] == ')':
@@ -372,6 +360,10 @@ class ElsevierPackage(object):
                         subfields.append(('m', comment))
                     if subfields:
                         record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
+                    for editor in editors:
+                        subfields.append(('e', editor))
+                    if book_title:
+                        subfields.append(('q', book_title))
         else:
             for label, authors, r_doi, issue, page, title, volume, year, textref, ext_link in references:
                 subfields = []
@@ -532,8 +524,11 @@ class ElsevierPackage(object):
             journal = publicationName.split(",")[0]
             try:
                 journal = self.journal_mappings[journal.upper()]
-            except:
-                pass
+            except KeyError:
+                try:
+                    journal_title = self.journal_mappings[journal].strip()
+                except KeyError:
+                    pass
             issn = get_value_in_tag(xml, "prism:issn")
             issue = get_value_in_tag(xml, "prism:number")
             volume = ""
@@ -624,6 +619,9 @@ class ElsevierPackage(object):
                     journal_title_container = reference.getElementsByTagName("sb:issue")[0]
                     journal_title = get_value_in_tag(journal_title_container, "sb:maintitle")
                 edited_book = len(reference.getElementsByTagName("sb:edited-book"))>0
+                editors = []
+                book_title = ""
+                publisher = ""
                 if edited_book:
                     #treat as a journal
                     if len(reference.getElementsByTagName("sb:book-series"))>0:
@@ -632,21 +630,38 @@ class ElsevierPackage(object):
                         year = get_value_in_tag(reference, "sb:date")
                         journal = True
                     #conference
-                    else:
+                    elif len(reference.getElementsByTagName("sb:conference"))>0:
                         edited_book__container = reference.getElementsByTagName("sb:edited-book")[0]
                         maintitle = get_value_in_tag(edited_book__container, "sb:maintitle")
                         conference = get_value_in_tag(edited_book__container, "sb:conference")
                         date = get_value_in_tag(edited_book__container, "sb:date")
                         #use this variable in order to get in the 'm' marc field
                         publisher = maintitle + ", " + conference + ", " + date
+                    else:
+                        edited_book__container = reference.getElementsByTagName("sb:edited-book")[0]
+                        if len(reference.getElementsByTagName("sb:editors"))>0:
+                            for editor in reference.getElementsByTagName("sb:editor"):
+                                surname = get_value_in_tag(editor, "ce:surname")
+                                given_name = get_value_in_tag(editor, "ce:given-name")
+                                editors.append("%s,%s" % (surname, given_name))
+                        if title:
+                            book_title = get_value_in_tag(edited_book__container, "sb:maintitle")
+                        else:
+                            title = get_value_in_tag(edited_book__container, "sb:maintitle")
+                        year = get_value_in_tag(edited_book__container, "sb:date")
+                        if reference.getElementsByTagName("sb:publisher"):
+                            publisher_container = reference.getElementsByTagName("sb:publisher")[0]
+                            location = get_value_in_tag(publisher_container, "sb:location")
+                            publisher = get_value_in_tag(publisher_container, "sb:name")
+                            if location:
+                                publisher = location + ": " + publisher
                 book = len(reference.getElementsByTagName("sb:book"))>0
-                publisher = ""
                 if book:
                     if len(reference.getElementsByTagName("sb:book-series"))>0:
-                        book_series = reference.getElementsByTagName("sb:book-series")[0]                
+                        book_series = reference.getElementsByTagName("sb:book-series")[0]
                         title = title +", "+ get_value_in_tag(book_series, "sb:maintitle") +", "+ get_value_in_tag(book_series, "sb:volume-nr")
                     publisher = get_value_in_tag(reference, "sb:publisher")
-                references.append((label, authors, doi, issue, page, title, volume, year, textref, ext_link, journal, links, comment, journal_title, publisher))
+                references.append((label, authors, doi, issue, page, title, volume, year, textref, ext_link, journal, links, comment, journal_title, publisher,editors,book_title))
             else:
                 references.append((label, authors, doi, issue, page, title, volume, year, textref, ext_link))
         return references
@@ -792,7 +807,7 @@ class ElsevierPackage(object):
                 register_exception(alert_admin=True, prefix="Elsevier paper: %s is missing PDF." % (doi,))
                 self.logger.warning("Record %s doesn't contain PDF file." % (doi,))
 
-        if self.CONSYN:            
+        if self.CONSYN:
             record_add_field(rec, '980', subfields=[('a', 'HEP')])
             record_add_field(rec, '980', subfields=[('a', 'Citeable')])
         else:
