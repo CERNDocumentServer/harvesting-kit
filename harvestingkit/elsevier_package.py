@@ -517,7 +517,7 @@ class ElsevierPackage(object):
             issue = get_value_in_tag(xml, "prism:number")
             volume = ""
             try:
-                volume = publicationName.split(",")[1].lstrip()
+                volume = publicationName.split(",")[1].strip()
             except IndexError:
                 pass
             first_page = get_value_in_tag(xml, "prism:startingPage")
@@ -537,14 +537,21 @@ class ElsevierPackage(object):
                         if unicode(s).find(u'\xe2') > 0:
                             first_page = s.rsplit(u'\xe2')[0]
                             last_page = s.rsplit(u'\x93')[1]
-                    vol = info[1][:-1]
+                    if info[1].lower() != 'online':
+                        vol = info[1][:-1]
                 except:
                     pass
             if vol:
                 volume = volume + vol
             year = xml.getElementsByTagName('ce:copyright')[0].getAttribute("year")
             start_date = get_value_in_tag(xml, "prism:coverDate")
-            if len(start_date) is 8:
+            if len(xml.getElementsByTagName('ce:date-accepted')) > 0:
+                full_date = xml.getElementsByTagName('ce:date-accepted')[0]
+                y = full_date.getAttribute('year')
+                m = full_date.getAttribute('month').zfill(2) 
+                d = full_date.getAttribute('day').zfill(2)
+                start_date = "%s-%s-%s" % (y, m, d)
+            elif len(start_date) is 8:
                 start_date = time.strftime('%Y-%m-%d', time.strptime(start_date, '%Y%m%d'))
             elif len(start_date) is 6:
                 start_date = time.strftime('%Y-%m', time.strptime(start_date, '%Y%m'))
