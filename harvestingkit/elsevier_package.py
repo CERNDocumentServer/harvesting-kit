@@ -789,6 +789,7 @@ class ElsevierPackage(object):
                 register_exception(alert_admin=True, prefix="Elsevier paper: %s is missing PDF." % (doi,))
                 self.logger.warning("Record %s doesn't contain PDF file." % (doi,))
         if self.CONSYN:
+            record_add_field(rec, 'FFT', subfields=[('a', path), ('t', 'Elsevier'), ('o', 'hidden')])
             record_add_field(rec, '980', subfields=[('a', 'HEP')])
             record_add_field(rec, '980', subfields=[('a', 'Citeable')])
         else:
