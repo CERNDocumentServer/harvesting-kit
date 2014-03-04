@@ -17,7 +17,6 @@
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 import sys
-import xml.dom.minidom
 import re
 
 from invenio.refextract_kbs import get_kbs
@@ -70,7 +69,7 @@ class ApsPackage(object):
 
     def _get_doi(self):
         try:
-            for tag in doc.getElementsByTagName('article-id'):
+            for tag in self.document.getElementsByTagName('article-id'):
                 if tag.getAttribute('pub-id-type') == 'doi':
                     return tag.firstChild.data
         except Exception:
@@ -102,7 +101,7 @@ class ApsPackage(object):
     def _get_copyright(self):
         try:
             return get_value_in_tag(self.document, 'copyright-statement')
-        except Exception, err:
+        except Exception:
             print >> sys.stderr, "Can't find copyright"
             return ''
 
@@ -122,19 +121,6 @@ class ApsPackage(object):
             print >> sys.stderr, "Can't find publication date"
             return datetime.now().strftime("%Y-%m-%d")
 
-    def _get_issn(self):
-        epub_issn = ''
-        ppub_issn = ''
-        for issn in self.document.getElementsByTagName('issn'):
-            if issn.getAttribute('pub-type') == 'epub':
-                epub_issn = issn.firstChild.data
-            elif issn.getAttribute('pub-type') == 'ppub':
-                ppub_issn = issn.firstChild.data
-        if epub_issn:
-            return epub_issn
-        else:
-            return ppub_issn
-
     def _get_publisher(self):
         try:
             return get_value_in_tag(self.document, 'publisher')
@@ -145,13 +131,13 @@ class ApsPackage(object):
     def _get_publition_information(self):
         journal = self._get_journal()
         date = self._get_date()
-        issn = self._get_issn()
         doi = self._get_doi()
-        jounal, volume = self._fix_journal_name(journal)
+        journal, volume = self._fix_journal_name(journal)
+        article_id = get_value_in_tag(self.document, 'elocation-id')
         volume += get_value_in_tag(self.document, 'volume')
         issue = get_value_in_tag(self.document, 'issue')
         year = get_value_in_tag(self.document, 'copyright-year')
-        return (journal, issn, volume, issue, year, date, doi)
+        return (journal, volume, issue, year, date, doi, article_id)
 
     def _fix_journal_name(self, journal):
         """ Converts journal name to Inspire's short form """
@@ -168,116 +154,128 @@ class ApsPackage(object):
                     journal = self.journal_mappings[journal].strip()
                 except KeyError:
                     pass
-            journal = journal.replace('. ', '.')
+        journal = journal.replace('. ', '.')
         return journal, volume
 
     def _get_reference(self, ref):
         """ Retrieves the data for a reference """
-        doi = ''
-        for tag in ref.getElementsByTagName('pub-id'):
-            if tag.getAttribute('pub-id-type') == 'doi':
-                doi = tag.firstChild.data
-        authors = []
-        try:
-            authors_xml = ref.getElementsByTagName('person-group')[0]
-            for author in authors_xml.getElementsByTagName('string-name'):
-                try:
-                    authors.append(author.firstChild.data)
-                except AttributeError:
-                    pass
-        except IndexError:
-            pass
-        journal = get_value_in_tag(ref, 'source')
-        journal, volume = self._fix_journal_name(journal)
-        volume += get_value_in_tag(ref, 'volume')
-        page = get_value_in_tag(ref, 'page-range')
-        year = get_value_in_tag(ref, 'year')
         label = get_value_in_tag(ref, 'label')
         label = re.sub('\D', '', label)
-        arxiv = ''
-        for tag in ref.getElementsByTagName('pub-id'):
-            if tag.getAttribute('pub-id-type') == 'arxiv':
-                arxiv = tag.firstChild.data
-        publisher = get_value_in_tag(ref, 'publisher-name')
-        return doi, authors, journal, volume, page, year, label, arxiv, publisher
-
-    def _add_reference_journal(self, rec, ref):
-        """ Adds the journal-type references to the record """
-        doi, authors, journal, volume, page, year, label, arxiv, publisher = self._get_reference(ref)
-        subfields = []
-        if doi:
-            subfields.append(('a', doi))
-        for author in authors:
-            subfields.append(('h', author))
-        if volume:
-            subfields.append(('s', journal + "," + volume))
-        else:
-            subfields.append(('s', journal))
-        if year:
-            subfields.append(('y', year))
-        if label:
-            subfields.append(('o', label))
-        if subfields:
-            record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-
-    def _add_reference_eprint(self, rec, ref):
-        """ Adds the eprint-type references to the record """
-        doi, authors, journal, volume, page, year, label, arxiv, publisher = self._get_reference(ref)
-        subfields = []
-        for author in authors:
-            subfields.append(('h', author))
-        if arxiv:
-            subfields.append(('r', arxiv))
-        if label:
-            subfields.append(('o', label))
-        if subfields:
-            record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-
-    def _add_reference_book(self, rec, ref):
-        """ Adds the book-type references to the record """
-        doi, authors, journal, volume, page, year, label, arxiv, publisher = self._get_reference(ref)
-        subfields = []
-        #book title
-        if journal:
-            subfields.append(('s', journal))
-        for author in authors:
-            subfields.append(('h', author))
-        if publisher:
-            subfields.append(('m', publisher))
-        if label:
-            subfields.append(('o', label))
-        if subfields:
-            record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-
-    def _add_reference_misc(self, rec, ref):
-        """ Adds the misc-type references to the record """
-        try:
-            r = ref.getElementsByTagName('mixed-citation')[0]
-            subfields = []
-            subfields.append(('s', xml_to_text(r)))
-            record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-        except IndexError:
-            subfields = []
-            subfields.append(('s', xml_to_text(ref)))
-            record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-
-    def _add_references(self, rec):
-        """ Adds the references on the record """
-        functions = {'journal': self._add_reference_journal,
-                     'eprint': self._add_reference_eprint,
-                     'book': self._add_reference_book,
-                     'misc': self._add_reference_misc}
-        for ref in self.document.getElementsByTagName('ref'):
-            ref_type = 'default'
+        for innerref in ref.getElementsByTagName('mixed-citation'):
+            institution = get_value_in_tag(innerref, 'institution')
+            report_no = ''
+            for tag in innerref.getElementsByTagName('pub-id'):
+                if tag.getAttribute('pub-id-type') == 'other':
+                    report_no = tag.firstChild.data            
+            doi = ''
+            for tag in innerref.getElementsByTagName('pub-id'):
+                if tag.getAttribute('pub-id-type') == 'doi':
+                    doi = tag.firstChild.data
+            collaboration = get_value_in_tag(innerref, 'collab')
+            authors = []
             try:
-                ref_type = ref.getElementsByTagName('mixed-citation')[0]
-                ref_type = ref_type.getAttribute('publication-type')
+                authors_xml = innerref.getElementsByTagName('person-group')[0]
+                for author in authors_xml.getElementsByTagName('string-name'):
+                    try:
+                        authors.append(author.firstChild.data)
+                    except AttributeError:
+                        pass
             except IndexError:
                 pass
-            try:
-                functions[ref_type](rec, ref)
-            except KeyError:
-                pass
+            journal = get_value_in_tag(innerref, 'source')
+            journal, volume = self._fix_journal_name(journal)
+            volume += get_value_in_tag(innerref, 'volume')
+            page = get_value_in_tag(innerref, 'page-range')
+            year = get_value_in_tag(innerref, 'year')
+            arxiv = ''
+            for tag in innerref.getElementsByTagName('pub-id'):
+                if tag.getAttribute('pub-id-type') == 'arxiv':
+                    arxiv = tag.firstChild.data
+            publisher = get_value_in_tag(innerref, 'publisher-name')
+            unstructured_text = []
+            for child in innerref.childNodes:
+                if child.nodeType == child.TEXT_NODE:
+                    text = child.nodeValue.strip()
+                    text = re.sub('[\[\](.;)]', '', text).strip()
+                    if text.startswith(','):
+                        text = text[1:].strip()
+                    if text.endswith('Report No'):
+                        text += '.' + report_no
+                    elif text.endswith(' ed'):
+                        text += '.'
+                    elif text.endswith('PhD thesis,'):
+                        if institution:
+                            text += ' ' + institution
+                            institution = ''
+                        else:
+                            text = text[:-1]
+                    elif text.startswith('Seminar,'):
+                        text = ''
+                    elif text == u'\u201d':
+                        text = ''
+                    ignore_text = ['in', 'pp', 'edited by', 'Vol']
+                    if len(text) > 1 and text not in ignore_text\
+                            and not (text.isdigit() or text[:-1].isdigit()):
+                        unstructured_text.append(text)
+            if unstructured_text:
+                unstructured_text = " ".join(unstructured_text)
+            if not journal:
+                journal = get_value_in_tag(innerref, 'article-title')
+            yield doi, authors, collaboration, journal, volume, page, year, \
+                label, arxiv, publisher, institution, unstructured_text
+
+    def _add_references(self, rec):
+        """ Adds the reference to the record """
+        for ref in self.document.getElementsByTagName('ref'):
+            for doi, authors, collaboration, journal, volume, page, year,\
+                    label, arxiv, publisher, institution, \
+                    unstructured_text in self._get_reference(ref):
+                subfields = []
+                if doi:
+                    subfields.append(('a', doi))
+                for author in authors:
+                    subfields.append(('h', author))
+                if volume and page:
+                    subfields.append(('s', journal + "," + volume + "," + page))
+                elif volume:
+                    subfields.append(('s', journal + "," + volume))
+                elif journal:
+                    subfields.append(('s', journal))
+                if year:
+                    subfields.append(('y', year))
+                if unstructured_text:
+                    subfields.append(('m', unstructured_text))
+                if collaboration:
+                    subfields.append(('c', collaboration))
+                if institution:
+                    subfields.append(('m', institution))
+                if publisher:
+                    subfields.append(('m', publisher))
+                if arxiv:
+                    subfields.append(('r', arxiv))
+                if label:
+                    subfields.append(('o', label))
+                if not subfields:
+                    #misc-type references
+                    try:
+                        r = ref.getElementsByTagName('mixed-citation')[0]
+                        text = xml_to_text(r)
+                        label = text.split()[0]
+                        text = " ".join(text.split()[1:])
+                        subfields.append(('s', text))
+                        record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
+                    except IndexError:
+                        #references without 'mixed-citation' tag
+                        try:
+                            r = ref.getElementsByTagName('note')[0]
+                            subfields.append(('s', xml_to_text(r)))
+                            record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
+                        except IndexError:
+                            #references without 'note' tag
+                            subfields.append(('s', xml_to_text(ref)))
+                            record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
+                else:
+                    record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
 
     def get_record(self, xml_file):
         """ Reads a xml file in JATS format and returns
@@ -287,11 +285,13 @@ class ApsPackage(object):
         title = self._get_title()
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
-        journal, issn, volume, issue, year, start_date, doi = self._get_publition_information()
+        journal, volume, issue, year, start_date, doi,\
+            article_id = self._get_publition_information()
         if start_date:
             record_add_field(rec, '260', subfields=[('c', start_date)])
         if doi:
-            record_add_field(rec, '024', ind1='7', subfields=[('a', doi), ('2', 'DOI')])
+            record_add_field(rec, '024', ind1='7', subfields=[('a', doi),
+                                                              ('2', 'DOI')])
         authors = self._get_authors()
         first_author = True
         for author in authors:
@@ -303,19 +303,30 @@ class ApsPackage(object):
                 record_add_field(rec, '700', subfields=subfields)
         abstract = self._get_abstract()
         if abstract:
-            record_add_field(rec, '520', subfields=[('a', abstract), ('9', 'Elsevier')])
-        copyright = self._get_copyright()
-        if copyright:
-            record_add_field(rec, '542', subfields=[('f', copyright)])
-        record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('y', year)])
-        record_add_field(rec, 'FFT', subfields=[('a', xml_file), ('t', 'APS'), ('o', 'hidden')])
+            record_add_field(rec, '520', subfields=[('a', abstract),
+                                                    ('9', 'APS')])
+        copyrightt = self._get_copyright()
+        if copyrightt:
+            year = ''
+            if copyrightt.startswith('©'):
+                copyrightt = copyrightt[2:].strip()
+                year = copyrightt.split()[0]
+                copyrightt = " ".join(copyrightt.split()[1:])
+            record_add_field(rec, '542', subfields=[('f', copyrightt),
+                                                    ('g', year)])
+        record_add_field(rec, '773', subfields=[('p', journal),
+                                                ('v', volume),
+                                                ('n', issue),
+                                                ('y', year),
+                                                ('c', article_id)])
         record_add_field(rec, '980', subfields=[('a', 'HEP')])
         record_add_field(rec, '980', subfields=[('a', 'Citeable')])
         self._add_references(rec)
         try:
             return record_xml_output(rec)
         except UnicodeDecodeError:
-            sys.stderr.write("Found a bad char in the file for the article " + doi)
+            sys.stderr.write("""Found a bad char in the file
+                                for the article """ + doi)
             return ""
 
 
