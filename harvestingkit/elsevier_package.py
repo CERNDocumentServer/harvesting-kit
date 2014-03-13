@@ -18,7 +18,6 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 import re
-import time
 import sys
 import traceback
 import time
@@ -183,7 +182,7 @@ class ElsevierPackage(object):
                 try:
                     self._normalize_issue_dir_with_dtd(dirname)
                     self._found_issues.append(dirname)
-                except Exception, err:
+                except Exception as err:
                     register_exception()
                     print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
         else:
@@ -192,7 +191,7 @@ class ElsevierPackage(object):
                     try:
                         self._normalize_issue_dir_with_dtd(dirname)
                         self._found_issues.append(dirname)
-                    except Exception, err:
+                    except Exception as err:
                         register_exception()
                         print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
             walk(self.path, visit, None)
@@ -334,8 +333,6 @@ class ElsevierPackage(object):
                         subfields.append(('m', textref))
                     if publisher:
                         subfields.append(('p', publisher))
-                    if title:
-                        subfields.append(('t', title))
                     if volume:
                         subfields.append(('v', volume))
                     if year:
@@ -537,12 +534,13 @@ class ElsevierPackage(object):
             if vol:
                 volume = volume + vol
             year = xml_doc.getElementsByTagName('ce:copyright')[0].getAttribute("year")
+            year = year.encode('utf-8')
             start_date = get_value_in_tag(xml_doc, "prism:coverDate")
             if len(xml_doc.getElementsByTagName('ce:date-accepted')) > 0:
                 full_date = xml_doc.getElementsByTagName('ce:date-accepted')[0]
-                y = full_date.getAttribute('year')
-                m = full_date.getAttribute('month').zfill(2)
-                d = full_date.getAttribute('day').zfill(2)
+                y = full_date.getAttribute('year').encode('utf-8')
+                m = full_date.getAttribute('month').encode('utf-8').zfill(2)
+                d = full_date.getAttribute('day').encode('utf-8').zfill(2)
                 start_date = "%s-%s-%s" % (y, m, d)
             elif len(start_date) is 8:
                 start_date = time.strftime('%Y-%m-%d', time.strptime(start_date, '%Y%m%d'))
@@ -554,7 +552,7 @@ class ElsevierPackage(object):
             doi = self._get_doi(xml_doc)
             try:
                 return self._dois[doi] + (doi, )
-            except:
+            except KeyError:
                 return ('', '', '', '', '', '', '', '', doi)
 
     def get_references(self, xml_doc):
@@ -578,7 +576,7 @@ class ElsevierPackage(object):
             if tmp_issues:
                 year = get_value_in_tag(tmp_issues[0], "sb:date")[:4]
             else:
-                year = None
+                year = ''
             textref = get_value_in_tag(ref, "ce:textref")
             ext_link = format_arxiv_id(self.get_ref_link(ref, 'arxiv'))
             if self.CONSYN:
@@ -586,16 +584,14 @@ class ElsevierPackage(object):
                 links = []
                 for link in ref.getElementsByTagName("ce:inter-ref"):
                     if link.firstChild:
-                        links.append(link.firstChild.data)
+                        links.append(link.firstChild.data.encode('utf-8'))
                 title = ""
-                if len(ref.getElementsByTagName("sb:contribution")) > 0:
-                    title_container = ref.getElementsByTagName("sb:contribution")[0]
-                    try:
-                        title = title_container.getElementsByTagName("sb:maintitle")[0]
-                        title = title.firstChild.data
-                    except:
-                        pass
-
+                try:
+                    container = ref.getElementsByTagName("sb:contribution")[0]
+                    title = container.getElementsByTagName("sb:maintitle")[0]
+                    title = xml_to_text(title)
+                except IndexError, TypeError:
+                    title = ''
                 isjournal = ref.getElementsByTagName("sb:issue")
                 journal = ""
                 if isjournal:
