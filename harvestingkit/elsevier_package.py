@@ -108,6 +108,7 @@ class ElsevierPackage(object):
                 and (journal[-2] == '.' or journal[-2] == ' '):
             volume += journal[-1]
             journal = journal[:-1]
+            journal = journal.strip()
             try:
                 journal = self.journal_mappings[journal.upper()].strip()
             except KeyError:
@@ -256,13 +257,14 @@ class ElsevierPackage(object):
             self.logger.error(message)
             raise ValueError(message)
 
-    def _add_references(self, xml_doc, rec, doi):
+    def _add_references(self, xml_doc, rec):
         if self.CONSYN:
-            for label, authors, r_doi, issue, page, title, volume, year,\
+            for label, authors, doi, issue, page, title, volume, year,\
                     textref, ext_link, isjournal, comment, journal,\
                     publisher, editors, book_title in self.get_references(xml_doc):
                 subfields = []
                 if textref and not authors:
+                    textref = textref.replace('\"', '\'')
                     ref_xml = extract_references_from_string_xml(textref)
                     dom = xml.dom.minidom.parseString(ref_xml)
                     fields = dom.getElementsByTagName("datafield")[0]
@@ -293,14 +295,14 @@ class ElsevierPackage(object):
                         record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
                 elif isjournal:
                     if doi:
-                        subfields.append(('a', r_doi))
+                        subfields.append(('a', doi))
                     for author in authors:
                         subfields.append(('h', author))
                     if title:
                         subfields.append(('t', title))
                     if journal:
                         journal, vol = self._fix_journal_name(journal)
-                        volume += vol
+                        volume = vol + volume
                         if volume and page:
                             journal = journal + "," + volume + "," + page
                             subfields.append(('s', journal))
@@ -320,7 +322,7 @@ class ElsevierPackage(object):
                         record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
                 else:
                     if doi:
-                        subfields.append(('a', r_doi))
+                        subfields.append(('a', doi))
                     for author in authors:
                         subfields.append(('h', author))
                     if issue:
@@ -349,11 +351,11 @@ class ElsevierPackage(object):
                     if subfields:
                         record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
         else:
-            for label, authors, r_doi, issue, page, title, volume, year,\
+            for label, authors, doi, issue, page, title, volume, year,\
                     textref, ext_link in self.get_references(xml_doc):
                 subfields = []
                 if doi:
-                    subfields.append(('a', r_doi))
+                    subfields.append(('a', doi))
                 for author in authors:
                     subfields.append(('h', author))
                 if issue:
@@ -507,14 +509,15 @@ class ElsevierPackage(object):
             first_page = get_value_in_tag(xml_doc, "prism:startingPage")
             last_page = get_value_in_tag(xml_doc, "prism:endingPage")
             journal = publication.split(",")[0]
-            journal, dummy = self._fix_journal_name(journal)
-            volume = ''
+            journal, volume = self._fix_journal_name(journal)
             try:
-                volume = publication.split(",")[1].strip()
+                vol = publication.split(",")[1].strip()
+                if vol.startswith("Section"):
+                    vol = vol[7:].strip()
+                if vol and not volume:
+                    volume = vol
             except IndexError:
                 pass
-            if volume.startswith("Section"):
-                volume = volume[7:].strip()
             vol = get_value_in_tag(xml_doc, "prism:volume")
             if vol is "":
                 #if volume is not present try to harvest it
@@ -532,7 +535,7 @@ class ElsevierPackage(object):
                 except:
                     pass
             if vol:
-                volume = volume + vol
+                volume += vol
             year = xml_doc.getElementsByTagName('ce:copyright')[0].getAttribute("year")
             year = year.encode('utf-8')
             start_date = get_value_in_tag(xml_doc, "prism:coverDate")
@@ -577,7 +580,9 @@ class ElsevierPackage(object):
                 year = get_value_in_tag(tmp_issues[0], "sb:date")[:4]
             else:
                 year = ''
-            textref = get_value_in_tag(ref, "ce:textref")
+            textref = ref.getElementsByTagName("ce:textref")
+            if textref:
+                textref = xml_to_text(textref[0])
             ext_link = format_arxiv_id(self.get_ref_link(ref, 'arxiv'))
             if self.CONSYN:
                 comment = get_value_in_tag(ref, "sb:comment")
@@ -775,7 +780,7 @@ class ElsevierPackage(object):
                                                     ('n', issue),
                                                     ('c', '%s-%s' % (first_page, last_page)),
                                                     ('y', year)])
-        self._add_references(xml_doc, rec, doi)
+        self._add_references(xml_doc, rec)
 
         if not no_pdf:
             from invenio.search_engine import search_pattern
@@ -823,6 +828,7 @@ class ElsevierPackage(object):
                                                     ('o', 'HIDDEN')])
             record_add_field(rec, '980', subfields=[('a', 'HEP')])
             record_add_field(rec, '980', subfields=[('a', 'Citeable')])
+            record_add_field(rec, '980', subfields=[('a', 'Published')])
         else:
             version = self.get_elsevier_version(find_package_name(path))
             record_add_field(rec, '583', subfields=[('l', version)])
