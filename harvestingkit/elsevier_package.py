@@ -585,6 +585,12 @@ class ElsevierPackage(object):
                 textref = xml_to_text(textref[0])
             ext_link = format_arxiv_id(self.get_ref_link(ref, 'arxiv'))
             if self.CONSYN:
+                if ext_link.lower().startswith('arxiv'):
+                    #check if the identifier contains
+                    #digits seperated by dot
+                    regex = r'\d*\.\d*'
+                    if not re.search(regex, ext_link):
+                        ext_link = ext_link[6:]
                 comment = get_value_in_tag(ref, "sb:comment")
                 links = []
                 for link in ref.getElementsByTagName("ce:inter-ref"):
