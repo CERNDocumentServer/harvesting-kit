@@ -601,7 +601,9 @@ class ElsevierPackage(object):
                     container = ref.getElementsByTagName("sb:contribution")[0]
                     title = container.getElementsByTagName("sb:maintitle")[0]
                     title = xml_to_text(title)
-                except IndexError, TypeError:
+                except IndexError:
+                    title = ''
+                except TypeError:
                     title = ''
                 isjournal = ref.getElementsByTagName("sb:issue")
                 journal = ""
