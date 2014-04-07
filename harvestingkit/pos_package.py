@@ -24,6 +24,8 @@ from invenio.bibrecord import record_add_field
 
 
 class PosPackage(object):
+    """ This class is specialized in parsing xml records from
+    PoS and create the corresponding Bibrecord object. """
 
     def __init__(self):
         try:
@@ -117,14 +119,10 @@ class PosPackage(object):
             print >> sys.stderr, "Can't find subject"
             return ''
 
-    def _get_relation(self):
-        try:
-            return get_value_in_tag(self.document, 'dc:relation')
-        except Exception:
-            print >> sys.stderr, "Can't find relation"
-            return ''
-
     def get_identifier(self):
+        """ Returns the identifier of the paper corresponding
+            to this record containing the conference which it
+            was published and the proceeding number."""
         try:
             return get_value_in_tag(self.document, 'identifier')
         except Exception:
@@ -148,7 +146,7 @@ class PosPackage(object):
             record_add_field(rec, '041', subfields=[('a', language)])
         description = self._get_description()
         if description:
-            record_add_field(rec, '520', subfields=[('a', description)])
+            record_add_field(rec, '500', subfields=[('a', description)])
         publisher = self._get_publisher()
         if publisher == 'Sissa Medialab':
             publisher = 'SISSA'
@@ -175,9 +173,6 @@ class PosPackage(object):
         subject = self._get_subject()
         if subject:
             record_add_field(rec, '650', ind1='1', ind2='7', subfields=[('a', subject)])
-        relation = self._get_relation()
-        if relation:
-            record_add_field(rec, '786', ind1='0', subfields=[('n', relation)])
         authors = self._get_authors()
         first_author = True
         for author in authors:
@@ -197,4 +192,5 @@ class PosPackage(object):
                                                 ('c', contribution),
                                                 ('y', date[:4])])
         record_add_field(rec, '980', subfields=[('a', 'ConferencePaper')])
+        record_add_field(rec, '980', subfields=[('a', 'HEP')])
         return rec
