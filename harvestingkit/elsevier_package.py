@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
-##
-## This file is part of Harvesting Kit.
-## Copyright (C) 2013, 2014 CERN.
-##
-## Harvesting Kit is free software; you can redistribute it and/or
-## modify it under the terms of the GNU General Public License as
-## published by the Free Software Foundation; either version 2 of the
-## License, or (at your option) any later version.
-##
-## Harvesting Kit is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
-## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+#
+# This file is part of Harvesting Kit.
+# Copyright (C) 2013, 2014 CERN.
+#
+# Harvesting Kit is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Harvesting Kit is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+from __future__ import print_function
 
 import re
 import sys
@@ -23,6 +25,7 @@ import traceback
 import time
 import requests
 import xml.dom.minidom
+
 from bs4 import BeautifulSoup
 from os import listdir, rename, fdopen
 from os.path import join, exists, walk
@@ -61,6 +64,7 @@ CFG_ELSEVIER_JID_MAP = {'PLB': 'Physics letters B',
 
 
 class ElsevierPackage(object):
+
     """
     This class is specialized in parsing an Elsevier package
     and creating a SCOAP3-compatible bibupload containing the original
@@ -72,7 +76,9 @@ class ElsevierPackage(object):
     @note: either C{package_name} or C{path} don't have to be passed to the
     constructor, in this case the Elsevier server will be harvested.
     """
-    def __init__(self, package_name=None, path=None, run_localy=False, CONSYN=False):
+
+    def __init__(self, package_name=None, path=None,
+                 run_localy=False, CONSYN=False):
         self.CONSYN = CONSYN
         self.package_name = package_name
         self.path = path
@@ -88,7 +94,6 @@ class ElsevierPackage(object):
                 self.logger.info("Got package: %s" % (package_name,))
                 self._extract_package()
             elif not path and not package_name:
-                print "Starting harves"
                 from invenio.contrast_out import ContrastOutConnector
                 self.conn = ContrastOutConnector(self.logger)
                 self.conn.run()
@@ -140,9 +145,11 @@ class ElsevierPackage(object):
             else:
                 raise FileTypeError("It's not a TAR or ZIP archive.")
         except Exception, err:
-            register_exception(alert_admin=True, prefix="Elsevier error extracting package.")
-            self.logger.error("Error extraction package file: %s %s" % (self.path, err))
-            print >> sys.stdout, "\nError extracting package file: %s %s" % (self.path, err)
+            register_exception(alert_admin=True,
+                               prefix="Elsevier error extracting package.")
+            self.logger.error("Error extraction package file: %s %s"
+                              % (self.path, err))
+            print("\nError extracting package file: %s %s" % (self.path, err))
 
     def _crawl_elsevier_and_find_main_xml(self):
         """
@@ -159,7 +166,7 @@ class ElsevierPackage(object):
                     self.found_articles.append(dirname)
                 except Exception, err:
                     register_exception()
-                    print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
+                    print("ERROR: can't normalize %s: %s" % (dirname, err))
         else:
             def visit(dummy, dirname, names):
                 if "main.xml" in names and "main.pdf" in names:
@@ -168,13 +175,13 @@ class ElsevierPackage(object):
                         self.found_articles.append(dirname)
                     except Exception, err:
                         register_exception()
-                        print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
+                        print("ERROR: can't normalize %s: %s" % (dirname, err))
             walk(self.path, visit, None)
 
     def _crawl_elsevier_and_find_issue_xml(self):
         """
-        Information about the current volume, issue, etc. is available in a file
-        called issue.xml that is available in a higher directory.
+        Information about the current volume, issue, etc. is available
+        in a file called issue.xml that is available in a higher directory.
         """
         self._found_issues = []
         if not self.path and not self.package_name:
@@ -185,7 +192,7 @@ class ElsevierPackage(object):
                     self._found_issues.append(dirname)
                 except Exception as err:
                     register_exception()
-                    print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
+                    print("ERROR: can't normalize %s: %s" % (dirname, err))
         else:
             def visit(dummy, dirname, names):
                 if "issue.xml" in names:
@@ -194,7 +201,8 @@ class ElsevierPackage(object):
                         self._found_issues.append(dirname)
                     except Exception as err:
                         register_exception()
-                        print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
+                        print("ERROR: can't normalize %s: %s"
+                              % (dirname, err))
             walk(self.path, visit, None)
 
     def _normalize_issue_dir_with_dtd(self, path):
@@ -223,7 +231,8 @@ class ElsevierPackage(object):
         command += " --output " + join(path, 'resolved_issue.xml')
         dummy, dummy, cmd_err = run_shell_command(command)
         if cmd_err:
-            message = "Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err)
+            message = "Error in cleaning %s: %s" % (
+                join(path, 'issue.xml'), cmd_err)
             self.logger.error(message)
             raise ValueError(message)
 
@@ -253,15 +262,16 @@ class ElsevierPackage(object):
         command += " --output " + join(path, 'resolved_main.xml')
         dummy, dummy, cmd_err = run_shell_command(command)
         if cmd_err:
-            message = "Error in cleaning %s: %s" % (join(path, 'main.xml'), cmd_err)
+            message = "Error in cleaning %s: %s" % (
+                join(path, 'main.xml'), cmd_err)
             self.logger.error(message)
             raise ValueError(message)
 
     def _add_references(self, xml_doc, rec):
         if self.CONSYN:
             for label, authors, doi, issue, page, title, volume, year,\
-                    textref, ext_link, isjournal, comment, journal,\
-                    publisher, editors, book_title in self.get_references(xml_doc):
+                    textref, ext_link, isjournal, comment, journal, publisher,\
+                    editors, book_title in self.get_references(xml_doc):
                 subfields = []
                 if textref and not authors:
                     textref = textref.replace('\"', '\'')
@@ -292,7 +302,11 @@ class ElsevierPackage(object):
                         label = re.sub("[\[\].)]", "", label)
                         subfields.append(('o', label))
                     if subfields:
-                        record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
+                        record_add_field(rec,
+                                         '999',
+                                         ind1='C',
+                                         ind2='5',
+                                         subfields=subfields)
                 elif isjournal:
                     if doi:
                         subfields.append(('a', doi))
@@ -319,7 +333,11 @@ class ElsevierPackage(object):
                         label = re.sub("[\[\].)]", "", label)
                         subfields.append(('o', label))
                     if subfields:
-                        record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
+                        record_add_field(rec,
+                                         '999',
+                                         ind1='C',
+                                         ind2='5',
+                                         subfields=subfields)
                 else:
                     if doi:
                         subfields.append(('a', doi))
@@ -349,7 +367,11 @@ class ElsevierPackage(object):
                         label = re.sub("[\[\].)]", "", label)
                         subfields.append(('o', label))
                     if subfields:
-                        record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
+                        record_add_field(rec,
+                                         '999',
+                                         ind1='C',
+                                         ind2='5',
+                                         subfields=subfields)
         else:
             for label, authors, doi, issue, page, title, volume, year,\
                     textref, ext_link in self.get_references(xml_doc):
@@ -367,7 +389,8 @@ class ElsevierPackage(object):
                 if ext_link:
                     subfields.append(('r', ext_link))
                 if title and volume and year and page:
-                    subfields.append(('s', '%s %s (%s) %s' % (title, volume, year, page)))
+                    subfields.append(
+                        ('s', '%s %s (%s) %s' % (title, volume, year, page)))
                 elif textref:
                     subfields.append(('m', textref))
                 if title:
@@ -377,7 +400,8 @@ class ElsevierPackage(object):
                 if year:
                     subfields.append(('y', year))
                 if subfields:
-                    record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
+                    record_add_field(
+                        rec, '999', ind1='C', ind2='5', subfields=subfields)
 
     def _build_doi_mapping(self):
         self._dois = {}
@@ -391,9 +415,11 @@ class ElsevierPackage(object):
             year = get_value_in_tag(xml_doc, "start-date")[:4]
             start_date = get_value_in_tag(xml_doc, "start-date")
             if len(start_date) is 8:
-                start_date = time.strftime('%Y-%m-%d', time.strptime(start_date, '%Y%m%d'))
+                start_date = time.strftime(
+                    '%Y-%m-%d', time.strptime(start_date, '%Y%m%d'))
             elif len(start_date) is 6:
-                start_date = time.strftime('%Y-%m', time.strptime(start_date, '%Y%m'))
+                start_date = time.strftime(
+                    '%Y-%m', time.strptime(start_date, '%Y%m'))
             for item in xml_doc.getElementsByTagName("ce:include-item"):
                 doi = get_value_in_tag(item, "ce:doi")
                 first_page = get_value_in_tag(item, "ce:first-page")
@@ -405,41 +431,43 @@ class ElsevierPackage(object):
         try:
             return get_value_in_tag(xml_doc, "ce:doi")
         except Exception:
-            print >> sys.stderr, "Can't find doi"
+            print("Can't find doi", file=sys.stderr)
 
     def get_title(self, xml_doc):
         try:
             return get_value_in_tag(xml_doc, "ce:title")
         except Exception:
-            print >> sys.stderr, "Can't find title"
+            print("Can't find title", file=sys.stderr)
 
     def get_abstract(self, xml_doc):
         try:
             abstract_sec = xml_doc.getElementsByTagName("ce:abstract-sec")[0]
             return get_value_in_tag(abstract_sec, "ce:simple-para")
         except Exception:
-            print >> sys.stderr, "Can't find abstract"
+            print("Can't find abstract", file=sys.stderr)
 
     def get_keywords(self, xml_doc):
         if self.CONSYN:
             try:
                 head = xml_doc.getElementsByTagName("ja:head")[0]
                 keywords = head.getElementsByTagName("ce:keyword")
-                return [get_value_in_tag(keyword, "ce:text") for keyword in keywords]
+                return [get_value_in_tag(keyword, "ce:text")
+                        for keyword in keywords]
             except Exception:
-                print >> sys.stderr, "Can't find keywords"
+                print("Can't find keywords", file=sys.stderr)
         else:
             try:
                 keywords = xml_doc.getElementsByTagName("ce:keyword")
-                return [get_value_in_tag(keyword, "ce:text") for keyword in keywords]
+                return [get_value_in_tag(keyword, "ce:text")
+                        for keyword in keywords]
             except Exception:
-                print >> sys.stderr, "Can't find keywords"
+                print("Can't find keywords", file=sys.stderr)
 
     def get_copyright(self, xml_doc):
         try:
             return get_value_in_tag(xml_doc, "ce:copyright")
         except Exception:
-            print >> sys.stderr, "Can't find copyright"
+            print("Can't find copyright", file=sys.stderr)
 
     def get_ref_link(self, xml_doc, name):
         links = xml_doc.getElementsByTagName('ce:inter-ref')
@@ -474,16 +502,19 @@ class ElsevierPackage(object):
             if cross_refs:
                 tmp["cross_ref"] = []
                 for cross_ref in cross_refs:
-                    tmp["cross_ref"].append(cross_ref.getAttribute("refid").encode('utf-8'))
+                    tmp["cross_ref"].append(
+                        cross_ref.getAttribute("refid").encode('utf-8'))
             authors.append(tmp)
         affiliations = {}
         for affiliation in xml_doc.getElementsByTagName("ce:affiliation"):
             aff_id = affiliation.getAttribute("id").encode('utf-8')
-            text = re.sub(r'^(\d+\ ?)', "", get_value_in_tag(affiliation, "ce:textfn"))
+            text = re.sub(
+                r'^(\d+\ ?)', "", get_value_in_tag(affiliation, "ce:textfn"))
             affiliations[aff_id] = text
         implicit_affilations = True
         for author in authors:
-            matching_ref = [ref for ref in author.get("cross_ref", []) if ref in affiliations]
+            matching_ref = [ref for ref in author.get(
+                "cross_ref", []) if ref in affiliations]
             if matching_ref:
                 implicit_affilations = False
                 author["affiliation"] = []
@@ -492,7 +523,7 @@ class ElsevierPackage(object):
         if implicit_affilations and len(affiliations) > 1:
             message = "Implicit affiliations are used, "
             message += "but there's more than one affiliation: " + affiliations
-            print >> sys.stderr, message
+            print(message, file=sys.stderr)
         if implicit_affilations and len(affiliations) >= 1:
             for author in authors:
                 author["affiliation"] = []
@@ -520,12 +551,13 @@ class ElsevierPackage(object):
                 pass
             vol = get_value_in_tag(xml_doc, "prism:volume")
             if vol is "":
-                #if volume is not present try to harvest it
+                # if volume is not present try to harvest it
                 try:
                     session = requests.session()
-                    r = session.get("http://dx.doi.org/"+doi)
+                    r = session.get("http://dx.doi.org/" + doi)
                     parsed_html = BeautifulSoup(r.text)
-                    info = parsed_html.body.find('p', attrs={'class': 'volIssue'}).text.split()
+                    info = parsed_html.body.find(
+                        'p', attrs={'class': 'volIssue'}).text.split()
                     for s in info:
                         if unicode(s).find(u'\xe2') > 0:
                             first_page = s.rsplit(u'\xe2')[0]
@@ -536,7 +568,8 @@ class ElsevierPackage(object):
                     pass
             if vol:
                 volume += vol
-            year = xml_doc.getElementsByTagName('ce:copyright')[0].getAttribute("year")
+            year = xml_doc.getElementsByTagName(
+                'ce:copyright')[0].getAttribute("year")
             year = year.encode('utf-8')
             start_date = get_value_in_tag(xml_doc, "prism:coverDate")
             if len(xml_doc.getElementsByTagName('ce:date-accepted')) > 0:
@@ -546,11 +579,14 @@ class ElsevierPackage(object):
                 d = full_date.getAttribute('day').encode('utf-8').zfill(2)
                 start_date = "%s-%s-%s" % (y, m, d)
             elif len(start_date) is 8:
-                start_date = time.strftime('%Y-%m-%d', time.strptime(start_date, '%Y%m%d'))
+                start_date = time.strftime(
+                    '%Y-%m-%d', time.strptime(start_date, '%Y%m%d'))
             elif len(start_date) is 6:
-                start_date = time.strftime('%Y-%m', time.strptime(start_date, '%Y%m'))
+                start_date = time.strftime(
+                    '%Y-%m', time.strptime(start_date, '%Y%m'))
             doi = get_value_in_tag(xml_doc, "ce:doi")
-            return (journal, issn, volume, issue, first_page, last_page, year, start_date, doi)
+            return (journal, issn, volume, issue, first_page,
+                    last_page, year, start_date, doi)
         else:
             doi = self._get_doi(xml_doc)
             try:
@@ -585,9 +621,9 @@ class ElsevierPackage(object):
                 textref = xml_to_text(textref[0])
             ext_link = format_arxiv_id(self.get_ref_link(ref, 'arxiv'))
             if self.CONSYN:
-                if ext_link.lower().startswith('arxiv'):
-                    #check if the identifier contains
-                    #digits seperated by dot
+                if ext_link and ext_link.lower().startswith('arxiv'):
+                    # check if the identifier contains
+                    # digits seperated by dot
                     regex = r'\d*\.\d*'
                     if not re.search(regex, ext_link):
                         ext_link = ext_link[6:]
@@ -615,43 +651,55 @@ class ElsevierPackage(object):
                 book_title = ""
                 publisher = ""
                 if edited_book:
-                    #treat as a journal
+                    # treat as a journal
                     if ref.getElementsByTagName("sb:book-series"):
-                        container = ref.getElementsByTagName("sb:book-series")[0]
+                        container = ref.getElementsByTagName(
+                            "sb:book-series")[0]
                         journal = get_value_in_tag(container, "sb:maintitle")
                         year = get_value_in_tag(ref, "sb:date")
                         isjournal = True
-                    #conference
+                    # conference
                     elif ref.getElementsByTagName("sb:conference"):
-                        container = ref.getElementsByTagName("sb:edited-book")[0]
+                        container = ref.getElementsByTagName(
+                            "sb:edited-book")[0]
                         maintitle = get_value_in_tag(container, "sb:maintitle")
-                        conference = get_value_in_tag(container, "sb:conference")
+                        conference = get_value_in_tag(
+                            container, "sb:conference")
                         date = get_value_in_tag(container, "sb:date")
-                        #use this variable in order to get in the 'm' field
+                        # use this variable in order to get in the 'm' field
                         publisher = maintitle + ", " + conference + ", " + date
                     else:
-                        container = ref.getElementsByTagName("sb:edited-book")[0]
+                        container = ref.getElementsByTagName(
+                            "sb:edited-book")[0]
                         if ref.getElementsByTagName("sb:editors"):
                             for editor in ref.getElementsByTagName("sb:editor"):
-                                surname = get_value_in_tag(editor, "ce:surname")
-                                firstname = get_value_in_tag(editor, "ce:given-name")
+                                surname = get_value_in_tag(
+                                    editor, "ce:surname")
+                                firstname = get_value_in_tag(
+                                    editor, "ce:given-name")
                                 editors.append("%s,%s" % (surname, firstname))
                         if title:
-                            book_title = get_value_in_tag(container, "sb:maintitle")
+                            book_title = get_value_in_tag(
+                                container, "sb:maintitle")
                         else:
                             title = get_value_in_tag(container, "sb:maintitle")
                         year = get_value_in_tag(container, "sb:date")
                         if ref.getElementsByTagName("sb:publisher"):
-                            container = ref.getElementsByTagName("sb:publisher")[0]
-                            location = get_value_in_tag(container, "sb:location")
+                            container = ref.getElementsByTagName(
+                                "sb:publisher")[0]
+                            location = get_value_in_tag(
+                                container, "sb:location")
                             publisher = get_value_in_tag(container, "sb:name")
                             if location:
                                 publisher = location + ": " + publisher
                 if ref.getElementsByTagName("sb:book"):
                     if ref.getElementsByTagName("sb:book-series"):
-                        book_series = ref.getElementsByTagName("sb:book-series")[0]
-                        title += ", " + get_value_in_tag(book_series, "sb:maintitle")
-                        title += ", " + get_value_in_tag(book_series, "sb:volume-nr")
+                        book_series = ref.getElementsByTagName(
+                            "sb:book-series")[0]
+                        title += ", " + \
+                            get_value_in_tag(book_series, "sb:maintitle")
+                        title += ", " + \
+                            get_value_in_tag(book_series, "sb:volume-nr")
                     publisher = get_value_in_tag(ref, "sb:publisher")
                 yield (label, authors, doi, issue, page, title, volume,
                        year, textref, ext_link, isjournal, comment, journal,
@@ -694,17 +742,20 @@ class ElsevierPackage(object):
         else:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi),
                                                               ('2', 'DOI')])
-            message = 'Adding PDF/A. No paper with this DOI: %s. Trying to add it anyway.' % (doi,)
+            message = 'Adding PDF/A. No paper with this DOI: %s. Trying to add it anyway.' % (
+                doi,)
             self.logger.error(message)
             register_exception(alert_admin=True, prefix=message)
         try:
             if exists(join(path, 'main_a-2b.pdf')):
-                record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf')),
-                                                        ('n', 'main'),
-                                                        ('f', '.pdf;pdfa')])
+                record_add_field(
+                    rec, 'FFT', subfields=[('a', join(path, 'main_a-2b.pdf')),
+                                ('n', 'main'),
+                        ('f', '.pdf;pdfa')])
                 self.logger.debug('Adding PDF/A to record: %s' % (doi,))
             elif exists(join(path, 'main.pdf')):
-                record_add_field(rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
+                record_add_field(
+                    rec, 'FFT', subfields=[('a', join(path, 'main.pdf'))])
                 message = 'No PDF/A in VTEX package for record: ' + doi
                 self.logger.debug(message)
             else:
@@ -723,13 +774,15 @@ class ElsevierPackage(object):
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
         journal, dummy, volume, issue, first_page,\
-            last_page, year, start_date, doi = self.get_publication_information(xml_doc)
+            last_page, year, start_date, doi = self.get_publication_information(
+                xml_doc)
         if not journal:
             journal = self.get_article_journal(xml_doc)
         if start_date:
             record_add_field(rec, '260', subfields=[('c', start_date)])
         else:
-            record_add_field(rec, '260', subfields=[('c', time.strftime('%Y-%m-%d'))])
+            record_add_field(
+                rec, '260', subfields=[('c', time.strftime('%Y-%m-%d'))])
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi),
                                                               ('2', 'DOI')])
@@ -737,7 +790,8 @@ class ElsevierPackage(object):
         authors = self.get_authors(xml_doc)
         first_author = True
         for author in authors:
-            author_name = (author['surname'], author.get('given_name') or author.get('initials'))
+            author_name = (author['surname'], author.get(
+                'given_name') or author.get('initials'))
             subfields = [('a', '%s, %s' % author_name)]
             if 'orcid' in author:
                 subfields.append(('j', author['orcid']))
@@ -762,13 +816,15 @@ class ElsevierPackage(object):
         if self.CONSYN:
             if keywords:
                 for keyword in keywords:
-                    record_add_field(rec, '653', ind1='1', subfields=[('a', keyword),
-                                                                      ('9', 'author')])
+                    record_add_field(
+                        rec, '653', ind1='1', subfields=[('a', keyword),
+                                    ('9', 'author')])
             if first_page and last_page:
                 record_add_field(rec, '773', subfields=[('p', journal),
                                                         ('v', volume),
                                                         ('n', issue),
-                                                        ('c', '%s-%s' % (first_page, last_page)),
+                                                        ('c', '%s-%s' % (
+                                                            first_page, last_page)),
                                                         ('y', year)])
             else:
                 record_add_field(rec, '773', subfields=[('p', journal),
@@ -781,12 +837,14 @@ class ElsevierPackage(object):
                                                     ('u', licence)])
             if keywords:
                 for keyword in keywords:
-                    record_add_field(rec, '653', ind1='1', subfields=[('a', keyword),
-                                                                      ('9', 'author')])
+                    record_add_field(
+                        rec, '653', ind1='1', subfields=[('a', keyword),
+                                    ('9', 'author')])
             record_add_field(rec, '773', subfields=[('p', journal),
                                                     ('v', volume),
                                                     ('n', issue),
-                                                    ('c', '%s-%s' % (first_page, last_page)),
+                                                    ('c', '%s-%s' % (
+                                                        first_page, last_page)),
                                                     ('y', year)])
         self._add_references(xml_doc, rec)
 
@@ -801,7 +859,8 @@ class ElsevierPackage(object):
                 prev_rec = BibRecDocs(prev_version[0])
                 try:
                     pdf_path = prev_rec.get_bibdoc('main')
-                    pdf_path = pdf_path.get_file(".pdf;pdfa", exact_docformat=True)
+                    pdf_path = pdf_path.get_file(
+                        ".pdf;pdfa", exact_docformat=True)
                     pdf_path = pdf_path.fullpath
                     old_pdf = True
                     record_add_field(rec, 'FFT', subfields=[('a', pdf_path),
@@ -852,33 +911,38 @@ class ElsevierPackage(object):
             return ""
 
     def bibupload_it(self):
-        print self.found_articles
+        print(self.found_articles)
         if self.found_articles:
             if [x for x in self.found_articles if "vtex" not in x]:
                 self.logger.debug("Preparing bibupload.")
-                fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
+                fd, name = mkstemp(suffix='.xml',
+                                   prefix='bibupload_scoap3_',
+                                   dir=CFG_TMPSHAREDDIR)
                 out = fdopen(fd, 'w')
-                print >> out, "<collection>"
+                print("<collection>", file=out)
                 for i, path in enumerate(self.found_articles):
                     if "vtex" not in path:
-                        print >> out, self.get_record(path)
-                        print path, i + 1, "out of", len(self.found_articles)
-                print >> out, "</collection>"
+                        print(self.get_record(path),
+                              file=out)
+                        print(path, i + 1, "out of", len(self.found_articles))
+                print("</collection>", file=out)
                 out.close()
-                task_low_level_submission("bibupload", "admin", "-N", "Elsevier", "-i", "-r", name)
+                task_low_level_submission(
+                    "bibupload", "admin", "-N", "Elsevier", "-i", "-r", name)
             if [x for x in self.found_articles if "vtex" in x]:
             # for VTEX files with PDF/A
                 self.logger.debug("Preparing bibupload for PDF/As.")
-                fd_vtex, name_vtex = mkstemp(suffix='.xml', prefix='bibupload_scoap3_',
-                                             dir=CFG_TMPSHAREDDIR)
+                fd_vtex, name_vtex = mkstemp(
+                    suffix='.xml', prefix='bibupload_scoap3_',
+                    dir=CFG_TMPSHAREDDIR)
                 out = fdopen(fd_vtex, 'w')
-                print >> out, "<collection>"
+                print("<collection>", file=out)
                 # enumerate remember progres of prevoius one
                 for i, path in enumerate(self.found_articles):
                     if "vtex" in path:
-                        print >> out, self.get_pdfa_record(path)
-                        print path, i + 1, "out of", len(self.found_articles)
-                print >> out, "</collection>"
+                        print(self.get_pdfa_record(path), file=out)
+                        print(path, i + 1, "out of", len(self.found_articles))
+                print("</collection>", file=out)
                 out.close()
                 task_low_level_submission("bibupload", "admin", "-N",
                                           "Elsevier:VTEX", "-a", name_vtex)
@@ -887,8 +951,8 @@ class ElsevierPackage(object):
 def main():
     try:
         if len(sys.argv) > 2:
-            print >> sys.stdout, "Unrecognized number of parameters."
-            print >> sys.stdout, "Try giving a package name or run with --run-localy."
+            print("Unrecognized number of parameters.")
+            print("Try giving a package name or run with --run-localy.")
             sys.exit(1)
         if len(sys.argv) < 2:
             els = ElsevierPackage()
@@ -904,7 +968,7 @@ def main():
         els.bibupload_it()
     except Exception as err:
         register_exception()
-        print >> sys.stderr, "ERROR: Exception captured: %s" % err
+        print("ERROR: Exception captured: %s" % err)
         traceback.print_exc(file=sys.stdout)
         sys.exit(1)
 
