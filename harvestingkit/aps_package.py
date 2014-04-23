@@ -82,16 +82,23 @@ class ApsPackage(object):
         for tag in self.document.getElementsByTagName('aff'):
             aid = tag.getAttribute('id')
             institution = get_value_in_tag(tag, 'institution')
-            affiliations[aid] = institution
+            affiliation = xml_to_text(tag)
+            affiliation = ' '.join(affiliation.split()[1:])
+            affiliations[aid] = affiliation
         for tag in self.document.getElementsByTagName('contrib'):
             if tag.getAttribute('contrib-type') == 'author':
                 rid = ''
                 for aff in tag.getElementsByTagName('xref'):
                     if aff.getAttribute('ref-type') == 'aff':
                         rid = aff.getAttribute('rid')
-                given_name = get_value_in_tag(tag, 'given-names')
+                    if len(rid.split()) > 1:
+                        rid = rid.split()[0]
+                given_names = get_value_in_tag(tag, 'given-names')
+                #collapse initials T. A. -> T.A.
+                if len(given_names.split()) > 1:
+                    given_names = re.sub(r'([A-Z].) ([A-Z].)', r'\1\2', given_names)
                 surname = get_value_in_tag(tag, 'surname')
-                name = "%s, %s" % (surname, given_name)
+                name = "%s, %s" % (surname, given_names)
                 try:
                     authors.append((name, affiliations[rid]))
                 except KeyError:
@@ -247,7 +254,10 @@ class ApsPackage(object):
                 if year:
                     subfields.append(('y', year))
                 if unstructured_text:
-                    subfields.append(('m', unstructured_text))
+                    if page and unstructured_text.endswith('pp'):
+                        subfields.append(('m', unstructured_text + ' ' + page))
+                    else:
+                        subfields.append(('m', unstructured_text))
                 if collaboration:
                     subfields.append(('c', collaboration))
                 if institution:
@@ -266,7 +276,7 @@ class ApsPackage(object):
                     subfields.append(('d', ref_type))
                 if ref_type == 'book':
                     if journal:
-                        subfields.append(('q', journal))
+                        subfields.append(('t', journal))
                 else:
                     if volume and page:
                         subfields.append(('s', journal + "," + volume + "," + page))
@@ -337,7 +347,9 @@ class ApsPackage(object):
                                                         ('g', year),
                                                         ('3', 'Article')])
             else:
+                year = start_date[:4]
                 record_add_field(rec, '542', subfields=[('f', copyrightt),
+                                                        ('g', year),
                                                         ('3', 'Article')])
         record_add_field(rec, '773', subfields=[('p', journal),
                                                 ('v', volume),
