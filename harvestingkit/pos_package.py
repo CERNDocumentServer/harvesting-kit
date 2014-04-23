@@ -66,8 +66,12 @@ class PosPackage(object):
         for tag in self.document.getElementsByTagName('dc:creator'):
             author = xml_to_text(tag)
             lastname = author.split()[-1]
-            givennames = " ".join(author.split()[:-1])
-            authors.append("%s, %s" % (lastname, givennames))
+            lastname = lastname[0] + lastname[1:].lower()
+            givennames = ''
+            for name in author.split()[:-1]:
+                name = name[0] + name[1:].lower()
+                givennames += name + ' '
+            authors.append("%s, %s" % (lastname, givennames.strip()))
         return authors
 
     def _get_title(self):
