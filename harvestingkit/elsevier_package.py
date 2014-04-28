@@ -701,6 +701,8 @@ class ElsevierPackage(object):
                         title += ", " + \
                             get_value_in_tag(book_series, "sb:volume-nr")
                     publisher = get_value_in_tag(ref, "sb:publisher")
+                if not year:
+                    year = get_value_in_tag(ref, "sb:date")
                 yield (label, authors, doi, issue, page, title, volume,
                        year, textref, ext_link, isjournal, comment, journal,
                        publisher, editors, book_title)
