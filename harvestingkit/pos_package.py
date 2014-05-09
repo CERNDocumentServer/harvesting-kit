@@ -16,41 +16,18 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
 import sys
 from datetime import datetime
-from invenio.refextract_kbs import get_kbs
+
 from harvestingkit.minidom_utils import get_value_in_tag, xml_to_text
 from invenio.bibrecord import record_add_field
+from harvestingkit.utils import collapse_initials
 
 
 class PosPackage(object):
     """ This class is specialized in parsing xml records from
     PoS and create the corresponding Bibrecord object. """
-
-    def __init__(self):
-        try:
-            self.journal_mappings = get_kbs()['journals'][1]
-        except KeyError:
-            self.journal_mappings = {}
-
-    def _fix_journal_name(self, journal):
-        """ Converts journal name to Inspire's short form """
-        if not journal:
-            return '', ''
-        volume = ''
-        if (journal[-1] <= 'Z' and journal[-1] >= 'A') \
-                and (journal[-2] == '.' or journal[-2] == ' '):
-            volume += journal[-1]
-            journal = journal[:-1]
-            try:
-                journal = self.journal_mappings[journal.upper()].strip()
-            except KeyError:
-                try:
-                    journal = self.journal_mappings[journal].strip()
-                except KeyError:
-                    pass
-        journal = journal.replace('. ', '.')
-        return journal, volume
 
     def _get_doi(self):
         try:
@@ -71,7 +48,8 @@ class PosPackage(object):
             for name in author.split()[:-1]:
                 name = name[0] + name[1:].lower()
                 givennames += name + ' '
-            authors.append("%s, %s" % (lastname, givennames.strip()))
+            givennames = collapse_initials(givennames.strip())
+            authors.append("%s, %s" % (lastname, givennames))
         return authors
 
     def _get_title(self):
