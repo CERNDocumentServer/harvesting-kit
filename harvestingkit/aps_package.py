@@ -22,6 +22,7 @@ import re
 from invenio.refextract_kbs import get_kbs
 from datetime import datetime
 from xml.dom.minidom import parse
+from harvestingkit.utils import fix_journal_name, collapse_initials
 from harvestingkit.minidom_utils import get_value_in_tag, xml_to_text
 from invenio.bibrecord import record_add_field, record_xml_output
 
@@ -94,9 +95,7 @@ class ApsPackage(object):
                     if len(rid.split()) > 1:
                         rid = rid.split()[0]
                 given_names = get_value_in_tag(tag, 'given-names')
-                #collapse initials T. A. -> T.A.
-                if len(given_names.split()) > 1:
-                    given_names = re.sub(r'([A-Z].) ([A-Z].)', r'\1\2', given_names)
+                given_names = collapse_initials(given_names)
                 surname = get_value_in_tag(tag, 'surname')
                 name = "%s, %s" % (surname, given_names)
                 try:
@@ -139,31 +138,12 @@ class ApsPackage(object):
         journal = self._get_journal()
         date = self._get_date()
         doi = self._get_doi()
-        journal, volume = self._fix_journal_name(journal)
+        journal, volume = fix_journal_name(journal, self.journal_mappings)
         article_id = get_value_in_tag(self.document, 'elocation-id')
         volume += get_value_in_tag(self.document, 'volume')
         issue = get_value_in_tag(self.document, 'issue')
         year = get_value_in_tag(self.document, 'copyright-year')
         return (journal, volume, issue, year, date, doi, article_id)
-
-    def _fix_journal_name(self, journal):
-        """ Converts journal name to Inspire's short form """
-        if not journal:
-            return '', ''
-        volume = ''
-        if (journal[-1] <= 'Z' and journal[-1] >= 'A') \
-                and (journal[-2] == '.' or journal[-2] == ' '):
-            volume += journal[-1]
-            journal = journal[:-1]
-            try:
-                journal = self.journal_mappings[journal.upper()].strip()
-            except KeyError:
-                try:
-                    journal = self.journal_mappings[journal].strip()
-                except KeyError:
-                    pass
-        journal = journal.replace('. ', '.')
-        return journal, volume
 
     def _get_reference(self, ref):
         """ Retrieves the data for a reference """
@@ -192,7 +172,7 @@ class ApsPackage(object):
             except IndexError:
                 pass
             journal = get_value_in_tag(innerref, 'source')
-            journal, volume = self._fix_journal_name(journal)
+            journal, volume = fix_journal_name(journal, self.journal_mappings)
             volume += get_value_in_tag(innerref, 'volume')
             if journal == 'J.High Energy Phys.' or journal == 'JHEP':
                 issue = get_value_in_tag(innerref, 'issue')
