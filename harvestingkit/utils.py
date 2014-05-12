@@ -41,6 +41,8 @@ def fix_journal_name(journal, knowledge_base):
     """ Converts journal name to Inspire's short form """
     if not journal:
         return '', ''
+    if len(journal) < 2:
+        return journal, ''
     volume = ''
     if (journal[-1] <= 'Z' and journal[-1] >= 'A') \
             and (journal[-2] == '.' or journal[-2] == ' '):
