@@ -522,7 +522,7 @@ class ElsevierPackage(object):
                     author["affiliation"].append(affiliations[matching_ref[i]])
         if implicit_affilations and len(affiliations) > 1:
             message = "Implicit affiliations are used, "
-            message += "but there's more than one affiliation: " + affiliations
+            message += "but there's more than one affiliation: %r" % (affiliations,)
             print(message, file=sys.stderr)
         if implicit_affilations and len(affiliations) >= 1:
             for author in authors:
