@@ -101,7 +101,7 @@ class ElsevierPackage(object):
             self.found_articles = []
             self._found_issues = []
             if run_localy:
-                from invenio.contrast_out import ContrastOutConnector
+                from harvestingkit.contrast_out import ContrastOutConnector
                 self.conn = ContrastOutConnector(self.logger)
                 self.conn.run(run_localy)
             else:
@@ -109,7 +109,7 @@ class ElsevierPackage(object):
                     self.logger.info("Got package: %s" % (package_name,))
                     self._extract_package()
                 elif not path and not package_name:
-                    from invenio.contrast_out import ContrastOutConnector
+                    from harvestingkit.contrast_out import ContrastOutConnector
                     self.conn = ContrastOutConnector(self.logger)
                     self.conn.run()
             self._crawl_elsevier_and_find_main_xml()
@@ -366,8 +366,8 @@ class ElsevierPackage(object):
                 if year:
                     subfields.append(('y', year))
                 if subfields:
-                    record_add_field(
-                        rec, '999', ind1='C', ind2='5', subfields=subfields)
+                    record_add_field(rec, '999', ind1='C', ind2='5',
+                                     subfields=subfields)
 
     def _build_doi_mapping(self):
         self._dois = {}

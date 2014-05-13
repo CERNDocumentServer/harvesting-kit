@@ -22,7 +22,6 @@ import time
 
 from datetime import datetime
 from functools import partial
-from ftplib import FTP
 from os import listdir
 from os.path import join, walk
 from tarfile import TarFile
@@ -35,7 +34,6 @@ try:
 except ImportError:
     pass
 
-
 from invenio.config import (CFG_TMPSHAREDDIR, CFG_PREFIX)
 
 try:
@@ -45,15 +43,15 @@ except ImportError:
 
 from invenio.errorlib import register_exception
 
-from .scoap3utils import (MD5Error,
+from harvestingkit.scoap3utils import (MD5Error,
                           NoNewFiles,
                           FileTypeError,
-                          progress_bar,
-                          check_pkgs_integrity)
-from .contrast_out_utils import (contrast_out_cmp,
+                          progress_bar)
+from harvestingkit.contrast_out_utils import (contrast_out_cmp,
                                  find_package_name)
-from .minidom_utils import (xml_to_text,
+from harvestingkit.minidom_utils import (xml_to_text,
                             get_value_in_tag)
+from harvestingkit.ftp_utils import FtpHandler
 
 CFG_READY_PACKAGES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "ready_pkgs")
 CFG_TAR_FILES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "tar_files")
@@ -75,18 +73,18 @@ class ContrastOutConnector(object):
     def connect(self):
         """Logs into the specified ftp server and returns connector."""
         try:
-            self.ftp = FTP(CFG_CONTRAST_OUT_URL)
-            self.ftp.login(user=CFG_CONTRAST_OUT_LOGIN, passwd=CFG_CONTRAST_OUT_PASSWORD)
+            self.ftp = FtpHandler(CFG_CONTRAST_OUT_URL, CFG_CONTRAST_OUT_LOGIN, CFG_CONTRAST_OUT_PASSWORD)
             self.logger.debug("Succesful connection to the Elsevier server")
         except Exception as err:
+            print err
             self.logger.error("Faild to connect to the Elsevier server. %s" % (err,))
             raise Exception
 
     def _get_file_listing(self, phrase=None, new_only=True):
         if phrase:
-            self.files_list = filter(lambda x: phrase in x, self.ftp.nlst())
+            self.files_list = filter(lambda x: phrase in x, self.ftp.ls()[0])
         else:
-            self.files_list = self.ftp.nlst()
+            self.files_list = self.ftp.ls()[0]
         if new_only:
             self.files_list = set(self.files_list) - set(listdir(CFG_READY_PACKAGES))
 
@@ -107,9 +105,7 @@ class ContrastOutConnector(object):
                 pkg_path = join(CFG_READY_PACKAGES, filename)
                 self.path_r_pkg.append(pkg_path)
                 try:
-                    ready_file = open(pkg_path, 'wb')
-                    self.ftp.retrbinary('RETR %s' % (filename,), ready_file.write)
-                    ready_file.close()
+                    self.ftp.download(filename, pkg_path)
                 except:
                     self.logger.error("Error downloading file: %s" % (filename,))
                     print >> sys.stdout, "\nError downloading %s file!" % (filename,)
@@ -148,7 +144,7 @@ class ContrastOutConnector(object):
 
     def _download_tars(self, check_integrity=True):
         if check_integrity:
-            check_pkgs_integrity(self.retrieved_packages, self.logger, self.ftp)
+            self.ftp.check_pkgs_integrity(self.retrieved_packages, self.logger)
 
         print >> sys.stdout, "\nDownloading %i tar packages." \
                  % (len(self.retrieved_packages))
@@ -163,9 +159,7 @@ class ContrastOutConnector(object):
             unpack_path = join(CFG_TAR_FILES, filename)
             self.retrieved_packages_unpacked.append(unpack_path)
             try:
-                tar_file = open(unpack_path, 'wb')
-                self.ftp.retrbinary('RETR %s' % filename, tar_file.write)
-                tar_file.close()
+               self.ftp.download(filename, unpack_path)
             except:
                 register_exception(alert_admin=True, prefix="Elsevier package download faild.")
                 self.logger.error("Error downloading tar file: %s" % (filename,))
