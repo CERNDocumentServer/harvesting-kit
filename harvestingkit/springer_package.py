@@ -56,8 +56,8 @@ from zipfile import ZipFile
 from invenio.springer_config import (CFG_LOGIN,
                                      CFG_PASSWORD,
                                      CFG_URL)
-
-from .config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
+from harvestingkit.ftp_utils import FtpHandler
+from harvestingkit.config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
 
 CFG_SPRINGER_AV24_PATH = join(CFG_SCOAP3DTDS_PATH, 'A++V2.4.zip')
 CFG_SPRINGER_JATS_PATH = join(CFG_SCOAP3DTDS_PATH, 'jats-archiving-dtd-1.0.zip')
@@ -80,35 +80,35 @@ class SpringerPackage(object):
     def connect(self):
         """Logs into the specified ftp server and returns connector."""
         try:
-            self.ftp = FTP(CFG_URL)
-            self.ftp.login(user=CFG_LOGIN, passwd=CFG_PASSWORD)
+            self.ftp = FtpHandler(CFG_URL, CFG_LOGIN, CFG_PASSWORD)
             self.logger.debug("Succesful connection to the Springer server")
         except:
             self.logger.error("Faild to connect to the Springer server.")
 
     def _get_file_listing(self, phrase=None, new_only=True):
-        try:
-            self.ftp.cwd('data/in/')
-        except Exception, err:
-            raise
-
         self.jhep_list = []
         self.epjc_list = []
         self.files_list = []
         if phrase:
-            self.epjc_list.extend(filter(lambda x: phrase in x and ".zip" in x, self.ftp.nlst("EPJC")))
-            self.jhep_list.extend(filter(lambda x: phrase in x and ".zip" in x, self.ftp.nlst("JHEP")))
+            self.epjc_list.extend(filter(lambda x: phrase in x and ".zip" in x, self.ftp.ls("data/in/EPJC")[0]))
+            self.jhep_list.extend(filter(lambda x: phrase in x and ".zip" in x, self.ftp.ls("data/in/JHEP")[0]))
         else:
-            self.epjc_list.extend(filter(lambda x: ".zip" in x, self.ftp.nlst("EPJC")))
-            self.jhep_list.extend(filter(lambda x: ".zip" in x, self.ftp.nlst("JHEP")))
+            self.epjc_list.extend(filter(lambda x: ".zip" in x, self.ftp.ls("data/in/EPJC")[0]))
+            self.jhep_list.extend(filter(lambda x: ".zip" in x, self.ftp.ls("data/in/JHEP")[0]))
 
-        self.files_list.extend(map(lambda x: "EPJC/"+x, self.epjc_list))
-        self.files_list.extend(map(lambda x: "JHEP/"+x, self.jhep_list))
+        self.files_list.extend(map(lambda x: "data/in/EPJC/"+x, self.epjc_list))
+        self.files_list.extend(map(lambda x: "data/in/JHEP/"+x, self.jhep_list))
 
         if new_only:
             tmp_our_dir = []
-            tmp_our_dir.extend(map(lambda x: "EPJC/"+x, listdir(join(CFG_TAR_FILES, "EPJC"))))
-            tmp_our_dir.extend(map(lambda x: "JHEP/"+x, listdir(join(CFG_TAR_FILES, "JHEP"))))
+            try:
+                tmp_our_dir.extend(map(lambda x: "data/in/EPJC/"+x, listdir(join(CFG_TAR_FILES, "data/in/EPJC"))))
+            except OSError: #folders does not exists nothing to do
+                pass
+            try:
+                tmp_our_dir.extend(map(lambda x: "data/in/JHEP/"+x, listdir(join(CFG_TAR_FILES, "data/in/JHEP"))))
+            except OSError: #folders does not exists nothing to do
+                pass
             self.files_list = set(self.files_list) - set(tmp_our_dir)
         return self.files_list
 
@@ -117,7 +117,7 @@ class SpringerPackage(object):
         # Prints stuff
         if self.files_list:
             if check_integrity:
-                check_pkgs_integrity(self.files_list, self.logger, self.ftp)
+                self.ftp.check_pkgs_integrity(self.files_list, self.logger)
 
             print >> sys.stdout, "\nDownloading %i tar packages." \
                                  % (len(self.files_list))
@@ -132,9 +132,7 @@ class SpringerPackage(object):
                 unpack_path = join(CFG_TAR_FILES, filename)
                 self.retrieved_packages_unpacked.append(unpack_path)
                 try:
-                    tar_file = open(unpack_path, 'wb')
-                    self.ftp.retrbinary('RETR %s' % filename, tar_file.write)
-                    tar_file.close()
+                    self.ftp.download(filename, CFG_TAR_FILES)
                 except:
                     self.logger.error("Error downloading tar file: %s" % (filename,))
                     print >> sys.stdout, "\nError downloading %s file!" % (filename,)
@@ -160,7 +158,7 @@ class SpringerPackage(object):
             self.logger.info("Got package: %s" % (package_name,))
             self.path = self._extract_packages()
         elif not path and not package_name:
-            print "Starting harves"
+            print "Starting harvest"
             self.run()
         self._crawl_springer_and_find_main_xml()
 

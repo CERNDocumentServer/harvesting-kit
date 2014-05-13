@@ -22,29 +22,25 @@ import sys
 import time
 import traceback
 from htmlentitydefs import name2codepoint
-
+from shutil import copy
 from datetime import datetime
 from invenio.bibtask import task_low_level_submission
 from invenio.config import (CFG_ETCDIR,
                             CFG_TMPSHAREDDIR)
+from invenio.errorlib import register_exception
+from invenio.shellutils import run_shell_command
+from os import listdir, rename, fdopen, pardir, remove
+from os.path import join, walk, exists, abspath, basename
 
 try:
     from invenio.config import CFG_OXFORD_DOWNLOADDIR
 except ImportError:
     CFG_OXFORD_DOWNLOADDIR = join(CFG_PREFIX, "var", "data" "scoap3" "oxford")
 
-
-from invenio.errorlib import register_exception
-from invenio.shellutils import run_shell_command
-from ftplib import FTP
-from os import listdir, rename, fdopen, pardir
-from os.path import join, walk, exists, abspath, basename
-
-from .scoap3utils import (create_logger,
+from harvestingkit.scoap3utils import (create_logger,
                           progress_bar,
-                          NoNewFiles,
-                          check_pkgs_integrity)
-from .nlm_utils import NLMParser
+                          NoNewFiles)
+from harvestingkit.nlm_utils import NLMParser
 from shutil import copyfile
 from tarfile import TarFile
 from tempfile import mkdtemp, mkstemp
@@ -53,8 +49,9 @@ from zipfile import ZipFile
 from invenio.oup_config import (CFG_LOGIN,
                                 CFG_PASSWORD,
                                 CFG_URL)
+from harvestingkit.ftp_utils import FtpHandler
 
-from .config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
+from harvestingkit.config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
 
 CFG_OXFORD_JATS_PATH = join(CFG_SCOAP3DTDS_PATH, 'journal-publishing-dtd-2.3.zip')
 
@@ -77,22 +74,16 @@ class OxfordPackage(object):
     def connect(self):
         """Logs into the specified ftp server and returns connector."""
         try:
-            self.ftp = FTP(CFG_URL)
-            self.ftp.login(user=CFG_LOGIN, passwd=CFG_PASSWORD)
+            self.ftp = FtpHandler(CFG_URL, CFG_LOGIN, CFG_PASSWORD)
             self.logger.debug("Succesful connection to the Oxford server")
         except:
             self.logger.error("Faild to connect to the Oxford server.")
 
     def _get_file_listing(self, phrase=None, new_only=True):
-        try:
-            self.ftp.pwd()
-        except Exception, err:
-            raise
-
         if phrase:
-            self.files_list = filter(lambda x: (phrase in x) or (x == "go.xml"), self.ftp.nlst())
+            self.files_list = filter(lambda x: (phrase in x) or (x == "go.xml"), self.ftp.ls()[0])
         else:
-            self.files_list = self.ftp.nlst()
+            self.files_list = self.ftp.ls()[0]
         if new_only:
             self.files_list = set(self.files_list) - set(listdir(CFG_TAR_FILES))
         return self.files_list
@@ -103,10 +94,10 @@ class OxfordPackage(object):
         if self.files_list and 'go.xml' in self.files_list:
             ## If no 'go.xml' is there than we skip the task.
             if check_integrity:
-                check_pkgs_integrity(self.files_list, self.logger, self.ftp)
+                self.ftp.check_pkgs_integrity(self.files_list, self.logger)
 
             print >> sys.stdout, "\nDownloading %i tar packages." \
-                                  % (len(self.files_list))
+                                 % (len(self.files_list))
             # Create progrss bar
             p_bar = progress_bar(len(self.files_list))
             # Print stuff
@@ -121,9 +112,11 @@ class OxfordPackage(object):
                 unpack_path = join(CFG_TAR_FILES, prefix + filename)
                 self.retrieved_packages_unpacked.append(unpack_path)
                 try:
-                    tar_file = open(unpack_path, 'wb')
-                    self.ftp.retrbinary('RETR %s' % filename, tar_file.write)
-                    tar_file.close()
+                    self.ftp.download(filename, CFG_TAR_FILES)
+                    current_location = join(CFG_TAR_FILES, filename)
+                    desired_location = join(CFG_TAR_FILES, prefix + filename)
+                    copy(current_location, desired_location)
+                    remove(current_location)
                 except:
                     self.logger.error("Error downloading tar file: %s" % (filename,))
                     print >> sys.stdout, "\nError downloading %s file!" % (filename,)
@@ -205,7 +198,7 @@ class OxfordPackage(object):
                     register_exception()
                     print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
 
-        if hasattr(self,'path_unpacked'):
+        if hasattr(self, 'path_unpacked'):
             walk(self.path_unpacked, visit, None)
         elif self.path:
             walk(self.path, visit, None)
@@ -236,7 +229,7 @@ class OxfordPackage(object):
             self.logger.info("Finishing UP. Emptying the FTP")
             for filename in self.files_list:
                 self.logger.debug("Deleting %s" % filename)
-                self.ftp.delete(filename)
+                self.ftp.rm(filename)
 
 
 def main():
