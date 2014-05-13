@@ -26,17 +26,25 @@ from harvestingkit.minidom_utils import get_value_in_tag, xml_to_text
 from invenio.bibrecord import record_add_field, record_xml_output
 
 
+class ApsPackageXMLError(Exception):
+    """ Raised when the XML given is of the wrong format """
+    pass
+
+
 class ApsPackage(object):
     """
     This class is specialized in parsing an APS harvested file in JATS format
     and creating a Inspire-compatible bibupload containing the original
     XML and every possible metadata filled in.
     """
-    def __init__(self):
-        try:
-            self.journal_mappings = get_kbs()['journals'][1]
-        except KeyError:
-            self.journal_mappings = {}
+    def __init__(self, journal_mappings=None):
+        if journal_mappings:
+            self.journal_mappings = journal_mappings
+        else:
+            try:
+                self.journal_mappings = get_kbs()['journals'][1]
+            except KeyError:
+                self.journal_mappings = {}
 
     def _get_journal(self):
         try:
@@ -81,7 +89,6 @@ class ApsPackage(object):
         affiliations = {}
         for tag in self.document.getElementsByTagName('aff'):
             aid = tag.getAttribute('id')
-            institution = get_value_in_tag(tag, 'institution')
             affiliation = xml_to_text(tag)
             affiliation = ' '.join(affiliation.split()[1:])
             affiliations[aid] = affiliation
@@ -310,6 +317,11 @@ class ApsPackage(object):
         """ Reads a xml file in JATS format and returns
             a xml string in marc format """
         self.document = parse(xml_file)
+
+        if get_value_in_tag(self.document, "meta"):
+            raise ApsPackageXMLError("The XML format of %s is not correct"
+                                     % (xml_file,))
+
         rec = {}
         title = self._get_title()
         if title:
