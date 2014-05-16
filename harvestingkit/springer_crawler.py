@@ -24,8 +24,8 @@ import re
 from os import close, remove
 from bs4 import BeautifulSoup
 from invenio.bibrecord import record_add_field, record_xml_output
-from invenio.filedownloadutils import download_url, InvenioFileDownloadError
 from harvestingkit.minidom_utils import xml_to_text
+from harvestingkit.utils import collapse_initials
 from xml.dom.minidom import parseString
 from xml.dom import getDOMImplementation
 from invenio.refextract_api import extract_references_from_string_xml
@@ -48,7 +48,7 @@ class SpringerCrawler(object):
         except AttributeError:
             return ''
 
-    def get_records(self, url):                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    def get_records(self, url):
         """
         Returns the records listed in the webpage given as
         parameter as a xml String.
@@ -126,8 +126,7 @@ class SpringerCrawler(object):
             author_names.append(author_name.split()[-1] + ",")
             author_names += author_name.split()[:-1]
             author_name = " ".join(author_names)
-            #collapse initials T. A. -> T.A.
-            author_name = re.sub(r'([A-Z].) ([A-Z].)', r'\1\2', author_name)
+            author_name = collapse_initials(author_name)
             authors.append(author_name)
             try:
                 authors_affiliations.append(author.find('sup')['title'])

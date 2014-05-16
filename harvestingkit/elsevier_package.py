@@ -49,6 +49,7 @@ from .minidom_utils import (get_value_in_tag,
                             xml_to_text,
                             format_arxiv_id)
 from .config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
+from .utils import fix_journal_name, collapse_initials
 
 CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
 CFG_ELSEVIER_ART510_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art510.zip')
@@ -103,26 +104,6 @@ class ElsevierPackage(object):
             self._crawl_elsevier_and_find_main_xml()
             self._crawl_elsevier_and_find_issue_xml()
             self._build_doi_mapping()
-
-    def _fix_journal_name(self, journal):
-        """ Converts journal name to Inspire's short form """
-        if not journal:
-            return '', ''
-        volume = ''
-        if (journal[-1] <= 'Z' and journal[-1] >= 'A') \
-                and (journal[-2] == '.' or journal[-2] == ' '):
-            volume += journal[-1]
-            journal = journal[:-1]
-            journal = journal.strip()
-            try:
-                journal = self.journal_mappings[journal.upper()].strip()
-            except KeyError:
-                try:
-                    journal = self.journal_mappings[journal].strip()
-                except KeyError:
-                    pass
-        journal = journal.replace('. ', '.')
-        return journal, volume
 
     def _build_journal_mappings(self):
         try:
@@ -285,7 +266,7 @@ class ElsevierPackage(object):
                         if code == 's':
                             try:
                                 journal = data.split(',')[0]
-                                journal, vol = self._fix_journal_name(journal)
+                                journal, vol = fix_journal_name(journal, self.journal_mappings)
                                 vol += data.split(',')[1]
                                 try:
                                     page = data.split(',')[2]
@@ -315,7 +296,7 @@ class ElsevierPackage(object):
                     if title:
                         subfields.append(('t', title))
                     if journal:
-                        journal, vol = self._fix_journal_name(journal)
+                        journal, vol = fix_journal_name(journal, self.journal_mappings)
                         volume = vol + volume
                         if volume and page:
                             journal = journal + "," + volume + "," + page
@@ -540,7 +521,7 @@ class ElsevierPackage(object):
             first_page = get_value_in_tag(xml_doc, "prism:startingPage")
             last_page = get_value_in_tag(xml_doc, "prism:endingPage")
             journal = publication.split(",")[0]
-            journal, volume = self._fix_journal_name(journal)
+            journal, volume = fix_journal_name(journal, self.journal_mappings)
             try:
                 vol = publication.split(",")[1].strip()
                 if vol.startswith("Section"):
