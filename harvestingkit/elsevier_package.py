@@ -41,15 +41,15 @@ from invenio.bibrecord import record_add_field, record_xml_output
 from invenio.config import CFG_TMPSHAREDDIR
 from invenio.shellutils import run_shell_command
 from invenio.bibtask import task_low_level_submission
-from .scoap3utils import (create_logger,
+from harvestingkit.scoap3utils import (create_logger,
                           MissingFFTError,
                           FileTypeError)
-from .contrast_out_utils import find_package_name
-from .minidom_utils import (get_value_in_tag,
+from harvestingkit.contrast_out_utils import find_package_name
+from harvestingkit.minidom_utils import (get_value_in_tag,
                             xml_to_text,
                             format_arxiv_id)
-from .config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
-from .utils import fix_journal_name, collapse_initials
+from harvestingkit.config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
+from harvestingkit.utils import fix_journal_name, collapse_initials
 
 CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
 CFG_ELSEVIER_ART510_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art510.zip')
@@ -65,7 +65,6 @@ CFG_ELSEVIER_JID_MAP = {'PLB': 'Physics letters B',
 
 
 class ElsevierPackage(object):
-
     """
     This class is specialized in parsing an Elsevier package
     and creating a SCOAP3-compatible bibupload containing the original
@@ -77,30 +76,37 @@ class ElsevierPackage(object):
     @note: either C{package_name} or C{path} don't have to be passed to the
     constructor, in this case the Elsevier server will be harvested.
     """
-
     def __init__(self, package_name=None, path=None,
                  run_localy=False, CONSYN=False):
         self.CONSYN = CONSYN
-        self.package_name = package_name
-        self.path = path
-        self.found_articles = []
-        self._found_issues = []
-        self.logger = create_logger("Elsevier")
-        if run_localy:
-            from invenio.contrast_out import ContrastOutConnector
-            self.conn = ContrastOutConnector(self.logger)
-            self.conn.run(run_localy)
-        else:
-            if not path and package_name:
-                self.logger.info("Got package: %s" % (package_name,))
-                self._extract_package()
-            elif not path and not package_name:
-                from invenio.contrast_out import ContrastOutConnector
-                self.conn = ContrastOutConnector(self.logger)
-                self.conn.run()
-        if CONSYN:
+        try:
+            self.logger = create_logger("Elsevier")
+        except IOError:  # Could not access log file
+                         # Use std.out for logging
+            self.logger = self
+            self.info = print
+            self.warning = print
+            self.error = print
+            self.debug = print
+        if self.CONSYN:
             self._build_journal_mappings()
         else:
+            self.package_name = package_name
+            self.path = path
+            self.found_articles = []
+            self._found_issues = []
+            if run_localy:
+                from invenio.contrast_out import ContrastOutConnector
+                self.conn = ContrastOutConnector(self.logger)
+                self.conn.run(run_localy)
+            else:
+                if not path and package_name:
+                    self.logger.info("Got package: %s" % (package_name,))
+                    self._extract_package()
+                elif not path and not package_name:
+                    from invenio.contrast_out import ContrastOutConnector
+                    self.conn = ContrastOutConnector(self.logger)
+                    self.conn.run()
             self._crawl_elsevier_and_find_main_xml()
             self._crawl_elsevier_and_find_issue_xml()
             self._build_doi_mapping()
@@ -283,41 +289,7 @@ class ElsevierPackage(object):
                         label = re.sub("[\[\].)]", "", label)
                         subfields.append(('o', label))
                     if subfields:
-                        record_add_field(rec,
-                                         '999',
-                                         ind1='C',
-                                         ind2='5',
-                                         subfields=subfields)
-                elif isjournal:
-                    if doi:
-                        subfields.append(('a', doi))
-                    for author in authors:
-                        subfields.append(('h', author))
-                    if title:
-                        subfields.append(('t', title))
-                    if journal:
-                        journal, vol = fix_journal_name(journal, self.journal_mappings)
-                        volume = vol + volume
-                        if volume and page:
-                            journal = journal + "," + volume + "," + page
-                            subfields.append(('s', journal))
-                        elif volume:
-                            journal = journal + "," + volume
-                            subfields.append(('s', journal))
-                        else:
-                            subfields.append(('s', journal))
-                    if ext_link:
-                        subfields.append(('r', ext_link))
-                    if year:
-                        subfields.append(('y', year))
-                    if label:
-                        label = re.sub("[\[\].)]", "", label)
-                        subfields.append(('o', label))
-                    if subfields:
-                        record_add_field(rec,
-                                         '999',
-                                         ind1='C',
-                                         ind2='5',
+                        record_add_field(rec, '999', ind1='C', ind2='5',
                                          subfields=subfields)
                 else:
                     if doi:
@@ -347,11 +319,19 @@ class ElsevierPackage(object):
                     if label:
                         label = re.sub("[\[\].)]", "", label)
                         subfields.append(('o', label))
+                    if journal:
+                        journal, vol = fix_journal_name(journal, self.journal_mappings)
+                        volume = vol + volume
+                        if volume and page:
+                            journal = journal + "," + volume + "," + page
+                            subfields.append(('s', journal))
+                        elif volume:
+                            journal = journal + "," + volume
+                            subfields.append(('s', journal))
+                        else:
+                            subfields.append(('s', journal))
                     if subfields:
-                        record_add_field(rec,
-                                         '999',
-                                         ind1='C',
-                                         ind2='5',
+                        record_add_field(rec, '999', ind1='C', ind2='5',
                                          subfields=subfields)
         else:
             for label, authors, doi, issue, page, title, volume, year,\
@@ -625,6 +605,8 @@ class ElsevierPackage(object):
                 isjournal = ref.getElementsByTagName("sb:issue")
                 journal = ""
                 if isjournal:
+                    if not page:
+                        page =  comment
                     container = ref.getElementsByTagName("sb:issue")[0]
                     journal = get_value_in_tag(container, "sb:maintitle")
                 edited_book = ref.getElementsByTagName("sb:edited-book")
@@ -634,8 +616,7 @@ class ElsevierPackage(object):
                 if edited_book:
                     # treat as a journal
                     if ref.getElementsByTagName("sb:book-series"):
-                        container = ref.getElementsByTagName(
-                            "sb:book-series")[0]
+                        container = ref.getElementsByTagName("sb:book-series")[0]
                         journal = get_value_in_tag(container, "sb:maintitle")
                         year = get_value_in_tag(ref, "sb:date")
                         isjournal = True
@@ -797,6 +778,7 @@ class ElsevierPackage(object):
             record_add_field(rec, '542', subfields=[('f', copyrightt)])
         keywords = self.get_keywords(xml_doc)
         if self.CONSYN:
+            journal, dummy = fix_journal_name(journal.strip(), self.journal_mappings)
             if keywords:
                 for keyword in keywords:
                     record_add_field(
@@ -806,8 +788,8 @@ class ElsevierPackage(object):
                 record_add_field(rec, '773', subfields=[('p', journal),
                                                         ('v', volume),
                                                         ('n', issue),
-                                                        ('c', '%s-%s' % (
-                                                            first_page, last_page)),
+                                                        ('c', '%s-%s' % (first_page,
+                                                                         last_page)),
                                                         ('y', year)])
             else:
                 record_add_field(rec, '773', subfields=[('p', journal),
@@ -830,48 +812,6 @@ class ElsevierPackage(object):
                                                         first_page, last_page)),
                                                     ('y', year)])
         self._add_references(xml_doc, rec)
-
-        if not no_pdf:
-            from invenio.search_engine import search_pattern
-            query = '0247_a:"%s" AND NOT 980:DELETED"' % (doi,)
-            prev_version = search_pattern(p=query)
-            from invenio.bibdocfile import BibRecDocs
-            old_pdf = False
-
-            if prev_version:
-                prev_rec = BibRecDocs(prev_version[0])
-                try:
-                    pdf_path = prev_rec.get_bibdoc('main')
-                    pdf_path = pdf_path.get_file(
-                        ".pdf;pdfa", exact_docformat=True)
-                    pdf_path = pdf_path.fullpath
-                    old_pdf = True
-                    record_add_field(rec, 'FFT', subfields=[('a', pdf_path),
-                                                            ('n', 'main'),
-                                                            ('f', '.pdf;pdfa')])
-                    message = 'Leaving previously delivered PDF/A for: ' + doi
-                    self.logger.info(message)
-                except:
-                    pass
-            try:
-                if exists(join(path, 'main_a-2b.pdf')):
-                    path = join(path, 'main_a-2b.pdf')
-                    record_add_field(rec, 'FFT', subfields=[('a', path),
-                                                            ('n', 'main'),
-                                                            ('f', '.pdf;pdfa')])
-                    self.logger.debug('Adding PDF/A to record: %s' % (doi,))
-                elif exists(join(path, 'main.pdf')):
-                    path = join(path, 'main.pdf')
-                    record_add_field(rec, 'FFT', subfields=[('a', path)])
-                else:
-                    if not old_pdf:
-                        message = "Record " + doi
-                        message += " doesn't contain PDF file."
-                        self.logger.warning(message)
-                        raise MissingFFTError(message)
-            except MissingFFTError:
-                message = "Elsevier paper: %s is missing PDF." % (doi,)
-                register_exception(alert_admin=True, prefix=message)
         if self.CONSYN:
             record_add_field(rec, 'FFT', subfields=[('a', path),
                                                     ('t', 'Elsevier'),
@@ -880,12 +820,53 @@ class ElsevierPackage(object):
             record_add_field(rec, '980', subfields=[('a', 'Citeable')])
             record_add_field(rec, '980', subfields=[('a', 'Published')])
         else:
-            version = self.get_elsevier_version(find_package_name(path))
-            record_add_field(rec, '583', subfields=[('l', version)])
-            path = join(path, 'main.xml')
-            record_add_field(rec, 'FFT', subfields=[('a', path)])
-            record_add_field(rec, '980', subfields=[('a', 'SCOAP3'),
-                                                    ('b', 'Elsevier')])
+            if not no_pdf:
+                from invenio.search_engine import search_pattern
+                query = '0247_a:"%s" AND NOT 980:DELETED"' % (doi,)
+                prev_version = search_pattern(p=query)
+                from invenio.bibdocfile import BibRecDocs
+                old_pdf = False
+
+                if prev_version:
+                    prev_rec = BibRecDocs(prev_version[0])
+                    try:
+                        pdf_path = prev_rec.get_bibdoc('main')
+                        pdf_path = pdf_path.get_file(
+                            ".pdf;pdfa", exact_docformat=True)
+                        pdf_path = pdf_path.fullpath
+                        old_pdf = True
+                        record_add_field(rec, 'FFT', subfields=[('a', pdf_path),
+                                                                ('n', 'main'),
+                                                                ('f', '.pdf;pdfa')])
+                        message = 'Leaving previously delivered PDF/A for: ' + doi
+                        self.logger.info(message)
+                    except:
+                        pass
+                try:
+                    if exists(join(path, 'main_a-2b.pdf')):
+                        path = join(path, 'main_a-2b.pdf')
+                        record_add_field(rec, 'FFT', subfields=[('a', path),
+                                                                ('n', 'main'),
+                                                                ('f', '.pdf;pdfa')])
+                        self.logger.debug('Adding PDF/A to record: %s' % (doi,))
+                    elif exists(join(path, 'main.pdf')):
+                        path = join(path, 'main.pdf')
+                        record_add_field(rec, 'FFT', subfields=[('a', path)])
+                    else:
+                        if not old_pdf:
+                            message = "Record " + doi
+                            message += " doesn't contain PDF file."
+                            self.logger.warning(message)
+                            raise MissingFFTError(message)
+                except MissingFFTError:
+                    message = "Elsevier paper: %s is missing PDF." % (doi,)
+                    register_exception(alert_admin=True, prefix=message)
+                version = self.get_elsevier_version(find_package_name(path))
+                record_add_field(rec, '583', subfields=[('l', version)])
+                path = join(path, 'main.xml')
+                record_add_field(rec, 'FFT', subfields=[('a', path)])
+                record_add_field(rec, '980', subfields=[('a', 'SCOAP3'),
+                                                        ('b', 'Elsevier')])
         try:
             return record_xml_output(rec)
         except UnicodeDecodeError:
