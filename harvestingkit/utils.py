@@ -37,6 +37,7 @@ def fix_journal_name(journal, knowledge_base):
         volume += journal[-1]
         journal = journal[:-1]
     try:
+        journal = journal.strip()
         journal = knowledge_base[journal.upper()].strip()
     except KeyError:
         try:
