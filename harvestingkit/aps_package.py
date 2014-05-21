@@ -168,16 +168,23 @@ class ApsPackage(object):
                 if tag.getAttribute('pub-id-type') == 'doi':
                     doi = tag.firstChild.data
             collaboration = get_value_in_tag(innerref, 'collab')
-            authors = []
-            try:
-                authors_xml = innerref.getElementsByTagName('person-group')[0]
-                for author in authors_xml.getElementsByTagName('string-name'):
-                    try:
-                        authors.append(author.firstChild.data)
-                    except AttributeError:
-                        pass
-            except IndexError:
-                pass
+            authors = []            
+            person_groups = innerref.getElementsByTagName('person-group')
+            for author_group in person_groups:
+                if author_group.getAttribute('person-group-type') == 'author':
+                    for author in author_group.getElementsByTagName('string-name'):
+                        try:
+                            authors.append(author.firstChild.data)
+                        except AttributeError:
+                            pass
+            editors = []
+            for editor_group in person_groups:
+                if editor_group.getAttribute('person-group-type') == 'editor':
+                    for editor in editor_group.getElementsByTagName('string-name'):
+                        try:
+                            editors.append(editor.firstChild.data)
+                        except AttributeError:
+                            pass
             journal = get_value_in_tag(innerref, 'source')
             journal, volume = fix_journal_name(journal, self.journal_mappings)
             volume += get_value_in_tag(innerref, 'volume')
@@ -193,11 +200,14 @@ class ApsPackage(object):
                 if tag.getAttribute('pub-id-type') == 'arxiv':
                     arxiv = tag.firstChild.data
             publisher = get_value_in_tag(innerref, 'publisher-name')
+            publisher_location = get_value_in_tag(innerref, 'publisher-loc')
+            if publisher_location:
+                publisher = publisher_location + ': ' + publisher
             unstructured_text = []
             for child in innerref.childNodes:
                 if child.nodeType == child.TEXT_NODE:
                     text = child.nodeValue.strip()
-                    text = re.sub('[\[\](.;)]', '', text).strip()
+                    text = re.sub(r'[\[\]\(\.;\)]', '', text).strip()
                     if text.startswith(','):
                         text = text[1:].strip()
                     if text.endswith('Report No'):
@@ -224,25 +234,36 @@ class ApsPackage(object):
                         unstructured_text.append(text)
             if unstructured_text:
                 unstructured_text = " ".join(unstructured_text)
+            volume = get_value_in_tag(innerref, 'volume')
+            if ref_type == 'book':
+                if volume and not volume.lower().startswith('vol'):
+                    volume = 'Vol ' + volume
+                if volume and page:
+                    volume = volume + ', pp ' + page
             yield ref_type, doi, authors, collaboration, journal, volume, page, year,\
-                label, arxiv, publisher, institution, unstructured_text, external_link, report_no
+                label, arxiv, publisher, institution, unstructured_text, external_link,\
+                report_no, editors
 
     def _add_references(self, rec):
         """ Adds the reference to the record """
         for ref in self.document.getElementsByTagName('ref'):
             for ref_type, doi, authors, collaboration, journal, volume, page, year,\
                     label, arxiv, publisher, institution, unstructured_text,\
-                    external_link, report_no in self._get_reference(ref):
+                    external_link, report_no, editors in self._get_reference(ref):
                 subfields = []
                 if doi:
                     subfields.append(('a', doi))
                 for author in authors:
                     subfields.append(('h', author))
+                for editor in editors:
+                    subfields.append(('e', editor))
                 if year:
                     subfields.append(('y', year))
                 if unstructured_text:
                     if page and unstructured_text.endswith('pp'):
                         subfields.append(('m', unstructured_text + ' ' + page))
+                    elif page:
+                        subfields.append(('m', unstructured_text + ', pp ' + page))
                     else:
                         subfields.append(('m', unstructured_text))
                 if collaboration:
@@ -259,11 +280,13 @@ class ApsPackage(object):
                     subfields.append(('u', external_link))
                 if label:
                     subfields.append(('o', label))
-                if ref_type:
-                    subfields.append(('d', ref_type))
                 if ref_type == 'book':
                     if journal:
                         subfields.append(('t', journal))
+                    if volume:
+                        subfields.append(('m', volume))
+                    elif page and not unstructured_text:
+                        subfields.append(('m', 'pp ' + page))
                 else:
                     if volume and page:
                         subfields.append(('s', journal + "," + volume + "," + page))
@@ -271,6 +294,8 @@ class ApsPackage(object):
                         subfields.append(('s', journal + "," + volume))
                     elif journal:
                         subfields.append(('s', journal))
+                if ref_type:
+                    subfields.append(('d', ref_type))
                 if not subfields:
                     #misc-type references
                     try:
