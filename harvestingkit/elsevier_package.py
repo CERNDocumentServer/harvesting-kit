@@ -28,28 +28,33 @@ import xml.dom.minidom
 
 from bs4 import BeautifulSoup
 from os import listdir, rename, fdopen
-from os.path import join, exists, walk
+from os.path import (join,
+                     exists,
+                     walk)
 from tarfile import TarFile
-from tempfile import mkdtemp, mkstemp
+from tempfile import (mkdtemp,
+                      mkstemp)
 from zipfile import ZipFile
 from xml.dom.minidom import parse
 
 from invenio.refextract_kbs import get_kbs
 from invenio.refextract_api import extract_references_from_string_xml
 from invenio.errorlib import register_exception
-from invenio.bibrecord import record_add_field, record_xml_output
+from invenio.bibrecord import (record_add_field,
+                               record_xml_output)
 from invenio.config import CFG_TMPSHAREDDIR
 from invenio.shellutils import run_shell_command
 from invenio.bibtask import task_low_level_submission
 from harvestingkit.scoap3utils import (create_logger,
-                          MissingFFTError,
-                          FileTypeError)
+                                       MissingFFTError,
+                                       FileTypeError)
 from harvestingkit.contrast_out_utils import find_package_name
 from harvestingkit.minidom_utils import (get_value_in_tag,
-                            xml_to_text,
-                            format_arxiv_id)
+                                         xml_to_text)
 from harvestingkit.config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
-from harvestingkit.utils import fix_journal_name, collapse_initials
+from harvestingkit.utils import (fix_journal_name, 
+                                 collapse_initials,
+                                 format_arxiv_id)
 
 CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
 CFG_ELSEVIER_ART510_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art510.zip')
@@ -582,7 +587,7 @@ class ElsevierPackage(object):
         textref = ref.getElementsByTagName("ce:textref")
         if textref:
             textref = xml_to_text(textref[0])
-        ext_link = format_arxiv_id(self.get_ref_link(ref, 'arxiv'))
+        ext_link = format_arxiv_id(self.get_ref_link(ref, 'arxiv'), True)
         authors = []
         for author in ref.getElementsByTagName("sb:author"):
             given_name = get_value_in_tag(author, "ce:given-name")
