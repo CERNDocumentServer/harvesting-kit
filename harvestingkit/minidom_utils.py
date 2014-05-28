@@ -26,14 +26,6 @@ class NoDOIError(Exception):
     def __init__(self, value):
         self.value = value
 
-
-def format_arxiv_id(arxiv_id):
-    if arxiv_id and not "/" in arxiv_id and "arXiv" not in arxiv_id:
-        return "arXiv:%s" % (arxiv_id,)
-    else:
-        return arxiv_id
-
-
 def xml_to_text(xml, delimiter=' ', tag_to_remove=None):
     if tag_to_remove:
         if tag_to_remove in xml.nodeName.encode('utf-8'):
