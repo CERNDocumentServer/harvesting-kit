@@ -405,7 +405,7 @@ class ElsevierPackage(object):
         if not doctype:
             doctype = xml_doc.getElementsByTagName('ja:article')
         if not doctype:
-            doctype = xml_doc.getElementsByTagName('ja:simple-article')            
+            doctype = xml_doc.getElementsByTagName('ja:simple-article')
         try:
             doctype = doctype[0].getAttribute('docsubtype')
         except IndexError:
@@ -616,7 +616,7 @@ class ElsevierPackage(object):
         journal = ""
         if isjournal:
             if not page:
-                page =  comment
+                page = comment
             container = ref.getElementsByTagName("sb:issue")[0]
             journal = get_value_in_tag(container, "sb:maintitle")
         edited_book = ref.getElementsByTagName("sb:edited-book")
@@ -675,8 +675,8 @@ class ElsevierPackage(object):
             year = get_value_in_tag(ref, "sb:date")
         year = re.sub(r'\D', '', year)
         return (label, authors, doi, issue, page, title, volume,
-               year, textref, ext_link, isjournal, comment, journal,
-               publisher, editors, book_title)
+                year, textref, ext_link, isjournal, comment, journal,
+                publisher, editors, book_title)
 
     def get_references(self, xml_doc):
         for ref in xml_doc.getElementsByTagName("ce:bib-reference"):
@@ -684,7 +684,7 @@ class ElsevierPackage(object):
             if self.CONSYN:
                 innerrefs = ref.getElementsByTagName("sb:reference")
                 if not innerrefs:
-                    yield self._get_ref(ref, label) 
+                    yield self._get_ref(ref, label)
                 for inner in innerrefs:
                     yield self._get_ref(inner, label)
             else:
@@ -785,7 +785,8 @@ class ElsevierPackage(object):
         if not journal:
             journal = self.get_article_journal(xml_doc)
         if start_date:
-            record_add_field(rec, '260', subfields=[('c', start_date)])
+            record_add_field(rec, '260', subfields=[('c', start_date),
+                                                    ('t', 'published')])
         else:
             record_add_field(
                 rec, '260', subfields=[('c', time.strftime('%Y-%m-%d'))])
@@ -820,33 +821,58 @@ class ElsevierPackage(object):
             record_add_field(rec, '542', subfields=[('f', copyrightt)])
         keywords = self.get_keywords(xml_doc)
         if self.CONSYN:
+            for tag in xml_doc.getElementsByTagName('ce:collaboration'):
+                collaboration = get_value_in_tag(tag, 'ce:text')
+                if collaboration:
+                    record_add_field(rec, '710', subfields=[('g', collaboration)])
+            topics = []
+            subjects = xml_doc.getElementsByTagName('dct:subject')
+            for subject in subjects:
+                for listitem in subject.getElementsByTagName('rdf:li'):
+                    topics.append(xml_to_text(listitem))
+            if topics:
+                record_add_field(rec, '650', ind1='1', ind2='7',
+                                 subfields=[('2', 'Elsevier'),
+                                            ('a', ', '.join(topics))])
             if keywords:
                 for keyword in keywords:
-                    record_add_field(
-                        rec, '653', ind1='1', subfields=[('a', keyword),
-                                    ('9', 'author')])
-            journal, dummy = fix_journal_name(journal.strip(), self.journal_mappings)            
+                    record_add_field(rec, '653', ind1='1',
+                                     subfields=[('a', keyword),
+                                                ('9', 'author')])
+            journal, dummy = fix_journal_name(journal.strip(), self.journal_mappings)
             subfields = []
             doctype = self.get_doctype(xml_doc)
+            try:
+                page_count = int(last_page) - int(first_page)
+                record_add_field(rec, '300', subfields=[('a', str(page_count))])
+            except ValueError:  # do nothing
+                pass
             if doctype == 'err':
                 subfields.append(('m', 'Erratum'))
             elif doctype == 'add':
                 subfields.append(('m', 'Addendum'))
             elif doctype == 'pub':
                 subfields.append(('m', 'Publisher Note'))
+            elif doctype == 'rev':
+                record_add_field(rec, '980', subfields=[('a', 'Review')])
             if journal:
                 subfields.append(('p', journal))
             if first_page and last_page:
-                subfields.append(('c', '%s-%s' % (first_page, last_page)))
+                subfields.append(('c', '%s-%s' %
+                                       (first_page, last_page)))
             elif first_page:
-                subfields.append(('c', first_page))           
+                subfields.append(('c', first_page))
             if volume:
                 subfields.append(('v', volume))
-            if issue:
-                subfields.append(('n', issue))
             if year:
                 subfields.append(('y', year))
             record_add_field(rec, '773', subfields=subfields)
+            record_add_field(rec, 'FFT', subfields=[('a', path),
+                                                    ('t', 'Elsevier'),
+                                                    ('o', 'HIDDEN')])
+            record_add_field(rec, '980', subfields=[('a', 'HEP')])
+            record_add_field(rec, '980', subfields=[('a', 'Citeable')])
+            record_add_field(rec, '980', subfields=[('a', 'Published')])
         else:
             licence = 'http://creativecommons.org/licenses/by/3.0/'
             record_add_field(rec, '540', subfields=[('a', 'CC-BY-3.0'),
@@ -859,20 +885,9 @@ class ElsevierPackage(object):
             record_add_field(rec, '773', subfields=[('p', journal),
                                                     ('v', volume),
                                                     ('n', issue),
-                                                    ('c', '%s-%s' % (
-                                                        first_page, last_page)),
+                                                    ('c', '%s-%s' %
+                                                        (first_page, last_page)),
                                                     ('y', year)])
-        self._add_references(xml_doc, rec)
-        if self.CONSYN:
-            record_add_field(rec, 'FFT', subfields=[('a', path),
-                                                    ('t', 'Elsevier'),
-                                                    ('o', 'HIDDEN')])
-            record_add_field(rec, '980', subfields=[('a', 'HEP')])
-            record_add_field(rec, '980', subfields=[('a', 'Citeable')])
-            record_add_field(rec, '980', subfields=[('a', 'Published')])
-            if doctype == 'rev':
-                record_add_field(rec, '980', subfields=[('a', 'Review')])
-        else:
             if not no_pdf:
                 from invenio.search_engine import search_pattern
                 query = '0247_a:"%s" AND NOT 980:DELETED"' % (doi,)
@@ -920,6 +935,7 @@ class ElsevierPackage(object):
                 record_add_field(rec, 'FFT', subfields=[('a', path)])
                 record_add_field(rec, '980', subfields=[('a', 'SCOAP3'),
                                                         ('b', 'Elsevier')])
+        self._add_references(xml_doc, rec)
         try:
             return record_xml_output(rec)
         except UnicodeDecodeError:
