@@ -26,6 +26,7 @@ class NoDOIError(Exception):
     def __init__(self, value):
         self.value = value
 
+
 def xml_to_text(xml, delimiter=' ', tag_to_remove=None):
     if tag_to_remove:
         if tag_to_remove in xml.nodeName.encode('utf-8'):

@@ -73,6 +73,7 @@ def contrast_out_cmp(x, y):
             else:
                 return 0
 
+
 def find_package_name(path):
     try:
         return [p_name for p_name in path.split('/') if "CERN" in p_name or "vtex" in p_name][0]

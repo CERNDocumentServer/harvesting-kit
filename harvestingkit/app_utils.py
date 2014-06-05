@@ -48,7 +48,7 @@ class APPParser(object):
     def get_title(self, xml):
         try:
             return get_value_in_tag(xml, "ArticleTitle")
-        except Exception, err:
+        except Exception as err:
             print >> sys.stderr, "Can't find title"
 
     def get_publication_information(self, xml):
@@ -144,7 +144,7 @@ class APPParser(object):
     def get_abstract(self, xml):
         try:
             return get_value_in_tag(xml.getElementsByTagName("Abstract")[0], "Para")
-        except Exception, err:
+        except Exception as err:
             print >> sys.stderr, "Can't find abstract"
 
     def get_copyright(self, xml):
@@ -163,7 +163,7 @@ class APPParser(object):
         try:
             ref = xml.getElementsByTagName('BodyRef')[0]
             return ref.getAttribute('FileRef').encode('utf-8')
-        except Exception, err:
+        except Exception as err:
             print >> sys.stderr, "Can't find reference to XML file."
 
     def get_arxiv_id(self, xml):
