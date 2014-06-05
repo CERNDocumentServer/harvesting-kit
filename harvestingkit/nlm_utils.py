@@ -16,11 +16,9 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
-import time
 from harvestingkit.jats_utils import JATSParser
 from harvestingkit.minidom_utils import (get_value_in_tag,
-                                         xml_to_text,
-                                         NoDOIError)
+                                         xml_to_text)
 from harvestingkit.utils import format_arxiv_id
 from invenio.bibrecord import (record_add_field,
                                record_xml_output)
@@ -87,7 +85,7 @@ class NLMParser(JATSParser):
             record_add_field(rec, '245', subfields=[('a', title)])
         record_add_field(rec, '260', subfields=[('c', super(NLMParser, self).get_publication_date(xml, logger))])
         journal, issn, volume, issue, first_page, last_page, year, doi = super(NLMParser, self).get_publication_information(xml)
-        journal = "PTEP"  ## Let's override the journal information
+        journal = "PTEP"  # Let's override the journal information
 
         if logger:
             logger.info("Creating record: %s %s" % (join(f_path, pardir), doi))

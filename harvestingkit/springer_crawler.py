@@ -38,8 +38,8 @@ class SpringerCrawler(object):
     """
     This class is specialized in crawling from Springer web pages
     for Journals, Books, Protocols and Reference works and creating
-    a marc xml file containing the records of the collection
-    with the link to the fulltext pdf and every posible metadata.
+    a Marc xml file containing the records of the collection
+    with the link to the fulltext pdf and every possible metadata.
     """
     def __init__(self):
         self.base_url = 'http://link.springer.com/'
@@ -102,13 +102,13 @@ class SpringerCrawler(object):
         page_range = self._find('span', {'id': 'page-range'})
         if page_range:
             page_range = page_range.replace('pp', '').strip()
-        publisher = self._find('dd', {'id': 'abstract-about-publisher'})
+        #publisher = self._find('dd', {'id': 'abstract-about-publisher'})
         copyright_holder = self._find('dd', {'id': 'abstract-about-book-copyright-holder'})
-        issn = self._find('dd', {'id': 'abstract-about-book-series-print-issn'})
+        #issn = self._find('dd', {'id': 'abstract-about-book-series-print-issn'})
         doi = self._find('dd', {'class': 'doi'})
-        subtitle = self._find('dd', {'id': 'abstract-about-book-series-subtitle'})
-        online_isbn = self._find('dd', {'id': 'abstract-about-book-online-isbn'})
-        print_isbn = self._find('dd', {'id': 'abstract-about-book-print-isbn'})
+        #subtitle = self._find('dd', {'id': 'abstract-about-book-series-subtitle'})
+        #online_isbn = self._find('dd', {'id': 'abstract-about-book-online-isbn'})
+        #print_isbn = self._find('dd', {'id': 'abstract-about-book-print-isbn'})
         editors = []
         editors_affiliations = []
         for editor in self.content.findAll('li', attrs={'itemprop': 'editor'}):
@@ -143,7 +143,7 @@ class SpringerCrawler(object):
         except TypeError:
             fulltext = ''
 
-        #create marc record
+        #create Marc record
         rec = {}
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
@@ -188,7 +188,7 @@ class SpringerCrawler(object):
                                                     ('d', 'Fulltext')])
 
         recordString = record_xml_output(rec)
-        #removes whitespaces except spaces
+        #removes whitespace except spaces
         recordString = re.sub(r'[\n\t\r\f\v]', '', recordString)
         #removes two or more consecutive spaces
         recordString = re.sub(r' {2,}', '', recordString)
@@ -248,7 +248,7 @@ if __name__ == '__main__':
             close(file_fd)
         except IOError, e:
             try:
-                remove(filepath)
+                remove(outfile)
             except Exception:
                 pass
             raise e

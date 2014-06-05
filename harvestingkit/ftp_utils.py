@@ -29,8 +29,8 @@ from netrc import netrc
 
 def create_folders(new_folder):
     """ Creates all the missing folders in the path new_folder
-        requires an absolute path.
-        """
+    requires an absolute path.
+    """
     if not exists(new_folder):
         folders = new_folder.split("/")
         folder = "/"
@@ -41,19 +41,19 @@ def create_folders(new_folder):
 
 
 class FtpHandler(object):
-    """ This class provides an interface to easilly connect to an ftp server,
-        list its contents and download files/folders.
+    """ This class provides an interface to easily connect to an FTP server,
+    list its contents and download files/folders.
 
-        @param server: the url to access the ftp server.
-        @type server: string
-        @param username: the username used to connect to the server.
-        @type username: string
-        @param passwd: the password used to connect to the server.
-        @type passwd: string
-        @param netrc_file: path to a netrc file that can be used
-                                   for authetication with the server.
-        @type netrc_file: string
-        """
+    :param server: the URL to access the FTP server.
+    :type server: string
+    :param username: the user-name used to connect to the server.
+    :type username: string
+    :param passwd: the password used to connect to the server.
+    :type passwd: string
+    :param netrc_file: path to a netrc file that can be used
+                               for authentication with the server.
+    :type netrc_file: string
+    """
     def __init__(self, server, username='', passwd='', netrc_file=''):
         server = urlparse(server)
         if server.netloc:
@@ -70,29 +70,27 @@ class FtpHandler(object):
         self._home = self._ftp.pwd()
 
     def connect(self):
-        """ Connects and logins to the server.
-            """
+        """ Connects and logins to the server. """
         self._ftp.connect()
         self._ftp.login(user=self._username, passwd=self._passwd)
 
     def close(self):
-        """ Closes the connection to the server.
-            """
+        """ Closes the connection to the server. """
         self._ftp.close()
 
     def download_folder(self, folder='', target_folder=''):
         """ Downloads a whole folder from the server.
-            FtpDownloader.download_folder() will download all the files
-            from the server in the working directory.
+        FtpHandler.download_folder() will download all the files
+        from the server in the working directory.
 
-            @param folder: the absolute path for the folder on the server.
+        :param folder: the absolute path for the folder on the server.
 
-            @type folder: string
-            @param target_folder: absolute or relative path for the
-                                  destination folder default is the
-                                  working directory.
-            @type target_folder: string
-            """
+        :type folder: string
+        :param target_folder: absolute or relative path for the
+                              destination folder default is the
+                              working directory.
+        :type target_folder: string
+        """
         files, folders = self.ls(folder)
         for fl in files:
             self.download(join(folder, fl), target_folder)
@@ -100,17 +98,17 @@ class FtpHandler(object):
             self.download_folder(join(folder, fld), target_folder)
 
     def download(self, source_file, target_folder=''):
-        """ Downloads a file from the ftp server to target folder
+        """ Downloads a file from the FTP server to target folder
 
-            @param source_file: the absolute path for the file on the server
-                       it can be the one of the files comming from
-                       FtpDownloader.dir().
-            @type source_file: string
-            @param target_folder: relative or absolute path of the
-                                  destination folder default is the
-                                  working directory.
-            @type target_folder: string
-            """
+        :param source_file: the absolute path for the file on the server
+                   it can be the one of the files coming from
+                   FtpHandler.dir().
+        :type source_file: string
+        :param target_folder: relative or absolute path of the
+                              destination folder default is the
+                              working directory.
+        :type target_folder: string
+        """
         if not target_folder.startswith('/'):  # relative path
             target_folder = join(getcwd(), target_folder)
         folder = '/'.join(source_file.split('/')[:-1])
@@ -130,9 +128,9 @@ class FtpHandler(object):
     def cd(self, folder):
         """ Changes the working directory on the server.
 
-            @param folder: the desired directory.
-            @type folder: string
-            """
+        :param folder: the desired directory.
+        :type folder: string
+        """
         if folder.startswith('/'):
             self._ftp.cwd(folder)
         else:
@@ -142,14 +140,14 @@ class FtpHandler(object):
 
     def ls(self, folder=''):
         """ Lists the files and folders of a specific directory
-            default is the current working directory.
+        default is the current working directory.
 
-            @param folder: the folder to be listed.
-            @type folder: string
+        :param folder: the folder to be listed.
+        :type folder: string
 
-            @returns: a tuple with the list of files in the folder
-                      and the list of subfolders in the folder.
-            """
+        :returns: a tuple with the list of files in the folder
+                  and the list of subfolders in the folder.
+        """
         current_folder = self._ftp.pwd()
         self.cd(folder)
         contents = []
@@ -163,16 +161,16 @@ class FtpHandler(object):
 
     def dir(self, folder='', prefix=''):
         """ Lists all the files on the folder given as parameter.
-            FtpDownloader.dir() lists all the files on the server.
+        FtpHandler.dir() lists all the files on the server.
 
-            @para folder: the folder to be listed.
-            @type folder: string
+        :para folder: the folder to be listed.
+        :type folder: string
 
-            @param prefix: it does not belong to the interface,
-                           it is used to recursively list the subfolders.
+        :param prefix: it does not belong to the interface,
+                       it is used to recursively list the subfolders.
 
-            @returns: a list with all the files in the server.
-            """
+        :returns: a list with all the files in the server.
+        """
         files, folders = self.ls(folder)
         result = files
         inner = []
@@ -189,12 +187,12 @@ class FtpHandler(object):
     def mkdir(self, folder):
         """ Creates a folder in the server
 
-            @param folder: the folder to be created.
-            @type fodler: string
-            """
+        :param folder: the folder to be created.
+        :type folder: string
+        """
         current_folder = self._ftp.pwd()
         #creates the necessary folders on
-        #the server if they dont exist
+        #the server if they don't exist
         folders = folder.split('/')
         for fld in folders:
             try:
@@ -207,9 +205,9 @@ class FtpHandler(object):
     def rm(self, filename):
         """ Delete a file from the server.
 
-            @param filename: the file to be deleted.
-            @type filename: string
-            """
+        :param filename: the file to be deleted.
+        :type filename: string
+        """
         try:
             self._ftp.delete(filename)
         except error_perm:  # target is either a directory
@@ -229,9 +227,9 @@ class FtpHandler(object):
     def rmdir(self, foldername):
         """ Delete a folder from the server.
 
-            @param foldername: the folder to be deleted.
-            @type foldername: string
-            """
+        :param foldername: the folder to be deleted.
+        :type foldername: string
+        """
         current_folder = self._ftp.pwd()
         try:
             self.cd(foldername)
@@ -255,11 +253,11 @@ class FtpHandler(object):
     def get_filesize(self, filename):
         """ Returns the filesize of a file
 
-            @param filename: the full path to the file on the server.
-            @type filename: string
+        :param filename: the full path to the file on the server.
+        :type filename: string
 
-            @returns: string represantation of the filesize.
-            """
+        :returns: string representation of the filesize.
+        """
         result = []
 
         def dir_callback(val):
@@ -271,11 +269,11 @@ class FtpHandler(object):
     def check_pkgs_integrity(self, filelist, logger, timeout=120, sleep_time=10):
         """ Checks if files are not being uploaded to server.
 
-            @param filelist - a list of filenames to check.
-            @type filelist: list
-            @param timeout - time after which the script will register an error.
-            @type timeout: int
-            """
+        :param filelist - a list of filenames to check.
+        :type filelist: list
+        :param timeout - time after which the script will register an error.
+        :type timeout: int
+        """
         ref_1 = []
         ref_2 = []
         i = 1
@@ -293,8 +291,8 @@ class FtpHandler(object):
                 logger.info("Packages integrity OK.")
                 break
             else:
-                print >> sys.stdout, "\nWaiting %d time for itegrity..." % (i,)
-                logger.info("\nWaiting %d time for itegrity..." % (i,))
+                print >> sys.stdout, "\nWaiting %d time for integrity..." % (i,)
+                logger.info("\nWaiting %d time for integrity..." % (i,))
                 i += 1
                 ref_1, ref_2 = ref_2, []
                 time.sleep(sleep_time)
@@ -305,17 +303,17 @@ class FtpHandler(object):
                     not_finished_files.append(filelist[count])
 
             print >> sys.stdout, "\nOMG, OMG something wrong with integrity."
-            logger.error("Integrity check faild for files %s" % (not_finished_files,))
+            logger.error("Integrity check failed for files %s" % (not_finished_files,))
 
     def upload(self, filename, location=''):
         """ Uploads a file on the server to the desired location
 
-            @param filename: the name of the file to be uploaded.
-            @type filename: string
-            @param location: the directory in which the file will
-                             be stored.
-            @type location: string
-            """
+        :param filename: the name of the file to be uploaded.
+        :type filename: string
+        :param location: the directory in which the file will
+                         be stored.
+        :type location: string
+        """
         current_folder = self._ftp.pwd()
         self.mkdir(location)
         self.cd(location)

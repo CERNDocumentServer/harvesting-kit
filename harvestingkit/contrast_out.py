@@ -18,15 +18,12 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 import sys
-import time
-
-from datetime import datetime
-from functools import partial
 from os import listdir
-from os.path import join, walk
+from os.path import (join,
+                     walk)
 from tarfile import TarFile
 from tempfile import mkdtemp
-from xml.dom.minidom import parseString, parse
+from xml.dom.minidom import parse
 from zipfile import ZipFile
 
 try:
@@ -44,13 +41,12 @@ except ImportError:
 from invenio.errorlib import register_exception
 
 from harvestingkit.scoap3utils import (MD5Error,
-                          NoNewFiles,
-                          FileTypeError,
-                          progress_bar)
+                                       NoNewFiles,
+                                       FileTypeError,
+                                       progress_bar)
 from harvestingkit.contrast_out_utils import (contrast_out_cmp,
-                                 find_package_name)
-from harvestingkit.minidom_utils import (xml_to_text,
-                            get_value_in_tag)
+                                              find_package_name)
+from harvestingkit.minidom_utils import xml_to_text
 from harvestingkit.ftp_utils import FtpHandler
 
 CFG_READY_PACKAGES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "ready_pkgs")
@@ -71,13 +67,13 @@ class ContrastOutConnector(object):
         self.logger = logger
 
     def connect(self):
-        """Logs into the specified ftp server and returns connector."""
+        """Logs into the specified FTP server and returns connector."""
         try:
             self.ftp = FtpHandler(CFG_CONTRAST_OUT_URL, CFG_CONTRAST_OUT_LOGIN, CFG_CONTRAST_OUT_PASSWORD)
-            self.logger.debug("Succesful connection to the Elsevier server")
+            self.logger.debug("Successful connection to the Elsevier server")
         except Exception as err:
             print err
-            self.logger.error("Faild to connect to the Elsevier server. %s" % (err,))
+            self.logger.error("Failed to connect to the Elsevier server. %s" % (err,))
             raise Exception
 
     def _get_file_listing(self, phrase=None, new_only=True):
@@ -94,7 +90,7 @@ class ContrastOutConnector(object):
         if self.files_list:
             # Prints stuff
             print >> sys.stdout, "\nDownloading %i \".ready\" files." % (len(self.files_list))
-            # Create progrss bar
+            # Create progress bar
             p_bar = progress_bar(len(self.files_list))
             # Print stuff
             sys.stdout.write(p_bar.next())
@@ -122,7 +118,7 @@ class ContrastOutConnector(object):
     def _get_packages(self):
         # Prints stuff
         print >> sys.stdout, "\nRetrieving packages names."
-        # Create progrss bar
+        # Create progress bar
         p_bar = progress_bar(len(self.files_list))
         # Print stuff
         sys.stdout.write(p_bar.next())
@@ -147,8 +143,8 @@ class ContrastOutConnector(object):
             self.ftp.check_pkgs_integrity(self.retrieved_packages, self.logger)
 
         print >> sys.stdout, "\nDownloading %i tar packages." \
-                 % (len(self.retrieved_packages))
-        # Create progrss bar
+                             % (len(self.retrieved_packages))
+        # Create progress bar
         p_bar = progress_bar(len(self.files_list))
         # Print stuff
         sys.stdout.write(p_bar.next())
@@ -159,9 +155,9 @@ class ContrastOutConnector(object):
             unpack_path = join(CFG_TAR_FILES, filename)
             self.retrieved_packages_unpacked.append(unpack_path)
             try:
-               self.ftp.download(filename, unpack_path)
+                self.ftp.download(filename, unpack_path)
             except:
-                register_exception(alert_admin=True, prefix="Elsevier package download faild.")
+                register_exception(alert_admin=True, prefix="Elsevier package download failed.")
                 self.logger.error("Error downloading tar file: %s" % (filename,))
                 print >> sys.stdout, "\nError downloading %s file!" % (filename,)
                 print >> sys.stdout, sys.exc_info()
@@ -179,11 +175,11 @@ class ContrastOutConnector(object):
             try:
                 if our_md5 != md5:
                     raise MD5Error(filename)
-            except MD5Error as e:
+            except MD5Error:
                 register_exception(alert_admin=True, prefix="Elsevier MD5 error.")
                 self.logger.error("MD5 error: %s" % (filename,))
                 print >> sys.stdout, "\nError in MD5 of %s" % (filename,)
-                print >> sys.stdout, "oryginal: %s, ours: %s" % (md5, our_md5)
+                print >> sys.stdout, "original: %s, ours: %s" % (md5, our_md5)
 
     def _extract_packages(self):
         """
@@ -198,9 +194,9 @@ class ContrastOutConnector(object):
                     ZipFile(path).extractall(self.path_unpacked)
                 else:
                     raise FileTypeError("It's not a TAR or ZIP archive.")
-            except Exception, err:
+            except Exception as err:
                 register_exception(alert_admin=True, prefix="Elsevier error extracting package.")
-                self.logger.error("Error extraction package file: %s %s" % (path,err))
+                self.logger.error("Error extraction package file: %s %s" % (path, err))
                 print >> sys.stdout, "\nError extracting package file: %s %s" % (path, err)
 
         return self.path_unpacked
@@ -211,7 +207,7 @@ class ContrastOutConnector(object):
 
             try:
                 dataset_xml = parse(dataset_link)
-            except Exception, err:
+            except Exception:
                 register_exception(alert_admin=True, prefix="Elsevier error reading dataset.xml file.")
                 self.logger.error("Error reading dataset.xml file: %s" % (dataset_link,))
                 print >> sys.stdout, "\nError reading dataset.xml file: %s" % (dataset_link,)
@@ -234,7 +230,7 @@ class ContrastOutConnector(object):
     def _get_metadata_and_fulltex_dir(self):
         # Prints stuff
         print >> sys.stdout, "\nRetrieving journal items directories."
-        # Create progrss bar
+        # Create progress bar
         p_bar = progress_bar(len(self.files_list))
         # Print stuff
         sys.stdout.write(p_bar.next())
@@ -247,7 +243,7 @@ class ContrastOutConnector(object):
 
             try:
                 dataset_xml = parse(dataset_link)
-            except Exception, err:
+            except Exception:
                 register_exception(alert_admin=True, prefix="Elsevier error reading dataset.xml file.")
                 self.logger.error("Error reading dataset.xml file: %s" % (dataset_link,))
                 print >> sys.stdout, "\nError reading dataset.xml file: %s" % (dataset_link,)
@@ -255,12 +251,12 @@ class ContrastOutConnector(object):
 
             # created = get_value_in_tag(dataset_xml.getElementsByTagName('dataset-unique-ids')[0], 'timestamp')
             journal_items = dataset_xml.getElementsByTagName('journal-item')
-            self.logger.info("Getting metadata and fulltex directories for %i journal items." % (len(journal_items),))
+            self.logger.info("Getting metadata and fulltext directories for %i journal items." % (len(journal_items),))
             for journal_item in journal_items:
                 xml_pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(journal_item.getElementsByTagName('ml')[0].getElementsByTagName('pathname')[0]))
                 pdf_pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(journal_item.getElementsByTagName('web-pdf')[0].getElementsByTagName('pathname')[0]))
                 self.found_articles.append(dict(xml=xml_pathname, pdf=pdf_pathname))
-            self.logger.info("Got metadata and fulltex directories of %i journals." % (len(self.found_articles),))
+            self.logger.info("Got metadata and fulltext directories of %i journals." % (len(self.found_articles),))
             # Print stuff
             sys.stdout.write(p_bar.next())
             sys.stdout.flush()
@@ -287,7 +283,7 @@ class ContrastOutConnector(object):
         else:
             self.logger.info("Running on local files.")
             self.retrieved_packages_unpacked = []
-            self.files_list =[]
+            self.files_list = []
             for p in listdir(CFG_TAR_FILES):
                 self.retrieved_packages_unpacked.append(join(CFG_TAR_FILES, p))
             for p in listdir(CFG_READY_PACKAGES):

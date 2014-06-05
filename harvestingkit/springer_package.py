@@ -16,15 +16,15 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
-
 import sys
-import time
 import traceback
-
 from datetime import datetime
 from invenio.bibtask import task_low_level_submission
-from invenio.config import (CFG_ETCDIR,
+from invenio.config import (CFG_PREFIX,
                             CFG_TMPSHAREDDIR)
+from os.path import (join,
+                     walk,
+                     exists)
 try:
     from invenio.config import CFG_SPRINGER_DOWNLOADDIR
 except ImportError:
@@ -32,26 +32,15 @@ except ImportError:
 
 from invenio.errorlib import register_exception
 from invenio.shellutils import run_shell_command
-from ftplib import FTP
 from os import (listdir,
-                rename,
-                fdopen,
-                pardir)
-from os.path import (join,
-                     walk,
-                     exists,
-                     abspath)
+                fdopen)
 from harvestingkit.scoap3utils import (create_logger,
                                        progress_bar,
-                                       NoNewFiles,
-                                       check_pkgs_integrity)
+                                       NoNewFiles)
 from harvestingkit.jats_utils import JATSParser
 from harvestingkit.app_utils import APPParser
-from shutil import copyfile
-from tarfile import TarFile
 from tempfile import (mkdtemp,
                       mkstemp)
-from xml.dom.minidom import parse
 from zipfile import ZipFile
 from invenio.springer_config import (CFG_LOGIN,
                                      CFG_PASSWORD,
@@ -103,11 +92,11 @@ class SpringerPackage(object):
             tmp_our_dir = []
             try:
                 tmp_our_dir.extend(map(lambda x: "data/in/EPJC/"+x, listdir(join(CFG_TAR_FILES, "data/in/EPJC"))))
-            except OSError: #folders does not exists nothing to do
+            except OSError:  # folders does not exists nothing to do
                 pass
             try:
                 tmp_our_dir.extend(map(lambda x: "data/in/JHEP/"+x, listdir(join(CFG_TAR_FILES, "data/in/JHEP"))))
-            except OSError: #folders does not exists nothing to do
+            except OSError:  # folders does not exists nothing to do
                 pass
             self.files_list = set(self.files_list) - set(tmp_our_dir)
         return self.files_list
@@ -183,14 +172,14 @@ class SpringerPackage(object):
 
             if 'EPJC' in path:
                 self.path_unpacked.append(mkdtemp(prefix="scoap3_package_%s_EPJC_" % (datetime.now(),),
-                                     dir=CFG_TMPSHAREDDIR))
+                                                  dir=CFG_TMPSHAREDDIR))
             else:
                 self.path_unpacked.append(mkdtemp(prefix="scoap3_package_%s_JHEP_" % (datetime.now(),),
-                                     dir=CFG_TMPSHAREDDIR))
+                                                  dir=CFG_TMPSHAREDDIR))
             try:
 
                 ZipFile(path).extractall(self.path_unpacked[-1])
-            except Exception, err:
+            except Exception:
                 register_exception(alert_admin=True, prefix="Springer error extracting package.")
                 self.logger.error("Error extraction package file: %s" % (path,))
                 print >> sys.stdout, "\nError extracting package file: %s" % (path,)
@@ -204,6 +193,7 @@ class SpringerPackage(object):
         a main.xml in agiven directory.
         """
         self.found_articles = []
+
         def visit(arg, dirname, names):
             files = [filename for filename in names if "nlm.xml" in filename]
             if not files:
@@ -216,7 +206,7 @@ class SpringerPackage(object):
                     register_exception()
                     print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
 
-        if hasattr(self,'path_unpacked'):
+        if hasattr(self, 'path_unpacked'):
             for path in self.path_unpacked:
                 walk(path, visit, None)
         elif self.path:
@@ -234,7 +224,7 @@ class SpringerPackage(object):
         """
         files = [filename for filename in listdir(path) if "nlm.xml" in filename]
         if not files:
-                files = [filename for filename in listdir(path)  if ".xml.scoap" in filename]
+                files = [filename for filename in listdir(path) if ".xml.scoap" in filename]
         if exists(join(path, 'resolved_main.xml')):
             return
 

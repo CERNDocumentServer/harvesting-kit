@@ -20,24 +20,15 @@
 import re
 import sys
 import time
-import traceback
-
-from os import (listdir,
-                rename,
-                fdopen,
-                pardir)
+from os import pardir
 from os.path import (join,
-                     walk,
-                     exists,
-                     abspath,
                      dirname,
                      basename)
 from invenio.bibrecord import (record_add_field,
                                record_xml_output)
 from invenio.errorlib import register_exception
 from harvestingkit.minidom_utils import (get_value_in_tag,
-                                         xml_to_text,
-                                         NoDOIError)
+                                         xml_to_text)
 from harvestingkit.utils import format_arxiv_id
 from xml.dom.minidom import parse
 
@@ -53,7 +44,7 @@ class JATSParser(object):
     def get_title(self, xml):
         try:
             return get_value_in_tag(xml, "article-title", tag_to_remove=self.tag_to_remove)
-        except Exception, err:
+        except Exception:
             print >> sys.stderr, "Can't find title"
 
     def get_issn(self, xml):
@@ -91,7 +82,7 @@ class JATSParser(object):
             art = xml.getElementsByTagName('article-meta')[0]
         except IndexError, err:
             register_exception()
-            print >> sys.stderr, "ERROR: XML corupted: %s" % err
+            print >> sys.stderr, "ERROR: XML corrupted: %s" % err
             pass
         except Exception, err:
             register_exception()
@@ -178,7 +169,7 @@ class JATSParser(object):
                 author["email"] = emails[matching_contact[0]]
 
         if implicit_affilations and len(affiliations) > 1:
-            print >> sys.stderr, "Implicit affiliations are used, but there's more than one affiliation: %s" % affiliations
+            print >> sys.stderr, "Implicit affiliations are used, but there are more than one affiliation: %s" % affiliations
         if implicit_affilations and len(affiliations) >= 1:
             for author in authors:
                 author["affiliation"] = []
@@ -189,7 +180,7 @@ class JATSParser(object):
     def get_abstract(self, xml):
         try:
             return get_value_in_tag(xml, "abstract", tag_to_remove=self.tag_to_remove).replace("Abstract", "", 1)
-        except Exception, err:
+        except Exception:
             print >> sys.stderr, "Can't find abstract"
 
     def get_copyright(self, xml, logger=None):
@@ -224,7 +215,7 @@ class JATSParser(object):
                 else:
                     other = [xml_to_text(keyword, tag_to_remove=self.tag_to_remove) for keyword in kwd_group.getElementsByTagName("kwd")]
             return {"pacs": pacs, "other": other}
-        except Exception, err:
+        except Exception:
             print >> sys.stderr, "Can't find keywords"
 
     def get_ref_link(self, xml, name):
@@ -276,15 +267,16 @@ class JATSParser(object):
                 logger.info("Can't find publication date. Using 'today'.")
             return time.strftime('%Y-%m-%d')
 
-
     def get_references(self, xml):
         references = []
         for reference in xml.getElementsByTagName("ref"):
             plain_text = None
             try:
-                ref_type = reference.getElementsByTagName('mixed-citation')[0].getAttribute('publication-type').encode('utf-8')
+                ref_type = reference.getElementsByTagName('mixed-citation')[0]
+                ref_type = ref_type.getAttribute('publication-type').encode('utf-8')
             except:
-                ref_type = reference.getElementsByTagName('citation')[0].getAttribute('publication-type').encode('utf-8')
+                ref_type = reference.getElementsByTagName('citation')[0]
+                ref_type = ref_type.getAttribute('publication-type').encode('utf-8')
             label = get_value_in_tag(reference, "label").strip('.')
             authors = []
             for author in reference.getElementsByTagName("name"):
@@ -311,10 +303,17 @@ class JATSParser(object):
             ext_link = format_arxiv_id(self.get_ref_link(reference, "arxiv"))
             if ref_type != 'journal':
                 try:
-                    plain_text = get_value_in_tag(reference, "mixed-citation", tag_to_remove=self.tag_to_remove)
+                    plain_text = get_value_in_tag(reference,
+                                                  "mixed-citation",
+                                                  tag_to_remove=self.tag_to_remove)
                 except:
-                    plain_text = get_value_in_tag(reference, "citation", tag_to_remove=self.tag_to_remove)
-            references.append((label, authors, doi, issue, page, page_last, title, volume, year, ext_link, plain_text))
+                    plain_text = get_value_in_tag(reference,
+                                                  "citation",
+                                                  tag_to_remove=self.tag_to_remove)
+            references.append((label, authors, doi,
+                               issue, page, page_last,
+                               title, volume, year,
+                               ext_link, plain_text))
         self.references = references
 
     def get_record(self, f_path, publisher=None, collection=None, logger=None):

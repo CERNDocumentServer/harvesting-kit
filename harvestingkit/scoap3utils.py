@@ -16,7 +16,6 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
-
 """
 Set of utilities for the SCOAP3 project.
 """
@@ -24,23 +23,8 @@ Set of utilities for the SCOAP3 project.
 from __future__ import division
 
 import sys
-import time
 import logging
-import urllib
-import itertools
-import datetime
-from xml.dom.minidom import parse
-
-from invenio.search_engine import (get_collection_reclist,
-                                   get_record)
-from invenio.config import (CFG_LOGDIR,
-                            CFG_CROSSREF_USERNAME,
-                            CFG_CROSSREF_PASSWORD,
-                            CFG_SITE_NAME)
-from invenio.dbquery import run_sql
-from invenio.intbitset import intbitset
-from invenio.bibrecord import (record_extract_dois,
-                               record_get_field_values)
+from invenio.config import CFG_LOGDIR
 from os.path import join
 
 CFG_CROSSREF_DOIS_PER_REQUEST = 10
@@ -129,6 +113,7 @@ CFG_CROSSREF_API_URL = "http://doi.crossref.org/search/doi?"
                     #ret[doi] = datetime.datetime.strptime(xml_to_text(crm_item), "%Y%m%d%H%M%S%f")
                     #break
     #return ret
+
 
 def lock_issue():
     """

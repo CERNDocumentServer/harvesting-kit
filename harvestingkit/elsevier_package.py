@@ -27,7 +27,9 @@ import requests
 import xml.dom.minidom
 
 from bs4 import BeautifulSoup
-from os import listdir, rename, fdopen
+from os import (listdir,
+                rename,
+                fdopen)
 from os.path import (join,
                      exists,
                      walk)
@@ -36,7 +38,6 @@ from tempfile import (mkdtemp,
                       mkstemp)
 from zipfile import ZipFile
 from xml.dom.minidom import parse
-
 from invenio.refextract_kbs import get_kbs
 from invenio.refextract_api import extract_references_from_string_xml
 from invenio.errorlib import register_exception
@@ -52,8 +53,7 @@ from harvestingkit.contrast_out_utils import find_package_name
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from harvestingkit.config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
-from harvestingkit.utils import (fix_journal_name, 
-                                 collapse_initials,
+from harvestingkit.utils import (fix_journal_name,
                                  format_arxiv_id)
 
 CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
@@ -147,7 +147,7 @@ class ElsevierPackage(object):
         """
         A package contains several subdirectory corresponding to each article.
         An article is actually identified by the existence of a main.pdf and
-        a main.xml in agiven directory.
+        a main.xml in a given directory.
         """
         self.found_articles = []
         if not self.path and not self.package_name:
@@ -637,8 +637,7 @@ class ElsevierPackage(object):
                 isjournal = True
             # conference
             elif ref.getElementsByTagName("sb:conference"):
-                container = ref.getElementsByTagName(
-                    "sb:edited-book")[0]
+                container = ref.getElementsByTagName("sb:edited-book")[0]
                 maintitle = get_value_in_tag(container, "sb:maintitle")
                 conference = get_value_in_tag(
                     container, "sb:conference")
@@ -660,10 +659,8 @@ class ElsevierPackage(object):
                     title = get_value_in_tag(container, "sb:maintitle")
                 year = get_value_in_tag(container, "sb:date")
                 if ref.getElementsByTagName("sb:publisher"):
-                    container = ref.getElementsByTagName(
-                        "sb:publisher")[0]
-                    location = get_value_in_tag(
-                        container, "sb:location")
+                    container = ref.getElementsByTagName("sb:publisher")[0]
+                    location = get_value_in_tag(container, "sb:location")
                     publisher = get_value_in_tag(container, "sb:name")
                     if location:
                         publisher = location + ": " + publisher
@@ -975,7 +972,7 @@ class ElsevierPackage(object):
                     dir=CFG_TMPSHAREDDIR)
                 out = fdopen(fd_vtex, 'w')
                 print("<collection>", file=out)
-                # enumerate remember progres of prevoius one
+                # enumerate remember progress of previous one
                 for i, path in enumerate(self.found_articles):
                     if "vtex" in path:
                         print(self.get_pdfa_record(path), file=out)

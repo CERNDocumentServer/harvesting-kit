@@ -16,11 +16,10 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
-
 import sys
 from datetime import datetime
-
-from harvestingkit.minidom_utils import get_value_in_tag, xml_to_text
+from harvestingkit.minidom_utils import (get_value_in_tag,
+                                         xml_to_text)
 from invenio.bibrecord import record_add_field
 from harvestingkit.utils import collapse_initials
 

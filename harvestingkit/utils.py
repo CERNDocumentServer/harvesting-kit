@@ -18,6 +18,7 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 import re
 
+
 def format_arxiv_id(arxiv_id, INSPIRE=False):
     if arxiv_id and not "/" in arxiv_id and "arXiv" not in arxiv_id:
         return "arXiv:%s" % (arxiv_id,)
@@ -26,6 +27,7 @@ def format_arxiv_id(arxiv_id, INSPIRE=False):
         return arxiv_id[6:]
     else:
         return arxiv_id
+
 
 def collapse_initials(name):
     """ Removes the space between initials.

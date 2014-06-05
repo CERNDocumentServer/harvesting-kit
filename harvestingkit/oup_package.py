@@ -16,41 +16,34 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
-
-import re
 import sys
 import time
 import traceback
-from htmlentitydefs import name2codepoint
 from shutil import copy
-from datetime import datetime
 from invenio.bibtask import task_low_level_submission
-from invenio.config import (CFG_ETCDIR,
-                            CFG_TMPSHAREDDIR)
+from invenio.config import (CFG_TMPSHAREDDIR,
+                            CFG_PREFIX)
 from invenio.errorlib import register_exception
-from invenio.shellutils import run_shell_command
-from os import listdir, rename, fdopen, pardir, remove
-from os.path import join, walk, exists, abspath, basename
-
+from os import (listdir,
+                fdopen,
+                remove)
+from os.path import (join,
+                     walk,
+                     basename)
 try:
     from invenio.config import CFG_OXFORD_DOWNLOADDIR
 except ImportError:
     CFG_OXFORD_DOWNLOADDIR = join(CFG_PREFIX, "var", "data" "scoap3" "oxford")
-
 from harvestingkit.scoap3utils import (create_logger,
-                          progress_bar,
-                          NoNewFiles)
+                                       progress_bar,
+                                       NoNewFiles)
 from harvestingkit.nlm_utils import NLMParser
-from shutil import copyfile
-from tarfile import TarFile
-from tempfile import mkdtemp, mkstemp
-from xml.dom.minidom import parse
+from tempfile import mkstemp
 from zipfile import ZipFile
 from invenio.oup_config import (CFG_LOGIN,
                                 CFG_PASSWORD,
                                 CFG_URL)
 from harvestingkit.ftp_utils import FtpHandler
-
 from harvestingkit.config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
 
 CFG_OXFORD_JATS_PATH = join(CFG_SCOAP3DTDS_PATH, 'journal-publishing-dtd-2.3.zip')
@@ -72,12 +65,12 @@ class OxfordPackage(object):
     constructor, in this case the Oxford server will be harvested.
     """
     def connect(self):
-        """Logs into the specified ftp server and returns connector."""
+        """Logs into the specified FTP server and returns connector."""
         try:
             self.ftp = FtpHandler(CFG_URL, CFG_LOGIN, CFG_PASSWORD)
-            self.logger.debug("Succesful connection to the Oxford server")
+            self.logger.debug("Successful connection to the Oxford server")
         except:
-            self.logger.error("Faild to connect to the Oxford server.")
+            self.logger.error("Failed to connect to the Oxford server.")
 
     def _get_file_listing(self, phrase=None, new_only=True):
         if phrase:
@@ -98,7 +91,7 @@ class OxfordPackage(object):
 
             print >> sys.stdout, "\nDownloading %i tar packages." \
                                  % (len(self.files_list))
-            # Create progrss bar
+            # Create progress bar
             p_bar = progress_bar(len(self.files_list))
             # Print stuff
             sys.stdout.write(p_bar.next())
@@ -172,7 +165,7 @@ class OxfordPackage(object):
                 else:
                     ZipFile(path).extractall(self.path_unpacked)
                 #TarFile.open(path).extractall(self.path_unpacked)
-            except Exception, err:
+            except Exception:
                 register_exception(alert_admin=True, prefix="OUP error extracting package.")
                 self.logger.error("Error extraction package file: %s" % (path,))
                 print >> sys.stdout, "\nError extracting package file: %s" % (path,)
@@ -183,7 +176,7 @@ class OxfordPackage(object):
         """
         A package contains several subdirectory corresponding to each article.
         An article is actually identified by the existence of a main.pdf and
-        a main.xml in agiven directory.
+        a main.xml in a given directory.
         """
         self.found_articles = []
 

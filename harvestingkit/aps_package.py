@@ -111,7 +111,7 @@ class ApsPackage(object):
                 int(affiliation.split()[0])
                 affiliation = ' '.join(affiliation.split()[1:])
             except ValueError:
-                pass            
+                pass
             affiliations[aid] = affiliation
         for tag in self.document.getElementsByTagName('contrib'):
             if tag.getAttribute('contrib-type') == 'author':
@@ -196,7 +196,7 @@ class ApsPackage(object):
                 if tag.getAttribute('pub-id-type') == 'doi':
                     doi = tag.firstChild.data
             collaboration = get_value_in_tag(innerref, 'collab')
-            authors = []            
+            authors = []
             person_groups = innerref.getElementsByTagName('person-group')
             for author_group in person_groups:
                 if author_group.getAttribute('person-group-type') == 'author':
@@ -364,7 +364,7 @@ class ApsPackage(object):
                 for code in tag.getElementsByTagName('kwd'):
                     pacscodes.append(xml_to_text(code))
         for pacscode in pacscodes:
-            record_add_field(rec, '084', subfields=[('2','PACS'),
+            record_add_field(rec, '084', subfields=[('2', 'PACS'),
                                                     ('a', pacscode)])
         subjects = []
         for tag in self.document.getElementsByTagName('subj-group'):
