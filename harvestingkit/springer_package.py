@@ -25,7 +25,6 @@ from datetime import datetime
 from invenio.bibtask import task_low_level_submission
 from invenio.config import (CFG_ETCDIR,
                             CFG_TMPSHAREDDIR)
-
 try:
     from invenio.config import CFG_SPRINGER_DOWNLOADDIR
 except ImportError:
@@ -34,17 +33,24 @@ except ImportError:
 from invenio.errorlib import register_exception
 from invenio.shellutils import run_shell_command
 from ftplib import FTP
-from os import listdir, rename, fdopen, pardir
-from os.path import join, walk, exists, abspath
-from .scoap3utils import (create_logger,
-                          progress_bar,
-                          NoNewFiles,
-                          check_pkgs_integrity)
-from .jats_utils import JATSParser
-from .app_utils import APPParser
+from os import (listdir,
+                rename,
+                fdopen,
+                pardir)
+from os.path import (join,
+                     walk,
+                     exists,
+                     abspath)
+from harvestingkit.scoap3utils import (create_logger,
+                                       progress_bar,
+                                       NoNewFiles,
+                                       check_pkgs_integrity)
+from harvestingkit.jats_utils import JATSParser
+from harvestingkit.app_utils import APPParser
 from shutil import copyfile
 from tarfile import TarFile
-from tempfile import mkdtemp, mkstemp
+from tempfile import (mkdtemp,
+                      mkstemp)
 from xml.dom.minidom import parse
 from zipfile import ZipFile
 from invenio.springer_config import (CFG_LOGIN,

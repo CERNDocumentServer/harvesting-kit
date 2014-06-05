@@ -22,15 +22,23 @@ import sys
 import time
 import traceback
 
-from os import listdir, rename, fdopen, pardir
-from os.path import join, walk, exists, abspath, dirname, basename
-
-from invenio.bibrecord import record_add_field, record_xml_output
+from os import (listdir,
+                rename,
+                fdopen,
+                pardir)
+from os.path import (join,
+                     walk,
+                     exists,
+                     abspath,
+                     dirname,
+                     basename)
+from invenio.bibrecord import (record_add_field,
+                               record_xml_output)
 from invenio.errorlib import register_exception
-from .minidom_utils import (get_value_in_tag,
-                            xml_to_text,
-                            NoDOIError,
-                            format_arxiv_id)
+from harvestingkit.minidom_utils import (get_value_in_tag,
+                                         xml_to_text,
+                                         NoDOIError)
+from harvestingkit.utils import format_arxiv_id
 from xml.dom.minidom import parse
 
 

@@ -22,9 +22,14 @@ import re
 from invenio.refextract_kbs import get_kbs
 from datetime import datetime
 from xml.dom.minidom import parse
-from harvestingkit.utils import fix_journal_name, collapse_initials
-from harvestingkit.minidom_utils import get_value_in_tag, xml_to_text
-from invenio.bibrecord import record_add_field, record_xml_output
+from harvestingkit.utils import (fix_journal_name,
+                                 collapse_initials,
+                                 format_arxiv_id)
+from harvestingkit.minidom_utils import (get_value_in_tag,
+                                         xml_to_text,
+                                         get_attribute_in_tag)
+from invenio.bibrecord import (record_add_field,
+                               record_xml_output)
 
 
 class ApsPackageXMLError(Exception):
@@ -88,27 +93,50 @@ class ApsPackage(object):
     def _get_authors(self):
         authors = []
         affiliations = {}
+        author_notes = {}
+        for author_note in self.document.getElementsByTagName('author-notes'):
+            for note in author_note.getElementsByTagName('fn'):
+                nid = note.getAttribute('id')
+                email = xml_to_text(note)
+                #removes the label
+                if email.split() > 1:
+                    email = email.split()[1]
+                if '@' in email and '.' in email:
+                    author_notes[nid] = email
         for tag in self.document.getElementsByTagName('aff'):
             aid = tag.getAttribute('id')
             affiliation = xml_to_text(tag)
-            affiliation = ' '.join(affiliation.split()[1:])
+            #removes the label
+            try:
+                int(affiliation.split()[0])
+                affiliation = ' '.join(affiliation.split()[1:])
+            except ValueError:
+                pass            
             affiliations[aid] = affiliation
         for tag in self.document.getElementsByTagName('contrib'):
             if tag.getAttribute('contrib-type') == 'author':
-                rid = ''
+                aid = ''
+                nid = ''
                 for aff in tag.getElementsByTagName('xref'):
                     if aff.getAttribute('ref-type') == 'aff':
-                        rid = aff.getAttribute('rid')
-                    if len(rid.split()) > 1:
-                        rid = rid.split()[0]
+                        aid = aff.getAttribute('rid')
+                    if aff.getAttribute('ref-type') == 'author-notes':
+                        nid = aff.getAttribute('rid')
+                    if len(aid.split()) > 1:
+                        aid = aid.split()[0]
                 given_names = get_value_in_tag(tag, 'given-names')
                 given_names = collapse_initials(given_names)
                 surname = get_value_in_tag(tag, 'surname')
                 name = "%s, %s" % (surname, given_names)
                 try:
-                    authors.append((name, affiliations[rid]))
+                    affiliation = affiliations[aid]
                 except KeyError:
-                    authors.append((name, ''))
+                    affiliation = ''
+                try:
+                    note = author_notes[nid]
+                except KeyError:
+                    note = ''
+                authors.append((name, affiliation, note))
         return authors
 
     def _get_copyright(self):
@@ -199,6 +227,7 @@ class ApsPackage(object):
             for tag in innerref.getElementsByTagName('pub-id'):
                 if tag.getAttribute('pub-id-type') == 'arxiv':
                     arxiv = tag.firstChild.data
+            arxiv = format_arxiv_id(arxiv, True)
             publisher = get_value_in_tag(innerref, 'publisher-name')
             publisher_location = get_value_in_tag(innerref, 'publisher-loc')
             if publisher_location:
@@ -228,13 +257,16 @@ class ApsPackage(object):
                         institution = ''
                     elif text == u'\u201d':
                         text = ''
-                    ignore_text = ['in', 'pp', 'edited by', 'Vol']
-                    if len(text) > 1 and text not in ignore_text\
+                    ignore_text = ['in', 'pp', 'edited by']
+                    if text.startswith('Vol'):
+                        temp = re.sub(r'\D', '', text)
+                        if temp:
+                            volume += temp
+                    elif len(text) > 1 and text not in ignore_text\
                             and not (text.isdigit() or text[:-1].isdigit()):
                         unstructured_text.append(text)
             if unstructured_text:
                 unstructured_text = " ".join(unstructured_text)
-            volume = get_value_in_tag(innerref, 'volume')
             if ref_type == 'book':
                 if volume and not volume.lower().startswith('vol'):
                     volume = 'Vol ' + volume
@@ -260,10 +292,8 @@ class ApsPackage(object):
                 if year:
                     subfields.append(('y', year))
                 if unstructured_text:
-                    if page and unstructured_text.endswith('pp'):
-                        subfields.append(('m', unstructured_text + ' ' + page))
-                    elif page:
-                        subfields.append(('m', unstructured_text + ', pp ' + page))
+                    if page:
+                        subfields.append(('m', unstructured_text + ', ' + page))
                     else:
                         subfields.append(('m', unstructured_text))
                 if collaboration:
@@ -286,14 +316,12 @@ class ApsPackage(object):
                     if volume:
                         subfields.append(('m', volume))
                     elif page and not unstructured_text:
-                        subfields.append(('m', 'pp ' + page))
+                        subfields.append(('m', page))
                 else:
                     if volume and page:
                         subfields.append(('s', journal + "," + volume + "," + page))
-                    elif volume:
-                        subfields.append(('s', journal + "," + volume))
                     elif journal:
-                        subfields.append(('s', journal))
+                        subfields.append(('t', journal))
                 if ref_type:
                     subfields.append(('d', ref_type))
                 if not subfields:
@@ -326,22 +354,45 @@ class ApsPackage(object):
         if get_value_in_tag(self.document, "meta"):
             raise ApsPackageXMLError("The XML format of %s is not correct"
                                      % (xml_file,))
-
         rec = {}
+        page_count = get_attribute_in_tag(self.document, 'page-count', 'count')
+        if page_count:
+            record_add_field(rec, '300', subfields=[('a', page_count[0])])
+        pacscodes = []
+        for tag in self.document.getElementsByTagName('kwd-group'):
+            if tag.getAttribute('kwd-group-type') == 'pacs':
+                for code in tag.getElementsByTagName('kwd'):
+                    pacscodes.append(xml_to_text(code))
+        for pacscode in pacscodes:
+            record_add_field(rec, '084', subfields=[('2','PACS'),
+                                                    ('a', pacscode)])
+        subjects = []
+        for tag in self.document.getElementsByTagName('subj-group'):
+            if tag.getAttribute('subj-group-type') == 'toc-minor':
+                for subject in tag.getElementsByTagName('subject'):
+                    subjects.append(xml_to_text(subject))
+        if subjects:
+            record_add_field(rec, '650', ind1='1', ind2='7', subfields=[('2', 'APS'),
+                                                                        ('a', ', '.join(subjects))])
         title = self._get_title()
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
         journal, volume, issue, year, start_date, doi,\
             article_id = self._get_publition_information()
         if start_date:
-            record_add_field(rec, '260', subfields=[('c', start_date)])
+            record_add_field(rec, '260', subfields=[('c', start_date),
+                                                    ('t', 'published')])
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi),
                                                               ('2', 'DOI')])
         authors = self._get_authors()
         first_author = True
         for author in authors:
-            subfields = [('a', author[0]), ('v', author[1])]
+            subfields = [('a', author[0])]
+            if author[1]:
+                subfields.append(('v', author[1]))
+            if author[2]:
+                subfields.append(('m', author[2]))
             if first_author:
                 record_add_field(rec, '100', subfields=subfields)
                 first_author = False

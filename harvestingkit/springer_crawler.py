@@ -21,9 +21,11 @@ import sys
 import urllib2
 import urlparse
 import re
-from os import close, remove
+from os import (close,
+                remove)
 from bs4 import BeautifulSoup
-from invenio.bibrecord import record_add_field, record_xml_output
+from invenio.bibrecord import (record_add_field,
+                               record_xml_output)
 from harvestingkit.minidom_utils import xml_to_text
 from harvestingkit.utils import collapse_initials
 from xml.dom.minidom import parseString

@@ -31,11 +31,16 @@ import itertools
 import datetime
 from xml.dom.minidom import parse
 
-from invenio.search_engine import get_collection_reclist, get_record
-from invenio.config import CFG_LOGDIR, CFG_CROSSREF_USERNAME, CFG_CROSSREF_PASSWORD, CFG_SITE_NAME
+from invenio.search_engine import (get_collection_reclist,
+                                   get_record)
+from invenio.config import (CFG_LOGDIR,
+                            CFG_CROSSREF_USERNAME,
+                            CFG_CROSSREF_PASSWORD,
+                            CFG_SITE_NAME)
 from invenio.dbquery import run_sql
 from invenio.intbitset import intbitset
-from invenio.bibrecord import record_extract_dois, record_get_field_values
+from invenio.bibrecord import (record_extract_dois,
+                               record_get_field_values)
 from os.path import join
 
 CFG_CROSSREF_DOIS_PER_REQUEST = 10
