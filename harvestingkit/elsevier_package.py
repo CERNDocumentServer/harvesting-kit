@@ -55,6 +55,7 @@ from harvestingkit.minidom_utils import (get_value_in_tag,
 from harvestingkit.config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
 from harvestingkit.utils import (fix_journal_name,
                                  format_arxiv_id)
+from unidecode import unidecode
 
 CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
 CFG_ELSEVIER_ART510_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art510.zip')
@@ -288,6 +289,14 @@ class ElsevierPackage(object):
                                     subfields.append(('s', journal))
                             except IndexError:
                                 subfields.append(('s', data))
+                        elif code == 'r':
+                            data = data.replace(u'\u05BE', '-')
+                            data = data.replace(u'\u1806', '-')
+                            data = data.replace(u'\u2E3A', '-')
+                            data = data.replace(u'\u2E3B', '-')
+                            data = unidecode(data)
+                            data = data.replace('--', '-')
+                            subfields.append(('r', data))
                         else:
                             subfields.append((code, data))
                     if label:
@@ -304,6 +313,12 @@ class ElsevierPackage(object):
                     if issue:
                         subfields.append(('n', issue))
                     if ext_link:
+                        ext_link = ext_link.replace(u'\u05BE', '-')
+                        ext_link = ext_link.replace(u'\u1806', '-')
+                        ext_link = ext_link.replace(u'\u2E3A', '-')
+                        ext_link = ext_link.replace(u'\u2E3B', '-')
+                        ext_link = unidecode(ext_link)
+                        ext_link = ext_link.replace('--', '-')
                         subfields.append(('r', ext_link))
                     if title:
                         subfields.append(('t', title))
