@@ -65,13 +65,6 @@ class PosPackage(object):
             print >> sys.stderr, "Can't find language"
             return ''
 
-    def _get_description(self):
-        try:
-            return get_value_in_tag(self.document, 'dc:description')
-        except Exception:
-            print >> sys.stderr, "Can't find description"
-            return ''
-
     def _get_publisher(self):
         try:
             return get_value_in_tag(self.document, 'dc:publisher')
@@ -125,9 +118,6 @@ class PosPackage(object):
         language = self._ge_language()
         if language and language != 'en':
             record_add_field(rec, '041', subfields=[('a', language)])
-        description = self._get_description()
-        if description:
-            record_add_field(rec, '500', subfields=[('a', description)])
         publisher = self._get_publisher()
         if publisher == 'Sissa Medialab':
             publisher = 'SISSA'
@@ -153,7 +143,8 @@ class PosPackage(object):
             record_add_field(rec, '540', subfields=[('a', copyrightt)])
         subject = self._get_subject()
         if subject:
-            record_add_field(rec, '650', ind1='1', ind2='7', subfields=[('a', subject)])
+            record_add_field(rec, '650', ind1='1', ind2='7', subfields=[('a', subject),
+                                                                        ('2', 'PoS')])
         authors = self._get_authors()
         first_author = True
         for author in authors:
