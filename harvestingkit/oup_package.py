@@ -16,6 +16,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+from __future__ import print_function
+
 import sys
 import time
 import traceback
@@ -135,7 +137,7 @@ class OxfordPackage(object):
             self.logger.info("Got package: %s" % (package_name,))
             self.path = self._extract_packages()
         elif not path and not package_name:
-            print "Starting harves"
+            print("Starting harvest")
             self.run()
         self._crawl_oxford_and_find_main_xml()
 
@@ -187,7 +189,7 @@ class OxfordPackage(object):
                     for f in files:
                         self.found_articles.append(join(dirname, f))
 
-                except Exception, err:
+                except Exception as err:
                     register_exception()
                     print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
 
@@ -209,10 +211,10 @@ class OxfordPackage(object):
             for i, path in enumerate(self.found_articles):
                 try:
                     print >> out, nlm_parser.get_record(path, publisher='Oxford', collection='SCOAP3', logger=self.logger)
-                except Exception, err:
+                except Exception as err:
                     print >> sys.stderr, err
                     raise Exception
-                print path, i + 1, "out of", len(self.found_articles)
+                print(path, i + 1, "out of", len(self.found_articles))
             print >> out, "</collection>"
             out.close()
             task_low_level_submission("bibupload", "admin", "-N" "OUP", "-i", "-r", name)
@@ -232,13 +234,13 @@ def main():
             if path_or_package.endswith(".zip"):
                 els = OxfordPackage(package_name=path_or_package)
             else:
-                print "Try passing a ZIP file."
+                print("Try passing a ZIP file.")
                 #els = OxfordPackage(path=path_or_package)
         else:
             els = OxfordPackage()
         els.bibupload_it()
         els.empty_ftp()
-    except Exception, err:
+    except Exception as err:
         register_exception()
         print >> sys.stderr, "ERROR: Exception captured: %s" % err
         traceback.print_exc(file=sys.stdout)

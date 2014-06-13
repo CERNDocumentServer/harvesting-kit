@@ -19,24 +19,16 @@
 
 import re
 import sys
-import time
-import traceback
-
-from os import listdir, rename, fdopen, pardir
 from os.path import (join,
-                     walk,
-                     exists,
-                     abspath)
+                     exists)
 from invenio.bibrecord import (record_add_field,
                                record_xml_output)
-from invenio.errorlib import register_exception
 from harvestingkit.minidom_utils import (get_value_in_tag,
-                                         xml_to_text,
-                                         NoDOIError)
-from harvestingkit.utils import format_arxiv_id
+                                         xml_to_text)
 from xml.dom.minidom import parse
 
 RE_ARXIV_ID = re.compile(r"\d+.\d+")
+
 
 class APPParser(object):
     def __init__(self):
@@ -48,7 +40,7 @@ class APPParser(object):
     def get_title(self, xml):
         try:
             return get_value_in_tag(xml, "ArticleTitle")
-        except Exception as err:
+        except Exception:
             print >> sys.stderr, "Can't find title"
 
     def get_publication_information(self, xml):
@@ -144,7 +136,7 @@ class APPParser(object):
     def get_abstract(self, xml):
         try:
             return get_value_in_tag(xml.getElementsByTagName("Abstract")[0], "Para")
-        except Exception as err:
+        except Exception:
             print >> sys.stderr, "Can't find abstract"
 
     def get_copyright(self, xml):
@@ -163,7 +155,7 @@ class APPParser(object):
         try:
             ref = xml.getElementsByTagName('BodyRef')[0]
             return ref.getAttribute('FileRef').encode('utf-8')
-        except Exception as err:
+        except Exception:
             print >> sys.stderr, "Can't find reference to XML file."
 
     def get_arxiv_id(self, xml):

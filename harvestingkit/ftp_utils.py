@@ -16,6 +16,7 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+from __future__ import print_function
 
 import sys
 import time
@@ -121,7 +122,7 @@ class FtpHandler(object):
                 with open(destination, 'wb') as result:
                     self._ftp.retrbinary('RETR %s' % (source_file,), result.write)
             except error_perm as e:  # source_file is a folder
-                print e
+                print(e)
                 remove(join(target_folder, source_file))
         self._ftp.cwd(self._home)
 
@@ -283,7 +284,7 @@ class FtpHandler(object):
         print >> sys.stdout, "\nGoing to sleep for %i sec." % (sleep_time,)
         time.sleep(sleep_time)
 
-        while sleep_time*i < timeout:
+        while sleep_time * i < timeout:
             for filename in filelist:
                 ref_2.append(self.get_filesize(filename))
             if ref_1 == ref_2:

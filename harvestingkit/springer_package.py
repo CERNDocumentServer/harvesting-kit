@@ -85,17 +85,17 @@ class SpringerPackage(object):
             self.epjc_list.extend(filter(lambda x: ".zip" in x, self.ftp.ls("data/in/EPJC")[0]))
             self.jhep_list.extend(filter(lambda x: ".zip" in x, self.ftp.ls("data/in/JHEP")[0]))
 
-        self.files_list.extend(map(lambda x: "data/in/EPJC/"+x, self.epjc_list))
-        self.files_list.extend(map(lambda x: "data/in/JHEP/"+x, self.jhep_list))
+        self.files_list.extend(map(lambda x: "data/in/EPJC/" + x, self.epjc_list))
+        self.files_list.extend(map(lambda x: "data/in/JHEP/" + x, self.jhep_list))
 
         if new_only:
             tmp_our_dir = []
             try:
-                tmp_our_dir.extend(map(lambda x: "data/in/EPJC/"+x, listdir(join(CFG_TAR_FILES, "data/in/EPJC"))))
+                tmp_our_dir.extend(map(lambda x: "data/in/EPJC/" + x, listdir(join(CFG_TAR_FILES, "data/in/EPJC"))))
             except OSError:  # folders does not exists nothing to do
                 pass
             try:
-                tmp_our_dir.extend(map(lambda x: "data/in/JHEP/"+x, listdir(join(CFG_TAR_FILES, "data/in/JHEP"))))
+                tmp_our_dir.extend(map(lambda x: "data/in/JHEP/" + x, listdir(join(CFG_TAR_FILES, "data/in/JHEP"))))
             except OSError:  # folders does not exists nothing to do
                 pass
             self.files_list = set(self.files_list) - set(tmp_our_dir)
@@ -110,7 +110,7 @@ class SpringerPackage(object):
 
             print >> sys.stdout, "\nDownloading %i tar packages." \
                                  % (len(self.files_list))
-            # Create progrss bar
+            # Create progress bar
             p_bar = progress_bar(len(self.files_list))
             # Print stuff
             sys.stdout.write(p_bar.next())
@@ -147,7 +147,7 @@ class SpringerPackage(object):
             self.logger.info("Got package: %s" % (package_name,))
             self.path = self._extract_packages()
         elif not path and not package_name:
-            print "Starting harvest"
+            print("Starting harvest")
             self.run()
         self._crawl_springer_and_find_main_xml()
 
@@ -190,7 +190,7 @@ class SpringerPackage(object):
         """
         A package contains several subdirectory corresponding to each article.
         An article is actually identified by the existence of a main.pdf and
-        a main.xml in agiven directory.
+        a main.xml in a given directory.
         """
         self.found_articles = []
 
@@ -202,7 +202,7 @@ class SpringerPackage(object):
                 try:
                     # self._normalize_article_dir_with_dtd(dirname)
                     self.found_articles.append(dirname)
-                except Exception, err:
+                except Exception as err:
                     register_exception()
                     print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
 
@@ -281,8 +281,8 @@ class SpringerPackage(object):
                             if ".xml.scoap" in filename:
                                 app_parser = APPParser()
                                 print >> out, app_parser.get_record(join(path, filename), publisher='SISSA', collection='SCOAP3', logger=self.logger)
-                    print path, i + 1, "out of", len(self.found_articles)
-                except Exception, err:
+                    print(path, i + 1, "out of", len(self.found_articles))
+                except Exception as err:
                     register_exception(alert_admin=True)
                     self.logger.error("Error creating record from: %s \n%s" % (join(path, filename), err))
             print >> out, "</collection>"
@@ -301,7 +301,7 @@ def main():
         else:
             els = SpringerPackage()
         els.bibupload_it()
-    except Exception, err:
+    except Exception as err:
         register_exception()
         print >> sys.stderr, "ERROR: Exception captured: %s" % err
         traceback.print_exc(file=sys.stdout)

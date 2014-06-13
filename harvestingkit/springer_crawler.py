@@ -16,6 +16,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+from __future__ import print_function
+
 import getopt
 import sys
 import urllib2
@@ -235,8 +237,8 @@ if __name__ == '__main__':
         elif not args:
             raise getopt.GetoptError("Missing mandatory argument url_to_crawl")
     except getopt.GetoptError as err:
-        print str(err)  # will print something like "option -a not recognized"
-        print usage
+        print(str(err))  # will print something like "option -a not recognized"
+        print(usage)
         sys.exit(2)
     sc = SpringerCrawler()
     url = args[0]
@@ -246,7 +248,7 @@ if __name__ == '__main__':
         try:
             file_fd, outfile = mkstemp('.xml', 'springer_crawler', '.')
             close(file_fd)
-        except IOError, e:
+        except IOError as e:
             try:
                 remove(outfile)
             except Exception:

@@ -137,7 +137,7 @@ class ElsevierPackage(object):
                 ZipFile(self.package_name).extractall(self.path)
             else:
                 raise FileTypeError("It's not a TAR or ZIP archive.")
-        except Exception, err:
+        except Exception as err:
             register_exception(alert_admin=True,
                                prefix="Elsevier error extracting package.")
             self.logger.error("Error extraction package file: %s %s"
@@ -157,7 +157,7 @@ class ElsevierPackage(object):
                 try:
                     self._normalize_article_dir_with_dtd(dirname)
                     self.found_articles.append(dirname)
-                except Exception, err:
+                except Exception as err:
                     register_exception()
                     print("ERROR: can't normalize %s: %s" % (dirname, err))
         else:
@@ -166,7 +166,7 @@ class ElsevierPackage(object):
                     try:
                         self._normalize_article_dir_with_dtd(dirname)
                         self.found_articles.append(dirname)
-                    except Exception, err:
+                    except Exception as err:
                         register_exception()
                         print("ERROR: can't normalize %s: %s" % (dirname, err))
             walk(self.path, visit, None)

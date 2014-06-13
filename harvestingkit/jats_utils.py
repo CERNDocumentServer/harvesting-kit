@@ -80,11 +80,11 @@ class JATSParser(object):
 
         try:
             art = xml.getElementsByTagName('article-meta')[0]
-        except IndexError, err:
+        except IndexError as err:
             register_exception()
             print >> sys.stderr, "ERROR: XML corrupted: %s" % err
             pass
-        except Exception, err:
+        except Exception as err:
             register_exception()
             print >> sys.stderr, "ERROR: Exception captured: %s" % err
             pass

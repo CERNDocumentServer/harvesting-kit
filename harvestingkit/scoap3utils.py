@@ -137,7 +137,7 @@ def create_logger(publisher, filename=join(CFG_LOGDIR, 'scoap3_harvesting.log'))
 def progress_bar(n):
     num = 0
     while num <= n:
-        yield "\r%d%% [%s%s]" % (num/n*100, "="*num, '.'*(n-num))
+        yield "\r%d%% [%s%s]" % (num / n * 100, "=" * num, '.' * (n - num))
         num += 1
 
 
