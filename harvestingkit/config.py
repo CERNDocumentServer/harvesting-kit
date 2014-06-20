@@ -22,6 +22,7 @@ Basic config for Harvesting Kit.
 """
 
 import os
+import warnings
 from sys import executable
 
 from invenio.config import CFG_ETCDIR
@@ -36,8 +37,7 @@ def _get_config_environment_variable():
 
 def _get_current_virtualenv():
     path = executable.split(os.sep)
-    index = path.index('.virtualenvs')
-    return os.sep.join(path[:index+2])
+    return os.sep.join(path[:-2])
 
 
 CFG_DTDS_PATH = os.path.join(CFG_ETCDIR, 'harvestingdtds')
@@ -46,15 +46,14 @@ CFG_POSSIBLE_CONFIG_PATHS = [_get_config_environment_variable(),
                              (_get_current_virtualenv()
                               + '/var/harvestingkit/user_config.cfg'),
                              '/etc/harvestingkit/user_config.cfg']
-CFG_CONFIG_PATH = ''
-
+CFG_CONFIG_PATH = '../user_config.cfg'
 
 for loc in CFG_POSSIBLE_CONFIG_PATHS:
     if os.path.exists(loc):
         CFG_CONFIG_PATH = loc
         break
 else:
-    raise ValueError('Could not find config.cfg')
+    warnings.warn("Could not find config.cfg")
 
 CFG_FTP_CONNECTION_ATTEMPTS = 3
 CFG_FTP_TIMEOUT_SLEEP_DURATION = 2

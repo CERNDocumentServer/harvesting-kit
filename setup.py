@@ -18,34 +18,14 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 import os
-import sys
-import shutil
 
 from setuptools import setup, find_packages
 
-from invenio.config import CFG_ETCDIR, CFG_PYLIBDIR 
-from harvestingkit.config import CFG_POSSIBLE_CONFIG_PATHS, CFG_DTDS_PATH
+from invenio.config import CFG_PYLIBDIR
+from harvestingkit.config import CFG_DTDS_PATH
 
 
 bibtasklet_path = os.path.join(CFG_PYLIBDIR, 'invenio', 'bibsched_tasklets')
-
-
-def _copy_config_to_desired_location():
-    for loc in CFG_POSSIBLE_CONFIG_PATHS:
-        print loc
-        try:
-            if not os.path.exists(os.path.dirname(loc)):
-                os.makedirs(os.path.dirname(loc))
-                shutil.copyfile('user_config.cfg', loc)
-            break
-        except (OSError, IOError, ValueError) as e:
-            print e 
-    else:
-        print "Couldn't copy the config file."
-        sys.exit(-1)
-
-
-_copy_config_to_desired_location()
 
 with open('requirements.txt', 'r') as req:
     requirements = req.readlines()
