@@ -83,7 +83,8 @@ class ElsevierPackage(object):
     constructor, in this case the Elsevier server will be harvested.
     """
     def __init__(self, package_name=None, path=None,
-                 run_locally=False, CONSYN=False):
+                 run_locally=False, CONSYN=False,
+                 journal_mappings=None):
         self.CONSYN = CONSYN
         try:
             self.logger = create_logger("Elsevier")
@@ -95,7 +96,10 @@ class ElsevierPackage(object):
             self.error = print
             self.debug = print
         if self.CONSYN:
-            self._build_journal_mappings()
+            if journal_mappings:
+                self.journal_mappings = journal_mappings
+            else:
+                self._build_journal_mappings()
         else:
             self.package_name = package_name
             self.path = path
@@ -446,7 +450,10 @@ class ElsevierPackage(object):
 
     def get_copyright(self, xml_doc):
         try:
-            return get_value_in_tag(xml_doc, "ce:copyright")
+            copyright = get_value_in_tag(xml_doc, "ce:copyright")
+            if not copyright:
+                copyright = get_value_in_tag(xml_doc, "prism:copyright")
+            return copyright
         except Exception:
             print("Can't find copyright", file=sys.stderr)
 
@@ -624,6 +631,7 @@ class ElsevierPackage(object):
         isjournal = ref.getElementsByTagName("sb:issue")
         journal = ""
         if isjournal:
+            isjournal = True
             if not page:
                 page = comment
             container = ref.getElementsByTagName("sb:issue")[0]

@@ -33,6 +33,7 @@ with open('requirements.txt', 'r') as req:
 setup(name="HarvestingKit",
       version="0.1",
       packages=find_packages(),
+      package_data={'': ['data/*.xml']},
       data_files=[(bibtasklet_path, ["bibtasklets/bst_elsevier.py",
                                      "bibtasklets/bst_oxford.py",
                                      "bibtasklets/bst_springer.py"]),
