@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "JATS-journalpublishing1.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" article-type="research-article" dtd-version="1.0" xml:lang="en">
+  <front>
+    <!-- À placer dans le répertoire contenant les issues de la revue :
+le chemin est : ../../issue_meta.xml 
+par rapport aux fichiers de l'article
+-->
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">aa</journal-id>
+      <journal-title-group>
+        <journal-title>Astronomy &amp; Astrophysics</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">A&amp;A</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">0004-6361</issn>
+      <issn pub-type="epub">1432-0746</issn>
+      <publisher>
+        <publisher-name>EDP Sciences</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="doi">10.1051/0004-6361/201423985</article-id>
+      <article-id pub-id-type="publisher-id">aa23985-14</article-id><article-id pub-id-type="other">2014A%26A...565L...9K</article-id>
+      <article-categories>
+        <subj-group subj-group-type="section" xml:lang="en">
+          <subject content-type="1">Letters</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title xml:lang="en">A hidden reservoir of Fe/FeS in interstellar silicates?</article-title>
+      </title-group>
+      <contrib-group content-type="authors">
+        <contrib contrib-type="author">
+          <name>
+            <surname>Krause</surname><given-names>Martin</given-names>
+          </name>
+          <xref ref-type="aff" rid="AFF1">1</xref>
+          <xref ref-type="aff" rid="AFF2">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Köhler</surname><given-names>M.</given-names>
+          </name>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Jones</surname><given-names>A.</given-names>
+          </name>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Ysard</surname><given-names>N.</given-names>
+          </name>
+        </contrib>
+        <aff id="AFF1"><label>1</label><addr-line><institution>Max-Planck-Institut für extraterrestrische Physik</institution>, <named-content content-type="street">Giessenbachstr. 1</named-content>, <named-content content-type="postcode">85741</named-content> <named-content content-type="city">Garching</named-content>, <country>Germany</country></addr-line><xref ref-type="fn" rid="FN2"/>
+ </aff>
+        <aff id="AFF2"><label>2</label><addr-line><institution>Excellence Cluster Universe, Technische Universität München</institution>, <named-content content-type="street">Boltzmannstrasse 2</named-content>, <named-content content-type="postcode">85748</named-content> <named-content content-type="city">Garching</named-content>, <country>Germany</country></addr-line>
+ </aff>
+        <aff id="AFF1"><addr-line><institution>Institut d’Astrophysique Spatiale (IAS), Université Paris-Sud &amp; CNRS</institution>, <named-content content-type="street">Bât. 121</named-content>, <named-content content-type="postcode">91405</named-content> <named-content content-type="city">Orsay</named-content>, <country>France</country></addr-line><xref ref-type="fn" rid="FN1"/>
+ </aff>
+      </contrib-group>
+<license license-type="open-access">
+<license-p>This is an Open Access article distributed under the terms of the <ext-link ext-link-type="uri" xlink:href="http://creativecommons.org/licenses/by/2.0/">Creative Commons Attribution License 2.0</ext-link>, which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.</license-p></license>
+      <author-notes>
+        <fn id="FN1">
+          <p>
+            e-mail: <email>mkoehler@ias.u-psud.fr
+            </email>
+          </p>
+        </fn>
+      </author-notes><pub-date pub-type="final"><day>23</day><month>05</month><year>2014</year></pub-date><pub-date pub-type="epub"><day>23</day><month>05</month><year>2014</year></pub-date>
+      <!-- à changer tous les ans !! -->
+      <pub-date pub-type="ppub">
+        <month>5</month>
+        <year>2014</year>
+      </pub-date>
+      <volume>565</volume><issue-id pub-id-type="publisher-id">aa/2014/05</issue-id><elocation-id>L9</elocation-id>
+      <history><date date-type="received"><day>14</day><month>4</month><year>2014</year></date><date date-type="accepted"><day>8</day><month>5</month><year>2014</year></date></history>
+      <permissions>
+        <copyright-statement>© ESO, 2014</copyright-statement>
+        <copyright-year>2014</copyright-year>
+        <copyright-holder>ESO</copyright-holder>
+      </permissions>
+      <abstract xml:lang="en">
+        <p><italic>Context. </italic>The depletion of iron and sulphur into dust in the interstellar medium and the exact nature of interstellar amorphous silicate grains is still an open question.</p>
+        <p><italic>Aims. </italic>We study the incorporation of iron and sulphur into amorphous silicates of olivine- and pyroxene-types and their effects on the dust spectroscopy and thermal emission.</p>
+        <p><italic>Methods. </italic>We used the Maxwell-Garnett effective-medium theory to construct the optical constants for a mixture of silicates, metallic iron, and iron sulphide. We also studied the effects of iron and iron sulphide in aggregate grains.</p>
+        <p><italic>Results. </italic>Iron sulphide inclusions within amorphous silicates that contain iron metal inclusions show no strong differences in the optical properties of the grains. A mix of amorphous olivine- and pyroxene-type silicate broadens the silicate features. An amorphous carbon mantle with a thickness of 10 nm on the silicate grains leads to an increase in absorption on the short-wavelength side of the 10 <inline-formula specific-use="simple-math"><italic>μ</italic></inline-formula>m silicate band.</p>
+        <p><italic>Conclusions. </italic>The assumption of amorphous olivine-type and pyroxene-type silicates and a 10 nm thick amorphous carbon mantle better matches the interstellar silicate band profiles. Including iron nano-particles leads to an increase in the mid-IR extinction, while up to 5 ppm of sulphur can be incorporated as Fe/FeS nano inclusions into silicate grains without leaving a significant trace of its presence.</p>
+      </abstract>
+      <kwd-group xml:lang="en">
+        <kwd>dust, extinction</kwd><kwd>ISM: abundances</kwd>
+      </kwd-group>
+      <counts>
+        <fig-count count="5"/>
+        <ref-count count="37"/>
+      <page-count count="4"/></counts>
+      <custom-meta-group>
+        <custom-meta>
+          <meta-name>idline</meta-name>
+          <meta-value>A&amp;A 565, L9 (2014)</meta-value>
+        </custom-meta>
+        <custom-meta>
+          <meta-name>cover_date</meta-name>
+          <meta-value>May 2014</meta-value>
+        </custom-meta>
+        <custom-meta>
+          <meta-name>first_month</meta-name>
+          <meta-value>5</meta-value>
+        </custom-meta>
+        <custom-meta>
+          <meta-name>last_month</meta-name>
+          <meta-value>5</meta-value>
+        </custom-meta>
+        <custom-meta>
+          <meta-name>first_year</meta-name>
+          <meta-value>2014</meta-value>
+        </custom-meta>
+        <custom-meta>
+          <meta-name>last_year</meta-name>
+          <meta-value>2014</meta-value>
+        </custom-meta>
+      </custom-meta-group>
+    </article-meta>
+  </front>
+  
+  <back>
+    
+    <ack>
+      <p>The authors would like to thank Julia Lee, U. J. Sofia, Katharina Lodders, and Ed Jenkins for interesting discussions on Fe and S in dust. This research acknowledges support from the French Agence Nationale de la Recherche (ANR) through the program “CIMMES” (ANR-11-BS56-0029). </p>
+    </ack>
+    <ref-list>
+      <title>References</title>
+      <!--LaTeX original ID: bohren-huffman-1983-->
+      <ref id="R1">
+        <mixed-citation publication-type="other">  Bohren, C., &amp; Huffman, D. 1983, Absorption and Scattering of Light by Small Particles (New York: Wiley and Sons) </mixed-citation>
+      </ref>
+      <!--LaTeX original ID: bradley-1994-->
+      <ref id="R2">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Bradley</surname>, <given-names>J. P.</given-names></string-name> <year>1994</year>, <source>Science</source>, <volume>265</volume>, <fpage>925</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: caselli-et-al-1994-->
+      <ref id="R3">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Caselli</surname>, <given-names>P.</given-names></string-name>, <string-name><surname>Hasegawa</surname>, <given-names>T. I.</given-names></string-name>, &amp; <string-name><surname>Herbst</surname>, <given-names>E.</given-names></string-name> <year>1994</year>, <source>ApJ</source>, <volume>421</volume>, <fpage>206</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: chiar-tielens-2006-->
+      <ref id="R4">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Chiar</surname>, <given-names>J. E.</given-names></string-name>, &amp; <string-name><surname>Tielens</surname>, <given-names>A. G. G. M.</given-names></string-name> <year>2006</year>, <source>ApJ</source>, <volume>637</volume>, <fpage>774</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: compiegne-et-al-2011-->
+      <ref id="R5">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Compiègne</surname>, <given-names>M.</given-names></string-name>, <string-name><surname>Verstraete</surname>, <given-names>L.</given-names></string-name>, <string-name><surname>Jones</surname>, <given-names>A.</given-names></string-name>, <etal>et al.</etal> <year>2011</year>, <source>A&amp;A</source>, <volume>525</volume>, <fpage>A103</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: constantini-et-al-2005-->
+      <ref id="R6">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Costantini</surname>, <given-names>E.</given-names></string-name>, <string-name><surname>Freyberg</surname>, <given-names>M. J.</given-names></string-name>, &amp; <string-name><surname>Predehl</surname>, <given-names>P.</given-names></string-name> <year>2005</year>, <source>A&amp;A</source>, <volume>444</volume>, <fpage>187</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: davoisne-et-al-2006-->
+      <ref id="R7">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Davoisne</surname>, <given-names>C.</given-names></string-name>, <string-name><surname>Djouadi</surname>, <given-names>Z.</given-names></string-name>, <string-name><surname>Leroux</surname>, <given-names>H.</given-names></string-name>, <etal>et al.</etal> <year>2006</year>, <source>A&amp;A</source>, <volume>448</volume>, <fpage>L1</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: demyk-et-al-2001-->
+      <ref id="R8">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Demyk</surname>, <given-names>K.</given-names></string-name>, <string-name><surname>Carrez</surname>, <given-names>P.</given-names></string-name>, <string-name><surname>Leroux</surname>, <given-names>H.</given-names></string-name>, <etal>et al.</etal> <year>2001</year>, <source>A&amp;A</source>, <volume>368</volume>, <fpage>L38</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: djouadi-et-al-2007-->
+      <ref id="R9">
+        
+        <mixed-citation publication-type="journal"> <string-name><surname>Djouadi</surname>, <given-names>Z.</given-names></string-name>, <string-name><surname>Gattacceca</surname>, <given-names>J.</given-names></string-name>, <string-name><surname>D’Hendecourt</surname>, <given-names>L.</given-names></string-name>, <etal>et al.</etal> <year>2007</year>, <source>A&amp;A</source>, <volume>468</volume>, <fpage>L9</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: draine-1988-->
+      <ref id="R10">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Draine</surname>, <given-names>B.</given-names></string-name> <year>1988</year>, <source>ApJ</source>, <volume>333</volume>, <fpage>848</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: draine-flatau-2010-->
+      <ref id="R11">
+        <mixed-citation publication-type="other">  Draine, B. T., &amp; Flatau, P. J. 2010, unpublished [<ext-link ext-link-type="uri" xlink:href="http://arxiv.org/abs/1002.1505">arXiv:1002.1505</ext-link>] </mixed-citation>
+      </ref>
+      <!--LaTeX original ID: jenkins-2009-->
+      <ref id="R12">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Jenkins</surname>, <given-names>E. B.</given-names></string-name> <year>2009</year>, <source>ApJ</source>, <volume>700</volume>, <fpage>1299</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: jones-2000-->
+      <ref id="R13">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Jones</surname>, <given-names>A. P.</given-names></string-name> <year>2000</year>, <source>J. Geophys. Res.</source>, <volume>105</volume>, <fpage>10257</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: jones-2011-->
+      <ref id="R14">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Jones</surname>, <given-names>A. P.</given-names></string-name> <year>2011</year>, <source>A&amp;A</source>, <volume>528</volume>, <fpage>A98</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: jones-spitzer-1967-->
+      <ref id="R15">
+        
+        <mixed-citation publication-type="journal"> <string-name><surname>Jones</surname>, <given-names>R. V.</given-names></string-name>, &amp; <string-name><surname>Spitzer</surname>, <suffix>Jr.</suffix>, <given-names>L.</given-names></string-name> <year>1967</year>, <source>ApJ</source>, <volume>147</volume>, <fpage>943</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: jones-et-al-2013-->
+      <ref id="R16">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Jones</surname>, <given-names>A. P.</given-names></string-name>, <string-name><surname>Fanciullo</surname>, <given-names>L.</given-names></string-name>, <string-name><surname>Köhler</surname>, <given-names>M.</given-names></string-name>, <etal>et al.</etal> <year>2013</year>, <source>A&amp;A</source>, <volume>558</volume>, <fpage>A62</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: joseph-et-al-1986-->
+      <ref id="R17">
+        
+        <mixed-citation publication-type="journal"> <string-name><surname>Joseph</surname>, <given-names>C. L.</given-names></string-name>, <string-name><surname>Snow</surname>, <suffix>Jr.</suffix>, <given-names>T. P.</given-names></string-name>, <string-name><surname>Seab</surname>, <given-names>C. G.</given-names></string-name>, &amp; <string-name><surname>Crutcher</surname>, <given-names>R. M.</given-names></string-name> <year>1986</year>, <source>ApJ</source>, <volume>309</volume>, <fpage>771</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: keller-et-al-2002-->
+      <ref id="R18">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Keller</surname>, <given-names>L. P.</given-names></string-name>, <string-name><surname>Hony</surname>, <given-names>S.</given-names></string-name>, <string-name><surname>Bradley</surname>, <given-names>J. P.</given-names></string-name>, <etal>et al.</etal> <year>2002</year>, <source>Nature</source>, <volume>417</volume>, <fpage>148</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: leroux-et-al-2009-->
+      <ref id="R19">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Leroux</surname>, <given-names>H.</given-names></string-name>, <string-name><surname>Roskosz</surname>, <given-names>M.</given-names></string-name>, &amp; <string-name><surname>Jacob</surname>, <given-names>D.</given-names></string-name> <year>2009</year>, <source>Geochim. Cosmochim. Acta</source>, <volume>73</volume>, <fpage>767</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: mathis-1990-->
+      <ref id="R20">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Mathis</surname>, <given-names>J. S.</given-names></string-name> <year>1990</year>, <source>ARA&amp;A</source>, <volume>28</volume>, <fpage>37</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: mcclure-2009-->
+      <ref id="R21">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>McClure</surname>, <given-names>M.</given-names></string-name> <year>2009</year>, <source>ApJ</source>, <volume>693</volume>, <fpage>L81</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: millar-herbst-1990-->
+      <ref id="R22">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Millar</surname>, <given-names>T. J.</given-names></string-name>, &amp; <string-name><surname>Herbst</surname>, <given-names>E.</given-names></string-name> <year>1990</year>, <source>A&amp;A</source>, <volume>231</volume>, <fpage>466</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: min-et-al-2007-->
+      <ref id="R23">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Min</surname>, <given-names>M.</given-names></string-name>, <string-name><surname>Waters</surname>, <given-names>L. B. F. M.</given-names></string-name>, <string-name><surname>de Koter</surname>, <given-names>A.</given-names></string-name>, <etal>et al.</etal> <year>2007</year>, <source>A&amp;A</source>, <volume>462</volume>, <fpage>667</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: nguyen-et-al-2007-->
+      <ref id="R24">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Nguyen</surname>, <given-names>A. N.</given-names></string-name>, <string-name><surname>Stadermann</surname>, <given-names>F. J.</given-names></string-name>, <string-name><surname>Zinner</surname>, <given-names>E.</given-names></string-name>, <etal>et al.</etal> <year>2007</year>, <source>ApJ</source>, <volume>656</volume>, <fpage>1223</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: ordal-et-al-1985-->
+      <ref id="R25">
+        
+        <mixed-citation publication-type="journal"> <string-name><surname>Ordal</surname>, <given-names>M. A.</given-names></string-name>, <string-name><surname>Bell</surname>, <given-names>R. J.</given-names></string-name>, <string-name><surname>Alexander</surname>, <suffix>Jr.</suffix>, <given-names>R. W.</given-names></string-name>, <string-name><surname>Long</surname>, <given-names>L. L.</given-names></string-name>, &amp; <string-name><surname>Querry</surname>, <given-names>M. R.</given-names></string-name> <year>1985</year>, <source>Applied Optics</source>, <volume>24</volume>, <fpage>4493</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: ordal-et-al-1988-->
+      <ref id="R26">
+        
+        <mixed-citation publication-type="journal"> <string-name><surname>Ordal</surname>, <given-names>M. A.</given-names></string-name>, <string-name><surname>Bell</surname>, <given-names>R. J.</given-names></string-name>, <string-name><surname>Alexander</surname>, <suffix>Jr.</suffix>, <given-names>R. W.</given-names></string-name>, <string-name><surname>Newquist</surname>, <given-names>L. A.</given-names></string-name>, &amp; <string-name><surname>Querry</surname>, <given-names>M. R.</given-names></string-name> <year>1988</year>, <source>Applied Optics</source>, <volume>27</volume>, <fpage>1203</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: planck-XI-2013-->
+      <ref id="R27">
+        <mixed-citation publication-type="other">  Planck Collaboration XI 2014, A&amp;A, in press [<ext-link ext-link-type="uri" xlink:href="http://arxiv.org/abs/1312.1300">arXiv:1312.1300</ext-link>] </mixed-citation>
+      </ref>
+      <!--LaTeX original ID: pollack-et-al-1994-->
+      <ref id="R28">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Pollack</surname>, <given-names>J. B.</given-names></string-name>, <string-name><surname>Hollenbach</surname>, <given-names>D.</given-names></string-name>, <string-name><surname>Beckwith</surname>, <given-names>S.</given-names></string-name>, <etal>et al.</etal> <year>1994</year>, <source>ApJ</source>, <volume>421</volume>, <fpage>615</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: purcell-pennypacker-1973-->
+      <ref id="R29">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Purcell</surname>, <given-names>E. M.</given-names></string-name>, &amp; <string-name><surname>Pennypacker</surname>, <given-names>C. R.</given-names></string-name> <year>1973</year>, <source>ApJ</source>, <volume>186</volume>, <fpage>705</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: rieke-lebofsky-1986-->
+      <ref id="R30">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Rieke</surname>, <given-names>G. H.</given-names></string-name>, &amp; <string-name><surname>Lebofsky</surname>, <given-names>M. J.</given-names></string-name> <year>1985</year>, <source>ApJ</source>, <volume>288</volume>, <fpage>618</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: roskosz-et-al-2011-->
+      <ref id="R31">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Roskosz</surname>, <given-names>M.</given-names></string-name>, <string-name><surname>Gillot</surname>, <given-names>J.</given-names></string-name>, <string-name><surname>Capet</surname>, <given-names>F.</given-names></string-name>, <string-name><surname>Roussel</surname>, <given-names>P.</given-names></string-name>, &amp; <string-name><surname>Leroux</surname>, <given-names>H.</given-names></string-name> <year>2011</year>, <source>A&amp;A</source>, <volume>529</volume>, <fpage>A111</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: savage-bohlin-1979-->
+      <ref id="R32">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Savage</surname>, <given-names>B. D.</given-names></string-name>, &amp; <string-name><surname>Bohlin</surname>, <given-names>R. C.</given-names></string-name> <year>1979</year>, <source>ApJ</source>, <volume>229</volume>, <fpage>136</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: savage-mathis-1979-->
+      <ref id="R33">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Savage</surname>, <given-names>B. D.</given-names></string-name>, &amp; <string-name><surname>Mathis</surname>, <given-names>J. S.</given-names></string-name> <year>1979</year>, <source>ARA&amp;A</source>, <volume>17</volume>, <fpage>73</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: scott-duley-1996-->
+      <ref id="R34">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Scott</surname>, <given-names>A.</given-names></string-name>, &amp; <string-name><surname>Duley</surname>, <given-names>W. W.</given-names></string-name> <year>1996</year>, <source>ApJS</source>, <volume>105</volume>, <fpage>401</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: sofia-joseph-1995-->
+      <ref id="R35">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Sofia</surname>, <given-names>U. J.</given-names></string-name>, &amp; <string-name><surname>Joseph</surname>, <given-names>C. L.</given-names></string-name> <year>1995</year>, <article-title>in American Astronomical Society Meeting Abstracts #186</article-title>, <source>BAAS</source>, <volume>27</volume>, <fpage>860</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: ueda-et-al-2005-->
+      <ref id="R36">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Ueda</surname>, <given-names>Y.</given-names></string-name>, <string-name><surname>Mitsuda</surname>, <given-names>K.</given-names></string-name>, <string-name><surname>Murakami</surname>, <given-names>H.</given-names></string-name>, &amp; <string-name><surname>Matsushita</surname>, <given-names>K.</given-names></string-name> <year>2005</year>, <source>ApJ</source>, <volume>620</volume>, <fpage>274</fpage> </mixed-citation></ref>
+      <!--LaTeX original ID: xiang-et-al-2011-->
+      <ref id="R37">
+        
+      <mixed-citation publication-type="journal"><string-name><surname>Xiang</surname>, <given-names>J.</given-names></string-name>, <string-name><surname>Lee</surname>, <given-names>J. C.</given-names></string-name>, <string-name><surname>Nowak</surname>, <given-names>M. A.</given-names></string-name>, &amp; <string-name><surname>Wilms</surname>, <given-names>J.</given-names></string-name> <year>2011</year>, <source>ApJ</source>, <volume>738</volume>, <fpage>78</fpage> </mixed-citation></ref>
+    </ref-list>
+  </back>
+</article>
