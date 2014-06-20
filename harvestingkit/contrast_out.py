@@ -18,6 +18,10 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 import sys
+import time
+
+from socket import timeout as socket_timeout_exception
+
 from os import listdir
 from os.path import (join,
                      walk)
@@ -36,18 +40,26 @@ from invenio.config import (CFG_TMPSHAREDDIR, CFG_PREFIX)
 try:
     from invenio.config import CFG_CONTRASTOUT_DOWNLOADDIR
 except ImportError:
-    CFG_CONTRASTOUT_DOWNLOADDIR = join(CFG_PREFIX, "var", "data" "scoap3" "elsevier")
+    CFG_CONTRASTOUT_DOWNLOADDIR = join(CFG_PREFIX, "var", "data",
+                                       "scoap3", "elsevier")
 
 from invenio.errorlib import register_exception
 
-from harvestingkit.scoap3utils import (MD5Error,
-                                       NoNewFiles,
-                                       FileTypeError,
-                                       progress_bar)
-from harvestingkit.contrast_out_utils import (contrast_out_cmp,
-                                              find_package_name)
-from harvestingkit.minidom_utils import xml_to_text
-from harvestingkit.ftp_utils import FtpHandler
+from .ftp_utils import FtpHandler
+from .scoap3utils import (MD5Error,
+                          NoNewFiles,
+                          FileTypeError,
+                          LoginException,
+                          MissingTagException)
+from .contrast_out_utils import (contrast_out_cmp,
+                                 find_package_name)
+from .minidom_utils import xml_to_text
+
+from configparser import load_config
+
+from .config import (CFG_CONFIG_PATH,
+                     CFG_FTP_CONNECTION_ATTEMPTS,
+                     CFG_FTP_TIMEOUT_SLEEP_DURATION)
 
 CFG_READY_PACKAGES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "ready_pkgs")
 CFG_TAR_FILES = join(CFG_CONTRASTOUT_DOWNLOADDIR, "tar_files")
@@ -66,15 +78,31 @@ class ContrastOutConnector(object):
         self.path_r_pkg = []
         self.logger = logger
 
+        self.config = load_config(CFG_CONFIG_PATH, {'ELSEVIER': []})
+
     def connect(self):
-        """Logs into the specified FTP server and returns connector."""
-        try:
-            self.ftp = FtpHandler(CFG_CONTRAST_OUT_URL, CFG_CONTRAST_OUT_LOGIN, CFG_CONTRAST_OUT_PASSWORD)
-            self.logger.debug("Successful connection to the Elsevier server")
-        except Exception as err:
-            print err
-            self.logger.error("Failed to connect to the Elsevier server. %s" % (err,))
-            raise Exception
+        """Logs into the specified ftp server and returns connector."""
+        for tried_connection_count in range(CFG_FTP_CONNECTION_ATTEMPTS):
+            try:
+                self.ftp = FtpHandler(self.config.ELSEVIER.URL,
+                                      self.config.ELSEVIER.LOGIN,
+                                      self.config.ELSEVIER.PASSWORD)
+                self.logger.debug(('Successful connection to the '
+                                   'Elsevier server'))
+                return
+            except socket_timeout_exception as err:
+                self.logger.error(('Failed to connect %d of %d times. '
+                                   'Will sleep for %d seconds and try again.')
+                                  % (tried_connection_count+1,
+                                     CFG_FTP_CONNECTION_ATTEMPTS,
+                                     CFG_FTP_TIMEOUT_SLEEP_DURATION))
+                time.sleep(CFG_FTP_TIMEOUT_SLEEP_DURATION)
+            except Exception as err:
+                self.logger.error(('Failed to connect to the '
+                                   'Elsevier server. %s') % (err,))
+                break
+
+        raise LoginException(err)
 
     def _get_file_listing(self, phrase=None, new_only=True):
         if phrase:
@@ -82,59 +110,51 @@ class ContrastOutConnector(object):
         else:
             self.files_list = self.ftp.ls()[0]
         if new_only:
-            self.files_list = set(self.files_list) - set(listdir(CFG_READY_PACKAGES))
+            self.files_list = (set(self.files_list)
+                               - set(listdir(CFG_READY_PACKAGES)))
 
         return self.files_list
 
     def _download_file_listing(self):
         if self.files_list:
             # Prints stuff
-            print >> sys.stdout, "\nDownloading %i \".ready\" files." % (len(self.files_list))
-            # Create progress bar
-            p_bar = progress_bar(len(self.files_list))
-            # Print stuff
-            sys.stdout.write(p_bar.next())
-            sys.stdout.flush()
+            print("Downloading %i \".ready\" files." % (len(self.files_list)))
+            # Create progrss bar
+            total_count = len(self.files_list)
 
-            for filename in self.files_list:
-                self.logger.info("Downloading: %s" % (filename,))
+            for i, filename in enumerate(self.files_list, start=1):
+                self.logger.info("Downloading %s of %s: %s"
+                                 % (i, total_count, filename,))
                 pkg_path = join(CFG_READY_PACKAGES, filename)
                 self.path_r_pkg.append(pkg_path)
                 try:
-                    self.ftp.download(filename, pkg_path)
+                    self.ftp.download(filename, CFG_READY_PACKAGES)
                 except:
-                    self.logger.error("Error downloading file: %s" % (filename,))
-                    print >> sys.stdout, "\nError downloading %s file!" % (filename,)
-                    print >> sys.stdout, sys.exc_info()
-                # Print stuff
-                sys.stdout.write(p_bar.next())
-                sys.stdout.flush()
-            return self.path_r_pkg
+                    error_msg = "Error downloading file %s of %s: %s"
+                    self.logger.error(error_msg % (i, total_count,
+                                                   filename,))
+                    print(sys.exc_info())
         else:
-            print >> sys.stdout, "No new packages to download."
             self.logger.info("No new packages to download.")
             raise NoNewFiles
 
     def _get_packages(self):
         # Prints stuff
-        print >> sys.stdout, "\nRetrieving packages names."
-        # Create progress bar
-        p_bar = progress_bar(len(self.files_list))
-        # Print stuff
-        sys.stdout.write(p_bar.next())
-        sys.stdout.flush()
+        print("Retrieving packages names.")
+        # Create progrss bar
+        total_count = len(self.files_list)
 
-        for pack in self.path_r_pkg:
-            self.logger.info("Retrieved package name: %s" % (pack,))
+        for i, pack in enumerate(self.path_r_pkg, start=1):
+            self.logger.info("Retrieved package name %s of %s: %s"
+                             % (i, total_count, pack,))
             pack_xml = parse(pack)
-            package_file = pack_xml.getElementsByTagName('dataset-package-file')
+            package_file = (pack_xml
+                            .getElementsByTagName('dataset-package-file'))
             for pf in package_file:
                 filename = pf.getElementsByTagName('filename')[0]
                 md5_val = pf.getElementsByTagName('md5')[0]
-                self.retrieved_packages[xml_to_text(filename)] = xml_to_text(md5_val)
-             # Print stuff
-            sys.stdout.write(p_bar.next())
-            sys.stdout.flush()
+                package_key = xml_to_text(filename)
+                self.retrieved_packages[package_key] = xml_to_text(md5_val)
 
         return self.retrieved_packages
 
@@ -142,28 +162,24 @@ class ContrastOutConnector(object):
         if check_integrity:
             self.ftp.check_pkgs_integrity(self.retrieved_packages, self.logger)
 
-        print >> sys.stdout, "\nDownloading %i tar packages." \
-                             % (len(self.retrieved_packages))
-        # Create progress bar
-        p_bar = progress_bar(len(self.files_list))
-        # Print stuff
-        sys.stdout.write(p_bar.next())
-        sys.stdout.flush()
+        print("Downloading %i tar packages." % (len(self.retrieved_packages)))
+        # Create progrss bar
+        total_count = len(self.files_list)
 
-        for filename in self.retrieved_packages.iterkeys():
-            self.logger.info("Downloading tar package: %s" % (filename,))
+        for i, filename in enumerate(self.retrieved_packages.iterkeys(),
+                                     start=1):
+            self.logger.info("Downloading tar package %s of %s: %s"
+                             % (i, total_count, filename,))
             unpack_path = join(CFG_TAR_FILES, filename)
             self.retrieved_packages_unpacked.append(unpack_path)
             try:
-                self.ftp.download(filename, unpack_path)
+                self.ftp.download(filename, CFG_TAR_FILES)
             except:
-                register_exception(alert_admin=True, prefix="Elsevier package download failed.")
-                self.logger.error("Error downloading tar file: %s" % (filename,))
-                print >> sys.stdout, "\nError downloading %s file!" % (filename,)
-                print >> sys.stdout, sys.exc_info()
-            # Print stuff
-            sys.stdout.write(p_bar.next())
-            sys.stdout.flush()
+                register_exception(alert_admin=True,
+                                   prefix="Elsevier package download faild.")
+                self.logger.error("Error downloading tar file %s of %s: %s"
+                                  % (i, total_count, filename,))
+                print(sys.exc_info())
 
         return self.retrieved_packages_unpacked
 
@@ -171,21 +187,24 @@ class ContrastOutConnector(object):
         import hashlib
 
         for filename, md5 in self.retrieved_packages.iteritems():
-            our_md5 = hashlib.md5(open(join(CFG_TAR_FILES, filename)).read()).hexdigest()
+            our_md5 = hashlib.md5(open(join(CFG_TAR_FILES, filename))
+                                  .read()).hexdigest()
             try:
                 if our_md5 != md5:
                     raise MD5Error(filename)
             except MD5Error:
-                register_exception(alert_admin=True, prefix="Elsevier MD5 error.")
-                self.logger.error("MD5 error: %s" % (filename,))
-                print >> sys.stdout, "\nError in MD5 of %s" % (filename,)
-                print >> sys.stdout, "original: %s, ours: %s" % (md5, our_md5)
+                register_exception(alert_admin=True,
+                                   prefix="Elsevier MD5 error.")
+                self.logger.error(("MD5 error: %s\n"
+                                   "Original: %s, Ours: %s")
+                                  % (filename, md5, our_md5,))
 
     def _extract_packages(self):
         """
         Extract a package in a new temporary directory.
         """
-        self.path_unpacked = mkdtemp(prefix="scoap3_package_", dir=CFG_TMPSHAREDDIR)
+        self.path_unpacked = mkdtemp(prefix="scoap3_package_",
+                                     dir=CFG_TMPSHAREDDIR)
         for path in self.retrieved_packages_unpacked:
             try:
                 if ".tar" in path:
@@ -195,31 +214,60 @@ class ContrastOutConnector(object):
                 else:
                     raise FileTypeError("It's not a TAR or ZIP archive.")
             except Exception as err:
-                register_exception(alert_admin=True, prefix="Elsevier error extracting package.")
-                self.logger.error("Error extraction package file: %s %s" % (path, err))
-                print >> sys.stdout, "\nError extracting package file: %s %s" % (path, err)
+                register_exception(alert_admin=True,
+                                   prefix="Elsevier error extracting package.")
+                self.logger.error("Error extraction package file: %s %s"
+                                  % (path, err))
 
         return self.path_unpacked
 
+    def _get_text_from_journal_item(self, journal_item, tag_list):
+        try:
+            for tag_name in tag_list:
+                """
+                This loop is a iterative assignment. It 'moves' through the tag
+                tree of the journal item.
+                """
+                journal_item = journal_item.getElementsByTagName(tag_name)[0]
+            return xml_to_text(journal_item)
+        except Exception:
+            raise MissingTagException("One of the searched tags (%s) "
+                                      "is not valid." % (", ".join(tag_list)))
+
     def _get_issues(self):
         for name in self.files_list:
-            dataset_link = join(self.path_unpacked, name.split('.')[0], 'dataset.xml')
+            dataset_link = join(self.path_unpacked, name.split('.')[0],
+                                'dataset.xml')
 
             try:
                 dataset_xml = parse(dataset_link)
             except Exception:
-                register_exception(alert_admin=True, prefix="Elsevier error reading dataset.xml file.")
-                self.logger.error("Error reading dataset.xml file: %s" % (dataset_link,))
-                print >> sys.stdout, "\nError reading dataset.xml file: %s" % (dataset_link,)
+                register_exception(alert_admin=True,
+                                   prefix=("Elsevier error reading "
+                                           "dataset.xml file."))
+                error_msg = "Error reading dataset.xml file: %s"
+                self.logger.error(error_msg % (dataset_link,))
                 continue
 
             journal_issues = dataset_xml.getElementsByTagName('journal-issue')
             if journal_issues:
                 for journal_issue in journal_issues:
-                    filename = xml_to_text(journal_issue.getElementsByTagName('ml')[0].getElementsByTagName('pathname')[0])
-                    self.logger.info("Found issue %s in %s." % (filename, name))
-                    pathname = join(self.path_unpacked, name.split('.')[0], filename)
-                    self.found_issues.append(pathname)
+                    try:
+                        tag_list = ['ml', 'pathname']
+                        filename = (self
+                                    ._get_text_from_journal_item(journal_issue,
+                                                                 tag_list))
+                        self.logger.info("Found issue %s in %s."
+                                         % (filename, name))
+                        pathname = join(self.path_unpacked,
+                                        name.split('.')[0],
+                                        filename)
+                        self.found_issues.append(pathname)
+                    except Exception as err:
+                        register_exception(alert_admin=True,
+                                           prefix=err.message)
+                        self.logger.error("%s", err.message)
+                        continue
             else:
                 def visit(arg, dirname, names):
                     if "issue.xml" in names:
@@ -228,54 +276,78 @@ class ContrastOutConnector(object):
         return self.found_issues
 
     def _get_metadata_and_fulltex_dir(self):
-        # Prints stuff
-        print >> sys.stdout, "\nRetrieving journal items directories."
-        # Create progress bar
-        p_bar = progress_bar(len(self.files_list))
-        # Print stuff
-        sys.stdout.write(p_bar.next())
-        sys.stdout.flush()
+        print("Retrieving journal items directories.")
 
-        print self.path_unpacked
-        print self.files_list
-        for name in self.files_list:
-            dataset_link = join(self.path_unpacked, name.split('.')[0], 'dataset.xml')
+        total_count = len(self.files_list)
+
+        print(self.path_unpacked)
+        print(self.files_list)
+        for i, name in enumerate(self.files_list, start=1):
+            dataset_link = join(self.path_unpacked, name.split('.')[0],
+                                'dataset.xml')
 
             try:
                 dataset_xml = parse(dataset_link)
             except Exception:
-                register_exception(alert_admin=True, prefix="Elsevier error reading dataset.xml file.")
-                self.logger.error("Error reading dataset.xml file: %s" % (dataset_link,))
-                print >> sys.stdout, "\nError reading dataset.xml file: %s" % (dataset_link,)
+                register_exception(alert_admin=True,
+                                   prefix=("Elsevier error reading "
+                                           "dataset.xml file."))
+                self.logger.error("Error reading dataset.xml file: %s"
+                                  % (dataset_link,))
                 continue
 
-            # created = get_value_in_tag(dataset_xml.getElementsByTagName('dataset-unique-ids')[0], 'timestamp')
             journal_items = dataset_xml.getElementsByTagName('journal-item')
-            self.logger.info("Getting metadata and fulltext directories for %i journal items." % (len(journal_items),))
+            self.logger.info(("%s of %s: Getting metadata and fulltex "
+                              "directories for %i journal items.")
+                             % (i, total_count, len(journal_items),))
             for journal_item in journal_items:
-                xml_pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(journal_item.getElementsByTagName('ml')[0].getElementsByTagName('pathname')[0]))
-                pdf_pathname = join(self.path_unpacked, name.split('.')[0], xml_to_text(journal_item.getElementsByTagName('web-pdf')[0].getElementsByTagName('pathname')[0]))
-                self.found_articles.append(dict(xml=xml_pathname, pdf=pdf_pathname))
-            self.logger.info("Got metadata and fulltext directories of %i journals." % (len(self.found_articles),))
-            # Print stuff
-            sys.stdout.write(p_bar.next())
-            sys.stdout.flush()
+                try:
+                    tag_list = ['ml', 'pathname']
+                    xml_pathname = join(self.path_unpacked,
+                                        name.split('.')[0],
+                                        (self._get_text_from_journal_item(
+                                            journal_item,
+                                            tag_list)))
+                    tag_list = ['web-pdf', 'pathname']
+                    pdf_pathname = join(self.path_unpacked,
+                                        name.split('.')[0],
+                                        (self._get_text_from_journal_item(
+                                            journal_item,
+                                            tag_list)))
+
+                    self.found_articles.append(dict(xml=xml_pathname,
+                                                    pdf=pdf_pathname))
+                except MissingTagException as err:
+                    register_exception(alert_admin=True,
+                                       prefix=err.message)
+                    self.logger.error("%s", err.message)
+                    continue
+
+            self.logger.info(("%s of %s: Got metadata and fulltex directories"
+                              " of %i journals.")
+                             % (i, total_count, len(self.found_articles),))
 
         self.sort_results()
         return self.found_articles
 
     def sort_results(self):
-        self.found_articles = sorted(self.found_articles, key=lambda x: find_package_name(x['xml']), cmp=contrast_out_cmp)
+        self.found_articles = sorted(self.found_articles,
+                                     key=lambda x: find_package_name(x['xml']),
+                                     cmp=contrast_out_cmp)
 
     def run(self, run_localy=False):
         if not run_localy:
-            self.connect()
-            self._get_file_listing('.ready')
             try:
+                self.connect()
+                self._get_file_listing('.ready')
                 self._download_file_listing()
+            except LoginException as err:
+                register_exception(alert_admin=True,
+                                   prefix=('Failed to connect to '
+                                           'the Elsevier server. %s') % (err,))
+                return
             except:
-                self.logger.info("No new packages to process.")
-                print >> sys.stdout, "No new packages to process."
+                self.logger.info('No new packages to process')
                 return
             self._get_packages()
             self._download_tars()

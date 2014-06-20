@@ -278,21 +278,21 @@ class FtpHandler(object):
         ref_1 = []
         ref_2 = []
         i = 1
-        print >> sys.stdout, "\nChecking packages integrity."
+        print("\nChecking packages integrity.")
         for filename in filelist:
             ref_1.append(self.get_filesize(filename))
-        print >> sys.stdout, "\nGoing to sleep for %i sec." % (sleep_time,)
+        print("\nGoing to sleep for %i sec." % (sleep_time,))
         time.sleep(sleep_time)
 
         while sleep_time * i < timeout:
             for filename in filelist:
                 ref_2.append(self.get_filesize(filename))
             if ref_1 == ref_2:
-                print >> sys.stdout, "\nIntegrity OK:)"
+                print(sys.stdout, "\nIntegrity OK:)")
                 logger.info("Packages integrity OK.")
                 break
             else:
-                print >> sys.stdout, "\nWaiting %d time for integrity..." % (i,)
+                print("\nWaiting %d time for integrity..." % (i,))
                 logger.info("\nWaiting %d time for integrity..." % (i,))
                 i += 1
                 ref_1, ref_2 = ref_2, []
@@ -303,7 +303,7 @@ class FtpHandler(object):
                 if val1 != ref_2[count]:
                     not_finished_files.append(filelist[count])
 
-            print >> sys.stdout, "\nOMG, OMG something wrong with integrity."
+            print("\nOMG, OMG something wrong with integrity.")
             logger.error("Integrity check failed for files %s" % (not_finished_files,))
 
     def upload(self, filename, location=''):

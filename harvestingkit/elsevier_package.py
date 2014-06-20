@@ -21,7 +21,6 @@ from __future__ import print_function
 
 import re
 import sys
-import traceback
 import time
 import requests
 import xml.dom.minidom
@@ -83,7 +82,7 @@ class ElsevierPackage(object):
     constructor, in this case the Elsevier server will be harvested.
     """
     def __init__(self, package_name=None, path=None,
-                 run_localy=False, CONSYN=False):
+                 run_locally=False, CONSYN=False):
         self.CONSYN = CONSYN
         try:
             self.logger = create_logger("Elsevier")
@@ -101,10 +100,10 @@ class ElsevierPackage(object):
             self.path = path
             self.found_articles = []
             self._found_issues = []
-            if run_localy:
+            if run_locally:
                 from harvestingkit.contrast_out import ContrastOutConnector
                 self.conn = ContrastOutConnector(self.logger)
-                self.conn.run(run_localy)
+                self.conn.run(run_locally)
             else:
                 if not path and package_name:
                     self.logger.info("Got package: %s" % (package_name,))
@@ -142,7 +141,6 @@ class ElsevierPackage(object):
                                prefix="Elsevier error extracting package.")
             self.logger.error("Error extraction package file: %s %s"
                               % (self.path, err))
-            print("\nError extracting package file: %s %s" % (self.path, err))
 
     def _crawl_elsevier_and_find_main_xml(self):
         """
@@ -340,7 +338,8 @@ class ElsevierPackage(object):
                         label = re.sub("[\[\].)]", "", label)
                         subfields.append(('o', label))
                     if journal:
-                        journal, vol = fix_journal_name(journal, self.journal_mappings)
+                        journal, vol = fix_journal_name(journal,
+                                                        self.journal_mappings)
                         volume = vol + volume
                         if volume and page:
                             journal = journal + "," + volume + "," + page
@@ -516,7 +515,8 @@ class ElsevierPackage(object):
                     author["affiliation"].append(affiliations[matching_ref[i]])
         if implicit_affilations and len(affiliations) > 1:
             message = "Implicit affiliations are used, "
-            message += "but there's more than one affiliation: %r" % (affiliations,)
+            message += ("but there's more than one affiliation: "
+                        + str(affiliations))
             print(message, file=sys.stderr)
         if implicit_affilations and len(affiliations) >= 1:
             for author in authors:
@@ -765,10 +765,9 @@ class ElsevierPackage(object):
         else:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi),
                                                               ('2', 'DOI')])
-            message = 'Adding PDF/A. No paper with this DOI: %s. Trying to add it anyway.' % (
-                doi,)
+            message = ('Adding PDF/A. No paper with this DOI: '
+                       '%s. Trying to add it anyway.') % (doi,)
             self.logger.error(message)
-            register_exception(alert_admin=True, prefix=message)
         try:
             if exists(join(path, 'main_a-2b.pdf')):
                 record_add_field(
@@ -796,9 +795,15 @@ class ElsevierPackage(object):
         title = self.get_title(xml_doc)
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
-        journal, dummy, volume, issue, first_page,\
-            last_page, year, start_date, doi = self.get_publication_information(
-                xml_doc)
+        (journal,
+         dummy,
+         volume,
+         issue,
+         first_page,
+         last_page,
+         year,
+         start_date,
+         doi) = self.get_publication_information(xml_doc)
         if not journal:
             journal = self.get_article_journal(xml_doc)
         if start_date:
@@ -841,7 +846,8 @@ class ElsevierPackage(object):
             for tag in xml_doc.getElementsByTagName('ce:collaboration'):
                 collaboration = get_value_in_tag(tag, 'ce:text')
                 if collaboration:
-                    record_add_field(rec, '710', subfields=[('g', collaboration)])
+                    record_add_field(rec, '710',
+                                     subfields=[('g', collaboration)])
             topics = []
             subjects = xml_doc.getElementsByTagName('dct:subject')
             for subject in subjects:
@@ -856,12 +862,14 @@ class ElsevierPackage(object):
                     record_add_field(rec, '653', ind1='1',
                                      subfields=[('a', keyword),
                                                 ('9', 'author')])
-            journal, dummy = fix_journal_name(journal.strip(), self.journal_mappings)
+            journal, dummy = fix_journal_name(journal.strip(),
+                                              self.journal_mappings)
             subfields = []
             doctype = self.get_doctype(xml_doc)
             try:
                 page_count = int(last_page) - int(first_page)
-                record_add_field(rec, '300', subfields=[('a', str(page_count))])
+                record_add_field(rec, '300',
+                                 subfields=[('a', str(page_count))])
             except ValueError:  # do nothing
                 pass
             if doctype == 'err':
@@ -892,19 +900,21 @@ class ElsevierPackage(object):
             record_add_field(rec, '980', subfields=[('a', 'Published')])
         else:
             licence = 'http://creativecommons.org/licenses/by/3.0/'
-            record_add_field(rec, '540', subfields=[('a', 'CC-BY-3.0'),
-                                                    ('u', licence)])
+            record_add_field(rec,
+                             '540',
+                             subfields=[('a', 'CC-BY-3.0'), ('u', licence)])
             if keywords:
                 for keyword in keywords:
                     record_add_field(
                         rec, '653', ind1='1', subfields=[('a', keyword),
                                     ('9', 'author')])
-            record_add_field(rec, '773', subfields=[('p', journal),
-                                                    ('v', volume),
-                                                    ('n', issue),
-                                                    ('c', '%s-%s' %
-                                                        (first_page, last_page)),
-                                                    ('y', year)])
+            record_add_field(rec, '773',
+                             subfields=[('p', journal),
+                                        ('v', volume),
+                                        ('n', issue),
+                                        ('c', '%s-%s' %
+                                            (first_page, last_page)),
+                                        ('y', year)])
             if not no_pdf:
                 from invenio.search_engine import search_pattern
                 query = '0247_a:"%s" AND NOT 980:DELETED"' % (doi,)
@@ -920,20 +930,24 @@ class ElsevierPackage(object):
                             ".pdf;pdfa", exact_docformat=True)
                         pdf_path = pdf_path.fullpath
                         old_pdf = True
-                        record_add_field(rec, 'FFT', subfields=[('a', pdf_path),
-                                                                ('n', 'main'),
-                                                                ('f', '.pdf;pdfa')])
-                        message = 'Leaving previously delivered PDF/A for: ' + doi
+                        record_add_field(rec, 'FFT',
+                                         subfields=[('a', pdf_path),
+                                                    ('n', 'main'),
+                                                    ('f', '.pdf;pdfa')])
+                        message = ('Leaving previously delivered PDF/A for: '
+                                   + doi)
                         self.logger.info(message)
                     except:
                         pass
                 try:
                     if exists(join(path, 'main_a-2b.pdf')):
                         path = join(path, 'main_a-2b.pdf')
-                        record_add_field(rec, 'FFT', subfields=[('a', path),
-                                                                ('n', 'main'),
-                                                                ('f', '.pdf;pdfa')])
-                        self.logger.debug('Adding PDF/A to record: %s' % (doi,))
+                        record_add_field(rec, 'FFT',
+                                         subfields=[('a', path),
+                                                    ('n', 'main'),
+                                                    ('f', '.pdf;pdfa')])
+                        self.logger.debug('Adding PDF/A to record: %s'
+                                          % (doi,))
                     elif exists(join(path, 'main.pdf')):
                         path = join(path, 'main.pdf')
                         record_add_field(rec, 'FFT', subfields=[('a', path)])
@@ -953,6 +967,7 @@ class ElsevierPackage(object):
                 record_add_field(rec, '980', subfields=[('a', 'SCOAP3'),
                                                         ('b', 'Elsevier')])
         self._add_references(xml_doc, rec)
+
         try:
             return record_xml_output(rec)
         except UnicodeDecodeError:
@@ -996,31 +1011,3 @@ class ElsevierPackage(object):
                 out.close()
                 task_low_level_submission("bibupload", "admin", "-N",
                                           "Elsevier:VTEX", "-a", name_vtex)
-
-
-def main():
-    try:
-        if len(sys.argv) > 2:
-            print("Unrecognized number of parameters.")
-            print("Try giving a package name or run with --run-localy.")
-            sys.exit(1)
-        if len(sys.argv) < 2:
-            els = ElsevierPackage()
-        elif len(sys.argv) == 2:
-            if sys.argv[1] == "--run-localy":
-                els = ElsevierPackage(run_localy=True)
-            else:
-                path_or_package = sys.argv[1]
-                if path_or_package.endswith((".tar", ".zip")):
-                    els = ElsevierPackage(package_name=path_or_package)
-                else:
-                    els = ElsevierPackage(path=path_or_package)
-        els.bibupload_it()
-    except Exception as err:
-        register_exception()
-        print("ERROR: Exception captured: %s" % err)
-        traceback.print_exc(file=sys.stdout)
-        sys.exit(1)
-
-if __name__ == "__main__":
-    main()

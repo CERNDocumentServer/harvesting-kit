@@ -18,19 +18,37 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 import os
+import sys
+import shutil
 
 from setuptools import setup, find_packages
-from invenio.config import CFG_ETCDIR, CFG_PYLIBDIR
 
-dtd_path = os.path.join(CFG_ETCDIR, "harvestingdtd")
+from invenio.config import CFG_ETCDIR, CFG_PYLIBDIR 
+from harvestingkit.config import CFG_POSSIBLE_CONFIG_PATHS, CFG_DTDS_PATH
+
+
 bibtasklet_path = os.path.join(CFG_PYLIBDIR, 'invenio', 'bibsched_tasklets')
 
-req = open('requirements.txt','r')
-requirements = []
-for line in req:
-  if line:
-    requirements.append(line)
-req.close()
+
+def _copy_config_to_desired_location():
+    for loc in CFG_POSSIBLE_CONFIG_PATHS:
+        print loc
+        try:
+            if not os.path.exists(os.path.dirname(loc)):
+                os.makedirs(os.path.dirname(loc))
+                shutil.copyfile('user_config.cfg', loc)
+            break
+        except (OSError, IOError, ValueError) as e:
+            print e 
+    else:
+        print "Couldn't copy the config file."
+        sys.exit(-1)
+
+
+_copy_config_to_desired_location()
+
+with open('requirements.txt', 'r') as req:
+    requirements = req.readlines()
 
 setup(name="HarvestingKit",
       version="0.1",
@@ -38,18 +56,23 @@ setup(name="HarvestingKit",
       data_files=[(bibtasklet_path, ["bibtasklets/bst_elsevier.py",
                                      "bibtasklets/bst_oxford.py",
                                      "bibtasklets/bst_springer.py"]),
-                  (dtd_path, ["dtds/ja5_art501.zip",
-                              "dtds/ja5_art510.zip",
-                              "dtds/ja5_art520.zip",
-                              "dtds/si510.zip",
-                              "dtds/si520.zip",
-                              "dtds/A++V2.4.zip",
-                              "dtds/jats-archiving-dtd-1.0.zip",
-                              "dtds/journal-publishing-dtd-2.3.zip"])],
+                  (CFG_DTDS_PATH, ["dtds/ja5_art501.zip",
+                                   "dtds/ja5_art510.zip",
+                                   "dtds/ja5_art520.zip",
+                                   "dtds/si510.zip",
+                                   "dtds/si520.zip",
+                                   "dtds/A++V2.4.zip",
+                                   "dtds/jats-archiving-dtd-1.0.zip",
+                                   "dtds/journal-publishing-dtd-2.3.zip"])],
       install_requires=requirements,
       author="CERN",
       author_email="admin@inspirehep.net",
-      description="Kit containing scripts and utils for harvesting with Invenio Software.",
+      description=("Kit containing scripts and utils for harvesting ",
+                   "with Invenio Software."),
       license="GPLv2",
       url="https://github.com/inspirehep/harvesting-kit",
-    )
+      entry_points='''
+      [console_scripts]
+      harvestingkit_cli = harvestingkit.harvestingkit_cli:main
+      '''
+      )

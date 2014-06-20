@@ -18,10 +18,12 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 from __future__ import print_function
 
+import os
 import sys
 import time
-import traceback
-from shutil import copy
+
+from socket import timeout as socket_timeout_exception
+
 from invenio.bibtask import task_low_level_submission
 from invenio.config import (CFG_TMPSHAREDDIR,
                             CFG_PREFIX)
@@ -35,20 +37,27 @@ from os.path import (join,
 try:
     from invenio.config import CFG_OXFORD_DOWNLOADDIR
 except ImportError:
-    CFG_OXFORD_DOWNLOADDIR = join(CFG_PREFIX, "var", "data" "scoap3" "oxford")
-from harvestingkit.scoap3utils import (create_logger,
-                                       progress_bar,
-                                       NoNewFiles)
-from harvestingkit.nlm_utils import NLMParser
+    CFG_OXFORD_DOWNLOADDIR = join(CFG_PREFIX, "var", "data",
+                                  "scoap3", "oxford")
+
+from .ftp_utils import FtpHandler
+
+from .scoap3utils import (LoginException,
+                          create_logger,
+                          NoNewFiles)
+from .nlm_utils import NLMParser
+from shutil import copy
 from tempfile import mkstemp
 from zipfile import ZipFile
-from invenio.oup_config import (CFG_LOGIN,
-                                CFG_PASSWORD,
-                                CFG_URL)
-from harvestingkit.ftp_utils import FtpHandler
-from harvestingkit.config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
 
-CFG_OXFORD_JATS_PATH = join(CFG_SCOAP3DTDS_PATH, 'journal-publishing-dtd-2.3.zip')
+from .config import (CFG_CONFIG_PATH,
+                     CFG_DTDS_PATH,
+                     CFG_FTP_CONNECTION_ATTEMPTS,
+                     CFG_FTP_TIMEOUT_SLEEP_DURATION)
+
+from configparser import load_config
+
+CFG_OXFORD_JATS_PATH = join(CFG_DTDS_PATH, 'journal-publishing-dtd-2.3.zip')
 
 CFG_TAR_FILES = join(CFG_OXFORD_DOWNLOADDIR, "tar_files")
 CFG_UNPACKED_FILES = join(CFG_OXFORD_DOWNLOADDIR, "unpacked_files")
@@ -67,20 +76,38 @@ class OxfordPackage(object):
     constructor, in this case the Oxford server will be harvested.
     """
     def connect(self):
-        """Logs into the specified FTP server and returns connector."""
-        try:
-            self.ftp = FtpHandler(CFG_URL, CFG_LOGIN, CFG_PASSWORD)
-            self.logger.debug("Successful connection to the Oxford server")
-        except:
-            self.logger.error("Failed to connect to the Oxford server.")
+        """Logs into the specified ftp server and returns connector."""
+        for tried_connection_count in range(CFG_FTP_CONNECTION_ATTEMPTS):
+            try:
+                self.ftp = FtpHandler(self.config.OXFORD.URL,
+                                      self.config.OXFORD.LOGIN,
+                                      self.config.OXFORD.PASSWORD)
+                self.logger.debug(("Successful connection to the "
+                                   "Elsevier server"))
+                return
+            except socket_timeout_exception as err:
+                self.logger.error(('Failed to connect %d of %d times. '
+                                   'Will sleep for %d seconds and try again.')
+                                  % (tried_connection_count+1,
+                                     CFG_FTP_CONNECTION_ATTEMPTS,
+                                     CFG_FTP_TIMEOUT_SLEEP_DURATION))
+                time.sleep(CFG_FTP_TIMEOUT_SLEEP_DURATION)
+            except Exception as err:
+                self.logger.error(('Failed to connect to the '
+                                   'Elsevier server. %s') % (err,))
+                break
+
+        raise LoginException(err)
 
     def _get_file_listing(self, phrase=None, new_only=True):
         if phrase:
-            self.files_list = filter(lambda x: (phrase in x) or (x == "go.xml"), self.ftp.ls()[0])
+            lambda_expression = lambda x: (phrase in x) or (x == "go.xml")
+            self.files_list = filter(lambda_expression, self.ftp.nlst())
         else:
             self.files_list = self.ftp.ls()[0]
         if new_only:
-            self.files_list = set(self.files_list) - set(listdir(CFG_TAR_FILES))
+            self.files_list = (set(self.files_list)
+                               - set(listdir(CFG_TAR_FILES)))
         return self.files_list
 
     def _download_tars(self, check_integrity=True):
@@ -91,19 +118,17 @@ class OxfordPackage(object):
             if check_integrity:
                 self.ftp.check_pkgs_integrity(self.files_list, self.logger)
 
-            print >> sys.stdout, "\nDownloading %i tar packages." \
-                                 % (len(self.files_list))
-            # Create progress bar
-            p_bar = progress_bar(len(self.files_list))
-            # Print stuff
-            sys.stdout.write(p_bar.next())
-            sys.stdout.flush()
+            print("Downloading %i tar packages." % (len(self.files_list)))
+
+            total_count = len(self.files_list)
+
             prefix = time.strftime("%Y%m%d%H%M%S-")
-            for filename in self.files_list:
+            for i, filename in enumerate(self.files_list, start=1):
                 if filename == 'go.xml':
                     ## We don't download go.xml
                     continue
-                self.logger.info("Downloading tar package: %s" % (filename,))
+                self.logger.info("Downloading tar package %s of %s: %s"
+                                 % (i, total_count, filename,))
                 unpack_path = join(CFG_TAR_FILES, prefix + filename)
                 self.retrieved_packages_unpacked.append(unpack_path)
                 try:
@@ -113,25 +138,27 @@ class OxfordPackage(object):
                     copy(current_location, desired_location)
                     remove(current_location)
                 except:
-                    self.logger.error("Error downloading tar file: %s" % (filename,))
-                    print >> sys.stdout, "\nError downloading %s file!" % (filename,)
-                    print >> sys.stdout, sys.exc_info()
-                # Print stuff
-                sys.stdout.write(p_bar.next())
-                sys.stdout.flush()
+                    self.logger.error("Error downloading tar file: %s"
+                                      % (filename,))
+                    print(sys.exc_info())
 
             return self.retrieved_packages_unpacked
         else:
-            print >> sys.stdout, "No new packages to download."
             self.logger.info("No new packages to download.")
             raise NoNewFiles
 
     def __init__(self, package_name=None, path=None):
+        if package_name:
+            if not package_name.endswith(".zip"):
+                raise Exception('package_name variable requires a ZIP file.')
+
         self.package_name = package_name
         self.path = path
         self._dois = []
         self.articles_normalized = []
         self.logger = create_logger("Oxford")
+
+        self.config = load_config(CFG_CONFIG_PATH, {'OXFORD': []})
 
         if not path and package_name:
             self.logger.info("Got package: %s" % (package_name,))
@@ -142,10 +169,15 @@ class OxfordPackage(object):
         self._crawl_oxford_and_find_main_xml()
 
     def run(self):
-        self.connect()
-        self._get_file_listing(".zip")
         try:
+            self.connect()
+            self._get_file_listing('.zip')
             self._download_tars()
+        except LoginException as err:
+            register_exception(alert_admin=True,
+                               prefix=("Failed to connect to the "
+                                       "Oxford server. %s") % (err,))
+            return
         except NoNewFiles:
             return
         self._extract_packages()
@@ -158,19 +190,24 @@ class OxfordPackage(object):
             self.retrieved_packages_unpacked = [self.package_name]
         for path in self.retrieved_packages_unpacked:
             package_name = basename(path)
-            self.path_unpacked = join(CFG_UNPACKED_FILES, package_name.split('.')[0])
-            self.logger.debug("Extracting package: %s" % (path.split("/")[-1],))
+            self.path_unpacked = join(CFG_UNPACKED_FILES,
+                                      package_name.split('.')[0])
+            self.logger.debug("Extracting package: %s"
+                              % (path.split("/")[-1],))
             try:
                 if "_archival_pdf" in self.path_unpacked:
-                    self.path_unpacked = self.path_unpacked.rstrip("_archival_pdf")
-                    ZipFile(path).extractall(join(self.path_unpacked, "archival_pdfs"))
+                    self.path_unpacked = (self.path_unpacked
+                                          .rstrip("_archival_pdf"))
+                    ZipFile(path).extractall(join(self.path_unpacked,
+                                                  "archival_pdfs"))
                 else:
                     ZipFile(path).extractall(self.path_unpacked)
                 #TarFile.open(path).extractall(self.path_unpacked)
             except Exception:
-                register_exception(alert_admin=True, prefix="OUP error extracting package.")
-                self.logger.error("Error extraction package file: %s" % (path,))
-                print >> sys.stdout, "\nError extracting package file: %s" % (path,)
+                register_exception(alert_admin=True,
+                                   prefix="OUP error extracting package.")
+                self.logger.error("Error extraction package file: %s"
+                                  % (path,))
 
         return self.path_unpacked
 
@@ -191,7 +228,8 @@ class OxfordPackage(object):
 
                 except Exception as err:
                     register_exception()
-                    print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
+                    print >> sys.stderr, "ERROR: can't normalize %s: %s" \
+                                         % (dirname, err)
 
         if hasattr(self, 'path_unpacked'):
             walk(self.path_unpacked, visit, None)
@@ -199,25 +237,29 @@ class OxfordPackage(object):
             walk(self.path, visit, None)
         else:
             self.logger.info("Nothing to do.")
-            print >> sys.stdout, "Nothing to do."
 
     def bibupload_it(self):
         if self.found_articles:
             nlm_parser = NLMParser()
             self.logger.debug("Preparing bibupload.")
-            fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
+            fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_',
+                               dir=CFG_TMPSHAREDDIR)
             out = fdopen(fd, 'w')
             print >> out, "<collection>"
             for i, path in enumerate(self.found_articles):
                 try:
-                    print >> out, nlm_parser.get_record(path, publisher='Oxford', collection='SCOAP3', logger=self.logger)
+                    print >> out, nlm_parser.get_record(path,
+                                                        publisher='Oxford',
+                                                        collection='SCOAP3',
+                                                        logger=self.logger)
                 except Exception as err:
                     print >> sys.stderr, err
                     raise Exception
                 print(path, i + 1, "out of", len(self.found_articles))
             print >> out, "</collection>"
             out.close()
-            task_low_level_submission("bibupload", "admin", "-N" "OUP", "-i", "-r", name)
+            task_low_level_submission("bibupload", "admin",
+                                      "-N" "OUP", "-i", "-r", name)
 
     def empty_ftp(self):
         if self.found_articles:
@@ -225,26 +267,3 @@ class OxfordPackage(object):
             for filename in self.files_list:
                 self.logger.debug("Deleting %s" % filename)
                 self.ftp.rm(filename)
-
-
-def main():
-    try:
-        if len(sys.argv) == 2:
-            path_or_package = sys.argv[1]
-            if path_or_package.endswith(".zip"):
-                els = OxfordPackage(package_name=path_or_package)
-            else:
-                print("Try passing a ZIP file.")
-                #els = OxfordPackage(path=path_or_package)
-        else:
-            els = OxfordPackage()
-        els.bibupload_it()
-        els.empty_ftp()
-    except Exception as err:
-        register_exception()
-        print >> sys.stderr, "ERROR: Exception captured: %s" % err
-        traceback.print_exc(file=sys.stdout)
-        sys.exit(1)
-
-if __name__ == "__main__":
-    main()

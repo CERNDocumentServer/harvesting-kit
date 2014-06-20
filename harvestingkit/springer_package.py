@@ -17,7 +17,10 @@
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 import sys
-import traceback
+import time
+
+from socket import timeout as socket_timeout_exception
+
 from datetime import datetime
 from invenio.bibtask import task_low_level_submission
 from invenio.config import (CFG_PREFIX,
@@ -28,28 +31,30 @@ from os.path import (join,
 try:
     from invenio.config import CFG_SPRINGER_DOWNLOADDIR
 except ImportError:
-    CFG_SPRINGER_DOWNLOADDIR = join(CFG_PREFIX, "var", "data" "scoap3" "springer")
+    CFG_SPRINGER_DOWNLOADDIR = join(CFG_PREFIX, "var", "data",
+                                    "scoap3", "springer")
 
 from invenio.errorlib import register_exception
 from invenio.shellutils import run_shell_command
-from os import (listdir,
-                fdopen)
-from harvestingkit.scoap3utils import (create_logger,
-                                       progress_bar,
-                                       NoNewFiles)
-from harvestingkit.jats_utils import JATSParser
-from harvestingkit.app_utils import APPParser
-from tempfile import (mkdtemp,
-                      mkstemp)
-from zipfile import ZipFile
-from invenio.springer_config import (CFG_LOGIN,
-                                     CFG_PASSWORD,
-                                     CFG_URL)
 from harvestingkit.ftp_utils import FtpHandler
-from harvestingkit.config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
+from os import listdir, fdopen
+from .scoap3utils import (LoginException,
+                          create_logger,
+                          NoNewFiles)
+from .jats_utils import JATSParser
+from .app_utils import APPParser
+from tempfile import mkdtemp, mkstemp
+from zipfile import ZipFile
 
-CFG_SPRINGER_AV24_PATH = join(CFG_SCOAP3DTDS_PATH, 'A++V2.4.zip')
-CFG_SPRINGER_JATS_PATH = join(CFG_SCOAP3DTDS_PATH, 'jats-archiving-dtd-1.0.zip')
+from configparser import load_config
+
+from .config import (CFG_CONFIG_PATH,
+                     CFG_DTDS_PATH,
+                     CFG_FTP_CONNECTION_ATTEMPTS,
+                     CFG_FTP_TIMEOUT_SLEEP_DURATION)
+
+CFG_SPRINGER_AV24_PATH = join(CFG_DTDS_PATH, 'A++V2.4.zip')
+CFG_SPRINGER_JATS_PATH = join(CFG_DTDS_PATH, 'jats-archiving-dtd-1.0.zip')
 
 CFG_TAR_FILES = join(CFG_SPRINGER_DOWNLOADDIR, "tar_files")
 
@@ -66,73 +71,88 @@ class SpringerPackage(object):
     @note: either C{package_name} or C{path} don't have to be passed to the
     constructor, in this case the Springer server will be harvested.
     """
+
     def connect(self):
         """Logs into the specified ftp server and returns connector."""
-        try:
-            self.ftp = FtpHandler(CFG_URL, CFG_LOGIN, CFG_PASSWORD)
-            self.logger.debug("Succesful connection to the Springer server")
-        except:
-            self.logger.error("Faild to connect to the Springer server.")
+        for tryed_connection_count in range(CFG_FTP_CONNECTION_ATTEMPTS):
+            try:
+                self.ftp = FtpHandler(self.config.SPRINGER.URL,
+                                      self.config.SPRINGER.LOGIN,
+                                      self.config.SPRINGER.PASSWORD)
+                self.logger.debug(("Successful connection to "
+                                   "the Springer server"))
+                return
+            except socket_timeout_exception as err:
+                self.logger.error(('Failed to connect %d of %d times. '
+                                   'Will sleep for %d seconds and try again.')
+                                  % (tryed_connection_count+1,
+                                     CFG_FTP_CONNECTION_ATTEMPTS,
+                                     CFG_FTP_TIMEOUT_SLEEP_DURATION))
+                time.sleep(CFG_FTP_TIMEOUT_SLEEP_DURATION)
+            except Exception as err:
+                self.logger.error(("Failed to connect to the "
+                                   "Springer server. %s") % (err,))
+                break
+
+        raise LoginException(err)
 
     def _get_file_listing(self, phrase=None, new_only=True):
         self.jhep_list = []
         self.epjc_list = []
         self.files_list = []
         if phrase:
-            self.epjc_list.extend(filter(lambda x: phrase in x and ".zip" in x, self.ftp.ls("data/in/EPJC")[0]))
-            self.jhep_list.extend(filter(lambda x: phrase in x and ".zip" in x, self.ftp.ls("data/in/JHEP")[0]))
+            self.epjc_list.extend(filter(lambda x: phrase in x and ".zip" in x,
+                                         self.ftp.ls("data/in/EPJC")[0]))
+            self.jhep_list.extend(filter(lambda x: phrase in x and ".zip" in x,
+                                         self.ftp.ls("data/in/JHEP")[0]))
         else:
-            self.epjc_list.extend(filter(lambda x: ".zip" in x, self.ftp.ls("data/in/EPJC")[0]))
-            self.jhep_list.extend(filter(lambda x: ".zip" in x, self.ftp.ls("data/in/JHEP")[0]))
+            self.epjc_list.extend(filter(lambda x: ".zip" in x,
+                                         self.ftp.ls("data/in/EPJC")[0]))
+            self.jhep_list.extend(filter(lambda x: ".zip" in x,
+                                         self.ftp.ls("data/in/JHEP")[0]))
 
-        self.files_list.extend(map(lambda x: "data/in/EPJC/" + x, self.epjc_list))
-        self.files_list.extend(map(lambda x: "data/in/JHEP/" + x, self.jhep_list))
+        self.files_list.extend(map(lambda x: "data/in/EPJC/" + x,
+                                   self.epjc_list))
+        self.files_list.extend(map(lambda x: "data/in/JHEP/" + x,
+                                   self.jhep_list))
 
         if new_only:
             tmp_our_dir = []
-            try:
-                tmp_our_dir.extend(map(lambda x: "data/in/EPJC/" + x, listdir(join(CFG_TAR_FILES, "data/in/EPJC"))))
-            except OSError:  # folders does not exists nothing to do
-                pass
-            try:
-                tmp_our_dir.extend(map(lambda x: "data/in/JHEP/" + x, listdir(join(CFG_TAR_FILES, "data/in/JHEP"))))
-            except OSError:  # folders does not exists nothing to do
-                pass
+            for di in ["data/in/EPJC/", "data/in/JHEP/"]:
+                try:
+                    tmp_our_dir.extend(map(lambda x: di + x,
+                                           listdir(join(CFG_TAR_FILES, di))))
+                except OSError:  # folders does not exists nothing to do
+                    pass
+
             self.files_list = set(self.files_list) - set(tmp_our_dir)
         return self.files_list
 
     def _download_tars(self, check_integrity=True):
         self.retrieved_packages_unpacked = []
-        # Prints stuff
+
         if self.files_list:
             if check_integrity:
                 self.ftp.check_pkgs_integrity(self.files_list, self.logger)
 
-            print >> sys.stdout, "\nDownloading %i tar packages." \
-                                 % (len(self.files_list))
-            # Create progress bar
-            p_bar = progress_bar(len(self.files_list))
-            # Print stuff
-            sys.stdout.write(p_bar.next())
-            sys.stdout.flush()
+            print "Downloading %i tar packages." % (len(self.files_list))
 
-            for filename in self.files_list:
-                self.logger.info("Downloading tar package: %s" % (filename,))
+            total_count = len(self.files_list)
+
+            for i, filename in enumerate(self.files_list, start=1):
+                self.logger.info("Downloading tar package %s of %s: %s"
+                                 % (i, total_count, filename,))
                 unpack_path = join(CFG_TAR_FILES, filename)
                 self.retrieved_packages_unpacked.append(unpack_path)
                 try:
                     self.ftp.download(filename, CFG_TAR_FILES)
                 except:
-                    self.logger.error("Error downloading tar file: %s" % (filename,))
-                    print >> sys.stdout, "\nError downloading %s file!" % (filename,)
-                    print >> sys.stdout, sys.exc_info()
-                # Print stuff
-                sys.stdout.write(p_bar.next())
-                sys.stdout.flush()
+                    self.logger.error("Error downloading tar file: %s"
+                                      % (filename,))
+                    print sys.exc_info()
 
             return self.retrieved_packages_unpacked
         else:
-            print >> sys.stdout, "No new packages to download."
             self.logger.info("No new packages to download.")
             raise NoNewFiles
 
@@ -143,19 +163,25 @@ class SpringerPackage(object):
         self.articles_normalized = []
         self.logger = create_logger("Springer")
 
+        self.config = load_config(CFG_CONFIG_PATH, {'SPRINGER': []})
+
         if not path and package_name:
             self.logger.info("Got package: %s" % (package_name,))
             self.path = self._extract_packages()
         elif not path and not package_name:
-            print("Starting harvest")
+            print "Starting harvest"
             self.run()
         self._crawl_springer_and_find_main_xml()
 
     def run(self):
-        self.connect()
-        self._get_file_listing()
         try:
+            self.connect()
+            self._get_file_listing()
             self._download_tars()
+        except LoginException as err:
+            error_msg = "Failed to connect to the Springer server. %s" % (err,)
+            register_exception(alert_admin=True, prefix=error_msg)
+            return
         except NoNewFiles:
             return
         self._extract_packages()
@@ -170,19 +196,19 @@ class SpringerPackage(object):
         for path in self.retrieved_packages_unpacked:
             self.logger.debug("Extracting package: %s" % (path,))
 
-            if 'EPJC' in path:
-                self.path_unpacked.append(mkdtemp(prefix="scoap3_package_%s_EPJC_" % (datetime.now(),),
-                                                  dir=CFG_TMPSHAREDDIR))
-            else:
-                self.path_unpacked.append(mkdtemp(prefix="scoap3_package_%s_JHEP_" % (datetime.now(),),
-                                                  dir=CFG_TMPSHAREDDIR))
-            try:
+            p_name = 'EPJC' if 'EPJC' in path else 'JHEP'
+            p_message = 'scoap3_package_%s_%s_' % (p_name, datetime.now())
 
+            self.path_unpacked.append(mkdtemp(prefix=p_message,
+                                              dir=CFG_TMPSHAREDDIR))
+
+            try:
                 ZipFile(path).extractall(self.path_unpacked[-1])
             except Exception:
-                register_exception(alert_admin=True, prefix="Springer error extracting package.")
-                self.logger.error("Error extraction package file: %s" % (path,))
-                print >> sys.stdout, "\nError extracting package file: %s" % (path,)
+                register_exception(alert_admin=True,
+                                   prefix="Springer error extracting package.")
+                self.logger.error("Error extraction package file: %s"
+                                  % (path,))
 
         return self.path_unpacked
 
@@ -197,14 +223,15 @@ class SpringerPackage(object):
         def visit(arg, dirname, names):
             files = [filename for filename in names if "nlm.xml" in filename]
             if not files:
-                files = [filename for filename in names if ".xml.scoap" in filename]
+                files = [filename for filename in names
+                         if ".xml.scoap" in filename]
             if files:
                 try:
                     # self._normalize_article_dir_with_dtd(dirname)
                     self.found_articles.append(dirname)
                 except Exception as err:
                     register_exception()
-                    print >> sys.stderr, "ERROR: can't normalize %s: %s" % (dirname, err)
+                    print "ERROR: can't normalize %s: %s" % (dirname, err)
 
         if hasattr(self, 'path_unpacked'):
             for path in self.path_unpacked:
@@ -213,7 +240,6 @@ class SpringerPackage(object):
             walk(self.path, visit, None)
         else:
             self.logger.info("Nothing to do.")
-            print >> sys.stdout, "Nothing to do."
 
     def _normalize_article_dir_with_dtd(self, path):
         """
@@ -222,90 +248,79 @@ class SpringerPackage(object):
         and normalize it using xmllint in order to resolve all namespaces
         and references.
         """
-        files = [filename for filename in listdir(path) if "nlm.xml" in filename]
+        files = [filename for filename in listdir(path)
+                 if "nlm.xml" in filename]
         if not files:
-                files = [filename for filename in listdir(path) if ".xml.scoap" in filename]
+                files = [filename for filename in listdir(path)
+                         if ".xml.scoap" in filename]
         if exists(join(path, 'resolved_main.xml')):
             return
 
         if 'JATS-archivearticle1.dtd' in open(join(path, files[0])).read():
-            path_normalized = mkdtemp(prefix="scoap3_normalized_jats_", dir=CFG_TMPSHAREDDIR)
+            path_normalized = mkdtemp(prefix="scoap3_normalized_jats_",
+                                      dir=CFG_TMPSHAREDDIR)
             ZipFile(CFG_SPRINGER_JATS_PATH).extractall(path_normalized)
         elif 'A++V2.4.dtd' in open(join(path, files[0])).read():
-            path_normalized = mkdtemp(prefix="scoap3_normalized_app_", dir=CFG_TMPSHAREDDIR)
+            path_normalized = mkdtemp(prefix="scoap3_normalized_app_",
+                                      dir=CFG_TMPSHAREDDIR)
             ZipFile(CFG_SPRINGER_AV24_PATH).extractall(path_normalized)
         else:
-            self.logger.error("It looks like the path %s does not contain an JATS-archivearticle1.dtd nor A++V2.4.dtd XML file." % path)
-            raise ValueError("It looks like the path %s does not contain an JATS-archivearticle1.dtd nor A++V2.4.dtd XML file." % path)
-        print >> sys.stdout, "Normalizing %s" % (files[0],)
-        cmd_exit_code, cmd_out, cmd_err = run_shell_command("xmllint --format --loaddtd %s --output %s", (join(path, files[0]), join(path_normalized, 'resolved_main.xml')))
+            error_msg = ("It looks like the path %s does not contain an "
+                         "JATS-archivearticle1.dtd nor A++V2.4.dtd XML file.")
+            self.logger.error(error_msg % path)
+            raise ValueError(error_msg % path)
+        print "Normalizing %s" % (files[0],)
+        (cmd_exit_code,
+         cmd_out,
+         cmd_err) = run_shell_command(("xmllint --format "
+                                       "--loaddtd %s --output %s"),
+                                      (join(path, files[0]),
+                                       join(path_normalized,
+                                            'resolved_main.xml')))
         if cmd_err:
-            self.logger.error("Error in cleaning %s: %s" % (join(path, 'issue.xml'), cmd_err))
-            raise ValueError("Error in cleaning %s: %s" % (join(path, 'main.xml'), cmd_err))
+            error_msg = "Error in cleaning %s: %s"
+            self.logger.error(error_msg % (join(path, 'issue.xml'), cmd_err))
+            raise ValueError(error_msg % (join(path, 'main.xml'), cmd_err))
         self.articles_normalized.append(path_normalized)
 
     def bibupload_it(self):
-        # if self.articles_normalized:
-        #     self.logger.debug("Preparing bibupload.")
-        #     fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
-        #     out = fdopen(fd, 'w')
-        #     print >> out, "<collection>"
-        #     for i, path in enumerate(self.articles_normalized):
-        #         try:
-        #             if "jats" in path:
-        #                 jats_parser = JATSParser()
-        #                 print >> out, jats_parser.get_record(join(path, "resolved_main.xml"), publisher='Springer', collection='SCOAP3', logger=self.logger)
-        #             else:
-        #                 app_parser = APPParser()
-        #                 print >> out, app_parser.get_record(join(path, "resolved_main.xml"), publisher='SISSA', collection='SCOAP3', logger=self.logger)
-        #             print path, i + 1, "out of", len(self.found_articles)
-        #         except Exception, err:
-        #             self.logger.error("Error creating record from: %s \n%s" % (join(path, 'resolved_main.xml'), err))
-        #     print >> out, "</collection>"
-        #     out.close()
-        #     task_low_level_submission("bibupload", "admin", "-N", "Springer", "-i", "-r", name)
         if self.found_articles:
             self.logger.debug("Preparing bibupload.")
-            fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_', dir=CFG_TMPSHAREDDIR)
+            fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_',
+                               dir=CFG_TMPSHAREDDIR)
             out = fdopen(fd, 'w')
             print >> out, "<collection>"
             for i, path in enumerate(self.found_articles):
                 try:
-                    if "EPJC" in path:
-                        for filename in listdir(path):
-                            if "_nlm.xml" in filename:
-                                jats_parser = JATSParser(tag_to_remove="tex-math")
-                                print >> out, jats_parser.get_record(join(path, filename), publisher='Springer', collection='SCOAP3', logger=self.logger)
-                    else:
-                        for filename in listdir(path):
-                            if ".xml.scoap" in filename:
-                                app_parser = APPParser()
-                                print >> out, app_parser.get_record(join(path, filename), publisher='SISSA', collection='SCOAP3', logger=self.logger)
-                    print(path, i + 1, "out of", len(self.found_articles))
+                    for filename in listdir(path):
+
+                        if filename.endswith(".xml.scoap"):
+                            xml_end = True
+                        elif filename.endswith("_nlm.xml"):
+                            xml_end = False
+                        else:
+                            continue
+
+                        l_info = '%s is JHCP' if xml_end else '%s is EPJC'
+                        lc_info = 'Found %s. Calling SISSA' if xml_end \
+                                  else 'Found %s. Calling Springer'
+                        publi = 'SISSA' if xml_end else 'Springer'
+                        parser = APPParser() if xml_end else JATSParser()
+
+                        self.logger.info(l_info % path)
+                        self.logger.info(lc_info % filename)
+                        rec = parser.get_record(join(path, filename),
+                                                publisher=publi,
+                                                collection='SCOAP3',
+                                                logger=self.logger)
+                        print >> out, rec
+                        break
+                    print path, i + 1, "out of", len(self.found_articles)
                 except Exception as err:
                     register_exception(alert_admin=True)
-                    self.logger.error("Error creating record from: %s \n%s" % (join(path, filename), err))
+                    self.logger.error("Error creating record from: %s \n%s"
+                                      % (join(path, filename), err))
             print >> out, "</collection>"
             out.close()
-            task_low_level_submission("bibupload", "admin", "-N", "Springer", "-i", "-r", name)
-
-
-def main():
-    try:
-        if len(sys.argv) == 2:
-            path_or_package = sys.argv[1]
-            if path_or_package.endswith(".zip"):
-                els = SpringerPackage(package_name=path_or_package)
-            else:
-                els = SpringerPackage(path=path_or_package)
-        else:
-            els = SpringerPackage()
-        els.bibupload_it()
-    except Exception as err:
-        register_exception()
-        print >> sys.stderr, "ERROR: Exception captured: %s" % err
-        traceback.print_exc(file=sys.stdout)
-        sys.exit(1)
-
-if __name__ == "__main__":
-    main()
+            task_low_level_submission("bibupload", "admin", "-N",
+                                      "Springer", "-i", "-r", name)
