@@ -24,7 +24,11 @@ from __future__ import division
 
 import sys
 import logging
+import time
 from invenio.config import CFG_LOGDIR
+from tarfile import TarFile
+from zipfile import ZipFile
+from invenio.errorlib import register_exception
 
 from os.path import join
 
@@ -226,4 +230,18 @@ def check_pkgs_integrity(filelist, logger, ftp_connector,
         print >> sys.stdout, "\nOMG, OMG something wrong with integrity."
         logger.error("Integrity check faild for files %s"
                      % (not_finished_files,))
-#### ####
+
+
+def extract_package(path, package_name, logger):
+    try:
+        if ".tar" in package_name:
+            TarFile.open(package_name).extractall(path)
+        elif ".zip" in package_name:
+            ZipFile(package_name).extractall(path)
+        else:
+            raise FileTypeError("It's not a TAR or ZIP archive.")
+    except Exception as err:
+        register_exception(alert_admin=True,
+                           prefix="Elsevier error extracting package.")
+        logger.error("Error extraction package file: %s %s"
+                     % (path, err))

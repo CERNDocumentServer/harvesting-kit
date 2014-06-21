@@ -147,7 +147,7 @@ class JATSParser(object):
         for affiliation in xml.getElementsByTagName("aff"):
             aff_id = affiliation.getAttribute("id").encode('utf-8')
             # removes numbering in from affiliations
-            text = re.sub(r'^(\d+\ ?)', "", xml_to_text(affiliation))
+            text = re.sub(r'^(\d+,\ ?)', "", xml_to_text(affiliation, delimiter=", "))
             affiliations[aff_id] = text
 
         emails = {}

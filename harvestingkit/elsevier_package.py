@@ -32,7 +32,6 @@ from os import (listdir,
 from os.path import (join,
                      exists,
                      walk)
-from tarfile import TarFile
 from tempfile import (mkdtemp,
                       mkstemp)
 from zipfile import ZipFile
@@ -45,9 +44,11 @@ from invenio.bibrecord import (record_add_field,
 from invenio.config import CFG_TMPSHAREDDIR
 from invenio.shellutils import run_shell_command
 from invenio.bibtask import task_low_level_submission
+from invenio.bibdocfile import BibRecDocs
+from invenio.search_engine import search_pattern
 from harvestingkit.scoap3utils import (create_logger,
                                        MissingFFTError,
-                                       FileTypeError)
+                                       extract_package as scoap3utils_extract_package)
 from harvestingkit.contrast_out_utils import find_package_name
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
@@ -129,18 +130,7 @@ class ElsevierPackage(object):
         """
         self.path = mkdtemp(prefix="scoap3_package_", dir=CFG_TMPSHAREDDIR)
         self.logger.debug("Extracting package: %s" % (self.package_name,))
-        try:
-            if ".tar" in self.package_name:
-                TarFile.open(self.package_name).extractall(self.path)
-            elif ".zip" in self.package_name:
-                ZipFile(self.package_name).extractall(self.path)
-            else:
-                raise FileTypeError("It's not a TAR or ZIP archive.")
-        except Exception as err:
-            register_exception(alert_admin=True,
-                               prefix="Elsevier error extracting package.")
-            self.logger.error("Error extraction package file: %s %s"
-                              % (self.path, err))
+        scoap3utils_extract_package(self.path, self.package_name, self.logger)
 
     def _crawl_elsevier_and_find_main_xml(self):
         """
@@ -787,6 +777,18 @@ class ElsevierPackage(object):
             message = "Elsevier paper: %s is missing PDF." % (doi,)
             register_exception(alert_admin=True, prefix=message)
             self.logger.warning(message)
+
+        ## copy other formats to bibupload file
+        if recid:
+            record = BibRecDocs(recid[0])
+            for bibfile in record.list_latest_files():
+                if bibfile.get_format() != '.pdf;pdfa':
+                    record_add_field(rec,
+                                     'FFT',
+                                     subfields=[('a', bibfile.get_full_path()),
+                                                ('n', bibfile.get_name()),
+                                                ('f', bibfile.get_format())]
+                                     )
         return record_xml_output(rec)
 
     def get_record(self, path=None, no_pdf=False):
@@ -916,10 +918,9 @@ class ElsevierPackage(object):
                                             (first_page, last_page)),
                                         ('y', year)])
             if not no_pdf:
-                from invenio.search_engine import search_pattern
                 query = '0247_a:"%s" AND NOT 980:DELETED"' % (doi,)
                 prev_version = search_pattern(p=query)
-                from invenio.bibdocfile import BibRecDocs
+
                 old_pdf = False
 
                 if prev_version:
@@ -1010,4 +1011,4 @@ class ElsevierPackage(object):
                 print("</collection>", file=out)
                 out.close()
                 task_low_level_submission("bibupload", "admin", "-N",
-                                          "Elsevier:VTEX", "-a", name_vtex)
+                                          "Elsevier:VTEX", "-c", name_vtex)
