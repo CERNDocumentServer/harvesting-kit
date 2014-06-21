@@ -25,10 +25,8 @@ from socket import timeout as socket_timeout_exception
 from os import listdir
 from os.path import (join,
                      walk)
-from tarfile import TarFile
 from tempfile import mkdtemp
 from xml.dom.minidom import parse
-from zipfile import ZipFile
 
 try:
     from contrast_out_config import *
@@ -46,11 +44,10 @@ except ImportError:
 from invenio.errorlib import register_exception
 
 from .ftp_utils import FtpHandler
-from .scoap3utils import (MD5Error,
-                          NoNewFiles,
-                          FileTypeError,
+from .scoap3utils import (NoNewFiles,
                           LoginException,
-                          MissingTagException)
+                          MissingTagException,
+                          extract_package as scoap3utils_extract_package)
 from .contrast_out_utils import (contrast_out_cmp,
                                  find_package_name)
 from .minidom_utils import xml_to_text
@@ -206,18 +203,7 @@ class ContrastOutConnector(object):
         self.path_unpacked = mkdtemp(prefix="scoap3_package_",
                                      dir=CFG_TMPSHAREDDIR)
         for path in self.retrieved_packages_unpacked:
-            try:
-                if ".tar" in path:
-                    TarFile.open(path).extractall(self.path_unpacked)
-                elif ".zip" in path:
-                    ZipFile(path).extractall(self.path_unpacked)
-                else:
-                    raise FileTypeError("It's not a TAR or ZIP archive.")
-            except Exception as err:
-                register_exception(alert_admin=True,
-                                   prefix="Elsevier error extracting package.")
-                self.logger.error("Error extraction package file: %s %s"
-                                  % (path, err))
+            scoap3utils_extract_package(path, self.path_unpacked, self.logger)
 
         return self.path_unpacked
 
