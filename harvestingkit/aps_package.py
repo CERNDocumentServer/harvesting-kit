@@ -16,6 +16,7 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+from __future__ import print_function
 import sys
 import re
 
@@ -30,6 +31,7 @@ from harvestingkit.minidom_utils import (get_value_in_tag,
                                          get_attribute_in_tag)
 from invenio.bibrecord import (record_add_field,
                                record_xml_output)
+from datetime import date
 
 
 class ApsPackageXMLError(Exception):
@@ -62,23 +64,23 @@ class ApsPackage(object):
             except KeyError:
                 pass
             title = title.replace('. ', '.')
-            return title
+            return title.strip()
         except Exception:
-            print >> sys.stderr, "Can't find journal-title"
+            print("Can't find journal-title", file=sys.stderr)
             return ''
 
     def _get_abstract(self):
         try:
             return get_value_in_tag(self.document, 'abstract')
         except Exception:
-            print >> sys.stderr, "Can't find abstract"
+            print("Can't find abstract", file=sys.stderr)
             return ''
 
     def _get_title(self):
         try:
             return get_value_in_tag(self.document, 'article-title')
         except Exception:
-            print >> sys.stderr, "Can't find title"
+            print("Can't find title", file=sys.stderr)
             return ''
 
     def _get_doi(self):
@@ -87,22 +89,11 @@ class ApsPackage(object):
                 if tag.getAttribute('pub-id-type') == 'doi':
                     return tag.firstChild.data
         except Exception:
-            print >> sys.stderr, "Can't find doi"
+            print("Can't find doi", file=sys.stderr)
             return ''
 
-    def _get_authors(self):
-        authors = []
+    def _get_affiliations(self):
         affiliations = {}
-        author_notes = {}
-        for author_note in self.document.getElementsByTagName('author-notes'):
-            for note in author_note.getElementsByTagName('fn'):
-                nid = note.getAttribute('id')
-                email = xml_to_text(note)
-                #removes the label
-                if email.split() > 1:
-                    email = email.split()[1]
-                if '@' in email and '.' in email:
-                    author_notes[nid] = email
         for tag in self.document.getElementsByTagName('aff'):
             aid = tag.getAttribute('id')
             affiliation = xml_to_text(tag)
@@ -113,72 +104,143 @@ class ApsPackage(object):
             except ValueError:
                 pass
             affiliations[aid] = affiliation
-        for tag in self.document.getElementsByTagName('contrib'):
-            if tag.getAttribute('contrib-type') == 'author':
-                aid = ''
-                nid = ''
-                for aff in tag.getElementsByTagName('xref'):
-                    if aff.getAttribute('ref-type') == 'aff':
-                        aid = aff.getAttribute('rid')
-                    if aff.getAttribute('ref-type') == 'author-notes':
-                        nid = aff.getAttribute('rid')
-                    if len(aid.split()) > 1:
-                        aid = aid.split()[0]
-                given_names = get_value_in_tag(tag, 'given-names')
+        return affiliations
+
+    def _get_author_emails(self):
+        author_emails = {}
+        for tag in self.document.getElementsByTagName('author-notes'):
+            for note in tag.getElementsByTagName('fn'):
+                nid = note.getAttribute('id')
+                email = xml_to_text(note)
+                email = email.replace(';', '')
+                #removes the label
+                if email.split() > 1:
+                    emails = email.split()[1:]
+                valid_emails = []
+                for email in emails:
+                    if '@' in email and '.' in email:
+                        valid_emails.append(email)
+                author_emails[nid] = valid_emails
+        return author_emails
+
+    def _get_authors(self):
+        authors = []
+        for contrib in self.document.getElementsByTagName('contrib'):
+            if contrib.getAttribute('contrib-type') == 'author':
+                surname = get_value_in_tag(contrib, 'surname')
+                given_names = get_value_in_tag(contrib, 'given-names')
                 given_names = collapse_initials(given_names)
-                surname = get_value_in_tag(tag, 'surname')
-                name = "%s, %s" % (surname, given_names)
-                try:
-                    affiliation = affiliations[aid]
-                except KeyError:
-                    affiliation = ''
-                try:
-                    note = author_notes[nid]
-                except KeyError:
-                    note = ''
-                authors.append((name, affiliation, note))
+                name = '%s, %s' % (surname, given_names)
+                affiliations = []
+                corresp = ''
+                for tag in contrib.getElementsByTagName('xref'):
+                    if tag.getAttribute('ref-type') == 'aff':
+                        affiliations.extend(tag.getAttribute('rid').split())
+                    elif tag.getAttribute('ref-type') == 'corresp' or\
+                            tag.getAttribute('ref-type') == 'author-notes':
+                        corresp = tag.getAttribute('rid')
+                authors.append((name, affiliations, corresp))
         return authors
+
+    def _get_license(self):
+        license = ''
+        license_type = ''
+        for tag in self.document.getElementsByTagName('license'):
+            license = get_value_in_tag(tag, 'ext-link')
+            license_type = tag.getAttribute('license-type')
+        return license, license_type
+
+    def _get_page_count(self):
+        try:
+            return get_attribute_in_tag(self.document, 'page-count', 'count')[0]
+        except IndexError:
+            print("Can't find page count", file=sys.stderr)
+            return ''
 
     def _get_copyright(self):
         try:
-            return get_value_in_tag(self.document, 'copyright-statement')
+            copyright_holder = get_value_in_tag(self.document, 'copyright-holder')
+            copyright_year = get_value_in_tag(self.document, 'copyright-year')
+            copyright_statement = get_value_in_tag(self.document, 'copyright-statement')
+            return copyright_holder, copyright_year, copyright_statement
         except Exception:
-            print >> sys.stderr, "Can't find copyright"
-            return ''
+            print("Can't find copyright", file=sys.stderr)
+            return '', '', ''
+
+    def _get_pacscodes(self):
+        pacscodes = []
+        for tag in self.document.getElementsByTagName('kwd-group'):
+            if tag.getAttribute('kwd-group-type') == 'pacs':
+                for code in tag.getElementsByTagName('kwd'):
+                    pacscodes.append(xml_to_text(code))
+        return pacscodes
 
     def _get_date(self):
+        final = ''
         epub_date = ''
         ppub_date = ''
-        for date in self.document.getElementsByTagName('pub-date'):
-            if date.getAttribute('pub-type') == 'epub':
-                epub_date = date.getAttribute('iso-8601-date')
-            elif date.getAttribute('pub-type') == 'ppub':
-                ppub_date = date.getAttribute('iso-8601-date')
-        if epub_date:
+        for dateTag in self.document.getElementsByTagName('pub-date'):
+            if dateTag.getAttribute('pub-type') == 'final':
+                try:
+                    day = int(get_value_in_tag(dateTag, 'day'))
+                    month = int(get_value_in_tag(dateTag, 'month'))
+                    year = int(get_value_in_tag(dateTag, 'year'))
+                    final = str(date(year, month, day))
+                except ValueError:
+                    pass
+            if dateTag.getAttribute('pub-type') == 'epub':
+                try:
+                    day = int(get_value_in_tag(dateTag, 'day'))
+                    month = int(get_value_in_tag(dateTag, 'month'))
+                    year = int(get_value_in_tag(dateTag, 'year'))
+                    epub_date = str(date(year, month, day))
+                except ValueError:
+                    epub_date = dateTag.getAttribute('iso-8601-date')
+            elif dateTag.getAttribute('pub-type') == 'ppub':
+                try:
+                    day = int(get_value_in_tag(dateTag, 'day'))
+                    month = int(get_value_in_tag(dateTag, 'month'))
+                    year = int(get_value_in_tag(dateTag, 'year'))
+                    ppub_date = str(date(year, month, day))
+                except ValueError:
+                    ppub_date = dateTag.getAttribute('iso-8601-date')
+        if final:
+            return final
+        elif epub_date:
             return epub_date
         elif ppub_date:
             return ppub_date
         else:
-            print >> sys.stderr, "Can't find publication date"
+            print("Can't find publication date", file=sys.stderr)
             return datetime.now().strftime("%Y-%m-%d")
 
     def _get_publisher(self):
         try:
             return get_value_in_tag(self.document, 'publisher')
         except Exception:
-            print >> sys.stderr, "Can't find publisher"
+            print("Can't find publisher", file=sys.stderr)
             return ''
 
-    def _get_publition_information(self):
+    def _get_subject(self):
+        subjects = []
+        for tag in self.document.getElementsByTagName('subj-group'):
+            if tag.getAttribute('subj-group-type') == 'toc-minor':
+                for subject in tag.getElementsByTagName('subject'):
+                    subjects.append(xml_to_text(subject))
+        return ', '.join(subjects)
+
+    def _get_publication_information(self):
         journal = self._get_journal()
         date = self._get_date()
         doi = self._get_doi()
-        journal, volume = fix_journal_name(journal, self.journal_mappings)
-        article_id = get_value_in_tag(self.document, 'elocation-id')
-        volume += get_value_in_tag(self.document, 'volume')
         issue = get_value_in_tag(self.document, 'issue')
-        year = get_value_in_tag(self.document, 'copyright-year')
-        return (journal, volume, issue, year, date, doi, article_id)
+        journal, volume = fix_journal_name(journal, self.journal_mappings)
+        volume += get_value_in_tag(self.document, 'volume')
+        page = get_value_in_tag(self.document, 'elocation-id')
+        fpage = get_value_in_tag(self.document, 'fpage')
+        lpage = get_value_in_tag(self.document, 'lpage')
+        year = date[:4]
+        return (journal, volume, issue, year, date, doi, page, fpage, lpage)
 
     def _get_reference(self, ref):
         """ Retrieves the data for a reference """
@@ -218,7 +280,7 @@ class ApsPackage(object):
             volume += get_value_in_tag(innerref, 'volume')
             if journal == 'J.High Energy Phys.' or journal == 'JHEP':
                 issue = get_value_in_tag(innerref, 'issue')
-                volume = volume[2:]+issue
+                volume = volume[2:] + issue
                 journal = 'JHEP'
             page = get_value_in_tag(innerref, 'page-range')
             year = get_value_in_tag(innerref, 'year')
@@ -346,6 +408,25 @@ class ApsPackage(object):
                 else:
                     record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
 
+    def _add_authors(self, rec):
+        authors = self._get_authors()
+        affiliations = self._get_affiliations()
+        author_emails = self._get_author_emails()
+        first_author = True
+        for author in authors:
+            subfields = [('a', author[0])]
+            if author[1]:
+                for aff in author[1]:
+                    subfields.append(('v', affiliations[aff]))
+            if author[2]:
+                for email in author_emails[author[2]]:
+                    subfields.append(('m', email))
+            if first_author:
+                record_add_field(rec, '100', subfields=subfields)
+                first_author = False
+            else:
+                record_add_field(rec, '700', subfields=subfields)
+
     def get_record(self, xml_file):
         """ Reads a xml file in JATS format and returns
             a xml string in marc format """
@@ -355,70 +436,41 @@ class ApsPackage(object):
             raise ApsPackageXMLError("The XML format of %s is not correct"
                                      % (xml_file,))
         rec = {}
-        page_count = get_attribute_in_tag(self.document, 'page-count', 'count')
+        page_count = self._get_page_count()
         if page_count:
-            record_add_field(rec, '300', subfields=[('a', page_count[0])])
-        pacscodes = []
-        for tag in self.document.getElementsByTagName('kwd-group'):
-            if tag.getAttribute('kwd-group-type') == 'pacs':
-                for code in tag.getElementsByTagName('kwd'):
-                    pacscodes.append(xml_to_text(code))
+            record_add_field(rec, '300', subfields=[('a', page_count)])
+        pacscodes = self._get_pacscodes()
         for pacscode in pacscodes:
             record_add_field(rec, '084', subfields=[('2', 'PACS'),
                                                     ('a', pacscode)])
-        subjects = []
-        for tag in self.document.getElementsByTagName('subj-group'):
-            if tag.getAttribute('subj-group-type') == 'toc-minor':
-                for subject in tag.getElementsByTagName('subject'):
-                    subjects.append(xml_to_text(subject))
-        if subjects:
+        subject = self._get_subject()
+        if subject:
             record_add_field(rec, '650', ind1='1', ind2='7', subfields=[('2', 'APS'),
-                                                                        ('a', ', '.join(subjects))])
+                                                                        ('a', subject)])
         title = self._get_title()
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
         journal, volume, issue, year, start_date, doi,\
-            article_id = self._get_publition_information()
+            article_id, _, _ = self._get_publication_information()
         if start_date:
             record_add_field(rec, '260', subfields=[('c', start_date),
                                                     ('t', 'published')])
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi),
                                                               ('2', 'DOI')])
-        authors = self._get_authors()
-        first_author = True
-        for author in authors:
-            subfields = [('a', author[0])]
-            if author[1]:
-                subfields.append(('v', author[1]))
-            if author[2]:
-                subfields.append(('m', author[2]))
-            if first_author:
-                record_add_field(rec, '100', subfields=subfields)
-                first_author = False
-            else:
-                record_add_field(rec, '700', subfields=subfields)
         abstract = self._get_abstract()
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract),
                                                     ('9', 'APS')])
-        copyrightt = self._get_copyright()
-        if copyrightt:
-            year = ''
-            if copyrightt.startswith('©'):
-                year = copyrightt[2:].strip()
-                year = year.split()[0]
-            if year.isdigit():
-                copyrightt = copyrightt[2:].strip()
-                copyrightt = " ".join(copyrightt.split()[1:])
-                record_add_field(rec, '542', subfields=[('d', copyrightt),
-                                                        ('g', year),
-                                                        ('3', 'Article')])
-            else:
-                year = start_date[:4]
-                record_add_field(rec, '542', subfields=[('f', copyrightt),
-                                                        ('g', year),
-                                                        ('3', 'Article')])
+        c_holder, c_year, c_statement = self._get_copyright()
+        c_holder, c_year, c_statement = self._get_copyright()
+        if c_holder and c_year:
+            record_add_field(rec, '542', subfields=[('d', c_holder),
+                                                    ('g', c_year),
+                                                    ('e', 'Article')])
+        elif c_statement:
+            record_add_field(rec, '542', subfields=[('f', c_statement),
+                                                    ('e', 'Article')])
         record_add_field(rec, '773', subfields=[('p', journal),
                                                 ('v', volume),
                                                 ('n', issue),
@@ -427,6 +479,7 @@ class ApsPackage(object):
         record_add_field(rec, '980', subfields=[('a', 'HEP')])
         record_add_field(rec, '980', subfields=[('a', 'Citeable')])
         record_add_field(rec, '980', subfields=[('a', 'Published')])
+        self._add_authors(rec)
         self._add_references(rec)
         try:
             return record_xml_output(rec)
@@ -438,10 +491,10 @@ class ApsPackage(object):
 
 def main(args):
     if len(args) != 1:
-        print "usage: python aps_package.py <filename>"
+        print("usage: python aps_package.py <filename>")
         sys.exit()
     a = ApsPackage()
-    print a.get_record(args[0])
+    print(a.get_record(args[0]))
 
 if __name__ == '__main__':
     main(sys.argv[1:])
