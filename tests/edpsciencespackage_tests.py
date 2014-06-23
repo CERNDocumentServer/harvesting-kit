@@ -89,7 +89,7 @@ class EDPSciencesPackageTests(unittest.TestCase):
     def test_publication_information(self):
         publication_information = ('Astron.Astrophys.',
                                    '565',
-                                   '',
+                                   'aa/2014/05',
                                    u'2014',
                                    '2014-05-23',
                                    u'10.1051/0004-6361/201423985',
