@@ -20,18 +20,14 @@ from __future__ import print_function
 import sys
 import re
 
-from invenio.refextract_kbs import get_kbs
-from datetime import datetime
 from xml.dom.minidom import parse
 from harvestingkit.utils import (fix_journal_name,
-                                 collapse_initials,
                                  format_arxiv_id)
 from harvestingkit.minidom_utils import (get_value_in_tag,
-                                         xml_to_text,
-                                         get_attribute_in_tag)
+                                         xml_to_text)
 from invenio.bibrecord import (record_add_field,
                                record_xml_output)
-from datetime import date
+from harvestingkit.jats_package import JatsPackage
 
 
 class ApsPackageXMLError(Exception):
@@ -39,208 +35,14 @@ class ApsPackageXMLError(Exception):
     pass
 
 
-class ApsPackage(object):
+class ApsPackage(JatsPackage):
     """
     This class is specialized in parsing an APS harvested file in JATS format
     and creating a Inspire-compatible bibupload containing the original
     XML and every possible metadata filled in.
     """
     def __init__(self, journal_mappings=None):
-        if journal_mappings:
-            self.journal_mappings = journal_mappings
-        else:
-            try:
-                self.journal_mappings = get_kbs()['journals'][1]
-            except KeyError:
-                self.journal_mappings = {}
-
-    def _get_journal(self):
-        try:
-            title = get_value_in_tag(self.document, 'abbrev-journal-title')
-            if not title:
-                title = get_value_in_tag(self.document, 'journal-title')
-            try:
-                title = self.journal_mappings[title.upper()]
-            except KeyError:
-                pass
-            title = title.replace('. ', '.')
-            return title.strip()
-        except Exception:
-            print("Can't find journal-title", file=sys.stderr)
-            return ''
-
-    def _get_abstract(self):
-        try:
-            return get_value_in_tag(self.document, 'abstract')
-        except Exception:
-            print("Can't find abstract", file=sys.stderr)
-            return ''
-
-    def _get_title(self):
-        try:
-            return get_value_in_tag(self.document, 'article-title')
-        except Exception:
-            print("Can't find title", file=sys.stderr)
-            return ''
-
-    def _get_doi(self):
-        try:
-            for tag in self.document.getElementsByTagName('article-id'):
-                if tag.getAttribute('pub-id-type') == 'doi':
-                    return tag.firstChild.data
-        except Exception:
-            print("Can't find doi", file=sys.stderr)
-            return ''
-
-    def _get_affiliations(self):
-        affiliations = {}
-        for tag in self.document.getElementsByTagName('aff'):
-            aid = tag.getAttribute('id')
-            affiliation = xml_to_text(tag)
-            #removes the label
-            try:
-                int(affiliation.split()[0])
-                affiliation = ' '.join(affiliation.split()[1:])
-            except ValueError:
-                pass
-            affiliations[aid] = affiliation
-        return affiliations
-
-    def _get_author_emails(self):
-        author_emails = {}
-        for tag in self.document.getElementsByTagName('author-notes'):
-            for note in tag.getElementsByTagName('fn'):
-                nid = note.getAttribute('id')
-                email = xml_to_text(note)
-                email = email.replace(';', '')
-                #removes the label
-                if email.split() > 1:
-                    emails = email.split()[1:]
-                valid_emails = []
-                for email in emails:
-                    if '@' in email and '.' in email:
-                        valid_emails.append(email)
-                author_emails[nid] = valid_emails
-        return author_emails
-
-    def _get_authors(self):
-        authors = []
-        for contrib in self.document.getElementsByTagName('contrib'):
-            if contrib.getAttribute('contrib-type') == 'author':
-                surname = get_value_in_tag(contrib, 'surname')
-                given_names = get_value_in_tag(contrib, 'given-names')
-                given_names = collapse_initials(given_names)
-                name = '%s, %s' % (surname, given_names)
-                affiliations = []
-                corresp = ''
-                for tag in contrib.getElementsByTagName('xref'):
-                    if tag.getAttribute('ref-type') == 'aff':
-                        affiliations.extend(tag.getAttribute('rid').split())
-                    elif tag.getAttribute('ref-type') == 'corresp' or\
-                            tag.getAttribute('ref-type') == 'author-notes':
-                        corresp = tag.getAttribute('rid')
-                authors.append((name, affiliations, corresp))
-        return authors
-
-    def _get_license(self):
-        license = ''
-        license_type = ''
-        for tag in self.document.getElementsByTagName('license'):
-            license = get_value_in_tag(tag, 'ext-link')
-            license_type = tag.getAttribute('license-type')
-        return license, license_type
-
-    def _get_page_count(self):
-        try:
-            return get_attribute_in_tag(self.document, 'page-count', 'count')[0]
-        except IndexError:
-            print("Can't find page count", file=sys.stderr)
-            return ''
-
-    def _get_copyright(self):
-        try:
-            copyright_holder = get_value_in_tag(self.document, 'copyright-holder')
-            copyright_year = get_value_in_tag(self.document, 'copyright-year')
-            copyright_statement = get_value_in_tag(self.document, 'copyright-statement')
-            return copyright_holder, copyright_year, copyright_statement
-        except Exception:
-            print("Can't find copyright", file=sys.stderr)
-            return '', '', ''
-
-    def _get_pacscodes(self):
-        pacscodes = []
-        for tag in self.document.getElementsByTagName('kwd-group'):
-            if tag.getAttribute('kwd-group-type') == 'pacs':
-                for code in tag.getElementsByTagName('kwd'):
-                    pacscodes.append(xml_to_text(code))
-        return pacscodes
-
-    def _get_date(self):
-        final = ''
-        epub_date = ''
-        ppub_date = ''
-        for dateTag in self.document.getElementsByTagName('pub-date'):
-            if dateTag.getAttribute('pub-type') == 'final':
-                try:
-                    day = int(get_value_in_tag(dateTag, 'day'))
-                    month = int(get_value_in_tag(dateTag, 'month'))
-                    year = int(get_value_in_tag(dateTag, 'year'))
-                    final = str(date(year, month, day))
-                except ValueError:
-                    pass
-            if dateTag.getAttribute('pub-type') == 'epub':
-                try:
-                    day = int(get_value_in_tag(dateTag, 'day'))
-                    month = int(get_value_in_tag(dateTag, 'month'))
-                    year = int(get_value_in_tag(dateTag, 'year'))
-                    epub_date = str(date(year, month, day))
-                except ValueError:
-                    epub_date = dateTag.getAttribute('iso-8601-date')
-            elif dateTag.getAttribute('pub-type') == 'ppub':
-                try:
-                    day = int(get_value_in_tag(dateTag, 'day'))
-                    month = int(get_value_in_tag(dateTag, 'month'))
-                    year = int(get_value_in_tag(dateTag, 'year'))
-                    ppub_date = str(date(year, month, day))
-                except ValueError:
-                    ppub_date = dateTag.getAttribute('iso-8601-date')
-        if final:
-            return final
-        elif epub_date:
-            return epub_date
-        elif ppub_date:
-            return ppub_date
-        else:
-            print("Can't find publication date", file=sys.stderr)
-            return datetime.now().strftime("%Y-%m-%d")
-
-    def _get_publisher(self):
-        try:
-            return get_value_in_tag(self.document, 'publisher')
-        except Exception:
-            print("Can't find publisher", file=sys.stderr)
-            return ''
-
-    def _get_subject(self):
-        subjects = []
-        for tag in self.document.getElementsByTagName('subj-group'):
-            if tag.getAttribute('subj-group-type') == 'toc-minor':
-                for subject in tag.getElementsByTagName('subject'):
-                    subjects.append(xml_to_text(subject))
-        return ', '.join(subjects)
-
-    def _get_publication_information(self):
-        journal = self._get_journal()
-        date = self._get_date()
-        doi = self._get_doi()
-        issue = get_value_in_tag(self.document, 'issue')
-        journal, volume = fix_journal_name(journal, self.journal_mappings)
-        volume += get_value_in_tag(self.document, 'volume')
-        page = get_value_in_tag(self.document, 'elocation-id')
-        fpage = get_value_in_tag(self.document, 'fpage')
-        lpage = get_value_in_tag(self.document, 'lpage')
-        year = date[:4]
-        return (journal, volume, issue, year, date, doi, page, fpage, lpage)
+        super(ApsPackage, self).__init__(journal_mappings)
 
     def _get_reference(self, ref):
         """ Retrieves the data for a reference """
@@ -407,25 +209,6 @@ class ApsPackage(object):
                             record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
                 else:
                     record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
-
-    def _add_authors(self, rec):
-        authors = self._get_authors()
-        affiliations = self._get_affiliations()
-        author_emails = self._get_author_emails()
-        first_author = True
-        for author in authors:
-            subfields = [('a', author[0])]
-            if author[1]:
-                for aff in author[1]:
-                    subfields.append(('v', affiliations[aff]))
-            if author[2]:
-                for email in author_emails[author[2]]:
-                    subfields.append(('m', email))
-            if first_author:
-                record_add_field(rec, '100', subfields=subfields)
-                first_author = False
-            else:
-                record_add_field(rec, '700', subfields=subfields)
 
     def get_record(self, xml_file):
         """ Reads a xml file in JATS format and returns
