@@ -448,7 +448,10 @@ class ElsevierPackage(object):
 
     def get_copyright(self, xml_doc):
         try:
-            return get_value_in_tag(xml_doc, "ce:copyright")
+            copyright = get_value_in_tag(xml_doc, "ce:copyright")
+            if not copyright:
+                copyright = get_value_in_tag(xml_doc, "prism:copyright")
+            return copyright
         except Exception:
             print("Can't find copyright", file=sys.stderr)
 
@@ -625,6 +628,7 @@ class ElsevierPackage(object):
         isjournal = ref.getElementsByTagName("sb:issue")
         journal = ""
         if isjournal:
+            isjournal = True
             if not page:
                 page = comment
             container = ref.getElementsByTagName("sb:issue")[0]

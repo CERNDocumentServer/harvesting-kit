@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD with OASIS Tables with MathML3 v1.1d1 20130915//EN" "JATS-journalpublishing-oasis-article1-mathml3.dtd">
+<article article-type="brief-report" xml:lang="en" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:oasis="http://www.niso.org/standards/z39-96/ns/oasis-exchange/table">
+<front>
+<journal-meta>
+<journal-id journal-id-type="publisher-id">PRC</journal-id>
+<journal-id journal-id-type="coden">PRVCAN</journal-id>
+<journal-title-group>
+<journal-title>Physical Review C</journal-title>
+<abbrev-journal-title>Phys. Rev. C</abbrev-journal-title>
+</journal-title-group>
+<issn pub-type="ppub">0556-2813</issn>
+<issn pub-type="epub">1089-490X</issn>
+<publisher>
+<publisher-name>American Physical Society</publisher-name>
+</publisher>
+</journal-meta>
+<article-meta>
+<article-id pub-id-type="doi">10.1103/PhysRevC.89.048801</article-id>
+<article-categories>
+<subj-group subj-group-type="toc-major">
+<subject>BRIEF REPORTS</subject>
+</subj-group>
+<subj-group subj-group-type="toc-minor">
+<subject>Nuclear Astrophysics</subject>
+</subj-group>
+</article-categories>
+<title-group>
+<article-title>Nucleon effective masses within the Brueckner-Hartree-Fock theory: Impact on stellar neutrino emission</article-title>
+<alt-title alt-title-type="running-title">BRIEF REPORTS</alt-title>
+<alt-title alt-title-type="running-authors">BRIEF REPORTS</alt-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author"><name><surname>Baldo</surname><given-names>M.</given-names></name>
+</contrib>
+<contrib contrib-type="author"><name><surname>Burgio</surname><given-names>G. F.</given-names></name>
+</contrib>
+<contrib contrib-type="author"><name><surname>Schulze</surname><given-names>H.-J.</given-names></name>
+</contrib>
+<contrib contrib-type="author"><name><surname>Newman</surname><given-names>M. E. J.</given-names></name>
+<xref ref-type="aff" rid="a2 a3"><sup>1,3</sup></xref>
+</contrib>
+<contrib contrib-type="author"><name><surname>Taranto</surname><given-names>G.</given-names></name>
+<xref ref-type="aff" rid="a1"></xref>
+<xref ref-type="author-notes" rid="n1"><sup>*</sup></xref>
+</contrib>
+<aff id="a2"><label><sup>2</sup></label>Department of Electrical Engineering and Computer Science, <institution>University of Michigan</institution>, Ann Arbor, Michigan 48109, USA</aff>
+<aff id="a3"><label><sup>3</sup></label>Center for the Study of Complex Systems, <institution>University of Michigan</institution>, Ann Arbor, Michigan 48109, USA</aff>
+<aff id="a1">INFN Sezione di Catania and Dipartimento di Fisica e Astronomia, <institution>Universitá di Catania</institution>, Via Santa Sofia 64, 95123 Catania, Italy</aff>
+
+</contrib-group>
+<author-notes>
+<fn id="n1"><label><sup>*</sup></label><p>tarantogabriele@gmail.com; gabriele.taranto@ct.infn.it</p></fn>
+</author-notes>
+<pub-date pub-type="ppub" iso-8601-date="2014-04-00"><month>April</month><year>2014</year></pub-date>
+<pub-date pub-type="epub" iso-8601-date="2014-04-28"><day>28</day><month>April</month><year>2014</year></pub-date>
+<volume>89</volume>
+<issue>4</issue>
+<elocation-id>048801</elocation-id>
+<history>
+<date date-type="received" iso-8601-date="2013-12-17"><day>17</day><month>December</month><year>2013</year></date>
+<date date-type="rev-recd" iso-8601-date="2014-02-27"><day>27</day><month>February</month><year>2014</year></date>
+</history>
+<permissions>
+<copyright-statement>©2014 American Physical Society</copyright-statement>
+<copyright-year>2014</copyright-year>
+<copyright-holder>American Physical Society</copyright-holder>
+</permissions>
+<abstract><p>We calculate the effective masses of neutrons and protons in dense nuclear matter within the microscopic Brueckner-Hartree-Fock many-body theory and study the impact on the neutrino emissivity processes of neutron stars. We compare results based on different nucleon-nucleon potentials and nuclear three-body forces. Useful parametrizations of the numerical results are given. We find substantial in-medium suppression of the emissivities, strongly dependent on the interactions.</p></abstract>
+<kwd-group kwd-group-type="pacs">
+<kwd>26.60.Kp</kwd>
+<kwd>97.10.Cv</kwd>
+</kwd-group>
+<counts>
+<page-count count="5"/>
+</counts>
+</article-meta>
+</front>
+<body>
+<p>With the commissioning of increasingly sophisticated instruments, more and more details of the very faint signals emitted by neutron stars (NSs) can be quantitatively monitored. This will allow, in the near-future, an ever-increasing accuracy to constrain the theoretical ideas on the ultradense matter that composes these objects.</p>
+<p>One important tool of analysis is the temperature-vs-age cooling diagram, in which currently a few observed NSs are located. NS cooling is over a vast domain of time (<inline-formula><mml:math><mml:msup><mml:mn>10</mml:mn><mml:mrow><mml:mo>−</mml:mo><mml:mn>10</mml:mn></mml:mrow></mml:msup><mml:mo>−</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>5</mml:mn></mml:msup></mml:math></inline-formula> yr), dominated by neutrino emission due to several microscopic processes <xref ref-type="bibr" rid="c1">[1]</xref>. The theoretical analysis of these reactions requires, apart from the elementary matrix elements, knowledge of the density of states of the relevant reaction partners and thus the nucleon effective masses.</p>
+<p>The present report is focused on the problem of the theoretical determination of this important input information and reports nucleon effective masses in dense nuclear matter obtained within the Brueckner-Hartree-Fock (BHF) theoretical many-body approach. We study the dependence on the underlying basic two-nucleon and three-nucleon interactions and provide useful parametrizations of the numerical results. Finally, some estimates of the related in-medium modification of the various neutrino emission rates in NS matter are given. We begin with a short review of the BHF formalism and the relevant neutrino emission processes, before presenting our numerical results.</p>
+<p>Empirical properties of infinite nuclear matter can be calculated using many different theoretical approaches. In this paper we concentrate on the nonrelativistic BHF method, which is based on a linked-cluster expansion of the energy per nucleon of nuclear matter <xref ref-type="bibr" rid="c2 c3 c4">[2–4]</xref>. The basic ingredient in this many-body approach is the reaction matrix <inline-formula><mml:math><mml:mi>G</mml:mi></mml:math></inline-formula>, which is the solution of the Bethe-Goldstone equation
+<disp-formula id="d1">
+<label>(1)</label>
+<mml:math display="block"><mml:mrow><mml:mi>G</mml:mi><mml:mrow><mml:mo>[</mml:mo><mml:mi>ρ</mml:mi><mml:mo>;</mml:mo><mml:mi>ω</mml:mi><mml:mo>]</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mi>V</mml:mi><mml:mo>+</mml:mo><mml:munder><mml:mo>∑</mml:mo><mml:mrow><mml:msub><mml:mi>k</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:msub><mml:mi>k</mml:mi><mml:mi>b</mml:mi></mml:msub></mml:mrow></mml:munder><mml:mi>V</mml:mi><mml:mfrac><mml:mrow><mml:mrow><mml:mo>|</mml:mo></mml:mrow><mml:msub><mml:mi>k</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:msub><mml:mi>k</mml:mi><mml:mi>b</mml:mi></mml:msub><mml:mrow><mml:mo>〉</mml:mo><mml:mi>Q</mml:mi><mml:mo>〈</mml:mo></mml:mrow><mml:msub><mml:mi>k</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:msub><mml:mi>k</mml:mi><mml:mi>b</mml:mi></mml:msub><mml:mrow><mml:mo>|</mml:mo></mml:mrow></mml:mrow><mml:mrow><mml:mi>ω</mml:mi><mml:mo>−</mml:mo><mml:mi>e</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:msub><mml:mi>k</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>)</mml:mo></mml:mrow><mml:mo>−</mml:mo><mml:mi>e</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:msub><mml:mi>k</mml:mi><mml:mi>b</mml:mi></mml:msub><mml:mo>)</mml:mo></mml:mrow></mml:mrow></mml:mfrac><mml:mi>G</mml:mi><mml:mrow><mml:mo>[</mml:mo><mml:mi>ρ</mml:mi><mml:mo>;</mml:mo><mml:mi>ω</mml:mi><mml:mo>]</mml:mo></mml:mrow><mml:mo>,</mml:mo></mml:mrow></mml:math></disp-formula>where <inline-formula><mml:math><mml:mi>V</mml:mi></mml:math></inline-formula> is the bare nucleon-nucleon (NN) interaction, <inline-formula><mml:math><mml:mi>ρ</mml:mi></mml:math></inline-formula> is the nucleon number density, and <inline-formula><mml:math><mml:mi>ω</mml:mi></mml:math></inline-formula> the starting energy. The single-particle (s.p.) energy
+<disp-formula id="d2">
+<label>(2)</label>
+<mml:math display="block"><mml:mrow><mml:mi>e</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>k</mml:mi><mml:mo>)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mi>e</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>k</mml:mi><mml:mo>;</mml:mo><mml:mi>ρ</mml:mi><mml:mo>)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mfrac><mml:msup><mml:mi>k</mml:mi><mml:mn>2</mml:mn></mml:msup><mml:mrow><mml:mn>2</mml:mn><mml:mi>m</mml:mi></mml:mrow></mml:mfrac><mml:mo>+</mml:mo><mml:mi>U</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>k</mml:mi><mml:mo>;</mml:mo><mml:mi>ρ</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:mrow></mml:math></disp-formula>and the Pauli operator <inline-formula><mml:math><mml:mi>Q</mml:mi></mml:math></inline-formula> determine the propagation of intermediate baryon pairs. The BHF approximation for the s.p. potential <inline-formula><mml:math><mml:mrow><mml:mi>U</mml:mi><mml:mo>(</mml:mo><mml:mi>k</mml:mi><mml:mo>;</mml:mo><mml:mi>ρ</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:math></inline-formula> using the <italic>continuous choice</italic> is
+<disp-formula id="d3">
+<label>(3)</label>
+<mml:math display="block"><mml:mrow><mml:mi>U</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>k</mml:mi><mml:mo>;</mml:mo><mml:mi>ρ</mml:mi><mml:mo>)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mi>Re</mml:mi><mml:munder><mml:mo>∑</mml:mo><mml:mrow><mml:msup><mml:mi>k</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mo>≤</mml:mo><mml:msub><mml:mi>k</mml:mi><mml:mi>F</mml:mi></mml:msub></mml:mrow></mml:munder><mml:mrow><mml:mo>〈</mml:mo><mml:mi>k</mml:mi></mml:mrow><mml:msup><mml:mi>k</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mrow><mml:mo>|</mml:mo><mml:mi>G</mml:mi></mml:mrow><mml:mrow><mml:mo>[</mml:mo><mml:mi>ρ</mml:mi><mml:mo>;</mml:mo><mml:mi>e</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>k</mml:mi><mml:mo>)</mml:mo></mml:mrow><mml:mo>+</mml:mo><mml:mi>e</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:msup><mml:mi>k</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mo>)</mml:mo></mml:mrow><mml:mo>]</mml:mo></mml:mrow><mml:msub><mml:mrow><mml:mo>|</mml:mo><mml:mi>k</mml:mi><mml:msup><mml:mi>k</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mo>〉</mml:mo></mml:mrow><mml:mi>a</mml:mi></mml:msub><mml:mo>,</mml:mo></mml:mrow></mml:math></disp-formula>and the energy per nucleon is then given by
+<disp-formula id="d4">
+<label>(4)</label>
+<mml:math display="block"><mml:mrow><mml:mfrac><mml:mi>E</mml:mi><mml:mi>A</mml:mi></mml:mfrac><mml:mo>=</mml:mo><mml:mfrac><mml:mn>3</mml:mn><mml:mn>5</mml:mn></mml:mfrac><mml:mfrac><mml:msubsup><mml:mi>k</mml:mi><mml:mi>F</mml:mi><mml:mn>2</mml:mn></mml:msubsup><mml:mrow><mml:mn>2</mml:mn><mml:mi>m</mml:mi></mml:mrow></mml:mfrac><mml:mo>+</mml:mo><mml:mfrac><mml:mn>1</mml:mn><mml:mrow><mml:mn>2</mml:mn><mml:mi>ρ</mml:mi></mml:mrow></mml:mfrac><mml:munder><mml:mo>∑</mml:mo><mml:mrow><mml:mi>k</mml:mi><mml:mo>,</mml:mo><mml:msup><mml:mi>k</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mo>≤</mml:mo><mml:msub><mml:mi>k</mml:mi><mml:mi>F</mml:mi></mml:msub></mml:mrow></mml:munder><mml:mrow><mml:mo>〈</mml:mo><mml:mi>k</mml:mi></mml:mrow><mml:msup><mml:mi>k</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mrow><mml:mo>|</mml:mo><mml:mi>G</mml:mi></mml:mrow><mml:mrow><mml:mo>[</mml:mo><mml:mi>ρ</mml:mi><mml:mo>;</mml:mo><mml:mi>e</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>k</mml:mi><mml:mo>)</mml:mo></mml:mrow><mml:mo>+</mml:mo><mml:mi>e</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:msup><mml:mi>k</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mo>)</mml:mo></mml:mrow><mml:mo>]</mml:mo></mml:mrow><mml:msub><mml:mrow><mml:mo>|</mml:mo><mml:mi>k</mml:mi><mml:msup><mml:mi>k</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mo>〉</mml:mo></mml:mrow><mml:mi>a</mml:mi></mml:msub><mml:mo>,</mml:mo></mml:mrow></mml:math></disp-formula>where the subscript <inline-formula><mml:math><mml:mi>a</mml:mi></mml:math></inline-formula> indicates antisymmetrization of the matrix element. In this scheme, the only input quantity needed is the bare NN interaction <inline-formula><mml:math><mml:mi>V</mml:mi></mml:math></inline-formula> in the Bethe-Goldstone equation, <xref ref-type="disp-formula" rid="d1">(1)</xref>.</p>
+<p>The nuclear equation of state can be calculated with good accuracy in this two-hole-line approximation with the continuous choice for the s.p. potential, since the results in this scheme are quite close to those which also include  the three-hole-line contribution <xref ref-type="bibr" rid="c5">[5]</xref>. The dependence on the NN interaction, also within other many-body approaches, has recently been systematically investigated in Refs. <xref ref-type="bibr" rid="c6">[6]</xref> and <xref ref-type="bibr" rid="c7">[7]</xref>.</p>
+<p>However, it is commonly known that nonrelativistic calculations, based on purely two-body interactions, fail to reproduce the correct saturation point of symmetric nuclear matter, which requires the introduction of three-body forces (TBFs). In our approach, following Ref. <xref ref-type="bibr" rid="c8">[8]</xref>, the TBF is reduced to a density-dependent two-body force by averaging over the position of the third particle, assuming that the probability of having two particles at a given distance is reduced according to the two-body correlation function <xref ref-type="bibr" rid="c9 c10">[9,10]</xref>. More precisely, in the current procedure any exchange diagrams involving the in-medium particle are neglected, but the proper spin-isospin correlations in the relative <inline-formula><mml:math><mml:mrow><mml:msup><mml:mrow></mml:mrow><mml:mn>1</mml:mn></mml:msup><mml:msub><mml:mi>S</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:mrow></mml:math></inline-formula> and <inline-formula><mml:math><mml:mrow><mml:msup><mml:mrow></mml:mrow><mml:mn>3</mml:mn></mml:msup><mml:msub><mml:mi>S</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:mrow></mml:math></inline-formula> states are maintained via the corresponding defect functions. For more details we refer to <xref ref-type="bibr" rid="c8">[8]</xref>, <xref ref-type="bibr" rid="c11">[11]</xref>, and references therein. For the moment a completely consistent inclusion of TBFs in the BHF formalism has not been achieved, although there has been some recent progress <xref ref-type="bibr" rid="c12">[12]</xref>.</p>
+<p>Following this procedure, we illustrate results for two approaches to TBFs, i.e., a phenomenological and a microscopic one. The phenomenological approach is based on the so-called Urbana model <xref ref-type="bibr" rid="c13">[13]</xref>. The two parameters contained in this TBF have been fine-tuned to get an optimal saturation point <xref ref-type="bibr" rid="c14">[14]</xref> for the Argonne <inline-formula><mml:math><mml:msub><mml:mi>V</mml:mi><mml:mn>18</mml:mn></mml:msub></mml:math></inline-formula> <xref ref-type="bibr" rid="c15">[15]</xref> or the CD-Bonn potential <xref ref-type="bibr" rid="c16">[16]</xref> that we use in the following.</p>
+<p>The connection between two-body forces and TBFs within the meson-nucleon theory of the nuclear interaction is extensively discussed and developed in Refs. <xref ref-type="bibr" rid="c8">[8]</xref> and <xref ref-type="bibr" rid="c11">[11]</xref>. At present the theoretical status of microscopically derived TBFs is still quite rudimentary, however, a tentative approach has been proposed using the same meson-exchange parameters as the underlying NN potential. Results have been obtained with the Argonne <inline-formula><mml:math><mml:msub><mml:mi>V</mml:mi><mml:mn>18</mml:mn></mml:msub></mml:math></inline-formula>, the Bonn B, and the Nijmegen 93 potentials <xref ref-type="bibr" rid="c11 c17">[11,17]</xref>.</p>
+<p>The nucleon effective mass <inline-formula><mml:math><mml:msup><mml:mi>m</mml:mi><mml:mo>*</mml:mo></mml:msup></mml:math></inline-formula> describes the nonlocality of the s.p. potential felt by a nucleon propagating in the nuclear medium. It is of great interest since it is closely related to many nuclear phenomena such as the dynamics of heavy-ion collisions at intermediate and high energies, the damping of nuclear excitations and giant resonances, and the adiabatic temperature of collapsing stellar matter. The momentum-dependent effective mass is defined in terms of the s.p. energy,
+<disp-formula id="d5">
+<label>(5)</label>
+<mml:math display="block"><mml:mrow><mml:mfrac><mml:mrow><mml:msup><mml:mi>m</mml:mi><mml:mo>*</mml:mo></mml:msup><mml:mrow><mml:mo>(</mml:mo><mml:mi>k</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:mrow><mml:mi>m</mml:mi></mml:mfrac><mml:mo>=</mml:mo><mml:mfrac><mml:mi>k</mml:mi><mml:mi>m</mml:mi></mml:mfrac><mml:msup><mml:mfenced separators="" open="[" close="]"><mml:mfrac><mml:mrow><mml:mi>d</mml:mi><mml:mi>e</mml:mi><mml:mo>(</mml:mo><mml:mi>k</mml:mi><mml:mo>)</mml:mo></mml:mrow><mml:mrow><mml:mi>d</mml:mi><mml:mi>k</mml:mi></mml:mrow></mml:mfrac></mml:mfenced><mml:mrow><mml:mo>−</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msup><mml:mo>,</mml:mo></mml:mrow></mml:math></disp-formula>and clearly arises from both the momentum and the energy dependence of the microscopic s.p. potential <xref ref-type="bibr" rid="c18">[18]</xref>. For the applications we employ the effective mass taken at the Fermi surface <inline-formula><mml:math><mml:msub><mml:mi>k</mml:mi><mml:msub><mml:mi>F</mml:mi><mml:mrow><mml:mi>n</mml:mi><mml:mo>,</mml:mo><mml:mi>p</mml:mi></mml:mrow></mml:msub></mml:msub></mml:math></inline-formula>.</p>
+<p>In this work we analyze the effective mass obtained in the lowest-order BHF approximation discussed above. It is well known that including second-order rearrangement contributions to the s.p. potential increases the theoretical <inline-formula><mml:math><mml:msup><mml:mi>m</mml:mi><mml:mo>*</mml:mo></mml:msup></mml:math></inline-formula> values (<xref ref-type="bibr" rid="c18 c19">[18,19]</xref>; see also recent perturbative calculations <xref ref-type="bibr" rid="c20">[20]</xref>). However, inclusion of the rearrangement term would also require re-examination of the equation of state, since the three-hole-line contribution is altered by the modification of the s.p. potential, and it could not be any more negligible <xref ref-type="bibr" rid="c3 c4">[3,4]</xref>. We defer the analysis of this point to future work and concentrate here, instead, on the dependence of the results with respect to the choice of the two-body forces and TBFs.</p>
+<p>NS matter is composed of asymmetric nuclear matter, where the effective mass depends both on the nucleon density and on the proton fraction <inline-formula><mml:math><mml:mrow><mml:mi>x</mml:mi><mml:mo>=</mml:mo><mml:msub><mml:mi>ρ</mml:mi><mml:mi>p</mml:mi></mml:msub><mml:mo>/</mml:mo><mml:mi>ρ</mml:mi></mml:mrow></mml:math></inline-formula>. The BHF neutron and proton effective masses in asymmetric matter are displayed in Fig. <xref ref-type="fig" rid="f1">1</xref> as a function of the nucleon density for several values of the proton fraction. Different choices of the NN potential and TBF are compared, namely, we display results for the Argonne <inline-formula><mml:math><mml:msub><mml:mi>V</mml:mi><mml:mn>18</mml:mn></mml:msub></mml:math></inline-formula> potential without TBFs (V18; dash-dotted lines), with microscopic  TBFs (V18 + TBF; dotted lines), and with phenomenological Urbana TBFs (V18 + UIX; solid lines) and for the CD-Bonn potential plus Urbana TBFs (CDB + UIX; dashed lines). We see that without TBFs the values of the effective masses decrease with increasing nucleon density, whereas the inclusion of TBFs causes an increase in the values at densities above 0.3–0.4 fm<inline-formula><mml:math><mml:msup><mml:mrow></mml:mrow><mml:mrow><mml:mo>−</mml:mo><mml:mn>3</mml:mn></mml:mrow></mml:msup></mml:math></inline-formula> for both protons and neutrons and all considered models. This is due to the repulsive character of the TBFs at a high density. There is evidently a strong dependence on the chosen set of interactions, which reflects, in particular, the current theoretical uncertainty regarding nuclear TBFs at a high density.
+<fig id="f1" fig-type="color-online" specific-use="style-1col">
+<object-id pub-id-type="doi">10.1103/PhysRevC.89.048801.f1</object-id>
+<object-id>1</object-id>
+<label>FIG. 1. (Color online)</label>
+<caption><p>Neutron (top) and proton (bottom) effective mass displayed vs the nucleon density for several values of the proton fraction: <inline-formula><mml:math><mml:mrow><mml:mi>x</mml:mi><mml:mo>=</mml:mo><mml:mn>0.1</mml:mn></mml:mrow></mml:math></inline-formula>, 0.2, 0.3, 0.4, and 0.5. Results are plotted for different choices of two- and three-body forces, as discussed in the text.</p></caption>
+<graphic xlink:href="e048801_1.eps"/>
+</fig></p>
+<p>For easy implementation in astrophysical applications, we provide polynomial fits of the effective masses (valid for <inline-formula><mml:math><mml:mrow><mml:mi>ρ</mml:mi><mml:mo>≤</mml:mo><mml:mn>0.8</mml:mn><mml:mspace width="0.28em"/><mml:msup><mml:mtext>fm</mml:mtext><mml:mrow><mml:mo>−</mml:mo><mml:mn>3</mml:mn></mml:mrow></mml:msup></mml:mrow></mml:math></inline-formula>),
+<disp-formula id="d6">
+<label>(6)</label>
+<mml:math display="block"><mml:mtable displaystyle="true"><mml:mtr><mml:mtd columnalign="right"><mml:mrow><mml:mfrac><mml:msup><mml:mi>m</mml:mi><mml:mo>*</mml:mo></mml:msup><mml:mi>m</mml:mi></mml:mfrac><mml:mrow><mml:mo>(</mml:mo><mml:mi>ρ</mml:mi><mml:mo>,</mml:mo><mml:mi>x</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:mrow></mml:mtd><mml:mtd><mml:mo>=</mml:mo></mml:mtd><mml:mtd columnalign="left"><mml:mrow><mml:mn>1</mml:mn><mml:mo>−</mml:mo><mml:mo>(</mml:mo><mml:msub><mml:mi>a</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>b</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mi>x</mml:mi><mml:mo>+</mml:mo><mml:msub><mml:mi>c</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:msup><mml:mi>x</mml:mi><mml:mn>2</mml:mn></mml:msup><mml:mo>)</mml:mo><mml:mi>ρ</mml:mi></mml:mrow></mml:mtd></mml:mtr><mml:mtr><mml:mtd></mml:mtd><mml:mtd></mml:mtd><mml:mtd columnalign="left"><mml:mrow><mml:mo>+</mml:mo><mml:mspace width="0.16em"/><mml:mrow><mml:mo>(</mml:mo><mml:msub><mml:mi>a</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>b</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mi>x</mml:mi><mml:mo>+</mml:mo><mml:msub><mml:mi>c</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:msup><mml:mi>x</mml:mi><mml:mn>2</mml:mn></mml:msup><mml:mo>)</mml:mo></mml:mrow><mml:msup><mml:mi>ρ</mml:mi><mml:mn>2</mml:mn></mml:msup></mml:mrow></mml:mtd></mml:mtr><mml:mtr><mml:mtd></mml:mtd><mml:mtd></mml:mtd><mml:mtd columnalign="left"><mml:mrow><mml:mo>−</mml:mo><mml:mspace width="0.16em"/><mml:mrow><mml:mo>(</mml:mo><mml:msub><mml:mi>a</mml:mi><mml:mn>3</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>b</mml:mi><mml:mn>3</mml:mn></mml:msub><mml:mi>x</mml:mi><mml:mo>+</mml:mo><mml:msub><mml:mi>c</mml:mi><mml:mn>3</mml:mn></mml:msub><mml:msup><mml:mi>x</mml:mi><mml:mn>2</mml:mn></mml:msup><mml:mo>)</mml:mo></mml:mrow><mml:msup><mml:mi>ρ</mml:mi><mml:mn>3</mml:mn></mml:msup><mml:mo>,</mml:mo></mml:mrow></mml:mtd></mml:mtr></mml:mtable></mml:math></disp-formula>whose parameters are reported in Table <xref ref-type="table" rid="t1">I</xref>.
+<table-wrap id="t1" specific-use="style-2col">
+<object-id pub-id-type="doi">10.1103/PhysRevC.89.048801.t1</object-id>
+<object-id>1</object-id>
+<label>TABLE I.</label><caption><p>Parameters of the polynomial fits, Eq. <xref ref-type="disp-formula" rid="d6">(6)</xref>, for the neutron and proton effective masses, obtained with different interactions. The density <inline-formula><mml:math><mml:mi>ρ</mml:mi></mml:math></inline-formula> is understood in units of fm<inline-formula><mml:math><mml:msup><mml:mrow></mml:mrow><mml:mrow><mml:mo>−</mml:mo><mml:mn>3</mml:mn></mml:mrow></mml:msup></mml:math></inline-formula> with these coefficients.</p></caption>
+<oasis:table frame="topbot" colsep="0" rowsep="0">
+<oasis:tgroup cols="10">
+<oasis:colspec colname="col1" align="left"/>
+<oasis:colspec colname="col2" align="char" char="."/>
+<oasis:colspec colname="col3" align="char" char="."/>
+<oasis:colspec colname="col4" align="char" char="."/>
+<oasis:colspec colname="col5" align="char" char="."/>
+<oasis:colspec colname="col6" align="char" char="."/>
+<oasis:colspec colname="col7" align="char" char="."/>
+<oasis:colspec colname="col8" align="char" char="."/>
+<oasis:colspec colname="col9" align="char" char="."/>
+<oasis:colspec colname="col10" align="char" char="."/>
+<oasis:thead>
+<oasis:row rowsep="1">
+<oasis:entry align="left"/>
+<oasis:entry align="center"><inline-formula><mml:math><mml:msub><mml:mi>a</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:math></inline-formula></oasis:entry>
+<oasis:entry align="center"><inline-formula><mml:math><mml:msub><mml:mi>b</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:math></inline-formula></oasis:entry>
+<oasis:entry align="center"><inline-formula><mml:math><mml:msub><mml:mi>c</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:math></inline-formula></oasis:entry>
+<oasis:entry align="center"><inline-formula><mml:math><mml:msub><mml:mi>a</mml:mi><mml:mn>2</mml:mn></mml:msub></mml:math></inline-formula></oasis:entry>
+<oasis:entry align="center"><inline-formula><mml:math><mml:msub><mml:mi>b</mml:mi><mml:mn>2</mml:mn></mml:msub></mml:math></inline-formula></oasis:entry>
+<oasis:entry align="center"><inline-formula><mml:math><mml:msub><mml:mi>c</mml:mi><mml:mn>2</mml:mn></mml:msub></mml:math></inline-formula></oasis:entry>
+<oasis:entry align="center"><inline-formula><mml:math><mml:msub><mml:mi>a</mml:mi><mml:mn>3</mml:mn></mml:msub></mml:math></inline-formula></oasis:entry>
+<oasis:entry align="center"><inline-formula><mml:math><mml:msub><mml:mi>b</mml:mi><mml:mn>3</mml:mn></mml:msub></mml:math></inline-formula></oasis:entry>
+<oasis:entry align="center"><inline-formula><mml:math><mml:msub><mml:mi>c</mml:mi><mml:mn>3</mml:mn></mml:msub></mml:math></inline-formula></oasis:entry>
+</oasis:row>
+</oasis:thead>
+<oasis:tbody>
+<oasis:row>
+<oasis:entry align="left">V18</oasis:entry>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+</oasis:row>
+<oasis:row>
+<oasis:entry align="left"><italic>p</italic></oasis:entry>
+<oasis:entry>1.45</oasis:entry>
+<oasis:entry>0.85</oasis:entry>
+<oasis:entry>−0.92</oasis:entry>
+<oasis:entry>2.10</oasis:entry>
+<oasis:entry>1.26</oasis:entry>
+<oasis:entry>−0.44</oasis:entry>
+<oasis:entry>1.13</oasis:entry>
+<oasis:entry>0.65</oasis:entry>
+<oasis:entry>0.42</oasis:entry>
+</oasis:row>
+<oasis:row>
+<oasis:entry align="left"><italic>n</italic></oasis:entry>
+<oasis:entry>0.96</oasis:entry>
+<oasis:entry>0.92</oasis:entry>
+<oasis:entry>0.59</oasis:entry>
+<oasis:entry>1.20</oasis:entry>
+<oasis:entry>1.38</oasis:entry>
+<oasis:entry>1.64</oasis:entry>
+<oasis:entry>0.71</oasis:entry>
+<oasis:entry>0.65</oasis:entry>
+<oasis:entry>0.98</oasis:entry>
+</oasis:row>
+<oasis:row>
+<oasis:entry align="left">V18 + TBF</oasis:entry>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+</oasis:row>
+<oasis:row>
+<oasis:entry align="left"><italic>p</italic></oasis:entry>
+<oasis:entry>1.67</oasis:entry>
+<oasis:entry>0.99</oasis:entry>
+<oasis:entry>−2.47</oasis:entry>
+<oasis:entry>2.70</oasis:entry>
+<oasis:entry>1.18</oasis:entry>
+<oasis:entry>−3.75</oasis:entry>
+<oasis:entry>1.14</oasis:entry>
+<oasis:entry>0.88</oasis:entry>
+<oasis:entry>−2.40</oasis:entry>
+</oasis:row>
+<oasis:row>
+<oasis:entry align="left"><italic>n</italic></oasis:entry>
+<oasis:entry>0.61</oasis:entry>
+<oasis:entry>1.55</oasis:entry>
+<oasis:entry>0.91</oasis:entry>
+<oasis:entry>0.42</oasis:entry>
+<oasis:entry>2.01</oasis:entry>
+<oasis:entry>4.77</oasis:entry>
+<oasis:entry>−0.17</oasis:entry>
+<oasis:entry>0.58</oasis:entry>
+<oasis:entry>4.44</oasis:entry>
+</oasis:row>
+<oasis:row>
+<oasis:entry align="left">V18 + UIX</oasis:entry>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+</oasis:row>
+<oasis:row>
+<oasis:entry align="left"><italic>p</italic></oasis:entry>
+<oasis:entry>1.56</oasis:entry>
+<oasis:entry>1.31</oasis:entry>
+<oasis:entry>−1.89</oasis:entry>
+<oasis:entry>3.17</oasis:entry>
+<oasis:entry>1.26</oasis:entry>
+<oasis:entry>−1.56</oasis:entry>
+<oasis:entry>0.79</oasis:entry>
+<oasis:entry>3.78</oasis:entry>
+<oasis:entry>−3.81</oasis:entry>
+</oasis:row>
+<oasis:row>
+<oasis:entry align="left"><italic>n</italic></oasis:entry>
+<oasis:entry>0.88</oasis:entry>
+<oasis:entry>1.21</oasis:entry>
+<oasis:entry>1.07</oasis:entry>
+<oasis:entry>1.64</oasis:entry>
+<oasis:entry>2.06</oasis:entry>
+<oasis:entry>2.87</oasis:entry>
+<oasis:entry>0.78</oasis:entry>
+<oasis:entry>0.98</oasis:entry>
+<oasis:entry>1.62</oasis:entry>
+</oasis:row>
+<oasis:row>
+<oasis:entry align="left">CDB + UIX</oasis:entry>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+<oasis:entry align="center"/>
+</oasis:row>
+<oasis:row>
+<oasis:entry align="left"><italic>p</italic></oasis:entry>
+<oasis:entry>1.53</oasis:entry>
+<oasis:entry>0.80</oasis:entry>
+<oasis:entry>−1.04</oasis:entry>
+<oasis:entry>3.05</oasis:entry>
+<oasis:entry>1.06</oasis:entry>
+<oasis:entry>−1.44</oasis:entry>
+<oasis:entry>0.43</oasis:entry>
+<oasis:entry>4.04</oasis:entry>
+<oasis:entry>−4.42</oasis:entry>
+</oasis:row>
+<oasis:row>
+<oasis:entry align="left"><italic>n</italic></oasis:entry>
+<oasis:entry>0.95</oasis:entry>
+<oasis:entry>1.17</oasis:entry>
+<oasis:entry>0.42</oasis:entry>
+<oasis:entry>2.44</oasis:entry>
+<oasis:entry>1.27</oasis:entry>
+<oasis:entry>−0.05</oasis:entry>
+<oasis:entry>1.30</oasis:entry>
+<oasis:entry>0.55</oasis:entry>
+<oasis:entry>−1.63</oasis:entry>
+</oasis:row></oasis:tbody>
+</oasis:tgroup>
+</oasis:table></table-wrap></p>
+<p>Now we briefly recall the main neutrino emission mechanisms in NSs and the relevance of the nucleon effective masses, following closely the detailed treatment given in Ref. <xref ref-type="bibr" rid="c1">[1]</xref>. Only the rates for nonsuperfluid scenarios are given, for which the dependence on the effective masses is via the general factor
+<disp-formula id="d7">
+<label>(7)</label>
+<mml:math display="block"><mml:mrow><mml:msub><mml:mi>M</mml:mi><mml:mrow><mml:mi>i</mml:mi><mml:mi>j</mml:mi></mml:mrow></mml:msub><mml:mo>≡</mml:mo><mml:msup><mml:mfenced separators="" open="(" close=")"><mml:mfrac><mml:msub><mml:mi>ρ</mml:mi><mml:mi>p</mml:mi></mml:msub><mml:msub><mml:mi>ρ</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:mfrac></mml:mfenced><mml:mrow><mml:mn>1</mml:mn><mml:mo>/</mml:mo><mml:mn>3</mml:mn></mml:mrow></mml:msup><mml:msub><mml:mover accent="true"><mml:mi>M</mml:mi><mml:mo>̃</mml:mo></mml:mover><mml:mrow><mml:mi>i</mml:mi><mml:mi>j</mml:mi></mml:mrow></mml:msub><mml:mo>,</mml:mo><mml:mspace width="1em"/><mml:msub><mml:mover accent="true"><mml:mi>M</mml:mi><mml:mo>̃</mml:mo></mml:mover><mml:mrow><mml:mi>i</mml:mi><mml:mi>j</mml:mi></mml:mrow></mml:msub><mml:mo>≡</mml:mo><mml:msup><mml:mfenced separators="" open="(" close=")"><mml:mfrac><mml:msubsup><mml:mi>m</mml:mi><mml:mi>n</mml:mi><mml:mo>*</mml:mo></mml:msubsup><mml:msub><mml:mi>m</mml:mi><mml:mi>n</mml:mi></mml:msub></mml:mfrac></mml:mfenced><mml:mi>i</mml:mi></mml:msup><mml:msup><mml:mfenced separators="" open="(" close=")"><mml:mfrac><mml:msubsup><mml:mi>m</mml:mi><mml:mi>p</mml:mi><mml:mo>*</mml:mo></mml:msubsup><mml:msub><mml:mi>m</mml:mi><mml:mi>p</mml:mi></mml:msub></mml:mfrac></mml:mfenced><mml:mi>j</mml:mi></mml:msup><mml:mo>.</mml:mo></mml:mrow></mml:math></disp-formula>In the presence of superfluidity the dependence is highly nontrivial and requires detailed calculations <xref ref-type="bibr" rid="c1">[1]</xref>. In the following all emissivities <inline-formula><mml:math><mml:mi>Q</mml:mi></mml:math></inline-formula> are given in units of erg cm<inline-formula><mml:math><mml:msup><mml:mrow></mml:mrow><mml:mrow><mml:mo>−</mml:mo><mml:mn>3</mml:mn></mml:mrow></mml:msup></mml:math></inline-formula>Â s<inline-formula><mml:math><mml:msup><mml:mrow></mml:mrow><mml:mrow><mml:mo>−</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msup></mml:math></inline-formula>.</p>
+<p>In the absence of pairing, three main mechanisms are usually taken into account: the direct Urca (DU), the modified Urca (MU), and the NN bremsstrahlung (BNN) processes. By far the most efficient mechanism of NS cooling is the DU process, for which the derivation of the emissivity under the condition of <inline-formula><mml:math><mml:mi>β</mml:mi></mml:math></inline-formula> equilibrium is based on the <inline-formula><mml:math><mml:mi>β</mml:mi></mml:math></inline-formula>-decay theory <xref ref-type="bibr" rid="c21">[21]</xref>. The result for <inline-formula><mml:math><mml:mrow><mml:mi>n</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi></mml:mrow></mml:math></inline-formula> NS matter is given by
+<disp-formula id="d8">
+<label>(8)</label>
+<mml:math display="block"><mml:mrow><mml:msup><mml:mi>Q</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>DU</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:msup><mml:mo>≈</mml:mo><mml:mn>4.0</mml:mn><mml:mo>×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>27</mml:mn></mml:msup><mml:msub><mml:mi>M</mml:mi><mml:mn>11</mml:mn></mml:msub><mml:msubsup><mml:mi>T</mml:mi><mml:mn>9</mml:mn><mml:mn>6</mml:mn></mml:msubsup><mml:mi>Θ</mml:mi><mml:mfenced separators="" open="(" close=")"><mml:msub><mml:mi>k</mml:mi><mml:msub><mml:mi>F</mml:mi><mml:mi>p</mml:mi></mml:msub></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>k</mml:mi><mml:msub><mml:mi>F</mml:mi><mml:mi>e</mml:mi></mml:msub></mml:msub><mml:mo>−</mml:mo><mml:msub><mml:mi>k</mml:mi><mml:msub><mml:mi>F</mml:mi><mml:mi>n</mml:mi></mml:msub></mml:msub></mml:mfenced><mml:mo>,</mml:mo></mml:mrow></mml:math></disp-formula>where <inline-formula><mml:math><mml:msub><mml:mi>T</mml:mi><mml:mn>9</mml:mn></mml:msub></mml:math></inline-formula> is the temperature in units of <inline-formula><mml:math><mml:msup><mml:mn>10</mml:mn><mml:mn>9</mml:mn></mml:msup></mml:math></inline-formula> K. If muons are present, then the equivalent DU process may also become possible, in which case the neutrino emissivity is increased by a factor of 2.</p>
+<p>The emissivities of MU processes in the neutron and proton branches <xref ref-type="bibr" rid="c22 c23">[22,23]</xref> are given, respectively, by
+<disp-formula id="d9">
+<label>(9)</label>
+<mml:math display="block"><mml:mrow><mml:msup><mml:mi>Q</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>M</mml:mi><mml:mi>n</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:msup><mml:mo>≈</mml:mo><mml:mn>8.1</mml:mn><mml:mo>×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>21</mml:mn></mml:msup><mml:msub><mml:mi>M</mml:mi><mml:mn>31</mml:mn></mml:msub><mml:msubsup><mml:mi>T</mml:mi><mml:mn>9</mml:mn><mml:mn>8</mml:mn></mml:msubsup><mml:msub><mml:mi>α</mml:mi><mml:mi>n</mml:mi></mml:msub><mml:msub><mml:mi>β</mml:mi><mml:mi>n</mml:mi></mml:msub><mml:mo>,</mml:mo></mml:mrow></mml:math></disp-formula>
+<disp-formula id="d10">
+<label>(10)</label>
+<mml:math display="block"><mml:mrow><mml:msup><mml:mi>Q</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>M</mml:mi><mml:mi>p</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:msup><mml:mo>≈</mml:mo><mml:mn>8.1</mml:mn><mml:mo>×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>21</mml:mn></mml:msup><mml:msub><mml:mi>M</mml:mi><mml:mn>13</mml:mn></mml:msub><mml:msubsup><mml:mi>T</mml:mi><mml:mn>9</mml:mn><mml:mn>8</mml:mn></mml:msubsup><mml:msub><mml:mi>α</mml:mi><mml:mi>p</mml:mi></mml:msub><mml:msub><mml:mi>β</mml:mi><mml:mi>p</mml:mi></mml:msub><mml:mfenced separators="" open="(" close=")"><mml:mn>1</mml:mn><mml:mo>−</mml:mo><mml:msub><mml:mi>k</mml:mi><mml:msub><mml:mi>F</mml:mi><mml:mi>e</mml:mi></mml:msub></mml:msub><mml:mo>/</mml:mo><mml:mn>4</mml:mn><mml:msub><mml:mi>k</mml:mi><mml:msub><mml:mi>F</mml:mi><mml:mi>p</mml:mi></mml:msub></mml:msub></mml:mfenced><mml:msub><mml:mi>Θ</mml:mi><mml:mrow><mml:mi>M</mml:mi><mml:mi>p</mml:mi></mml:mrow></mml:msub><mml:mo>,</mml:mo><mml:mspace width="2.em"/></mml:mrow></mml:math></disp-formula>where the factor <inline-formula><mml:math><mml:msub><mml:mi>α</mml:mi><mml:mi>n</mml:mi></mml:msub></mml:math></inline-formula> (<inline-formula><mml:math><mml:msub><mml:mi>α</mml:mi><mml:mi>p</mml:mi></mml:msub></mml:math></inline-formula>) takes into account the momentum transfer dependence of the squared reaction matrix element of the neutron (proton) branch under the Born approximation, and <inline-formula><mml:math><mml:msub><mml:mi>β</mml:mi><mml:mi>n</mml:mi></mml:msub></mml:math></inline-formula> (<inline-formula><mml:math><mml:msub><mml:mi>β</mml:mi><mml:mi>p</mml:mi></mml:msub></mml:math></inline-formula>) includes non-Born corrections due to NN interaction effects, which are not described by the one-pion exchange <xref ref-type="bibr" rid="c1">[1]</xref>. The currently adopted values are <inline-formula><mml:math><mml:mrow><mml:msub><mml:mi>α</mml:mi><mml:mi>p</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:msub><mml:mi>α</mml:mi><mml:mi>n</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:mn>1.13</mml:mn></mml:mrow></mml:math></inline-formula> and <inline-formula><mml:math><mml:mrow><mml:msub><mml:mi>β</mml:mi><mml:mi>p</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>n</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:mn>0.68</mml:mn></mml:mrow></mml:math></inline-formula>. The main difference between the proton branch and the neutron branch is the threshold character, since the proton branch is allowed only if <inline-formula><mml:math><mml:mrow><mml:msub><mml:mi>k</mml:mi><mml:msub><mml:mi>F</mml:mi><mml:mi>n</mml:mi></mml:msub></mml:msub><mml:mo>&lt;</mml:mo><mml:mn>3</mml:mn><mml:msub><mml:mi>k</mml:mi><mml:msub><mml:mi>F</mml:mi><mml:mi>p</mml:mi></mml:msub></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>k</mml:mi><mml:msub><mml:mi>F</mml:mi><mml:mi>e</mml:mi></mml:msub></mml:msub></mml:mrow></mml:math></inline-formula>, in which case <inline-formula><mml:math><mml:mrow><mml:msub><mml:mi>Θ</mml:mi><mml:mrow><mml:mi>M</mml:mi><mml:mi>p</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:math></inline-formula>. If muons are present in the dense NS matter, the equivalent MU processes also become possible. Accordingly, several modifications should be included in Eqs. <xref ref-type="disp-formula" rid="d9">(9)</xref> and <xref ref-type="disp-formula" rid="d10">(10)</xref>, as discussed in Ref. <xref ref-type="bibr" rid="c1">[1]</xref>.</p>
+<p>Following the discussion above, the neutrino emissivity jumps directly from the value of the MU process to that of the DU process. Thus, the DU process appears in a step-like manner. In the absence of the DU process, the standard neutrino luminosity of the <inline-formula><mml:math><mml:mrow><mml:mi>n</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi></mml:mrow></mml:math></inline-formula> matter is determined not only by the MU processes but also by the BNN processes in NN collisions:
+<disp-formula id="d11">
+<label>(11)</label>
+<mml:math display="block"><mml:mrow><mml:mi>N</mml:mi><mml:mo>+</mml:mo><mml:mi>N</mml:mi><mml:mo>→</mml:mo><mml:mi>N</mml:mi><mml:mo>+</mml:mo><mml:mi>N</mml:mi><mml:mo>+</mml:mo><mml:mi>ν</mml:mi><mml:mo>+</mml:mo><mml:mover><mml:mi>ν</mml:mi><mml:mo>¯</mml:mo></mml:mover><mml:mo>.</mml:mo></mml:mrow></mml:math></disp-formula>These reactions proceed via weak neutral currents and produce neutrino pairs of any flavor <xref ref-type="bibr" rid="c22 c23">[22,23]</xref>. In analogy with the MU process, the emissivities depend on the employed model of NN interactions. Contrary to the MU, an elementary act of the NN bremsstrahlung does not change the composition of matter. The BNN evidently has no thresholds associated with momentum conservation and operates at any density in the uniform matter. The neutrino emissivity of the BNN processes in <inline-formula><mml:math><mml:mrow><mml:mi>n</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi></mml:mrow></mml:math></inline-formula> NS matter is
+<disp-formula id="d12">
+<label>(12)</label>
+<mml:math display="block"><mml:mrow><mml:msup><mml:mi>Q</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>B</mml:mi><mml:mi>n</mml:mi><mml:mi>n</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:msup><mml:mo>≈</mml:mo><mml:mn>2.3</mml:mn><mml:mo>×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>20</mml:mn></mml:msup><mml:mspace width="0.16em"/><mml:msub><mml:mi>M</mml:mi><mml:mn>40</mml:mn></mml:msub><mml:msubsup><mml:mi>T</mml:mi><mml:mn>9</mml:mn><mml:mn>8</mml:mn></mml:msubsup><mml:msub><mml:mi>α</mml:mi><mml:mrow><mml:mi>n</mml:mi><mml:mi>n</mml:mi></mml:mrow></mml:msub><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>n</mml:mi><mml:mi>n</mml:mi></mml:mrow></mml:msub><mml:msup><mml:mrow><mml:mo>(</mml:mo><mml:msub><mml:mi>ρ</mml:mi><mml:mi>n</mml:mi></mml:msub><mml:mo>/</mml:mo><mml:msub><mml:mi>ρ</mml:mi><mml:mi>p</mml:mi></mml:msub><mml:mo>)</mml:mo></mml:mrow><mml:mrow><mml:mn>1</mml:mn><mml:mo>/</mml:mo><mml:mn>3</mml:mn></mml:mrow></mml:msup><mml:mo>,</mml:mo></mml:mrow></mml:math></disp-formula>
+<disp-formula id="d13">
+<label>(13)</label>
+<mml:math display="block"><mml:mrow><mml:msup><mml:mi>Q</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>B</mml:mi><mml:mi>n</mml:mi><mml:mi>p</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:msup><mml:mo>≈</mml:mo><mml:mn>4.5</mml:mn><mml:mo>×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>20</mml:mn></mml:msup><mml:mspace width="0.16em"/><mml:msub><mml:mi>M</mml:mi><mml:mn>22</mml:mn></mml:msub><mml:msubsup><mml:mi>T</mml:mi><mml:mn>9</mml:mn><mml:mn>8</mml:mn></mml:msubsup><mml:msub><mml:mi>α</mml:mi><mml:mrow><mml:mi>n</mml:mi><mml:mi>p</mml:mi></mml:mrow></mml:msub><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>n</mml:mi><mml:mi>p</mml:mi></mml:mrow></mml:msub><mml:mo>,</mml:mo></mml:mrow></mml:math></disp-formula>
+<disp-formula id="d14">
+<label>(14)</label>
+<mml:math display="block"><mml:mrow><mml:msup><mml:mi>Q</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>B</mml:mi><mml:mi>p</mml:mi><mml:mi>p</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:msup><mml:mo>≈</mml:mo><mml:mn>2.3</mml:mn><mml:mo>×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>20</mml:mn></mml:msup><mml:mspace width="0.16em"/><mml:msub><mml:mi>M</mml:mi><mml:mn>04</mml:mn></mml:msub><mml:msubsup><mml:mi>T</mml:mi><mml:mn>9</mml:mn><mml:mn>8</mml:mn></mml:msubsup><mml:msub><mml:mi>α</mml:mi><mml:mrow><mml:mi>p</mml:mi><mml:mi>p</mml:mi></mml:mrow></mml:msub><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>p</mml:mi><mml:mi>p</mml:mi></mml:mrow></mml:msub><mml:mo>.</mml:mo></mml:mrow></mml:math></disp-formula>The dimensionless factors <inline-formula><mml:math><mml:msub><mml:mi>α</mml:mi><mml:mrow><mml:mi>N</mml:mi><mml:mi>N</mml:mi></mml:mrow></mml:msub></mml:math></inline-formula> come from the estimates of the squared matrix elements at <inline-formula><mml:math><mml:mrow><mml:mi>ρ</mml:mi><mml:mo>=</mml:mo><mml:msub><mml:mi>ρ</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:mrow></mml:math></inline-formula>: <inline-formula><mml:math><mml:mrow><mml:msub><mml:mi>α</mml:mi><mml:mrow><mml:mi>n</mml:mi><mml:mi>n</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0.59</mml:mn></mml:mrow></mml:math></inline-formula>, <inline-formula><mml:math><mml:mrow><mml:msub><mml:mi>α</mml:mi><mml:mrow><mml:mi>n</mml:mi><mml:mi>p</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>1.06</mml:mn></mml:mrow></mml:math></inline-formula>, <inline-formula><mml:math><mml:mrow><mml:msub><mml:mi>α</mml:mi><mml:mrow><mml:mi>p</mml:mi><mml:mi>p</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0.11</mml:mn></mml:mrow></mml:math></inline-formula>. The correction factors <inline-formula><mml:math><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>N</mml:mi><mml:mi>N</mml:mi></mml:mrow></mml:msub></mml:math></inline-formula> are taken as <inline-formula><mml:math><mml:mrow><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>n</mml:mi><mml:mi>n</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0.56</mml:mn></mml:mrow></mml:math></inline-formula>, <inline-formula><mml:math><mml:mrow><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>n</mml:mi><mml:mi>p</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0.66</mml:mn></mml:mrow></mml:math></inline-formula>, <inline-formula><mml:math><mml:mrow><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>p</mml:mi><mml:mi>p</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0.70</mml:mn></mml:mrow></mml:math></inline-formula>. All three processes are of comparable intensity, with <inline-formula><mml:math><mml:mrow><mml:msup><mml:mi>Q</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>B</mml:mi><mml:mi>p</mml:mi><mml:mi>p</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:msup><mml:mo>&lt;</mml:mo><mml:msup><mml:mi>Q</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>B</mml:mi><mml:mi>p</mml:mi><mml:mi>n</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:msup><mml:mo>&lt;</mml:mo><mml:msup><mml:mi>Q</mml:mi><mml:mrow><mml:mo>(</mml:mo><mml:mi>B</mml:mi><mml:mi>n</mml:mi><mml:mi>n</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:msup></mml:mrow></mml:math></inline-formula>.</p>
+<p>For the treatment of NS matter we assume, as usual, charge-neutral, <inline-formula><mml:math><mml:mrow><mml:msub><mml:mi>ρ</mml:mi><mml:mi>p</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:msub><mml:mi>ρ</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>ρ</mml:mi><mml:mi>μ</mml:mi></mml:msub></mml:mrow></mml:math></inline-formula>, and <inline-formula><mml:math><mml:mi>β</mml:mi></mml:math></inline-formula>-stable, <inline-formula><mml:math><mml:mrow><mml:msub><mml:mi>μ</mml:mi><mml:mi>n</mml:mi></mml:msub><mml:mo>−</mml:mo><mml:msub><mml:mi>μ</mml:mi><mml:mi>p</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:msub><mml:mi>μ</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:msub><mml:mi>μ</mml:mi><mml:mi>μ</mml:mi></mml:msub></mml:mrow></mml:math></inline-formula>, nuclear matter. In Fig. <xref ref-type="fig" rid="f2">2</xref> we show our results for this case, obtained with the different combinations of two- and three-body potentials introduced before. In the upper panel the proton fraction is displayed as a function of the nucleon density, whereas the middle and lower panels show the neutron and proton effective masses, respectively.
+<fig id="f2" fig-type="color-online" specific-use="style-1col">
+<object-id pub-id-type="doi">10.1103/PhysRevC.89.048801.f2</object-id>
+<object-id>2</object-id>
+<label>FIG. 2. (Color online)</label>
+<caption><p>Proton fraction (upper panel; filled circles indicate the onset of the DU process) and neutron (middle panel) and proton (bottom panel) effective masses in <inline-formula><mml:math><mml:mi>β</mml:mi></mml:math></inline-formula>-stable matter obtained with different interactions.</p></caption>
+<graphic xlink:href="e048801_2.eps"/>
+</fig></p>
+<p>We observe that the inclusion of TBFs increases the proton fraction <xref ref-type="bibr" rid="c10 c17 c24">[10,17,24]</xref> due to the increased repulsion at high densities, leading to the onset of the DU process in all cases (at different threshold densities, indicated by markers). The effective masses also start to increase at high densities due to the action of TBF, but depend strongly on the interactions: the V18 + TBF model predicts the strongest, and the CDB + UIX the weakest, medium effects. Note that the value of the effective mass in <inline-formula><mml:math><mml:mi>β</mml:mi></mml:math></inline-formula>-stable matter obtained with different interactions is a consequence, apart from the differences shown in Fig. <xref ref-type="fig" rid="f1">1</xref>, also of the different proton fractions, as shown in the upper panel in Fig. <xref ref-type="fig" rid="f2">2</xref>.</p>
+<p>Finally, we combine the results shown in Fig. <xref ref-type="fig" rid="f2">2</xref> in order to obtain the reduction factors <inline-formula><mml:math><mml:msub><mml:mi>M</mml:mi><mml:mrow><mml:mi>i</mml:mi><mml:mi>j</mml:mi></mml:mrow></mml:msub></mml:math></inline-formula> and <inline-formula><mml:math><mml:msub><mml:mover accent="true"><mml:mi>M</mml:mi><mml:mo>̃</mml:mo></mml:mover><mml:mrow><mml:mi>i</mml:mi><mml:mi>j</mml:mi></mml:mrow></mml:msub></mml:math></inline-formula>, Eq. <xref ref-type="disp-formula" rid="d7">(7)</xref>, for the different cooling processes. Figure <xref ref-type="fig" rid="f3">3</xref> displays the different factors <inline-formula><mml:math><mml:msub><mml:mi>M</mml:mi><mml:mn>11</mml:mn></mml:msub></mml:math></inline-formula> (for DU), <inline-formula><mml:math><mml:msub><mml:mi>M</mml:mi><mml:mn>31</mml:mn></mml:msub></mml:math></inline-formula>, <inline-formula><mml:math><mml:msub><mml:mi>M</mml:mi><mml:mn>31</mml:mn></mml:msub></mml:math></inline-formula> (for MU), and <inline-formula><mml:math><mml:msub><mml:mi>M</mml:mi><mml:mn>40</mml:mn></mml:msub></mml:math></inline-formula>, <inline-formula><mml:math><mml:msub><mml:mi>M</mml:mi><mml:mn>22</mml:mn></mml:msub></mml:math></inline-formula>, <inline-formula><mml:math><mml:msub><mml:mi>M</mml:mi><mml:mn>04</mml:mn></mml:msub></mml:math></inline-formula> (for BNN) (solid curves) and the corresponding <inline-formula><mml:math><mml:msub><mml:mover accent="true"><mml:mi>M</mml:mi><mml:mo>̃</mml:mo></mml:mover><mml:mrow><mml:mi>i</mml:mi><mml:mi>j</mml:mi></mml:mrow></mml:msub></mml:math></inline-formula> factors (dashed curves). In line with the previous discussion, one notes again the strong interaction dependence of both the complete factors <inline-formula><mml:math><mml:msub><mml:mi>M</mml:mi><mml:mrow><mml:mi>i</mml:mi><mml:mi>j</mml:mi></mml:mrow></mml:msub></mml:math></inline-formula> and the in-medium modification factors <inline-formula><mml:math><mml:msub><mml:mover accent="true"><mml:mi>M</mml:mi><mml:mo>̃</mml:mo></mml:mover><mml:mrow><mml:mi>i</mml:mi><mml:mi>j</mml:mi></mml:mrow></mml:msub></mml:math></inline-formula>. The latter generally show (apart from the CDB + UIX at high densities) a reduction in the emissivities due to the general in-medium reduction of the effective masses.
+<fig id="f3" fig-type="color-online" specific-use="style-2col">
+<object-id pub-id-type="doi">10.1103/PhysRevC.89.048801.f3</object-id>
+<object-id>3</object-id>
+<label>FIG. 3. (Color online)</label>
+<caption><p>Reduction factors <inline-formula><mml:math><mml:msub><mml:mi>M</mml:mi><mml:mrow><mml:mi>i</mml:mi><mml:mi>j</mml:mi></mml:mrow></mml:msub></mml:math></inline-formula> (solid lines) and <inline-formula><mml:math><mml:msub><mml:mover accent="true"><mml:mi>M</mml:mi><mml:mo>̃</mml:mo></mml:mover><mml:mrow><mml:mi>i</mml:mi><mml:mi>j</mml:mi></mml:mrow></mml:msub></mml:math></inline-formula> (dashed lines) for the various cooling processes in <inline-formula><mml:math><mml:mi>β</mml:mi></mml:math></inline-formula>-stable matter obtained with different interactions. See text for details.</p></caption>
+<graphic xlink:href="e048801_3.eps"/>
+</fig></p>
+<p>In conclusion, we have computed nucleon effective masses in the BHF formalism for dense nuclear matter, employing different combinations of two-nucleon and three-nucleon forces. Useful parametrizations of the numerical results have been provided. The relevant in-medium correction factors for several neutrino emission processes in <inline-formula><mml:math><mml:mi>β</mml:mi></mml:math></inline-formula>-stable nonsuperfluid NS matter have then been evaluated in a consistent manner. We find, in general, in-medium suppression of the emissivities, which, however, depends strongly on the employed interactions and reflects mainly the current lack of knowledge regarding nuclear TBFs at high densities. This emphasizes the need to perform and compare consistent calculations with given sets of two-body and three-body interactions.</p>
+</body>
+<back>
+<ref-list>
+<title>REFERENCES</title>
+<ref id="c1"><label>[1]</label>
+<mixed-citation publication-type="journal"><object-id>1</object-id><person-group person-group-type="author"><string-name>D. G. Yakovlev</string-name>, <string-name>A. D. Kaminker</string-name>, <string-name>O. Y. Gnedin</string-name>, and <string-name>P. Haensel</string-name></person-group>, <source>Phys. Rep.</source> <volume>354</volume>, <page-range>1</page-range> (<year>2001</year>).<pub-id pub-id-type="coden">PRPLCM</pub-id><issn>0370-1573</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1016/S0370-1573(00)00131-9</pub-id></mixed-citation>
+</ref>
+<ref id="c2"><label>[2]</label>
+<mixed-citation publication-type="journal"><object-id>2</object-id><person-group person-group-type="author"><string-name>J. P. Jeukenne</string-name>, <string-name>A. Lejeune</string-name>, and <string-name>C. Mahaux</string-name></person-group>, <source>Phys. Rep. C</source> <volume>25</volume>, <page-range>83</page-range> (<year>1976</year>).<pub-id pub-id-type="coden">PRPLCM</pub-id><issn>0370-1573</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1016/0370-1573(76)90017-X</pub-id></mixed-citation>
+</ref>
+<ref id="c3"><label>[3]</label>
+<mixed-citation publication-type="book"><object-id>3</object-id><person-group person-group-type="author"><string-name>M. Baldo</string-name></person-group>, <source>Nuclear Methods and the Nuclear Equation of State, International Review of Nuclear Physics, Vol. 8</source> (<publisher-name>World Scientific</publisher-name>, <publisher-loc>Singapore</publisher-loc>, <year>1999</year>).</mixed-citation>
+</ref>
+<ref id="c4"><label>[4]</label>
+<mixed-citation publication-type="journal"><object-id>4</object-id><person-group person-group-type="author"><string-name>M. Baldo</string-name> and <string-name>G. F. Burgio</string-name></person-group>, <source>Rep. Prog. Phys.</source> <volume>75</volume>, <page-range>026301</page-range> (<year>2012</year>).<pub-id pub-id-type="coden">RPPHAG</pub-id><issn>0034-4885</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1088/0034-4885/75/2/026301</pub-id></mixed-citation>
+</ref>
+<ref id="c5"><label>[5]</label>
+<mixed-citation id="c5a" publication-type="journal"><object-id>5a</object-id><person-group person-group-type="author"><string-name>B. D. Day</string-name></person-group>, <source>Phys. Rev. C</source> <volume>24</volume>, <page-range>1203</page-range> (<year>1981</year>)<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn>;<pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.24.1203</pub-id></mixed-citation>
+<mixed-citation id="c5b" publication-type="journal"><object-id>5b</object-id><person-group person-group-type="author"><string-name>H. Q. Song</string-name>, <string-name>M. Baldo</string-name>, <string-name>G. Giansiracusa</string-name>, and <string-name>U. Lombardo</string-name></person-group>, <source>Phys. Rev. Lett.</source> <volume>81</volume>, <page-range>1584</page-range> (<year>1998</year>);<pub-id pub-id-type="coden">PRLTAO</pub-id><issn>0031-9007</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevLett.81.1584</pub-id></mixed-citation>
+<mixed-citation id="c5c" publication-type="journal"><object-id>5c</object-id><person-group person-group-type="author"><string-name>M. Baldo</string-name>, <string-name>G. Giansiracusa</string-name>, <string-name>U. Lombardo</string-name>, and <string-name>H. Q. Song</string-name></person-group>, <source>Phys. Lett. B</source> <volume>473</volume>, <page-range>1</page-range> (<year>2000</year>);<pub-id pub-id-type="coden">PYLBAJ</pub-id><issn>0370-2693</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1016/S0370-2693(99)01463-X</pub-id></mixed-citation>
+<mixed-citation id="c5d" publication-type="journal"><object-id>5d</object-id><person-group person-group-type="author"><string-name>M. Baldo</string-name>, <string-name>A. Fiasconaro</string-name>, <string-name>H. Q. Song</string-name>, <string-name>G. Giansiracusa</string-name>, and <string-name>U. Lombardo</string-name></person-group>, <source>Phys. Rev. C</source> <volume>65</volume>, <page-range>017303</page-range> (<year>2001</year>);<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.65.017303</pub-id></mixed-citation>
+<mixed-citation id="c5e" publication-type="journal" specific-use="ibid"><object-id>5e</object-id><person-group person-group-type="author"><string-name>R. Sartor</string-name></person-group>, <source>Phys. Rev. C</source> <volume>73</volume>, <page-range>034307</page-range> (<year>2006</year>).<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.73.034307</pub-id></mixed-citation>
+</ref>
+<ref id="c6"><label>[6]</label>
+<mixed-citation publication-type="journal"><object-id>6</object-id><person-group person-group-type="author"><string-name>Z. H. Li</string-name>, <string-name>U. Lombardo</string-name>, <string-name>H.-J. Schulze</string-name>, <string-name>W. Zuo</string-name>, <string-name>L. W. Chen</string-name>, and <string-name>H. R. Ma</string-name></person-group>, <source>Phys. Rev. C</source> <volume>74</volume>, <page-range>047304</page-range> (<year>2006</year>).<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.74.047304</pub-id></mixed-citation>
+</ref>
+<ref id="c7"><label>[7]</label>
+<mixed-citation publication-type="journal"><object-id>7</object-id><person-group person-group-type="author"><string-name>M. Baldo</string-name>, <string-name>A. Polls</string-name>, <string-name>A. Rios</string-name>, <string-name>H.-J. Schulze</string-name>, and <string-name>I. Vidaña</string-name></person-group>, <source>Phys. Rev. C</source> <volume>86</volume>, <page-range>064001</page-range> (<year>2012</year>).<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.86.064001</pub-id></mixed-citation>
+</ref>
+<ref id="c8"><label>[8]</label>
+<mixed-citation id="c8a" publication-type="journal"><object-id>8a</object-id><person-group person-group-type="author"><string-name>P. Grangé</string-name>, <string-name>A. Lejeune</string-name>, <string-name>M. Martzolff</string-name>, and <string-name>J.-F. Mathiot</string-name></person-group>, <source>Phys. Rev. C</source> <volume>40</volume>, <page-range>1040</page-range> (<year>1989</year>)<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn>;<pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.40.1040</pub-id></mixed-citation>
+<mixed-citation id="c8b" publication-type="journal"><object-id>8b</object-id><person-group person-group-type="author"><string-name>W. Zuo</string-name>, <string-name>A. Lejeune</string-name>, <string-name>U. Lombardo</string-name>, and <string-name>J.-F. Mathiot</string-name></person-group>, <source>Nucl. Phys. A</source> <volume>706</volume>, <page-range>418</page-range> (<year>2002</year>).<pub-id pub-id-type="coden">NUPABL</pub-id><issn>0375-9474</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1016/S0375-9474(02)00750-9</pub-id></mixed-citation>
+</ref>
+<ref id="c9"><label>[9]</label>
+<mixed-citation publication-type="journal"><object-id>9</object-id><person-group person-group-type="author"><string-name>M. Baldo</string-name>, <string-name>I. Bombaci</string-name>, and <string-name>G. F. Burgio</string-name></person-group>, <source>Astron. Astrophys.</source> <volume>328</volume>, <page-range>274</page-range> (<year>1997</year>).</mixed-citation>
+</ref>
+<ref id="c10"><label>[10]</label>
+<mixed-citation publication-type="journal"><object-id>10</object-id><person-group person-group-type="author"><string-name>X. R. Zhou</string-name>, <string-name>G. F. Burgio</string-name>, <string-name>U. Lombardo</string-name>, <string-name>H.-J. Schulze</string-name>, and <string-name>W. Zuo</string-name></person-group>, <source>Phys. Rev. C</source> <volume>69</volume>, <page-range>018801</page-range> (<year>2004</year>).<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.69.018801</pub-id></mixed-citation>
+</ref>
+<ref id="c11"><label>[11]</label>
+<mixed-citation id="c11a" publication-type="journal"><object-id>11a</object-id><person-group person-group-type="author"><string-name>Z. H. Li</string-name>, <string-name>U. Lombardo</string-name>, <string-name>H.-J. Schulze</string-name>, and <string-name>W. Zuo</string-name></person-group>, <source>Phys. Rev. C</source> <volume>77</volume>, <page-range>034316</page-range> (<year>2008</year>)<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn>;<pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.77.034316</pub-id></mixed-citation>
+<mixed-citation id="c11b" publication-type="journal" specific-use="ibid"><object-id>11b</object-id><person-group person-group-type="author"><string-name>Z. H. Li</string-name> and <string-name>H.-J. Schulze</string-name></person-group>, <source>Phys. Rev. C</source> <volume>85</volume>, <page-range>064002</page-range> (<year>2012</year>).<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.85.064002</pub-id></mixed-citation>
+</ref>
+<ref id="c12"><label>[12]</label>
+<mixed-citation publication-type="journal"><object-id>12</object-id><person-group person-group-type="author"><string-name>A. Carbone</string-name>, <string-name>A. Cipollone</string-name>, <string-name>C. Barbieri</string-name>, <string-name>A. Rios</string-name>, and <string-name>A. Polls</string-name></person-group>, <source>Phys. Rev. C</source> <volume>88</volume>, <page-range>054326</page-range> (<year>2013</year>).<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.88.054326</pub-id></mixed-citation>
+</ref>
+<ref id="c13"><label>[13]</label>
+<mixed-citation id="c13a" publication-type="journal"><object-id>13a</object-id><person-group person-group-type="author"><string-name>J. Carlson</string-name>, <string-name>V. R. Pandharipande</string-name>, and <string-name>R. B. Wiringa</string-name></person-group>, <source>Nucl. Phys. A</source> <volume>401</volume>, <page-range>59</page-range> (<year>1983</year>)<pub-id pub-id-type="coden">NUPABL</pub-id><issn>0375-9474</issn>;<pub-id pub-id-type="doi" specific-use="suppress-display">10.1016/0375-9474(83)90336-6</pub-id></mixed-citation>
+<mixed-citation id="c13b" publication-type="journal" specific-use="ibid"><object-id>13b</object-id><person-group person-group-type="author"><string-name>R. Schiavilla</string-name>, <string-name>V. R. Pandharipande</string-name>, and <string-name>R. B. Wiringa</string-name></person-group>, <source>Nucl. Phys. A</source> <volume>449</volume>, <page-range>219</page-range> (<year>1986</year>);<pub-id pub-id-type="coden">NUPABL</pub-id><issn>0375-9474</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1016/0375-9474(86)90003-5</pub-id></mixed-citation>
+<mixed-citation id="c13c" publication-type="journal"><object-id>13c</object-id><person-group person-group-type="author"><string-name>B. S. Pudliner</string-name>, <string-name>V. R. Pandharipande</string-name>, <string-name>J. Carlson</string-name>, <string-name>S. C. Pieper</string-name>, and <string-name>R. B. Wiringa</string-name></person-group>, <source>Phys. Rev. C</source> <volume>56</volume>, <page-range>1720</page-range> (<year>1997</year>).<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.56.1720</pub-id></mixed-citation>
+</ref>
+<ref id="c14"><label>[14]</label>
+<mixed-citation publication-type="journal"><object-id>14</object-id><person-group person-group-type="author"><string-name>M. Baldo</string-name> and <string-name>A. E. Shaban</string-name></person-group>, <source>Phys. Lett. B</source> <volume>661</volume>, <page-range>373</page-range> (<year>2008</year>).<pub-id pub-id-type="coden">PYLBAJ</pub-id><issn>0370-2693</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1016/j.physletb.2008.02.040</pub-id></mixed-citation>
+</ref>
+<ref id="c15"><label>[15]</label>
+<mixed-citation publication-type="journal"><object-id>15</object-id><person-group person-group-type="author"><string-name>R. B. Wiringa</string-name>, <string-name>V. G. J. Stoks</string-name>, and <string-name>R. Schiavilla</string-name></person-group>, <source>Phys. Rev. C</source> <volume>51</volume>, <page-range>38</page-range> (<year>1995</year>).<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.51.38</pub-id></mixed-citation>
+</ref>
+<ref id="c16"><label>[16]</label>
+<mixed-citation publication-type="journal"><object-id>16</object-id><person-group person-group-type="author"><string-name>R. Machleidt</string-name></person-group>, <source>Phys. Rev. C</source> <volume>63</volume>, <page-range>024001</page-range> (<year>2001</year>).<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.63.024001</pub-id></mixed-citation>
+</ref>
+<ref id="c17"><label>[17]</label>
+<mixed-citation publication-type="journal"><object-id>17</object-id><person-group person-group-type="author"><string-name>Z. H. Li</string-name> and <string-name>H.-J. Schulze</string-name></person-group>, <source>Phys. Rev. C</source> <volume>78</volume>, <page-range>028801</page-range> (<year>2008</year>).<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.78.028801</pub-id></mixed-citation>
+</ref>
+<ref id="c18"><label>[18]</label>
+<mixed-citation id="c18a" publication-type="journal"><object-id>18a</object-id><person-group person-group-type="author"><string-name>W. Zuo</string-name>, <string-name>U. Lombardo</string-name>, <string-name>H.-J. Schulze</string-name>, and <string-name>Z. H. Li</string-name></person-group>, <source>Phys. Rev. C</source> <volume>74</volume>, <page-range>014317</page-range> (<year>2006</year>)<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn>;<pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.74.014317</pub-id></mixed-citation>
+<mixed-citation id="c18b" publication-type="journal"><object-id>18b</object-id><person-group person-group-type="author"><string-name>S.-X. Gan</string-name>, <string-name>W. Zuo</string-name>, and <string-name>U. Lombardo</string-name></person-group>, <source>Chin. Phys. Lett.</source> <volume>29</volume>, <page-range>042102</page-range> (<year>2012</year>).<pub-id pub-id-type="coden">CPLEEU</pub-id><issn>0256-307X</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1088/0256-307X/29/4/042102</pub-id></mixed-citation>
+</ref>
+<ref id="c19"><label>[19]</label>
+<mixed-citation id="c19a" publication-type="journal"><object-id>19a</object-id><person-group person-group-type="author"><string-name>W. Zuo</string-name>, <string-name>G. Giansiracusa</string-name>, <string-name>U. Lombardo</string-name>, <string-name>N. Sandulescu</string-name>, and <string-name>H.-J. Schulze</string-name></person-group>, <source>Phys. Lett. B</source> <volume>421</volume>, <page-range>1</page-range> (<year>1998</year>)<pub-id pub-id-type="coden">PYLBAJ</pub-id><issn>0370-2693</issn>;<pub-id pub-id-type="doi" specific-use="suppress-display">10.1016/S0370-2693(97)01600-6</pub-id></mixed-citation>
+<mixed-citation id="c19b" publication-type="journal" specific-use="ibid"><object-id>19b</object-id><person-group person-group-type="author"><string-name>W. Zuo</string-name>, <string-name>U. Lombardo</string-name>, and <string-name>H.-J. Schulze</string-name></person-group>, <source>Phys. Lett. B</source> <volume>432</volume>, <page-range>241</page-range> (<year>1998</year>).<pub-id pub-id-type="coden">PYLBAJ</pub-id><issn>0370-2693</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1016/S0370-2693(98)00656-X</pub-id></mixed-citation>
+</ref>
+<ref id="c20"><label>[20]</label>
+<mixed-citation id="c20a" publication-type="journal"><object-id>20a</object-id><person-group person-group-type="author"><string-name>K. Hebeler</string-name> and <string-name>A. Schwenk</string-name></person-group>, <source>Phys. Rev. C</source> <volume>82</volume>, <page-range>014314</page-range> (<year>2010</year>)<pub-id pub-id-type="coden">PRVCAN</pub-id><issn>0556-2813</issn>;<pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.82.014314</pub-id></mixed-citation>
+<mixed-citation id="c20b" publication-type="journal"><object-id>20b</object-id><person-group person-group-type="author"><string-name>J. W. Holt</string-name>, <string-name>N. Kaiser</string-name>, and <string-name>W. Weise</string-name></person-group>, <source>Nucl. Phys. A</source> <volume>876</volume>, <page-range>61</page-range> (<year>2012</year>).<pub-id pub-id-type="coden">NUPABL</pub-id><issn>0375-9474</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1016/j.nuclphysa.2011.12.001</pub-id></mixed-citation>
+</ref>
+<ref id="c21"><label>[21]</label>
+<mixed-citation publication-type="journal"><object-id>21</object-id><person-group person-group-type="author"><string-name>J. M. Lattimer</string-name>, <string-name>C. J. Pethick</string-name>, <string-name>M. Prakash</string-name>, and <string-name>P. Haensel</string-name></person-group>, <source>Phys. Rev. Lett.</source> <volume>66</volume>, <page-range>2701</page-range> (<year>1991</year>).<pub-id pub-id-type="coden">PRLTAO</pub-id><issn>0031-9007</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevLett.66.2701</pub-id></mixed-citation>
+</ref>
+<ref id="c22"><label>[22]</label>
+<mixed-citation publication-type="journal"><object-id>22</object-id><person-group person-group-type="author"><string-name>B. L. Friman</string-name> and <string-name>O. V. Maxwell</string-name></person-group>, <source>Astrophys. J.</source> <volume>232</volume>, <page-range>541</page-range> (<year>1979</year>).<pub-id pub-id-type="coden">AJLEEY</pub-id><issn>0004-637X</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1086/157313</pub-id></mixed-citation>
+</ref>
+<ref id="c23"><label>[23]</label>
+<mixed-citation publication-type="journal"><object-id>23</object-id><person-group person-group-type="author"><string-name>D. G. Yakovlev</string-name> and <string-name>K. P. Levenfish</string-name></person-group>, <source>Astron. Astrophys.</source> <volume>297</volume>, <page-range>717</page-range> (<year>1995</year>).</mixed-citation>
+</ref>
+<ref id="c24"><label>[24]</label>
+<mixed-citation publication-type="journal"><object-id>24</object-id><person-group person-group-type="author"><string-name>Peng Yin</string-name> and <string-name>Wei Zuo</string-name></person-group>, <source>Phys. Rev. C</source> <volume>88</volume>, <page-range>015804</page-range> (<year>2013</year>).<pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevC.88.015804</pub-id></mixed-citation>
+</ref>
+</ref-list>
+</back>
+</article>
