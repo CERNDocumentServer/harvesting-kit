@@ -21,11 +21,11 @@ import sys
 from invenio.refextract_kbs import get_kbs
 from datetime import datetime
 from harvestingkit.utils import (fix_journal_name,
-                                 collapse_initials)
+                                 collapse_initials,
+                                 record_add_field)
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text,
                                          get_attribute_in_tag)
-from invenio.bibrecord import record_add_field
 from datetime import date
 
 

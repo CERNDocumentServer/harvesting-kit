@@ -26,10 +26,11 @@ import re
 from os import (close,
                 remove)
 from bs4 import BeautifulSoup
-from invenio.bibrecord import (record_add_field,
-                               record_xml_output)
 from harvestingkit.minidom_utils import xml_to_text
-from harvestingkit.utils import collapse_initials
+from harvestingkit.utils import (collapse_initials,
+                                 record_xml_output,
+                                 record_add_field,
+                                 create_record)
 from xml.dom.minidom import parseString
 from xml.dom import getDOMImplementation
 from invenio.refextract_api import extract_references_from_string_xml
@@ -157,7 +158,7 @@ class SpringerCrawler(object):
             fulltext = ''
 
         #create Marc record
-        rec = {}
+        rec = create_record()
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
         if doi:

@@ -20,8 +20,9 @@ import sys
 from datetime import datetime
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
-from invenio.bibrecord import record_add_field
-from harvestingkit.utils import collapse_initials
+from harvestingkit.utils import (collapse_initials,
+                                 create_record,
+                                 record_add_field)
 
 
 class PosPackage(object):
@@ -114,8 +115,8 @@ class PosPackage(object):
         """ Reads a dom xml element in oaidc format and
             returns the bibrecord object """
         self.document = record
-        rec = {}
-        language = self._get_language()
+        rec = create_record()
+        language = self._ge_language()
         if language and language != 'en':
             record_add_field(rec, '041', subfields=[('a', language)])
         publisher = self._get_publisher()

@@ -17,6 +17,56 @@
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 import re
+from xml.dom.minidom import Document, parseString
+
+
+def create_record():
+    doc = Document()
+    record = doc.createElement('record')
+    return record
+
+
+def record_add_field(rec, tag, ind1='', ind2='', subfields=[], controlfield_value=''):
+    doc = Document()
+    datafield = doc.createElement('datafield')
+    datafield.setAttribute('tag', tag)
+    datafield.setAttribute('ind1', ind1)
+    datafield.setAttribute('ind2', ind2)
+    for subfield in subfields:
+        field = doc.createElement('subfield')
+        field.setAttribute('code', subfield[0])
+        data = subfield[1]
+        nodes = re.split(r'<math.*?</math>', data)
+        mathmls = re.findall(r'<math.*?</math>', data)
+
+        def next_mathml():
+            if mathmls:
+                return parseString(mathmls.pop(0))
+
+        for node in nodes:
+            field.appendChild(doc.createTextNode(node))
+            mathml = next_mathml()
+            if mathml:
+                field.appendChild(mathml.firstChild)
+        datafield.appendChild(field)
+    if controlfield_value:
+        controlfield = doc.createElement('controlfield')
+        controlfield.setAttribute('tag', tag)
+        controlfield.appendChild(doc.createTextNode(controlfield_value))
+        rec.appendChild(controlfield)
+    else:
+        rec.appendChild(datafield)
+    return rec
+
+
+def record_xml_output(rec):
+    ret = rec.toxml()
+    ret = ret.replace('</datafield>', '  </datafield>\n')
+    ret = re.sub(r'<datafield(.*?)>', r'  <datafield\1>\n', ret)
+    ret = ret.replace('</subfield>', '</subfield>\n')
+    ret = ret.replace('<subfield', '    <subfield')
+    ret = ret.replace('record>', 'record>\n')
+    return ret
 
 
 def format_arxiv_id(arxiv_id, INSPIRE=False):
