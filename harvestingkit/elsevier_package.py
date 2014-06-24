@@ -130,7 +130,7 @@ class ElsevierPackage(object):
         """
         self.path = mkdtemp(prefix="scoap3_package_", dir=CFG_TMPSHAREDDIR)
         self.logger.debug("Extracting package: %s" % (self.package_name,))
-        scoap3utils_extract_package(self.path, self.package_name, self.logger)
+        scoap3utils_extract_package(self.package_name, self.path, self.logger)
 
     def _crawl_elsevier_and_find_main_xml(self):
         """
@@ -942,16 +942,16 @@ class ElsevierPackage(object):
                         pass
                 try:
                     if exists(join(path, 'main_a-2b.pdf')):
-                        path = join(path, 'main_a-2b.pdf')
+                        pdf_path = join(path, 'main_a-2b.pdf')
                         record_add_field(rec, 'FFT',
-                                         subfields=[('a', path),
+                                         subfields=[('a', pdf_path),
                                                     ('n', 'main'),
                                                     ('f', '.pdf;pdfa')])
                         self.logger.debug('Adding PDF/A to record: %s'
                                           % (doi,))
                     elif exists(join(path, 'main.pdf')):
-                        path = join(path, 'main.pdf')
-                        record_add_field(rec, 'FFT', subfields=[('a', path)])
+                        pdf_path = join(path, 'main.pdf')
+                        record_add_field(rec, 'FFT', subfields=[('a', pdf_path)])
                     else:
                         if not old_pdf:
                             message = "Record " + doi
@@ -963,8 +963,8 @@ class ElsevierPackage(object):
                     register_exception(alert_admin=True, prefix=message)
                 version = self.get_elsevier_version(find_package_name(path))
                 record_add_field(rec, '583', subfields=[('l', version)])
-                path = join(path, 'main.xml')
-                record_add_field(rec, 'FFT', subfields=[('a', path)])
+                xml_path = join(path, 'main.xml')
+                record_add_field(rec, 'FFT', subfields=[('a', xml_path)])
                 record_add_field(rec, '980', subfields=[('a', 'SCOAP3'),
                                                         ('b', 'Elsevier')])
         self._add_references(xml_doc, rec)
