@@ -298,8 +298,6 @@ class ElsevierPackage(object):
                         subfields.append(('a', doi))
                     for author in authors:
                         subfields.append(('h', author))
-                    if issue:
-                        subfields.append(('n', issue))
                     if ext_link:
                         ext_link = ext_link.replace(u'\u05BE', '-')
                         ext_link = ext_link.replace(u'\u1806', '-')
@@ -515,7 +513,7 @@ class ElsevierPackage(object):
                     author["affiliation"].append(aff)
         return authors
 
-    def get_publication_information(self, xml_doc):
+    def get_publication_information(self, xml_doc, path=''):
         if self.CONSYN:
             publication = get_value_in_tag(xml_doc, "prism:publicationName")
             doi = get_value_in_tag(xml_doc, "prism:doi")
@@ -538,7 +536,9 @@ class ElsevierPackage(object):
                 # if volume is not present try to harvest it
                 try:
                     session = requests.session()
-                    r = session.get("http://dx.doi.org/" + doi)
+                    url = 'http://www.sciencedirect.com/science/article/pii'\
+                          + path.split('/')[-1]
+                    r = session.get(url)
                     parsed_html = BeautifulSoup(r.text)
                     info = parsed_html.body.find(
                         'p', attrs={'class': 'volIssue'}).text.split()
@@ -791,6 +791,15 @@ class ElsevierPackage(object):
                                      )
         return record_xml_output(rec)
 
+    def get_license(self, xml_doc):
+        license = ''
+        license_url = ''
+        for tag in xml_doc.getElementsByTagName('oa:openAccessInformation'):
+            license_url = get_value_in_tag(tag, 'oa:userLicense')
+        if license_url.startswith('http://creativecommons.org/licenses/by/3.0'):
+            license = 'CC-BY-3.0'
+        return license, license_url
+
     def get_record(self, path=None, no_pdf=False):
         xml_doc = self.get_article(path)
         rec = {}
@@ -805,7 +814,7 @@ class ElsevierPackage(object):
          last_page,
          year,
          start_date,
-         doi) = self.get_publication_information(xml_doc)
+         doi) = self.get_publication_information(xml_doc, path)
         if not journal:
             journal = self.get_article_journal(xml_doc)
         if start_date:
@@ -817,6 +826,12 @@ class ElsevierPackage(object):
         if doi:
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi),
                                                               ('2', 'DOI')])
+        license, license_url = self.get_license(xml_doc)
+        if license and license_url:
+            record_add_field(rec, '540', subfields=[('a', license),
+                                                    ('u', license_url)])
+        elif license_url:
+            record_add_field(rec, '540', subfields=[('u', license_url)])
         self.logger.info("Creating record: %s %s" % (path, doi))
         authors = self.get_authors(xml_doc)
         first_author = True
@@ -841,7 +856,7 @@ class ElsevierPackage(object):
             record_add_field(rec, '520', subfields=[('a', abstract),
                                                     ('9', 'Elsevier')])
         copyrightt = self.get_copyright(xml_doc)
-        if copyright:
+        if copyrightt:
             record_add_field(rec, '542', subfields=[('f', copyrightt)])
         keywords = self.get_keywords(xml_doc)
         if self.CONSYN:
@@ -894,9 +909,19 @@ class ElsevierPackage(object):
             if year:
                 subfields.append(('y', year))
             record_add_field(rec, '773', subfields=subfields)
-            record_add_field(rec, 'FFT', subfields=[('a', path),
-                                                    ('t', 'Elsevier'),
-                                                    ('o', 'HIDDEN')])
+            if license:
+                url = 'http://www.sciencedirect.com/science/article/pii/'\
+                      + path.split('/')[-1][:-4]
+                record_add_field(rec, '856', ind1='4',
+                                 subfields=[('u', url),
+                                            ('y', 'Elsevier server')])
+                record_add_field(rec, 'FFT', subfields=[('a', path),
+                                                        ('t', 'INSPIRE-PUBLIC'),
+                                                        ('d', 'Fulltext')])
+            else:
+                record_add_field(rec, 'FFT', subfields=[('a', path),
+                                                        ('t', 'Elsevier'),
+                                                        ('o', 'HIDDEN')])
             record_add_field(rec, '980', subfields=[('a', 'HEP')])
             record_add_field(rec, '980', subfields=[('a', 'Citeable')])
             record_add_field(rec, '980', subfields=[('a', 'Published')])
