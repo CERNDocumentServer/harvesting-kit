@@ -27,7 +27,14 @@ par rapport aux fichiers de l'article
         </subj-group>
       </article-categories>
       <title-group>
-        <article-title xml:lang="en">A hidden reservoir of Fe/FeS in interstellar silicates?</article-title>
+        <article-title xml:lang="en">A dearth of small particles in debris disks<xref ref-type="fn" rid="FN1">⋆</xref></article-title>
+        <subtitle xml:lang="en">An energy-constrained smallest fragment size</subtitle>
+        <fn-group>
+          <fn id="FN1">
+            <label>⋆</label>
+            <p>Appendices are available in electronic form at <ext-link ext-link-type="uri" xlink:href="http://www.aanda.org/10.1051/0004-6361/201423862/olm">http://www.aanda.org</ext-link></p>
+          </fn>
+        </fn-group>
       </title-group>
       <contrib-group content-type="authors">
         <contrib contrib-type="author">

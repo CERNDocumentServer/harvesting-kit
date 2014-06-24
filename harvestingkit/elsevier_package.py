@@ -559,9 +559,12 @@ class ElsevierPackage(object):
                     pass
             if vol:
                 volume += vol
-            year = xml_doc.getElementsByTagName(
-                'ce:copyright')[0].getAttribute("year")
-            year = year.encode('utf-8')
+            try:
+                year = xml_doc.getElementsByTagName(
+                    'ce:copyright')[0].getAttribute("year")
+                year = year.encode('utf-8')
+            except IndexError:
+                year = ''
             start_date = get_value_in_tag(xml_doc, "prism:coverDate")
             if len(xml_doc.getElementsByTagName('ce:date-accepted')) > 0:
                 full_date = xml_doc.getElementsByTagName('ce:date-accepted')[0]
@@ -862,9 +865,9 @@ class ElsevierPackage(object):
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract),
                                                     ('9', 'Elsevier')])
-        copyrightt = self.get_copyright(xml_doc)
-        if copyrightt:
-            record_add_field(rec, '542', subfields=[('f', copyrightt)])
+        record_copyright = self.get_copyright(xml_doc)
+        if record_copyright:
+            record_add_field(rec, '542', subfields=[('f', record_copyright)])
         keywords = self.get_keywords(xml_doc)
         if self.CONSYN:
             for tag in xml_doc.getElementsByTagName('ce:collaboration'):

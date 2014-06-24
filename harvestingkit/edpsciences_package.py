@@ -18,6 +18,7 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 from __future__ import print_function
 import sys
+from re import sub
 from invenio.refextract_api import extract_references_from_string_xml
 from invenio.bibrecord import (record_add_field,
                                record_xml_output)
@@ -40,6 +41,8 @@ class EDPSciencesPackage(JatsPackage):
 
     def _get_references(self):
         for ref in self.document.getElementsByTagName('ref'):
+            label = ref.getAttribute('id')
+            label = sub(r'\D', '', label)
             text_ref = ''
             ext_link = ''
             for mixed in ref.getElementsByTagName('mixed-citation'):
@@ -51,6 +54,8 @@ class EDPSciencesPackage(JatsPackage):
                 elif ref_type == 'other':
                     text_ref = get_value_in_tag(ref, 'mixed-citation')
                     ext_link = get_value_in_tag(mixed, 'ext-link')
+                elif ref_type == 'book':
+                    text_ref = xml_to_text(mixed)
             authors = []
             for auth in ref.getElementsByTagName('string-name'):
                 surname = get_value_in_tag(auth, 'surname')
@@ -65,12 +70,14 @@ class EDPSciencesPackage(JatsPackage):
                 source, vol = fix_journal_name(source, self.journal_mappings)
                 if vol:
                     volume = vol + volume
-            yield ref_type, text_ref, ext_link, authors, year, source, volume, page
+            yield label, ref_type, text_ref, ext_link, authors, year, source, volume, page
 
     def _add_references(self, rec):
-        for ref_type, text_ref, ext_link, authors, year, \
+        for label, ref_type, text_ref, ext_link, authors, year, \
                 source, volume, page in self._get_references():
             subfields = []
+            if label:
+                subfields.append(('o', label))
             if text_ref:
                 ref_xml = extract_references_from_string_xml(text_ref)
                 dom = parseString(ref_xml)
@@ -100,6 +107,13 @@ class EDPSciencesPackage(JatsPackage):
                 subfields.append(('s', source))
             record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
 
+    def _get_note(self, note_id):
+        for tag in self.document.getElementsByTagName('fn'):
+            if tag.getAttribute('id') == note_id:
+                for label in tag.getElementsByTagName('label'):
+                    tag.removeChild(label)
+                return xml_to_text(tag)
+
     def get_record(self, fileName):
         """
         Gets the Marc xml of the files in xaml_jp directory
@@ -110,16 +124,33 @@ class EDPSciencesPackage(JatsPackage):
         :returns: a string with the marc xml version of the file.
         """
         self.document = parse(fileName)
+        article_type = self._get_article_type()
+        if article_type not in ['research-article',
+                                'introduction',
+                                'letter']:
+            return ''
         rec = {}
-        title = self._get_title()
+        title, subtitle, notes = self._get_title()
+        subfields = []
+        if subtitle:
+            subfields.append(('b', subtitle))
+        if title:
+            subfields.append(('a', title))
+            record_add_field(rec, '245', subfields=subfields)
         subjects = self.document.getElementsByTagName('kwd')
         subjects = map(xml_to_text, subjects)
         subject = ', '.join(subjects)
+        for note_id in notes:
+            note = self._get_note(note_id)
+            if note:
+                record_add_field(rec, '500', subfields=[('a', note)])
         if subject:
             record_add_field(rec, '650', ind1='1', ind2='7', subfields=[('2', 'EDPSciences'),
                                                                         ('a', subject)])
-        if title:
-            record_add_field(rec, '245', subfields=[('a', title)])
+        keywords = self._get_keywords()
+        if keywords:
+            record_add_field(rec, '653', ind1='1', subfields=[('a', ', '.join(keywords)),
+                                                              ('9', 'author')])
         journal, volume, issue, year, date, doi, page,\
             fpage, lpage = self._get_publication_information()
         if date:
@@ -132,6 +163,16 @@ class EDPSciencesPackage(JatsPackage):
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract),
                                                     ('9', 'EDPSciences')])
+        license, license_type, license_url = self._get_license()
+        subfields = []
+        if license:
+            subfields.append(('a', license))
+        if license_url:
+            subfields.append(('u', license_url))
+        if subfields:
+            record_add_field(rec, '540', subfields=subfields)
+        if license_type == 'open-access':
+            pass  # TO-DO attach full-text
         number_of_pages = self._get_page_count()
         if number_of_pages:
             record_add_field(rec, '300', subfields=[('a', number_of_pages)])
@@ -159,6 +200,12 @@ class EDPSciencesPackage(JatsPackage):
             subfields.append(('y', year))
         record_add_field(rec, '773', subfields=subfields)
         record_add_field(rec, '980', subfields=[('a', 'HEP')])
+        conference = ''
+        for tag in self.document.getElementsByTagName('conference'):
+            conference = xml_to_text(tag)
+        if conference:
+            record_add_field(rec, '980', subfields=[('a', 'ConferencePaper')])
+            record_add_field(rec, '500', subfields=[('a', conference)])
         self._add_references(rec)
         self._add_authors(rec)
         try:
