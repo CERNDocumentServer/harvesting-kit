@@ -85,10 +85,10 @@ class PosPackage(object):
 
     def _get_copyright(self):
         try:
-            copyrightt = get_value_in_tag(self.document, 'dc:rights')
-            if copyrightt == 'Creative Commons Attribution-NonCommercial-ShareAlike':
-                copyrightt = 'CC-BY-NC-SA'
-            return copyrightt
+            record_copyright = get_value_in_tag(self.document, 'dc:rights')
+            if record_copyright == 'Creative Commons Attribution-NonCommercial-ShareAlike':
+                record_copyright = 'CC-BY-NC-SA'
+            return record_copyright
         except Exception:
             print >> sys.stderr, "Can't find copyright"
             return ''
@@ -130,9 +130,9 @@ class PosPackage(object):
         title = self._get_title()
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
-        copyrightt = self._get_copyright()
-        if copyrightt:
-            record_add_field(rec, '540', subfields=[('a', copyrightt)])
+        record_copyright = self._get_copyright()
+        if record_copyright:
+            record_add_field(rec, '540', subfields=[('a', record_copyright)])
         subject = self._get_subject()
         if subject:
             record_add_field(rec, '650', ind1='1', ind2='7', subfields=[('a', subject),

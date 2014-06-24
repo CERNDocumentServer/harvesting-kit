@@ -64,10 +64,17 @@ class JatsPackage(object):
 
     def _get_title(self):
         try:
-            return get_value_in_tag(self.document, 'article-title')
-        except Exception:
+            notes = []
+            for tag in self.document.getElementsByTagName('article-title'):
+                for note in tag.getElementsByTagName('xref'):
+                    if note.getAttribute('ref-type') == 'fn':
+                        tag.removeChild(note)
+                        notes.append(note.getAttribute('rid'))
+                return xml_to_text(tag), get_value_in_tag(self.document, 'subtitle'), notes
+        except Exception as e:
+            print(e)
             print("Can't find title", file=sys.stderr)
-            return ''
+            return '', '', ''
 
     def _get_doi(self):
         try:
@@ -133,10 +140,14 @@ class JatsPackage(object):
     def _get_license(self):
         license = ''
         license_type = ''
+        license_url = ''
         for tag in self.document.getElementsByTagName('license'):
             license = get_value_in_tag(tag, 'ext-link')
             license_type = tag.getAttribute('license-type')
-        return license, license_type
+            license_url = get_attribute_in_tag(tag, 'ext-link', 'xlink:href')
+        if license_url:
+            license_url = license_url[0]
+        return license, license_type, license_url
 
     def _get_page_count(self):
         try:
@@ -212,7 +223,8 @@ class JatsPackage(object):
     def _get_subject(self):
         subjects = []
         for tag in self.document.getElementsByTagName('subj-group'):
-            if tag.getAttribute('subj-group-type') == 'toc-minor':
+            if tag.getAttribute('subj-group-type') == 'toc-minor' or \
+                    tag.getAttribute('subj-group-type') == 'section':
                 for subject in tag.getElementsByTagName('subject'):
                     subjects.append(xml_to_text(subject))
         return ', '.join(subjects)
@@ -222,8 +234,6 @@ class JatsPackage(object):
         date = self._get_date()
         doi = self._get_doi()
         issue = get_value_in_tag(self.document, 'issue')
-        if not issue:
-            issue = get_value_in_tag(self.document, 'issue-id')
         journal, volume = fix_journal_name(journal, self.journal_mappings)
         volume += get_value_in_tag(self.document, 'volume')
         page = get_value_in_tag(self.document, 'elocation-id')
@@ -231,6 +241,14 @@ class JatsPackage(object):
         lpage = get_value_in_tag(self.document, 'lpage')
         year = date[:4]
         return (journal, volume, issue, year, date, doi, page, fpage, lpage)
+
+    def _get_keywords(self):
+        keywords = []
+        for tag in self.document.getElementsByTagName('kwd-group'):
+            if tag.getAttribute('kwd-group-type') != 'pacs':
+                for kwd in tag.getElementsByTagName('kwd'):
+                    keywords.append(kwd.firstChild.data)
+        return keywords
 
     def _add_authors(self, rec):
         authors = self._get_authors()
@@ -250,3 +268,9 @@ class JatsPackage(object):
                 first_author = False
             else:
                 record_add_field(rec, '700', subfields=subfields)
+
+    def _get_article_type(self):
+        article_type = get_attribute_in_tag(self.document, 'article', 'article-type')
+        if article_type:
+            article_type = article_type[0]
+        return article_type

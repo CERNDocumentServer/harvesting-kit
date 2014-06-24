@@ -45,7 +45,7 @@ class APSPackageTests(unittest.TestCase):
 
     def test_title(self):
         title = 'Nucleon effective masses within the Brueckner-Hartree-Fock '\
-                'theory: Impact on stellar neutrino emission'
+                'theory: Impact on stellar neutrino emission', '', []
         self.assertEqual(self.aps._get_title(), title)
 
     def test_doi(self):
@@ -98,7 +98,10 @@ class APSPackageTests(unittest.TestCase):
         self.assertEqual(self.aps._get_subject(), 'Nuclear Astrophysics')
 
     def test_license(self):
-        self.assertEqual(self.aps._get_license(), ('', ''))
+        self.assertEqual(self.aps._get_license(), ('', '', ''))
+
+    def test_keywords(self):
+        self.assertEqual(self.aps._get_keywords(), [])
 
     def test_references(self):
         references = [(u'journal', u'10.1016/S0370-1573(00)00131-9', [u'D. G. Yakovlev', u'A. D. Kaminker', u'O. Y. Gnedin', u'P. Haensel'], '', 'Phys.Rep.', '354', '1', '2001', '1', '', '', '', [], '', '', []),
@@ -140,6 +143,9 @@ class APSPackageTests(unittest.TestCase):
         for ref in self.aps.document.getElementsByTagName('ref'):
             for innerref in self.aps._get_reference(ref):
                 self.assertTrue(innerref in references)
+
+    def test_article_type(self):
+        self.assertEqual(self.aps._get_article_type(), 'brief-report')
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(APSPackageTests)
