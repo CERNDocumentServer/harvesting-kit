@@ -26,7 +26,9 @@ import os
 from xml.dom.minidom import parse
 
 from invenio.bibupload import find_records_from_extoaiid
-from invenio.bibrecord import record_add_field, record_xml_output
+from harvestingkit.utils import (record_add_field,
+                                 record_xml_output,
+                                 create_record)
 from harvestingkit.minidom_utils import (xml_to_text,
                                          get_value_in_tag)
 
@@ -71,7 +73,7 @@ def convert_record(record, response_date, request):
     oai_identifier = get_value_in_tag(header, "identifier")
     datestamp = get_value_in_tag(header, "datestamp")
     status = header.getAttribute("status").encode('utf8')
-    rec = {}
+    rec = create_record()
     record_add_field(rec, tag="035", subfields=[('a', oai_identifier),
                                                 ('u', request),
                                                 ('9', 'Hindawi'),

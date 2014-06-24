@@ -20,16 +20,17 @@ from __future__ import print_function
 import sys
 import urllib2
 from bs4 import BeautifulSoup
-from re import sub
 from urlparse import urlparse
 from os.path import join
+from re import sub
 from invenio.refextract_api import extract_references_from_string_xml
-from invenio.bibrecord import (record_add_field,
-                               record_xml_output)
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from harvestingkit.utils import (collapse_initials,
-                                 fix_journal_name)
+                                 fix_journal_name,
+                                 record_add_field,
+                                 create_record,
+                                 record_xml_output)
 from xml.dom.minidom import (parse,
                              parseString)
 from harvestingkit.jats_package import JatsPackage
@@ -55,7 +56,7 @@ class EDPSciencesPackage(JatsPackage):
                     text_ref = get_value_in_tag(ref, 'mixed-citation')
                 elif ref_type == 'conf-proc':
                     text_ref = get_value_in_tag(ref, 'mixed-citation')
-                elif ref_type == 'other':
+                elif ref_type == 'other' or ref_type == 'web':
                     text_ref = get_value_in_tag(ref, 'mixed-citation')
                     ext_link = get_value_in_tag(mixed, 'ext-link')
                 elif ref_type == 'book':
@@ -138,7 +139,7 @@ class EDPSciencesPackage(JatsPackage):
                                 'introduction',
                                 'letter']:
             return ''
-        rec = {}
+        rec = create_record()
         title, subtitle, notes = self._get_title()
         astronomy_journals = ['EAS Publ.Ser.', 'Astron.Astrophys.']
         if title in astronomy_journals:
@@ -239,7 +240,7 @@ class EDPSciencesPackage(JatsPackage):
         :returns: a string with the marc xml version of the file.
         """
         self.document = parse(filename)
-        rec = {}
+        rec = create_record()
         articles = self.document.getElementsByTagName('ArticleID')
         for article in articles:
             article_type = article.getAttribute('Type')
@@ -398,8 +399,11 @@ class EDPSciencesPackage(JatsPackage):
         parsed_uri = urlparse(url)
         domain = '{uri.scheme}://{uri.netloc}'.format(uri=parsed_uri)
         page = BeautifulSoup(page)
-        div = page.body.find('div', attrs={'class': 'module_background files'})
-        links = div.findAll('a')
+        try:
+            div = page.body.find('div', attrs={'class': 'module_background files'})
+            links = div.findAll('a')
+        except AttributeError:
+            return
         for pdf in links:
             if pdf['href'].endswith('pdf'):
                 link_to_pdf = domain + pdf['href']
@@ -421,6 +425,7 @@ class EDPSciencesPackage(JatsPackage):
                         print(e)
                 except ImportError:
                     pass
+
 
 if __name__ == '__main__':
     filename = sys.argv[1]

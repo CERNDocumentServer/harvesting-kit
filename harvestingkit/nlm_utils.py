@@ -19,9 +19,10 @@
 from harvestingkit.jats_utils import JATSParser
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
-from harvestingkit.utils import format_arxiv_id
-from invenio.bibrecord import (record_add_field,
-                               record_xml_output)
+from harvestingkit.utils import (format_arxiv_id,
+                                 record_add_field,
+                                 record_xml_output,
+                                 create_record)
 from invenio.errorlib import register_exception
 from harvestingkit.scoap3utils import MissingFFTError
 from os import pardir
@@ -79,7 +80,7 @@ class NLMParser(JATSParser):
 
     def get_record(self, f_path, publisher=None, collection=None, logger=None):
         xml = super(NLMParser, self).get_article(f_path)
-        rec = {}
+        rec = create_record()
         title = super(NLMParser, self).get_title(xml)
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])

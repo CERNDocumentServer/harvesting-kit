@@ -21,8 +21,9 @@ import re
 import sys
 from os.path import (join,
                      exists)
-from invenio.bibrecord import (record_add_field,
-                               record_xml_output)
+from harvestingkit.utils import (record_add_field,
+                                 create_record,
+                                 record_xml_output)
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from xml.dom.minidom import parse
@@ -205,7 +206,7 @@ class APPParser(object):
     def get_record(self, f_path, publisher=None, collection=None, logger=None):
         #path = abspath(join(f_path, pardir))
         xml = self.get_article(f_path)
-        rec = {}
+        rec = create_record()
         title = self.get_title(xml)
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
