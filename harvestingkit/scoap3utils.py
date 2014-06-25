@@ -232,7 +232,7 @@ def check_pkgs_integrity(filelist, logger, ftp_connector,
                      % (not_finished_files,))
 
 
-def extract_package(path, package_name, logger):
+def extract_package(package_name, path, logger):
     try:
         if ".tar" in package_name:
             TarFile.open(package_name).extractall(path)
