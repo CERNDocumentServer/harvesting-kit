@@ -18,7 +18,6 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 from __future__ import print_function
 
-import os
 import sys
 import time
 
@@ -83,7 +82,7 @@ class OxfordPackage(object):
                                       self.config.OXFORD.LOGIN,
                                       self.config.OXFORD.PASSWORD)
                 self.logger.debug(("Successful connection to the "
-                                   "Elsevier server"))
+                                   "Oxford University Press server"))
                 return
             except socket_timeout_exception as err:
                 self.logger.error(('Failed to connect %d of %d times. '
@@ -94,7 +93,7 @@ class OxfordPackage(object):
                 time.sleep(CFG_FTP_TIMEOUT_SLEEP_DURATION)
             except Exception as err:
                 self.logger.error(('Failed to connect to the '
-                                   'Elsevier server. %s') % (err,))
+                                   'Oxford University Press server. %s') % (err,))
                 break
 
         raise LoginException(err)
@@ -102,7 +101,7 @@ class OxfordPackage(object):
     def _get_file_listing(self, phrase=None, new_only=True):
         if phrase:
             lambda_expression = lambda x: (phrase in x) or (x == "go.xml")
-            self.files_list = filter(lambda_expression, self.ftp.nlst())
+            self.files_list = filter(lambda_expression, self.ftp.ls()[0])
         else:
             self.files_list = self.ftp.ls()[0]
         if new_only:
@@ -114,7 +113,7 @@ class OxfordPackage(object):
         self.retrieved_packages_unpacked = []
         # Prints stuff
         if self.files_list and 'go.xml' in self.files_list:
-            ## If no 'go.xml' is there than we skip the task.
+            ## If no 'go.xml' than we skip the task.
             if check_integrity:
                 self.ftp.check_pkgs_integrity(self.files_list, self.logger)
 
@@ -176,7 +175,7 @@ class OxfordPackage(object):
         except LoginException as err:
             register_exception(alert_admin=True,
                                prefix=("Failed to connect to the "
-                                       "Oxford server. %s") % (err,))
+                                       "Oxford University Press server. %s") % (err,))
             return
         except NoNewFiles:
             return
@@ -209,7 +208,8 @@ class OxfordPackage(object):
                 self.logger.error("Error extraction package file: %s"
                                   % (path,))
 
-        return self.path_unpacked
+        if path_unpacked in self:
+            return self.path_unpacked
 
     def _crawl_oxford_and_find_main_xml(self):
         """
@@ -228,8 +228,8 @@ class OxfordPackage(object):
 
                 except Exception as err:
                     register_exception()
-                    print >> sys.stderr, "ERROR: can't normalize %s: %s" \
-                                         % (dirname, err)
+                    print("ERROR: can't normalize %s: %s" % (dirname, err),
+                          file=sys.stderr)
 
         if hasattr(self, 'path_unpacked'):
             walk(self.path_unpacked, visit, None)
@@ -245,18 +245,19 @@ class OxfordPackage(object):
             fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_',
                                dir=CFG_TMPSHAREDDIR)
             out = fdopen(fd, 'w')
-            print >> out, "<collection>"
+            print("<collection>", file=out)
             for i, path in enumerate(self.found_articles):
                 try:
-                    print >> out, nlm_parser.get_record(path,
-                                                        publisher='Oxford',
-                                                        collection='SCOAP3',
-                                                        logger=self.logger)
+                    print(nlm_parser.get_record(path,
+                                                publisher='Oxford',
+                                                collection='SCOAP3',
+                                                logger=self.logger),
+                          file=out)
                 except Exception as err:
                     print >> sys.stderr, err
                     raise Exception
                 print(path, i + 1, "out of", len(self.found_articles))
-            print >> out, "</collection>"
+            print("</collection>", file=out)
             out.close()
             task_low_level_submission("bibupload", "admin",
                                       "-N" "OUP", "-i", "-r", name)
