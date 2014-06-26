@@ -194,7 +194,7 @@ class ApsPackage(object):
             doi = ''
             for tag in innerref.getElementsByTagName('pub-id'):
                 if tag.getAttribute('pub-id-type') == 'doi':
-                    doi = tag.firstChild.data
+                    doi = xml_to_text(tag)
             collaboration = get_value_in_tag(innerref, 'collab')
             authors = []
             person_groups = innerref.getElementsByTagName('person-group')
