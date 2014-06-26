@@ -611,8 +611,7 @@ class ElsevierPackage(object):
         comment = get_value_in_tag(ref, "sb:comment")
         links = []
         for link in ref.getElementsByTagName("ce:inter-ref"):
-            if link.firstChild:
-                links.append(link.firstChild.data.encode('utf-8'))
+            links.append(xml_to_text(link))
         title = ""
         try:
             container = ref.getElementsByTagName("sb:contribution")[0]
