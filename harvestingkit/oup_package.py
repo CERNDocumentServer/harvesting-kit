@@ -208,7 +208,7 @@ class OxfordPackage(object):
                 self.logger.error("Error extraction package file: %s"
                                   % (path,))
 
-        if path_unpacked in self:
+        if "path_unpacked" in self:
             return self.path_unpacked
 
     def _crawl_oxford_and_find_main_xml(self):
