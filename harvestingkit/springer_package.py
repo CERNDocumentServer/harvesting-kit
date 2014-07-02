@@ -142,10 +142,17 @@ class SpringerPackage(object):
             for i, filename in enumerate(self.files_list, start=1):
                 self.logger.info("Downloading tar package %s of %s: %s"
                                  % (i, total_count, filename,))
-                unpack_path = join(CFG_TAR_FILES, filename)
-                self.retrieved_packages_unpacked.append(unpack_path)
                 try:
-                    self.ftp.download(filename, CFG_TAR_FILES)
+                    if 'JHEP' in filename:
+                        download_folder = join(CFG_TAR_FILES, 'JHEP')
+                        unpack_path = join(CFG_TAR_FILES, 'JHEP', filename)
+                        self.retrieved_packages_unpacked.append(unpack_path)
+                        self.ftp.download(filename, download_folder)
+                    elif 'EPJC' in filename:
+                        download_folder = join(CFG_TAR_FILES, 'EPJC')
+                        unpack_path = join(CFG_TAR_FILES, 'EPJC', filename)
+                        self.retrieved_packages_unpacked.append(unpack_path)
+                        self.ftp.download(filename, download_folder)
                 except:
                     self.logger.error("Error downloading tar file: %s"
                                       % (filename,))
