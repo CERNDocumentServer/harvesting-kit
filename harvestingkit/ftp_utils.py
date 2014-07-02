@@ -110,12 +110,13 @@ class FtpHandler(object):
                               working directory.
         :type target_folder: string
         """
+        current_folder = self._ftp.pwd()
         if not target_folder.startswith('/'):  # relative path
             target_folder = join(getcwd(), target_folder)
         folder = '/'.join(source_file.split('/')[:-1])
         self.cd(folder)
-        destination = join(target_folder, source_file)
         source_file = source_file.split('/')[-1]
+        destination = join(target_folder, source_file)
         create_folders('/'.join(destination.split('/')[:-1]))
         if not exists(destination):
             try:
@@ -124,7 +125,7 @@ class FtpHandler(object):
             except error_perm as e:  # source_file is a folder
                 print(e)
                 remove(join(target_folder, source_file))
-        self._ftp.cwd(self._home)
+        self._ftp.cwd(current_folder)
 
     def cd(self, folder):
         """ Changes the working directory on the server.
