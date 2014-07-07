@@ -255,4 +255,5 @@ if __name__ == '__main__':
                 pass
             raise e
     with open(outfile, 'w') as f:
-        print >> f, sc.get_records(url)
+        f.write(sc.get_records(url))
+    print("Wrote contents to {0}".format(outfile))
