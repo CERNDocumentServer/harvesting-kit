@@ -18,7 +18,11 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 from __future__ import print_function
 import sys
+import urllib2
+from bs4 import BeautifulSoup
 from re import sub
+from urlparse import urlparse
+from os.path import join
 from invenio.refextract_api import extract_references_from_string_xml
 from invenio.bibrecord import (record_add_field,
                                record_xml_output)
@@ -172,7 +176,7 @@ class EDPSciencesPackage(JatsPackage):
         if subfields:
             record_add_field(rec, '540', subfields=subfields)
         if license_type == 'open-access':
-            pass  # TO-DO attach full-text
+            self._attach_fulltext(rec, doi)
         number_of_pages = self._get_page_count()
         if number_of_pages:
             record_add_field(rec, '300', subfields=[('a', number_of_pages)])
@@ -373,6 +377,38 @@ class EDPSciencesPackage(JatsPackage):
             message = "Found a bad char in the file for the article " + doi
             sys.stderr.write(message)
             return ""
+
+    def _attach_fulltext(self, rec, doi):
+        url = 'http://dx.doi.org/' + doi
+        page = urllib2.urlopen(url)
+        #url after redirect
+        url = page.url
+        parsed_uri = urlparse(url)
+        domain = '{uri.scheme}://{uri.netloc}'.format(uri=parsed_uri)
+        page = BeautifulSoup(page)
+        div = page.body.find('div', attrs={'class': 'module_background files'})
+        links = div.findAll('a')
+        for pdf in links:
+            if pdf['href'].endswith('pdf'):
+                link_to_pdf = domain + pdf['href']
+                record_add_field(rec, '856', ind1='4',
+                                 subfields=[('u', link_to_pdf),
+                                            ('y', 'EDP Sciences server')])
+                try:
+                    from invenio.filedownloadutils import (download_url,
+                                                           InvenioFileDownloadError)
+                    from harvestingkit.config import CFG_EDP_FULLTEXT_DIR
+                    try:
+
+                        filename = join(CFG_EDP_FULLTEXT_DIR, link_to_pdf.split('/')[-1])
+                        download_url(link_to_pdf, "pdf", filename, 5, 60.0)
+                        record_add_field(rec, 'FFT', subfields=[('a', filename),
+                                                                ('t', 'INSPIRE-PUBLIC'),
+                                                                ('d', 'Fulltext')])
+                    except InvenioFileDownloadError as e:
+                        print(e)
+                except ImportError:
+                    pass
 
 if __name__ == '__main__':
     filename = sys.argv[1]
