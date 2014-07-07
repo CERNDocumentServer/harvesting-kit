@@ -100,25 +100,28 @@ class SpringerPackage(object):
         self.jhep_list = []
         self.epjc_list = []
         self.files_list = []
+
+        self.ftp.cd('data/in')
+
         if phrase:
             self.epjc_list.extend(filter(lambda x: phrase in x and ".zip" in x,
-                                         self.ftp.ls("data/in/EPJC")[0]))
+                                         self.ftp.ls("EPJC")[0]))
             self.jhep_list.extend(filter(lambda x: phrase in x and ".zip" in x,
-                                         self.ftp.ls("data/in/JHEP")[0]))
+                                         self.ftp.ls("JHEP")[0]))
         else:
             self.epjc_list.extend(filter(lambda x: ".zip" in x,
-                                         self.ftp.ls("data/in/EPJC")[0]))
+                                         self.ftp.ls("EPJC")[0]))
             self.jhep_list.extend(filter(lambda x: ".zip" in x,
-                                         self.ftp.ls("data/in/JHEP")[0]))
+                                         self.ftp.ls("JHEP")[0]))
 
-        self.files_list.extend(map(lambda x: "data/in/EPJC/" + x,
+        self.files_list.extend(map(lambda x: "EPJC/" + x,
                                    self.epjc_list))
-        self.files_list.extend(map(lambda x: "data/in/JHEP/" + x,
+        self.files_list.extend(map(lambda x: "JHEP/" + x,
                                    self.jhep_list))
 
         if new_only:
             tmp_our_dir = []
-            for di in ["data/in/EPJC/", "data/in/JHEP/"]:
+            for di in ["EPJC/", "JHEP/"]:
                 try:
                     tmp_our_dir.extend(map(lambda x: di + x,
                                            listdir(join(CFG_TAR_FILES, di))))
@@ -126,6 +129,7 @@ class SpringerPackage(object):
                     pass
 
             self.files_list = set(self.files_list) - set(tmp_our_dir)
+
         return self.files_list
 
     def _download_tars(self, check_integrity=True):
@@ -144,6 +148,7 @@ class SpringerPackage(object):
                                  % (i, total_count, filename,))
                 unpack_path = join(CFG_TAR_FILES, filename)
                 self.retrieved_packages_unpacked.append(unpack_path)
+
                 try:
                     self.ftp.download(filename, CFG_TAR_FILES)
                 except:
