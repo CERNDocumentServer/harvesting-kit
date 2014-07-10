@@ -173,7 +173,7 @@ class ContrastOutConnector(object):
                 self.ftp.download(filename, CFG_TAR_FILES)
             except:
                 register_exception(alert_admin=True,
-                                   prefix="Elsevier package download faild.")
+                                   prefix="Elsevier package download failed.")
                 self.logger.error("Error downloading tar file %s of %s: %s"
                                   % (i, total_count, filename,))
                 print(sys.exc_info())
@@ -266,8 +266,6 @@ class ContrastOutConnector(object):
 
         total_count = len(self.files_list)
 
-        print(self.path_unpacked)
-        print(self.files_list)
         for i, name in enumerate(self.files_list, start=1):
             dataset_link = join(self.path_unpacked, name.split('.')[0],
                                 'dataset.xml')
@@ -309,8 +307,7 @@ class ContrastOutConnector(object):
                     self.logger.error("%s", err.message)
                     continue
 
-            self.logger.info(("%s of %s: Got metadata and fulltex directories"
-                              " of %i journals.")
+            self.logger.info(("%s of %s: Found articles: %i.")
                              % (i, total_count, len(self.found_articles),))
 
         self.sort_results()
