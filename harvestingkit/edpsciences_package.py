@@ -18,10 +18,11 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 from __future__ import print_function
 import sys
-import urllib2
+import requests
 from bs4 import BeautifulSoup
 from urlparse import urlparse
 from os.path import join
+from os import makedirs
 from re import sub
 from invenio.refextract_api import extract_references_from_string_xml
 from harvestingkit.minidom_utils import (get_value_in_tag,
@@ -393,14 +394,18 @@ class EDPSciencesPackage(JatsPackage):
 
     def _attach_fulltext(self, rec, doi):
         url = 'http://dx.doi.org/' + doi
-        page = urllib2.urlopen(url)
+        page = requests.get(url)
         #url after redirect
         url = page.url
+        page = page.text
         parsed_uri = urlparse(url)
         domain = '{uri.scheme}://{uri.netloc}'.format(uri=parsed_uri)
         page = BeautifulSoup(page)
         try:
-            div = page.body.find('div', attrs={'class': 'module_background files'})
+            if 'epjconf' in doi:
+                div = page.body.find('div', attrs={'id': 'header'})
+            else:
+                div = page.body.find('div', attrs={'class': 'module_background files'})
             links = div.findAll('a')
         except AttributeError:
             return
@@ -413,11 +418,24 @@ class EDPSciencesPackage(JatsPackage):
                 try:
                     from invenio.filedownloadutils import (download_url,
                                                            InvenioFileDownloadError)
-                    from harvestingkit.config import CFG_EDP_FULLTEXT_DIR
+                    from invenio.config import CFG_EDPSCIENCE_OUT_FOLDER
                     try:
 
-                        filename = join(CFG_EDP_FULLTEXT_DIR, link_to_pdf.split('/')[-1])
-                        download_url(link_to_pdf, "pdf", filename, 5, 60.0)
+                        out_folder = join(CFG_EDPSCIENCE_OUT_FOLDER,
+                                          "fulltexts")
+                        try:
+                            makedirs(out_folder)
+                            filename = join(out_folder,
+                                            link_to_pdf.split('/')[-1])
+                        except (IOError, OSError):
+                            # Problem creating folder
+                            filename = None
+
+                        filename = download_url(link_to_pdf,
+                                                content_type="pdf",
+                                                download_to_file=filename,
+                                                retry_count=5,
+                                                timeout=60.0)
                         record_add_field(rec, 'FFT', subfields=[('a', filename),
                                                                 ('t', 'INSPIRE-PUBLIC'),
                                                                 ('d', 'Fulltext')])

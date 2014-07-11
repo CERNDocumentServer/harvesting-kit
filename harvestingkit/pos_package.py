@@ -116,7 +116,7 @@ class PosPackage(object):
             returns the bibrecord object """
         self.document = record
         rec = create_record()
-        language = self._ge_language()
+        language = self._get_language()
         if language and language != 'en':
             record_add_field(rec, '041', subfields=[('a', language)])
         publisher = self._get_publisher()
