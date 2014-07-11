@@ -18,11 +18,12 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 from __future__ import print_function
 import sys
-import urllib2
+import requests
 from bs4 import BeautifulSoup
 from urlparse import urlparse
 from os.path import join
 from re import sub
+from time import sleep
 from invenio.refextract_api import extract_references_from_string_xml
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
@@ -389,14 +390,18 @@ class EDPSciencesPackage(JatsPackage):
 
     def _attach_fulltext(self, rec, doi):
         url = 'http://dx.doi.org/' + doi
-        page = urllib2.urlopen(url)
+        page = requests.get(url)
         #url after redirect
         url = page.url
+        page = page.text
         parsed_uri = urlparse(url)
         domain = '{uri.scheme}://{uri.netloc}'.format(uri=parsed_uri)
         page = BeautifulSoup(page)
         try:
-            div = page.body.find('div', attrs={'class': 'module_background files'})
+            if 'epjconf' in doi:
+                div = page.body.find('div', attrs={'id': 'header'})
+            else:
+                div = page.body.find('div', attrs={'class': 'module_background files'})
             links = div.findAll('a')
         except AttributeError:
             return
