@@ -26,6 +26,7 @@ from os.path import join, exists
 from os import remove, mkdir, getcwd
 from urlparse import urlparse
 from netrc import netrc
+from datetime import datetime
 
 
 def create_folders(new_folder):
@@ -272,7 +273,14 @@ class FtpHandler(object):
         self._ftp.dir(filename, dir_callback)
         return result[0]
 
-    def check_pkgs_integrity(self, filelist, logger, timeout=120, sleep_time=10):
+    def get_datestamp(self, filename):
+        datestamp = self._ftp.sendcmd('MDTM ' + filename)
+        datestamp = datetime.strptime(datestamp[4:],
+                                      "%Y%m%d%H%M%S").strftime("%Y-%M-%d")
+        return datestamp
+
+    def check_pkgs_integrity(self, filelist, logger,
+                             timeout=120, sleep_time=10):
         """ Checks if files are not being uploaded to server.
 
         :param filelist - a list of filenames to check.
@@ -309,7 +317,8 @@ class FtpHandler(object):
                     not_finished_files.append(filelist[count])
 
             print("\nOMG, OMG something wrong with integrity.")
-            logger.error("Integrity check failed for files %s" % (not_finished_files,))
+            logger.error("Integrity check failed for files %s"
+                         % (not_finished_files,))
 
     def upload(self, filename, location=''):
         """ Uploads a file on the server to the desired location
