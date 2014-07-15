@@ -91,6 +91,7 @@ class EDPSciencesPackage(JatsPackage):
                     data = field.firstChild.data
                     code = field.getAttribute("code")
                     subfields.append((code, data))
+                subfields.append(('9', 'refextract'))
             if ref_type:
                 subfields.append(('d', ref_type))
             if text_ref:
@@ -320,6 +321,8 @@ class EDPSciencesPackage(JatsPackage):
             dom = parseString(ref_xml)
             fields = dom.getElementsByTagName("datafield")[0]
             fields = fields.getElementsByTagName("subfield")
+            if fields:
+                subfields.append(('9', 'refextract'))
             for field in fields:
                 data = field.firstChild.data
                 code = field.getAttribute("code")
