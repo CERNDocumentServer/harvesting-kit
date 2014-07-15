@@ -135,6 +135,11 @@ class EDPSciencesPackage(JatsPackage):
             return ''
         rec = {}
         title, subtitle, notes = self._get_title()
+        astronomy_journals = ['EAS Publ.Ser.', 'Astron.Astrophys.']
+        if title in astronomy_journals:
+            record_add_field(rec, '650', ind1='1', ind2='4',
+                             subfields=[('2', 'INSPIRE'),
+                                        ('a', 'Astrophysics')])
         subfields = []
         if subtitle:
             subfields.append(('b', subtitle))
