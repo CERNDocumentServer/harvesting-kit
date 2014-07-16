@@ -90,12 +90,13 @@ class JatsPackage(object):
         for tag in self.document.getElementsByTagName('aff'):
             aid = tag.getAttribute('id')
             affiliation = xml_to_text(tag)
-            #removes the label
-            try:
-                int(affiliation.split()[0])
-                affiliation = ' '.join(affiliation.split()[1:])
-            except ValueError:
-                pass
+            if affiliation:
+                #removes the label
+                try:
+                    int(affiliation.split()[0])
+                    affiliation = ' '.join(affiliation.split()[1:])
+                except ValueError:
+                    pass
             affiliations[aid] = affiliation
         return affiliations
 
