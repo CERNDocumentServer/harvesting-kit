@@ -83,7 +83,8 @@ class ElsevierPackage(object):
     constructor, in this case the Elsevier server will be harvested.
     """
     def __init__(self, package_name=None, path=None,
-                 run_locally=False, CONSYN=False):
+                 run_locally=False, CONSYN=False,
+                 journal_mappings=None):
         self.CONSYN = CONSYN
         try:
             self.logger = create_logger("Elsevier")
@@ -95,7 +96,10 @@ class ElsevierPackage(object):
             self.error = print
             self.debug = print
         if self.CONSYN:
-            self._build_journal_mappings()
+            if journal_mappings:
+                self.journal_mappings = journal_mappings
+            else:
+                self._build_journal_mappings()
         else:
             self.package_name = package_name
             self.path = path
@@ -260,6 +264,8 @@ class ElsevierPackage(object):
                     dom = xml.dom.minidom.parseString(ref_xml)
                     fields = dom.getElementsByTagName("datafield")[0]
                     fields = fields.getElementsByTagName("subfield")
+                    if fields:
+                        subfields.append(('9', 'refextract'))
                     for field in fields:
                         data = field.firstChild.data
                         code = field.getAttribute("code")
@@ -446,7 +452,10 @@ class ElsevierPackage(object):
 
     def get_copyright(self, xml_doc):
         try:
-            return get_value_in_tag(xml_doc, "ce:copyright")
+            copyright = get_value_in_tag(xml_doc, "ce:copyright")
+            if not copyright:
+                copyright = get_value_in_tag(xml_doc, "prism:copyright")
+            return copyright
         except Exception:
             print("Can't find copyright", file=sys.stderr)
 
@@ -552,9 +561,12 @@ class ElsevierPackage(object):
                     pass
             if vol:
                 volume += vol
-            year = xml_doc.getElementsByTagName(
-                'ce:copyright')[0].getAttribute("year")
-            year = year.encode('utf-8')
+            try:
+                year = xml_doc.getElementsByTagName(
+                    'ce:copyright')[0].getAttribute("year")
+                year = year.encode('utf-8')
+            except IndexError:
+                year = ''
             start_date = get_value_in_tag(xml_doc, "prism:coverDate")
             if len(xml_doc.getElementsByTagName('ce:date-accepted')) > 0:
                 full_date = xml_doc.getElementsByTagName('ce:date-accepted')[0]
@@ -624,6 +636,7 @@ class ElsevierPackage(object):
         isjournal = ref.getElementsByTagName("sb:issue")
         journal = ""
         if isjournal:
+            isjournal = True
             if not page:
                 page = comment
             container = ref.getElementsByTagName("sb:issue")[0]
@@ -854,9 +867,9 @@ class ElsevierPackage(object):
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract),
                                                     ('9', 'Elsevier')])
-        copyrightt = self.get_copyright(xml_doc)
-        if copyrightt:
-            record_add_field(rec, '542', subfields=[('f', copyrightt)])
+        record_copyright = self.get_copyright(xml_doc)
+        if record_copyright:
+            record_add_field(rec, '542', subfields=[('f', record_copyright)])
         keywords = self.get_keywords(xml_doc)
         if self.CONSYN:
             for tag in xml_doc.getElementsByTagName('ce:collaboration'):
