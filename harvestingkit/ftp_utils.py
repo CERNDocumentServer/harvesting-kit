@@ -128,6 +128,7 @@ class FtpHandler(object):
             except error_perm as e:  # source_file is a folder
                 print(e)
                 remove(join(target_folder, source_file))
+                raise
         self._ftp.cwd(current_folder)
 
     def cd(self, folder):
