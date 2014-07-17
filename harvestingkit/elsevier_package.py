@@ -89,6 +89,7 @@ class ElsevierPackage(object):
                  journal_mappings=None,
                  extract_nations=False):
         self.CONSYN = CONSYN
+        self.doi_package_name_mapping = []
         try:
             self.logger = create_logger("Elsevier")
         except IOError:  # Could not access log file
@@ -1038,6 +1039,11 @@ class ElsevierPackage(object):
                         print(self.get_record(path),
                               file=out)
                         print(path, i + 1, "out of", len(self.found_articles))
+                        xml_doc = self.get_article(path)
+                        doi = self._get_doi(xml_doc)
+                        package_name = filter(lambda x: 'cern' in x.lower() or 'vtex' in x.lower(), path.split('/'))
+                        if package_name:
+                            self.doi_package_name_mapping.append((package_name[0], doi))
                 print("</collection>", file=out)
                 out.close()
                 task_low_level_submission(
