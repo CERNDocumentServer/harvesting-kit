@@ -39,8 +39,6 @@ from xml.dom.minidom import parse
 from invenio.refextract_kbs import get_kbs
 from invenio.refextract_api import extract_references_from_string_xml
 from invenio.errorlib import register_exception
-from invenio.bibrecord import (record_add_field,
-                               record_xml_output)
 from invenio.config import CFG_TMPSHAREDDIR
 from invenio.shellutils import run_shell_command
 from invenio.bibtask import task_low_level_submission
@@ -54,6 +52,9 @@ from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from harvestingkit.config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
 from harvestingkit.utils import (fix_journal_name,
+                                 create_record,
+                                 record_add_field,
+                                 record_xml_output,
                                  format_arxiv_id)
 from unidecode import unidecode
 
@@ -756,9 +757,8 @@ class ElsevierPackage(object):
             raise
 
     def get_pdfa_record(self, path=None):
-        from invenio.search_engine import search_pattern
         xml_doc = self.get_article(path)
-        rec = {}
+        rec = create_record()
         dummy, dummy, dummy, dummy, dummy, dummy, dummy,\
             dummy, doi = self.get_publication_information(xml_doc)
         recid = search_pattern(p='0247_a:"%s" AND NOT 980:"DELETED"' % (doi,))
@@ -814,7 +814,7 @@ class ElsevierPackage(object):
 
     def get_record(self, path=None, no_pdf=False):
         xml_doc = self.get_article(path)
-        rec = {}
+        rec = create_record()
         title = self.get_title(xml_doc)
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])

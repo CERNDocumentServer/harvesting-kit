@@ -22,11 +22,12 @@ import re
 
 from xml.dom.minidom import parse
 from harvestingkit.utils import (fix_journal_name,
-                                 format_arxiv_id)
+                                 format_arxiv_id,
+                                 create_record,
+                                 record_add_field,
+                                 record_xml_output)
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
-from invenio.bibrecord import (record_add_field,
-                               record_xml_output)
 from harvestingkit.jats_package import JatsPackage
 
 
@@ -218,8 +219,8 @@ class ApsPackage(JatsPackage):
         if get_value_in_tag(self.document, "meta"):
             raise ApsPackageXMLError("The XML format of %s is not correct"
                                      % (xml_file,))
-        rec = {}
         page_count = self._get_page_count()
+        rec = create_record()
         if page_count:
             record_add_field(rec, '300', subfields=[('a', page_count)])
         pacscodes = self._get_pacscodes()

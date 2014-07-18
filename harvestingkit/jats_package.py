@@ -21,11 +21,11 @@ import sys
 from invenio.refextract_kbs import get_kbs
 from datetime import datetime
 from harvestingkit.utils import (fix_journal_name,
-                                 collapse_initials)
+                                 collapse_initials,
+                                 record_add_field)
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text,
                                          get_attribute_in_tag)
-from invenio.bibrecord import record_add_field
 from datetime import date
 
 
@@ -90,12 +90,13 @@ class JatsPackage(object):
         for tag in self.document.getElementsByTagName('aff'):
             aid = tag.getAttribute('id')
             affiliation = xml_to_text(tag)
-            #removes the label
-            try:
-                int(affiliation.split()[0])
-                affiliation = ' '.join(affiliation.split()[1:])
-            except ValueError:
-                pass
+            if affiliation:
+                #removes the label
+                try:
+                    int(affiliation.split()[0])
+                    affiliation = ' '.join(affiliation.split()[1:])
+                except ValueError:
+                    pass
             affiliations[aid] = affiliation
         return affiliations
 

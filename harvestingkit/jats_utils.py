@@ -24,12 +24,13 @@ from os import pardir
 from os.path import (join,
                      dirname,
                      basename)
-from invenio.bibrecord import (record_add_field,
-                               record_xml_output)
 from invenio.errorlib import register_exception
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
-from harvestingkit.utils import format_arxiv_id
+from harvestingkit.utils import (format_arxiv_id,
+                                 record_add_field,
+                                 record_xml_output,
+                                 create_record)
 from xml.dom.minidom import parse
 
 
@@ -318,7 +319,7 @@ class JATSParser(object):
 
     def get_record(self, f_path, publisher=None, collection=None, logger=None):
         xml = self.get_article(f_path)
-        rec = {}
+        rec = create_record()
         title = self.get_title(xml)
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
