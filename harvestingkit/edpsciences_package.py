@@ -125,6 +125,14 @@ class EDPSciencesPackage(JatsPackage):
         self.document = parse(filename)
         return self._get_date()
 
+    def _format_abstract(self, abstract):
+        abstract = abstract.replace("Context.", "Context:<br/>")
+        abstract = abstract.replace("Aims.", "<br/>Aims:<br/>")
+        abstract = abstract.replace("Methods.", "<br/>Methods:<br/>")
+        abstract = abstract.replace("Results.", "<br/>Results:<br/>")
+        abstract = abstract.replace("Conclusions..", "<br/>Conclusions:<br/>")
+        return abstract
+
     def get_record(self, fileName):
         """
         Gets the Marc xml of the files in xaml_jp directory
@@ -142,11 +150,6 @@ class EDPSciencesPackage(JatsPackage):
             return ''
         rec = create_record()
         title, subtitle, notes = self._get_title()
-        astronomy_journals = ['EAS Publ.Ser.', 'Astron.Astrophys.']
-        if title in astronomy_journals:
-            record_add_field(rec, '650', ind1='1', ind2='4',
-                             subfields=[('2', 'INSPIRE'),
-                                        ('a', 'Astrophysics')])
         subfields = []
         if subtitle:
             subfields.append(('b', subtitle))
@@ -155,20 +158,24 @@ class EDPSciencesPackage(JatsPackage):
             record_add_field(rec, '245', subfields=subfields)
         subjects = self.document.getElementsByTagName('kwd')
         subjects = map(xml_to_text, subjects)
-        subject = ', '.join(subjects)
         for note_id in notes:
             note = self._get_note(note_id)
             if note:
                 record_add_field(rec, '500', subfields=[('a', note)])
-        if subject:
+        for subject in subjects:
             record_add_field(rec, '650', ind1='1', ind2='7', subfields=[('2', 'EDPSciences'),
                                                                         ('a', subject)])
         keywords = self._get_keywords()
-        if keywords:
-            record_add_field(rec, '653', ind1='1', subfields=[('a', ', '.join(keywords)),
+        for keyword in keywords:
+            record_add_field(rec, '653', ind1='1', subfields=[('a', keyword),
                                                               ('9', 'author')])
         journal, volume, issue, year, date, doi, page,\
             fpage, lpage = self._get_publication_information()
+        astronomy_journals = ['EAS Publ.Ser.', 'Astron.Astrophys.']
+        if journal in astronomy_journals:
+            record_add_field(rec, '650', ind1='1', ind2='7',
+                             subfields=[('2', 'INSPIRE'),
+                                        ('a', 'Astrophysics')])
         if date:
             record_add_field(rec, '260', subfields=[('c', date),
                                                     ('t', 'published')])
@@ -176,6 +183,7 @@ class EDPSciencesPackage(JatsPackage):
             record_add_field(rec, '024', ind1='7', subfields=[('a', doi),
                                                               ('2', 'DOI')])
         abstract = self._get_abstract()
+        abstract = self._format_abstract(abstract)
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract),
                                                     ('9', 'EDPSciences')])
