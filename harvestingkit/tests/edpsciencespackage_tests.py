@@ -23,6 +23,7 @@ from os.path import (join,
                      dirname)
 from harvestingkit.tests import (__file__ as folder,
                                  edp_test_record,
+                                 edp_output,
                                  journal_mappings)
 
 
@@ -53,7 +54,6 @@ class EDPSciencesPackageTests(unittest.TestCase):
             u' silicate band profiles. Including iron nano-particles leads to an increase in the mid-IR extinction,'
             u' while up to 5 ppm of sulphur can be incorporated as Fe/FeS nano inclusions into silicate grains '
             u'without leaving a significant trace of its presence.</p>')
-        print(self.edp._get_abstract())
         self.assertEqual(self.edp._get_abstract(), abstract)
 
     def test_journal(self):
@@ -114,15 +114,14 @@ class EDPSciencesPackageTests(unittest.TestCase):
 
     def test_license(self):
         self.assertEqual(self.edp._get_license(), ('Creative Commons Attribution License 2.0',
-                                                   u'open-access',
+                                                   u'open-access-test',
                                                    u'http://creativecommons.org/licenses/by/2.0/'))
 
     def test_keywords(self):
         self.assertEqual(self.edp._get_keywords(), [u'dust, extinction', u'ISM: abundances'])
 
     def test_references(self):
-        references = [(u'1', u'other', 'Bohren, C., & Huffman, D. 1983, Absorption and Scattering of Light by Small Particles (New York: Wiley and Sons)', '', [], '', '', '', ''),
-                      (u'2', u'journal', '', '', ['Bradley, J.P.'], '1994', 'Science', '265', '925'),
+        references = [(u'2', u'journal', '', '', ['Bradley, J.P.'], '1994', 'Science', '265', '925'),
                       (u'3', u'journal', '', '', ['Caselli, P.', 'Hasegawa, T.I.', 'Herbst, E.'], '1994', 'Astrophys.J.', '421', '206'),
                       (u'4', u'journal', '', '', ['Chiar, J.E.', 'Tielens, A.G.G.M.'], '2006', 'Astrophys.J.', '637', '774'),
                       (u'5', u'journal', '', '', ['Compi\xc3\xa8gne, M.', 'Verstraete, L.', 'Jones, A.'], '2011', 'Astron.Astrophys.', '525', 'A103'),
@@ -131,7 +130,6 @@ class EDPSciencesPackageTests(unittest.TestCase):
                       (u'8', u'journal', '', '', ['Demyk, K.', 'Carrez, P.', 'Leroux, H.'], '2001', 'Astron.Astrophys.', '368', 'L38'),
                       (u'9', u'journal', '', '', ['Djouadi, Z.', 'Gattacceca, J.', 'D\xe2\x80\x99Hendecourt, L.'], '2007', 'Astron.Astrophys.', '468', 'L9'),
                       (u'10', u'journal', '', '', ['Draine, B.'], '1988', 'Astrophys.J.', '333', '848'),
-                      (u'11', u'other', 'Draine, B. T., & Flatau, P. J. 2010, unpublished [ arXiv:1002.1505 ]', 'arXiv:1002.1505', [], '', '', '', ''),
                       (u'12', u'journal', '', '', ['Jenkins, E.B.'], '2009', 'Astrophys.J.', '700', '1299'),
                       (u'13', u'journal', '', '', ['Jones, A.P.'], '2000', 'J.Geophys.Res.', '105', '10257'),
                       (u'14', u'journal', '', '', ['Jones, A.P.'], '2011', 'Astron.Astrophys.', '528', 'A98'),
@@ -147,7 +145,6 @@ class EDPSciencesPackageTests(unittest.TestCase):
                       (u'24', u'journal', '', '', ['Nguyen, A.N.', 'Stadermann, F.J.', 'Zinner, E.'], '2007', 'Astrophys.J.', '656', '1223'),
                       (u'25', u'journal', '', '', ['Ordal, M.A.', 'Bell, R.J.', 'Alexander, R.W.', 'Long, L.L.', 'Querry, M.R.'], '1985', 'Appl.Opt.', '24', '4493'),
                       (u'26', u'journal', '', '', ['Ordal, M.A.', 'Bell, R.J.', 'Alexander, R.W.', 'Newquist, L.A.', 'Querry, M.R.'], '1988', 'Appl.Opt.', '27', '1203'),
-                      (u'27', u'other', 'Planck Collaboration XI 2014, A&A, in press [ arXiv:1312.1300 ]', 'arXiv:1312.1300', [], '', '', '', ''),
                       (u'28', u'journal', '', '', ['Pollack, J.B.', 'Hollenbach, D.', 'Beckwith, S.'], '1994', 'Astrophys.J.', '421', '615'),
                       (u'29', u'journal', '', '', ['Purcell, E.M.', 'Pennypacker, C.R.'], '1973', 'Astrophys.J.', '186', '705'),
                       (u'30', u'journal', '', '', ['Rieke, G.H.', 'Lebofsky, M.J.'], '1985', 'Astrophys.J.', '288', '618'),
@@ -165,6 +162,13 @@ class EDPSciencesPackageTests(unittest.TestCase):
 
     def test_article_type(self):
         self.assertEqual(self.edp._get_article_type(), 'research-article')
+
+    def test_get_record(self):
+        source_file = join(dirname(folder), edp_test_record)
+        marc_file = join(dirname(folder), edp_output)
+        with open(marc_file) as marc:
+            result = marc.read()
+        self.assertEqual(self.edp.get_record(source_file), result)
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(EDPSciencesPackageTests)

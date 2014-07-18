@@ -812,7 +812,7 @@ class ElsevierPackage(object):
             license = 'CC-BY-3.0'
         return license, license_url
 
-    def get_record(self, path=None, no_pdf=False):
+    def get_record(self, path=None, no_pdf=False, test=False):
         xml_doc = self.get_article(path)
         rec = create_record()
         title = self.get_title(xml_doc)
@@ -921,19 +921,20 @@ class ElsevierPackage(object):
             if year:
                 subfields.append(('y', year))
             record_add_field(rec, '773', subfields=subfields)
-            if license:
-                url = 'http://www.sciencedirect.com/science/article/pii/'\
-                      + path.split('/')[-1][:-4]
-                record_add_field(rec, '856', ind1='4',
-                                 subfields=[('u', url),
-                                            ('y', 'Elsevier server')])
-                record_add_field(rec, 'FFT', subfields=[('a', path),
-                                                        ('t', 'INSPIRE-PUBLIC'),
-                                                        ('d', 'Fulltext')])
-            else:
-                record_add_field(rec, 'FFT', subfields=[('a', path),
-                                                        ('t', 'Elsevier'),
-                                                        ('o', 'HIDDEN')])
+            if not test:
+                if license:
+                    url = 'http://www.sciencedirect.com/science/article/pii/'\
+                          + path.split('/')[-1][:-4]
+                    record_add_field(rec, '856', ind1='4',
+                                     subfields=[('u', url),
+                                                ('y', 'Elsevier server')])
+                    record_add_field(rec, 'FFT', subfields=[('a', path),
+                                                            ('t', 'INSPIRE-PUBLIC'),
+                                                            ('d', 'Fulltext')])
+                else:
+                    record_add_field(rec, 'FFT', subfields=[('a', path),
+                                                            ('t', 'Elsevier'),
+                                                            ('o', 'HIDDEN')])
             record_add_field(rec, '980', subfields=[('a', 'HEP')])
             record_add_field(rec, '980', subfields=[('a', 'Citeable')])
             record_add_field(rec, '980', subfields=[('a', 'Published')])
