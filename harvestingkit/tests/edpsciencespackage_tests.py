@@ -23,6 +23,7 @@ from os.path import (join,
                      dirname)
 from harvestingkit.tests import (__file__ as folder,
                                  edp_test_record,
+                                 edp_output,
                                  journal_mappings)
 
 
@@ -113,7 +114,7 @@ class EDPSciencesPackageTests(unittest.TestCase):
 
     def test_license(self):
         self.assertEqual(self.edp._get_license(), ('Creative Commons Attribution License 2.0',
-                                                   u'open-access',
+                                                   u'open-access-test',
                                                    u'http://creativecommons.org/licenses/by/2.0/'))
 
     def test_keywords(self):
@@ -146,7 +147,6 @@ class EDPSciencesPackageTests(unittest.TestCase):
                       (u'24', u'journal', '', '', ['Nguyen, A.N.', 'Stadermann, F.J.', 'Zinner, E.'], '2007', 'Astrophys.J.', '656', '1223'),
                       (u'25', u'journal', '', '', ['Ordal, M.A.', 'Bell, R.J.', 'Alexander, R.W.', 'Long, L.L.', 'Querry, M.R.'], '1985', 'Appl.Opt.', '24', '4493'),
                       (u'26', u'journal', '', '', ['Ordal, M.A.', 'Bell, R.J.', 'Alexander, R.W.', 'Newquist, L.A.', 'Querry, M.R.'], '1988', 'Appl.Opt.', '27', '1203'),
-                      (u'27', u'other', 'Planck Collaboration XI 2014, A&A, in press [ arXiv:1312.1300 ]', 'arXiv:1312.1300', [], '', '', '', ''),
                       (u'28', u'journal', '', '', ['Pollack, J.B.', 'Hollenbach, D.', 'Beckwith, S.'], '1994', 'Astrophys.J.', '421', '615'),
                       (u'29', u'journal', '', '', ['Purcell, E.M.', 'Pennypacker, C.R.'], '1973', 'Astrophys.J.', '186', '705'),
                       (u'30', u'journal', '', '', ['Rieke, G.H.', 'Lebofsky, M.J.'], '1985', 'Astrophys.J.', '288', '618'),
@@ -164,6 +164,13 @@ class EDPSciencesPackageTests(unittest.TestCase):
 
     def test_article_type(self):
         self.assertEqual(self.edp._get_article_type(), 'research-article')
+
+    def test_get_record(self):
+        source_file = join(dirname(folder), edp_test_record)
+        marc_file = join(dirname(folder), edp_output)
+        with open(marc_file) as marc:
+            result = marc.read()
+        self.assertEqual(self.edp.get_record(source_file), result)
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(EDPSciencesPackageTests)

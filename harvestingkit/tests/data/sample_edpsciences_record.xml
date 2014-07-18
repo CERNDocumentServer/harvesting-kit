@@ -66,7 +66,7 @@ par rapport aux fichiers de l'article
         <aff id="AFF1"><addr-line><institution>Institut d’Astrophysique Spatiale (IAS), Université Paris-Sud &amp; CNRS</institution>, <named-content content-type="street">Bât. 121</named-content>, <named-content content-type="postcode">91405</named-content> <named-content content-type="city">Orsay</named-content>, <country>France</country></addr-line><xref ref-type="fn" rid="FN1"/>
  </aff>
       </contrib-group>
-<license license-type="open-access">
+<license license-type="open-access-test">
 <license-p>This is an Open Access article distributed under the terms of the <ext-link ext-link-type="uri" xlink:href="http://creativecommons.org/licenses/by/2.0/">Creative Commons Attribution License 2.0</ext-link>, which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.</license-p></license>
       <author-notes>
         <fn id="FN1">
@@ -242,10 +242,6 @@ par rapport aux fichiers de l'article
       <ref id="R26">
         
         <mixed-citation publication-type="journal"> <string-name><surname>Ordal</surname>, <given-names>M. A.</given-names></string-name>, <string-name><surname>Bell</surname>, <given-names>R. J.</given-names></string-name>, <string-name><surname>Alexander</surname>, <suffix>Jr.</suffix>, <given-names>R. W.</given-names></string-name>, <string-name><surname>Newquist</surname>, <given-names>L. A.</given-names></string-name>, &amp; <string-name><surname>Querry</surname>, <given-names>M. R.</given-names></string-name> <year>1988</year>, <source>Applied Optics</source>, <volume>27</volume>, <fpage>1203</fpage> </mixed-citation></ref>
-      <!--LaTeX original ID: planck-XI-2013-->
-      <ref id="R27">
-        <mixed-citation publication-type="other">  Planck Collaboration XI 2014, A&amp;A, in press [<ext-link ext-link-type="uri" xlink:href="http://arxiv.org/abs/1312.1300">arXiv:1312.1300</ext-link>] </mixed-citation>
-      </ref>
       <!--LaTeX original ID: pollack-et-al-1994-->
       <ref id="R28">
         
