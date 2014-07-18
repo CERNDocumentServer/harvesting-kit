@@ -130,7 +130,11 @@ class JatsPackage(object):
                 corresp = ''
                 for tag in contrib.getElementsByTagName('xref'):
                     if tag.getAttribute('ref-type') == 'aff':
-                        affiliations.extend(tag.getAttribute('rid').split())
+                        for rid in tag.getAttribute('rid').split():
+                            if rid.startswith('a'):
+                                affiliations.append(rid)
+                            else:
+                                corresp = rid
                     elif tag.getAttribute('ref-type') == 'corresp' or\
                             tag.getAttribute('ref-type') == 'author-notes':
                         corresp = tag.getAttribute('rid')
