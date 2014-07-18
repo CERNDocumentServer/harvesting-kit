@@ -119,6 +119,10 @@ class EDPSciencesPackage(JatsPackage):
                     tag.removeChild(label)
                 return xml_to_text(tag)
 
+    def get_date(self, filename):
+        self.document = parse(filename)
+        return self._get_date()
+
     def get_record(self, fileName):
         """
         Gets the Marc xml of the files in xaml_jp directory
