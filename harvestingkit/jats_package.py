@@ -131,7 +131,7 @@ class JatsPackage(object):
                 for tag in contrib.getElementsByTagName('xref'):
                     if tag.getAttribute('ref-type') == 'aff':
                         for rid in tag.getAttribute('rid').split():
-                            if rid.startswith('a'):
+                            if rid.lower().startswith('a'):
                                 affiliations.append(rid)
                             else:
                                 corresp = rid
