@@ -128,17 +128,18 @@ class JatsPackage(object):
                 given_names = collapse_initials(given_names)
                 name = '%s, %s' % (surname, given_names)
                 affiliations = []
-                corresp = ''
+                corresp = []
                 for tag in contrib.getElementsByTagName('xref'):
                     if tag.getAttribute('ref-type') == 'aff':
                         for rid in tag.getAttribute('rid').split():
                             if rid.lower().startswith('a'):
                                 affiliations.append(rid)
                             else:
-                                corresp = rid
+                                corresp.append(rid)
                     elif tag.getAttribute('ref-type') == 'corresp' or\
                             tag.getAttribute('ref-type') == 'author-notes':
-                        corresp = tag.getAttribute('rid')
+                        for rid in tag.getAttribute('rid').split():
+                            corresp.append(rid)
                 authors.append((name, affiliations, corresp))
         return authors
 
@@ -266,8 +267,10 @@ class JatsPackage(object):
                 for aff in author[1]:
                     subfields.append(('v', affiliations[aff]))
             if author[2]:
-                for email in author_emails[author[2]]:
-                    subfields.append(('m', email))
+                for note in author[2]:
+                    for email in author_emails[note]:
+                        if email:
+                            subfields.append(('m', email))
             if first_author:
                 record_add_field(rec, '100', subfields=subfields)
                 first_author = False

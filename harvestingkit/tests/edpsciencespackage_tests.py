@@ -79,10 +79,10 @@ class EDPSciencesPackageTests(unittest.TestCase):
         self.assertEqual(self.edp._get_page_count(), u'4')
 
     def test_authors(self):
-        authors = [('Krause, Martin', [u'AFF1', u'AFF2'], ''),
-                   ('K\xc3\xb6hler, M.', [], ''),
-                   ('Jones, A.', [], ''),
-                   ('Ysard, N.', [], '')]
+        authors = [('Krause, Martin', [u'AFF1', u'AFF2'], []),
+                   ('K\xc3\xb6hler, M.', [], []),
+                   ('Jones, A.', [], []),
+                   ('Ysard, N.', [], [])]
         self.assertEqual(self.edp._get_authors(), authors)
 
     def test_pacscodes(self):

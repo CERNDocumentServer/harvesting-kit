@@ -54,11 +54,11 @@ class APSPackageTests(unittest.TestCase):
         self.assertEqual(self.aps._get_doi(), '10.1103/PhysRevC.89.048801')
 
     def test_authors(self):
-        authors = [('Baldo, M.', [], ''),
-                   ('Burgio, G.F.', [], ''),
-                   ('Schulze, H.-J.', [], ''),
-                   ('Newman, M.E.J.', [u'a2', u'a3'], ''),
-                   ('Taranto, G.', [u'a1'], u'n1')]
+        authors = [('Baldo, M.', [], []),
+                   ('Burgio, G.F.', [], []),
+                   ('Schulze, H.-J.', [], []),
+                   ('Newman, M.E.J.', [u'a2', u'a3'], []),
+                   ('Taranto, G.', [u'a1'], [u'n1'])]
         self.assertEqual(self.aps._get_authors(), authors)
 
     def test_affiliations(self):
