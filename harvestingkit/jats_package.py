@@ -25,7 +25,8 @@ from harvestingkit.utils import (fix_journal_name,
                                  record_add_field)
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text,
-                                         get_attribute_in_tag)
+                                         get_attribute_in_tag,
+                                         get_inner_xml)
 from datetime import date
 
 
@@ -56,11 +57,8 @@ class JatsPackage(object):
             return ''
 
     def _get_abstract(self):
-        try:
-            return get_value_in_tag(self.document, 'abstract')
-        except Exception:
-            print("Can't find abstract", file=sys.stderr)
-            return ''
+        for tag in self.document.getElementsByTagName('abstract'):
+            return get_inner_xml(tag)
 
     def _get_title(self):
         try:
@@ -70,9 +68,8 @@ class JatsPackage(object):
                     if note.getAttribute('ref-type') == 'fn':
                         tag.removeChild(note)
                         notes.append(note.getAttribute('rid'))
-                return xml_to_text(tag), get_value_in_tag(self.document, 'subtitle'), notes
-        except Exception as e:
-            print(e)
+                return get_inner_xml(tag), get_value_in_tag(self.document, 'subtitle'), notes
+        except Exception:
             print("Can't find title", file=sys.stderr)
             return '', '', ''
 
