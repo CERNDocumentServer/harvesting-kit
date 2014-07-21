@@ -134,7 +134,7 @@ class JatsPackage(object):
                         for rid in tag.getAttribute('rid').split():
                             if rid.lower().startswith('a'):
                                 affiliations.append(rid)
-                            else:
+                            elif rid.lower().startswith('n'):
                                 corresp.append(rid)
                     elif tag.getAttribute('ref-type') == 'corresp' or\
                             tag.getAttribute('ref-type') == 'author-notes':
