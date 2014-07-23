@@ -35,14 +35,14 @@ class APSPackageTests(unittest.TestCase):
         self.assertEqual(self.aps._get_journal(), 'Phys.Rev.C')
 
     def test_abstract(self):
-        abstract = 'We calculate the effective masses of neutrons and protons '\
+        abstract = '<p>We calculate the effective masses of neutrons and protons '\
                    'in dense nuclear matter within the microscopic Brueckner-Hartree-Fock '\
                    'many-body theory and study the impact on the neutrino emissivity '\
                    'processes of neutron stars. We compare results based on different '\
                    'nucleon-nucleon potentials and nuclear three-body forces. Useful '\
                    'parametrizations of the numerical results are given. We find '\
                    'substantial in-medium suppression of the emissivities, '\
-                   'strongly dependent on the interactions.'
+                   'strongly dependent on the interactions.</p>'
         self.assertEqual(self.aps._get_abstract(), abstract)
 
     def test_title(self):
