@@ -36,18 +36,14 @@ def record_add_field(rec, tag, ind1='', ind2='', subfields=[], controlfield_valu
         field = doc.createElement('subfield')
         field.setAttribute('code', subfield[0])
         data = subfield[1]
-        nodes = re.split(r'<math.*?</math>', data)
-        mathmls = re.findall(r'<math.*?</math>', data)
-
-        def next_mathml():
-            if mathmls:
-                return parseString(mathmls.pop(0))
-
-        for node in nodes:
-            field.appendChild(doc.createTextNode(node))
-            mathml = next_mathml()
-            if mathml:
-                field.appendChild(mathml.firstChild)
+        innerxmls = re.findall(r'(.*?)(<(.*?)>.*?</\3>)(.*?)', data)
+        if innerxmls:
+            for prefix, xml, tag, sufix in innerxmls:
+                field.appendChild(doc.createTextNode(prefix))
+                field.appendChild(parseString(xml).firstChild)
+                field.appendChild(doc.createTextNode(sufix))
+        else:
+            field.appendChild(doc.createTextNode(data))
         datafield.appendChild(field)
     if controlfield_value:
         controlfield = doc.createElement('controlfield')

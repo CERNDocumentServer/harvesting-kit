@@ -27,18 +27,28 @@ class NoDOIError(Exception):
         self.value = value
 
 
+def get_inner_xml(xml):
+    if xml.childNodes:
+        return "".join(child.toxml() for child in xml.childNodes)
+    else:
+        return ''
+
+
 def xml_to_text(xml, delimiter=' ', tag_to_remove=None):
     if tag_to_remove:
         if tag_to_remove in xml.nodeName.encode('utf-8'):
             return ''
 
     if xml.nodeType == xml.TEXT_NODE:
-        return xml.wholeText.encode('utf-8')
+        return xml.wholeText.encode('utf-8').strip()
     elif 'mml:' in xml.nodeName:
         return xml.toxml().replace('mml:', '').replace('xmlns:mml', 'xmlns').encode('utf-8')
     elif xml.hasChildNodes():
-        for child in xml.childNodes:
-            return delimiter.join(' '.join(xml_to_text(child, delimiter=' ', tag_to_remove=tag_to_remove) for child in xml.childNodes).split())
+        return delimiter.join(filter(bool,
+                                     map(lambda a: xml_to_text(a,
+                                                               delimiter,
+                                                               tag_to_remove),
+                                         xml.childNodes)))
     return ''
 
 
