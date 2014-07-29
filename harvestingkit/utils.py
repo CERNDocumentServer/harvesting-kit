@@ -40,7 +40,7 @@ def record_add_field(rec, tag, ind1='', ind2='', subfields=[], controlfield_valu
         if innerxmls:
             for prefix, xml, tag, suffix in innerxmls:
                 # Remove any namespaces
-                xml = re.sub("([^><\/]+?):", "", xml)
+                xml = re.sub(r"<(/?).*?:?", r"<\1", xml)
                 field.appendChild(doc.createTextNode(prefix))
                 field.appendChild(parseString(xml).firstChild)
                 field.appendChild(doc.createTextNode(suffix))
