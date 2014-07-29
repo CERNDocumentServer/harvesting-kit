@@ -22,7 +22,6 @@ Basic config for Harvesting Kit.
 """
 
 import os
-import warnings
 from sys import executable
 
 from invenio.config import CFG_ETCDIR
@@ -52,8 +51,6 @@ for loc in CFG_POSSIBLE_CONFIG_PATHS:
     if os.path.exists(loc):
         CFG_CONFIG_PATH = loc
         break
-else:
-    warnings.warn("Could not find config.cfg")
 
 CFG_FTP_CONNECTION_ATTEMPTS = 3
 CFG_FTP_TIMEOUT_SLEEP_DURATION = 2
