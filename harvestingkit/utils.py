@@ -36,16 +36,9 @@ def record_add_field(rec, tag, ind1='', ind2='', subfields=[], controlfield_valu
         field = doc.createElement('subfield')
         field.setAttribute('code', subfield[0])
         data = subfield[1]
-        innerxmls = re.findall(r'(.*?)(<(.*?)>.*?</\3>)(.*?)', data)
-        if innerxmls:
-            for prefix, xml, tag, suffix in innerxmls:
-                # Remove any namespaces
-                xml = re.sub(r"<(/?).*?:?", r"<\1", xml)
-                field.appendChild(doc.createTextNode(prefix))
-                field.appendChild(parseString(xml).firstChild)
-                field.appendChild(doc.createTextNode(suffix))
-        else:
-            field.appendChild(doc.createTextNode(data))
+        data = parseString(data).firstChild
+        for child in data.childNodes:
+            field.appendChild(child.cloneNode(child))
         datafield.appendChild(field)
     if controlfield_value:
         controlfield = doc.createElement('controlfield')
