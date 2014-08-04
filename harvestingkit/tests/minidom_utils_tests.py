@@ -37,9 +37,9 @@ class MinidomUtilsTests(unittest.TestCase):
 
     def test_get_inner_xml(self):
         tag = self.document.getElementsByTagName('Foo')[0]
-        inner_xml = "  some text"\
-                    "  <Bar name=\"a\">Bar A</Bar>"\
-                    "  <Bar name=\"b\">Bar B</Bar>"
+        inner_xml = "some text"\
+                    " <Bar name=\"a\">Bar A</Bar>"\
+                    " <Bar name=\"b\">Bar B</Bar>"
         self.assertEqual(get_inner_xml(tag), inner_xml)
         self.assertEqual(get_inner_xml(self.document), sample_xml)
 
@@ -56,6 +56,7 @@ class MinidomUtilsTests(unittest.TestCase):
         self.assertEqual(get_attribute_in_tag(self.document, "Bar", "name"), ["a", "b"])
         self.assertEqual(get_attribute_in_tag(self.document, "Bar", "A"), [])
         self.assertEqual(get_attribute_in_tag(self.document, "A", "Bar"), [])
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(MinidomUtilsTests)

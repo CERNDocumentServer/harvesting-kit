@@ -38,21 +38,22 @@ class EDPSciencesPackageTests(unittest.TestCase):
         abstract = (
             u'<p><italic>Context. </italic>The depletion of iron and sulphur into dust in the interstellar'
             u' medium and the exact nature of interstellar amorphous silicate grains is still an open question.'
-            u'</p><p><italic>Aims. </italic>We study the incorporation of iron and sulphur into amorphous '
+            u'</p> <p><italic>Aims. </italic>We study the incorporation of iron and sulphur into amorphous '
             u'silicates of olivine- and pyroxene-types and their effects on the dust spectroscopy and thermal'
-            u' emission.</p><p><italic>Methods. </italic>We used the Maxwell-Garnett effective-medium theory to'
+            u' emission.</p> <p><italic>Methods. </italic>We used the Maxwell-Garnett effective-medium theory to'
             u' construct the optical constants for a mixture of silicates, metallic iron, and iron sulphide. '
-            u'We also studied the effects of iron and iron sulphide in aggregate grains.</p><p><italic>Results.'
+            u'We also studied the effects of iron and iron sulphide in aggregate grains.</p> <p><italic>Results.'
             u' </italic>Iron sulphide inclusions within amorphous silicates that contain iron metal inclusions'
             u' show no strong differences in the optical properties of the grains. A mix of amorphous olivine-'
             u' and pyroxene-type silicate broadens the silicate features. An amorphous carbon mantle with a'
             u' thickness of 10 nm on the silicate grains leads to an increase in absorption on the short-wavelength '
-            u'side of the 10 <inline-formula specific-use="simple-math"><italic>\u03bc</italic></inline-formula>'
-            u'm silicate band.</p><p><italic>Conclusions. </italic>The assumption of amorphous olivine-type and'
+            u'side of the 10 <inline-formula specific-use="simple-math"><italic>μ</italic></inline-formula>'
+            u'm silicate band.</p> <p><italic>Conclusions. </italic>The assumption of amorphous olivine-type and'
             u' pyroxene-type silicates and a 10 nm thick amorphous carbon mantle better matches the interstellar'
             u' silicate band profiles. Including iron nano-particles leads to an increase in the mid-IR extinction,'
             u' while up to 5 ppm of sulphur can be incorporated as Fe/FeS nano inclusions into silicate grains '
             u'without leaving a significant trace of its presence.</p>')
+        print(self.edp._get_abstract())
         self.assertEqual(self.edp._get_abstract(), abstract)
 
     def test_journal(self):

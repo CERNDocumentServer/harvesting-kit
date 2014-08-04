@@ -33,7 +33,7 @@ def get_inner_xml(xml):
         out = child.toxml().strip()
         if out:
             xml_out.append(out)
-    return "".join(xml_out)
+    return " ".join(xml_out)
 
 
 def xml_to_text(xml, delimiter=' ', tag_to_remove=None):
