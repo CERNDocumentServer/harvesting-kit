@@ -35,7 +35,8 @@ def record_add_field(rec, tag, ind1='', ind2='', subfields=[], controlfield_valu
     for subfield in subfields:
         field = doc.createElement('subfield')
         field.setAttribute('code', subfield[0])
-        data = subfield[1]
+        ## In order to be parsed it needs to a propper XML
+        data = "<dummy>" + subfield[1] + "</dummy>"
         data = parseString(data).firstChild
         for child in data.childNodes:
             field.appendChild(child.cloneNode(child))
