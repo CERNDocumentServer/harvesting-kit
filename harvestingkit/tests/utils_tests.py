@@ -49,6 +49,14 @@ class UtilsTests(unittest.TestCase):
         data += u"</subfield></datafield></record>"
         self.assertEqual(rec.toxml(), data)
 
+    def test_record_add_field_fallback(self):
+        rec = create_record()
+        record_add_field(rec, "035", subfields=[('a', "<arXiv:1234.1242>")])
+        data = (u"<record><datafield ind1=\"\" ind2=\"\" tag=\"035\">"
+                u"<subfield code=\"a\">"
+                u"&lt;arXiv:1234.1242&gt;</subfield></datafield></record>")
+        self.assertEqual(rec.toxml(), data)
+
     def test_format_arxiv_id(self):
         self.assertEqual(format_arxiv_id("arXiv:1312.1300"), "arXiv:1312.1300")
         self.assertEqual(format_arxiv_id("1312.1300"), "arXiv:1312.1300")

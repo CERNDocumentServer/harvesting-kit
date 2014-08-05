@@ -18,6 +18,7 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 import re
 from xml.dom.minidom import Document, parseString
+from xml.parsers.expat import ExpatError
 
 
 def create_record():
@@ -37,9 +38,12 @@ def record_add_field(rec, tag, ind1='', ind2='', subfields=[], controlfield_valu
         field.setAttribute('code', subfield[0])
         ## In order to be parsed it needs to a propper XML
         data = "<dummy>" + escape_for_xml(subfield[1]) + "</dummy>"
-        data = parseString(data).firstChild
-        for child in data.childNodes:
-            field.appendChild(child.cloneNode(child))
+        try:
+            data = parseString(data).firstChild
+            for child in data.childNodes:
+                field.appendChild(child.cloneNode(child))
+        except ExpatError:
+            field.appendChild(doc.createTextNode(subfield[1]))
         datafield.appendChild(field)
     if controlfield_value:
         controlfield = doc.createElement('controlfield')
