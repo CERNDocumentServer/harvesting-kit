@@ -10,54 +10,18 @@
 ##
 ## Harvesting Kit is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 import unittest
-from xml.dom.minidom import parseString
-from harvestingkit.minidom_utils import (get_inner_xml,
-                                         xml_to_text,
-                                         get_value_in_tag,
-                                         get_attribute_in_tag)
 from harvestingkit.utils import (record_add_field,
                                  create_record)
 
-sample_xml = "<Foo>"\
-             "  some text"\
-             "  <Bar name=\"a\">Bar A</Bar>"\
-             "  <Bar name=\"b\">Bar B</Bar>"\
-             "</Foo>"
 
-
-class MinidomUtilsTests(unittest.TestCase):
-
-    def setUp(self):
-        self.document = parseString(sample_xml)
-
-    def test_get_inner_xml(self):
-        tag = self.document.getElementsByTagName('Foo')[0]
-        inner_xml = "  some text"\
-                    "  <Bar name=\"a\">Bar A</Bar>"\
-                    "  <Bar name=\"b\">Bar B</Bar>"
-        self.assertEqual(get_inner_xml(tag), inner_xml)
-        self.assertEqual(get_inner_xml(self.document), sample_xml)
-
-    def test_xml_to_text(self):
-        self.assertEqual(xml_to_text(self.document), "some text Bar A Bar B")
-        self.assertEqual(xml_to_text(self.document, delimiter=""), "some textBar ABar B")
-        self.assertEqual(xml_to_text(self.document, delimiter="", tag_to_remove="Bar"), "some text")
-
-    def test_get_value_in_tag(self):
-        self.assertEqual(get_value_in_tag(self.document, "Bar"), "Bar A")
-        self.assertEqual(get_value_in_tag(self.document, "A"), "")
-
-    def test_get_attribute_in_tag(self):
-        self.assertEqual(get_attribute_in_tag(self.document, "Bar", "name"), ["a", "b"])
-        self.assertEqual(get_attribute_in_tag(self.document, "Bar", "A"), [])
-        self.assertEqual(get_attribute_in_tag(self.document, "A", "Bar"), [])
+class UtilsTests(unittest.TestCase):
 
     def test_record_add_field(self):
         data = (u'In this paper we continue the study of Q -operators in'
@@ -82,5 +46,5 @@ class MinidomUtilsTests(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(MinidomUtilsTests)
+    suite = unittest.TestLoader().loadTestsFromTestCase(UtilsTests)
     unittest.TextTestRunner(verbosity=2).run(suite)
