@@ -36,7 +36,7 @@ def record_add_field(rec, tag, ind1='', ind2='', subfields=[], controlfield_valu
         field = doc.createElement('subfield')
         field.setAttribute('code', subfield[0])
         ## In order to be parsed it needs to a propper XML
-        data = "<dummy>" + escape_ampersand(subfield[1]) + "</dummy>"
+        data = "<dummy>" + escape_for_xml(subfield[1]) + "</dummy>"
         data = parseString(data).firstChild
         for child in data.childNodes:
             field.appendChild(child.cloneNode(child))
@@ -61,9 +61,11 @@ def record_xml_output(rec):
     return ret
 
 
-def escape_ampersand(data):
+def escape_for_xml(data):
     """Transform & to XML valid &amp;."""
-    return re.sub("&(?!amp;)", "&amp;", data)
+    data = re.sub("&(?!(amp|lt|gt);)", "&amp;", data)
+    data = re.sub("<(?=[\=\d\.\s])", "&lt;", data)
+    return data
 
 
 def format_arxiv_id(arxiv_id, INSPIRE=False):

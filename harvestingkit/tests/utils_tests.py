@@ -22,7 +22,7 @@ from harvestingkit.utils import (record_add_field,
                                  format_arxiv_id,
                                  collapse_initials,
                                  fix_journal_name,
-                                 escape_ampersand)
+                                 escape_for_xml)
 from harvestingkit.tests import journal_mappings
 
 
@@ -67,9 +67,13 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(fix_journal_name("A&AB.", journal_mappings), ("A&AB.", ""))
 
     def test_escape_ampersand(self):
-        self.assertEqual(escape_ampersand("A&A"), "A&amp;A")
-        self.assertEqual(escape_ampersand("A&amp;A & B"), "A&amp;A &amp; B")
-        self.assertEqual(escape_ampersand("A &amp; A.B"), "A &amp; A.B")
+        self.assertEqual(escape_for_xml("A&A"), "A&amp;A")
+        self.assertEqual(escape_for_xml("A&amp;A & B"), "A&amp;A &amp; B")
+        self.assertEqual(escape_for_xml("A &amp; A.B"), "A &amp; A.B")
+        self.assertEqual(escape_for_xml("asdasdsa &lt;1 A"), "asdasdsa &lt;1 A")
+        self.assertEqual(escape_for_xml("asdasdsa <=1 A"), "asdasdsa &lt;=1 A")
+        self.assertEqual(escape_for_xml("asdasdsa <.2 A"), "asdasdsa &lt;.2 A")
+        self.assertEqual(escape_for_xml("asdasdsa < 2 A"), "asdasdsa &lt; 2 A")
 
 
 if __name__ == '__main__':
