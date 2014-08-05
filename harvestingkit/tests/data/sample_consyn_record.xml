@@ -23,7 +23,7 @@
 	 		<dct:description>Physics Letters B 206 (1988) 421-426. doi:10.1016/0370-2693(88)91603-6</dct:description>
 	 		<prism:aggregationType>journal</prism:aggregationType>
 	 		<prism:publicationName>Physics Letters B</prism:publicationName>
-	 		<prism:copyright>Copyright &#169; unknown. Published by Elsevier B.V.</prism:copyright>
+	 		<prism:copyright>Copyright unknown. Published by Elsevier B.V.</prism:copyright>
 	 		<dct:publisher>Elsevier B.V.</dct:publisher>
 	 		<prism:issn>0370-2693</prism:issn>
 	 		<prism:volume>206</prism:volume>
@@ -70,14 +70,14 @@
 	 			</ce:simple-para>
 	 		</ce:abstract-sec>
 	 	</ce:abstract>
-	 	<prism:copyright>Copyright &#169; 2014 Elsevier B.V. All rights reserved.</prism:copyright>
+	 	<prism:copyright>Copyright 2014 Elsevier B.V. All rights reserved.</prism:copyright>
 	 	<ce:keywords id="kws0010" view="all" class="keyword">
 	 		<ce:section-title id="st0020">Keywords</ce:section-title>
 	 		<ce:keyword id="kw0010">
 	 			<ce:text>Heavy quarkonia</ce:text>
 	 		</ce:keyword>
 	 		<ce:keyword id="kw0020">
-	 			<ce:text>Quark&#x2013;gluon plasma</ce:text>
+	 			<ce:text>Quark gluon plasma</ce:text>
 	 		</ce:keyword>
 	 		<ce:keyword id="kw0030">
 	 			<ce:text>Mott effect</ce:text>

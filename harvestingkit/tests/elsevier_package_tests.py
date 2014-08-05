@@ -23,6 +23,7 @@ from os.path import (join,
                      dirname)
 from harvestingkit.tests import (__file__ as folder,
                                  consyn_test_record,
+                                 consyn_output,
                                  journal_mappings)
 
 
@@ -51,7 +52,7 @@ class ElsevierPackageTests(unittest.TestCase):
         self.assertEqual(self.els.get_abstract(self.document), abstract)
 
     def test_keywords(self):
-        keywords = ['Heavy quarkonia', 'Quark\xe2\x80\x93gluon plasma', 'Mott effect', 'X(3872)']
+        keywords = ['Heavy quarkonia', 'Quark gluon plasma', 'Mott effect', 'X(3872)']
         self.assertEqual(self.els.get_keywords(self.document), keywords)
 
     def test_authors(self):
@@ -59,7 +60,7 @@ class ElsevierPackageTests(unittest.TestCase):
         self.assertEqual(self.els.get_authors(self.document), authors)
 
     def test_copyritght(self):
-        self.assertEqual(self.els.get_copyright(self.document), 'Copyright \xc2\xa9 unknown. Published by Elsevier B.V.')
+        self.assertEqual(self.els.get_copyright(self.document), 'Copyright unknown. Published by Elsevier B.V.')
 
     def test_publication_information(self):
         publication_information = ('Phys.Lett.',
@@ -94,6 +95,13 @@ class ElsevierPackageTests(unittest.TestCase):
                       ('[14]', [], '', '', '', '', '', '', 'D. Kastor, E. Martinec and Z. Qiu, E. Fermi Institute preprint EFI-87-58.', None, [], '', '', '', [], '')]
         for ref in self.els.get_references(self.document):
             self.assertTrue(ref in references)
+
+    def test_get_record(self):
+        source_file = join(dirname(folder), consyn_test_record)
+        marc_file = join(dirname(folder), consyn_output)
+        with open(marc_file) as marc:
+            result = marc.read()
+        self.assertEqual(self.els.get_record(source_file, test=True), result)
 
 
 if __name__ == '__main__':
