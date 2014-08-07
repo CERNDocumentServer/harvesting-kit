@@ -23,7 +23,8 @@ from os.path import (join,
                      exists)
 from harvestingkit.utils import (record_add_field,
                                  create_record,
-                                 record_xml_output)
+                                 record_xml_output,
+                                 add_nations_field)
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from xml.dom.minidom import parse
@@ -32,8 +33,9 @@ RE_ARXIV_ID = re.compile(r"\d+.\d+")
 
 
 class APPParser(object):
-    def __init__(self):
+    def __init__(self, extract_nations=False):
         self.references = None
+        self.extract_nations = extract_nations
 
     def get_article(self, path):
         return parse(open(path))
@@ -230,11 +232,16 @@ class APPParser(object):
             if 'affiliation' in author:
                 for aff in author["affiliation"]:
                     subfields.append(('v', aff))
+
+                if self.extract_nations:
+                    add_nations_field(subfields)
+
             if first_author:
                 record_add_field(rec, '100', subfields=subfields)
                 first_author = False
             else:
                 record_add_field(rec, '700', subfields=subfields)
+
         abstract = self.get_abstract(xml)
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract)])

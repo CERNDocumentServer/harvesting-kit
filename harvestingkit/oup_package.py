@@ -92,8 +92,8 @@ class OxfordPackage(object):
                                      CFG_FTP_TIMEOUT_SLEEP_DURATION))
                 time.sleep(CFG_FTP_TIMEOUT_SLEEP_DURATION)
             except Exception as err:
-                self.logger.error(('Failed to connect to the '
-                                   'Oxford University Press server. %s') % (err,))
+                self.logger.error(('Failed to connect to the Oxford '
+                                   'University Press server. %s') % (err,))
                 break
 
         raise LoginException(err)
@@ -146,7 +146,8 @@ class OxfordPackage(object):
             self.logger.info("No new packages to download.")
             raise NoNewFiles
 
-    def __init__(self, package_name=None, path=None):
+    def __init__(self, package_name=None, path=None,
+                 extract_nations=False):
         if package_name:
             if not package_name.endswith(".zip"):
                 raise Exception('package_name variable requires a ZIP file.')
@@ -166,6 +167,7 @@ class OxfordPackage(object):
             print("Starting harvest")
             self.run()
         self._crawl_oxford_and_find_main_xml()
+        self.extract_nations = extract_nations
 
     def run(self):
         try:
@@ -174,8 +176,9 @@ class OxfordPackage(object):
             self._download_tars()
         except LoginException as err:
             register_exception(alert_admin=True,
-                               prefix=("Failed to connect to the "
-                                       "Oxford University Press server. %s") % (err,))
+                               prefix=
+                               ("Failed to connect to the "
+                                "Oxford University Press server. %s") % (err,))
             return
         except NoNewFiles:
             return
@@ -240,7 +243,7 @@ class OxfordPackage(object):
 
     def bibupload_it(self):
         if self.found_articles:
-            nlm_parser = NLMParser()
+            nlm_parser = NLMParser(self.extract_nations)
             self.logger.debug("Preparing bibupload.")
             fd, name = mkstemp(suffix='.xml', prefix='bibupload_scoap3_',
                                dir=CFG_TMPSHAREDDIR)
