@@ -11,6 +11,7 @@ from harvestingkit.config import CFG_CONFIG_PATH
 
 
 class Bunch:
+
     def __init__(self, kwds):
         self.__dict__.update(kwds)
 
@@ -18,7 +19,7 @@ class Bunch:
 def _convert_to_bool(keyboard_input):
     keyboard_input = keyboard_input.lower()
     if (keyboard_input != '' and keyboard_input != 'y'
-       and keyboard_input != 'n'):
+            and keyboard_input != 'n'):
         raise ValueError
     return True if keyboard_input == '' or keyboard_input == 'y' else False
 
@@ -75,7 +76,9 @@ def call_elsevier(settings):
 
     elsevier_package = ElsevierPackage(package_name=settings.package_name,
                                        path=settings.path,
-                                       run_locally=settings.run_locally)
+                                       run_locally=settings.run_locally,
+                                       extract_nations=
+                                       settings.extract_nations)
     elsevier_package.bibupload_it()
 
 
@@ -85,7 +88,8 @@ def call_oxford(settings):
         return
 
     oxford_package = OxfordPackage(package_name=settings.package_name,
-                                   path=settings.path)
+                                   path=settings.path,
+                                   extract_nations=settings.extract_nations)
     oxford_package.bibupload_it()
     if not settings.dont_empty_ftp:
         oxford_package.empty_ftp()
@@ -97,7 +101,9 @@ def call_springer(settings):
         return
 
     springer_package = SpringerPackage(package_name=settings.package_name,
-                                       path=settings.path)
+                                       path=settings.path,
+                                       extract_nations=
+                                       settings.extract_nations)
     springer_package.bibupload_it()
 
 
@@ -127,15 +133,18 @@ def main():
     elsevier_parser.add_argument('--path')
     elsevier_parser.add_argument('--CONSYN', action='store_true')
     elsevier_parser.add_argument('--update-credentials', action='store_true')
+    elsevier_parser.add_argument('--extract-nations', action='store_true')
 
     oxford_parser.add_argument('--dont-empty-ftp', action='store_true')
     oxford_parser.add_argument('--package-name')
     oxford_parser.add_argument('--path')
     oxford_parser.add_argument('--update-credentials', action='store_true')
+    oxford_parser.add_argument('--extract-nations', action='store_true')
 
     springer_parser.add_argument('--package-name')
     springer_parser.add_argument('--path')
     springer_parser.add_argument('--update-credentials', action='store_true')
+    springer_parser.add_argument('--extract-nations', action='store_true')
 
     '''
     Transforms the argparse arguments from Namespace to dict and then to Bunch

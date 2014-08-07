@@ -161,7 +161,8 @@ class SpringerPackage(object):
             self.logger.info("No new packages to download.")
             raise NoNewFiles
 
-    def __init__(self, package_name=None, path=None):
+    def __init__(self, package_name=None, path=None,
+                 extract_nations=False):
         self.package_name = package_name
         self.path = path
         self._dois = []
@@ -177,6 +178,8 @@ class SpringerPackage(object):
             print "Starting harvest"
             self.run()
         self._crawl_springer_and_find_main_xml()
+
+        self.extract_nations = extract_nations
 
     def run(self):
         try:
@@ -310,7 +313,13 @@ class SpringerPackage(object):
                         lc_info = 'Found %s. Calling SISSA' if xml_end \
                                   else 'Found %s. Calling Springer'
                         publi = 'SISSA' if xml_end else 'Springer'
-                        parser = APPParser() if xml_end else JATSParser()
+
+                        if xml_end:
+                            parser = APPParser(extract_nations=
+                                               self.extract_nations)
+                        else:
+                            parser = JATSParser(extract_nations=
+                                                self.extract_nations)
 
                         self.logger.info(l_info % path)
                         self.logger.info(lc_info % filename)

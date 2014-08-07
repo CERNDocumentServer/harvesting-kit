@@ -20,6 +20,130 @@ import re
 from xml.dom.minidom import Document, parseString
 from xml.parsers.expat import ExpatError
 
+NATIONS_DEFAULT_MAP = {"Algeria": "Algeria",
+                       "Argentina": "Argentina",
+                       "Armenia": "Armenia",
+                       "Australia": "Australia",
+                       "Austria": "Austria",
+                       "Azerbaijan": "Azerbaijan",
+                       "Belarus": "Belarus",
+                       ##########BELGIUM########
+                       "Belgium": "Belgium",
+                       "Belgique": "Belgium",
+                       #######################
+                       "Bangladesh": "Bangladesh",
+                       "Brazil": "Brazil",
+                       "Bulgaria": "Bulgaria",
+                       "Canada": "Canada",
+                       "Chile": "Chile",
+                       ##########CHINA########
+                       "China (PRC)": "China",
+                       "PR China": "China",
+                       "China": "China",
+                       #######################
+                       "Colombia": "Colombia",
+                       "Costa Rica": "Costa Rica",
+                       "Cuba": "Cuba",
+                       "Croatia": "Croatia",
+                       "Cyprus": "Cyprus",
+                       "Czech Republic": "Czech Republic",
+                       "Denmark": "Denmark",
+                       "Egypt": "Egypt",
+                       "Estonia": "Estonia",
+                       "Finland": "Finland",
+                       "France": "France",
+                       "Georgia": "Georgia",
+                       ##########GERMANY########
+                       "Germany": "Germany",
+                       "Deutschland": "Germany",
+                       #######################
+                       "Greece": "Greece",
+                       ##########HONG KONG########
+                       "Hong Kong": "Hong Kong",
+                       "Hong-Kong": "Hong Kong",
+                       #######################
+                       "Hungary": "Hungary",
+                       "Iceland": "Iceland",
+                       "India": "India",
+                       "Indonesia": "Indonesia",
+                       "Iran": "Iran",
+                       "Ireland": "Ireland",
+                       "Israel": "Israel",
+                       ##########ITALY########
+                       "Italy": "Italy",
+                       "Italia": "Italy",
+                       #######################
+                       "Japan": "Japan",
+                       ##########SOUTH KOREA########
+                       "Korea": "South Korea",
+                       "Republic of Korea": "South Korea",
+                       "South Korea": "South Korea",
+                       #######################
+                       "Lebanon": "Lebanon",
+                       "Lithuania": "Lithuania",
+                       "México": "México",
+                       "Montenegro": "Montenegro",
+                       "Morocco": "Morocco",
+                       ##########NETHERLANDS########
+                       "Netherlands": "Netherlands",
+                       "The Netherlands": "Netherlands",
+                       #######################
+                       "New Zealand": "New Zealand",
+                       "Norway": "Norway",
+                       "Pakistan": "Pakistan",
+                       "Poland": "Poland",
+                       "Portugal": "Portugal",
+                       "Romania": "Romania",
+                       ##########RUSSIA########
+                       "Russia": "Russia",
+                       "Russian Federation": "Russia",
+                       #######################
+                       "Saudi Arabia": "Saudi Arabia",
+                       "Serbia": "Serbia",
+                       "Singapore": "Singapore",
+                       "Slovak Republic": "Slovakia",
+                       ##########SLOVAKIA########
+                       "Slovakia": "Slovakia",
+                       "Slovenia": "Slovenia",
+                       #######################
+                       "South Africa": "South Africa",
+                       "Spain": "Spain",
+                       "Sweden": "Sweden",
+                       "Switzerland": "Switzerland",
+                       "Taiwan": "Taiwan",
+                       "Thailand": "Thailand",
+                       "Tunisia": "Tunisia",
+                       "Turkey": "Turkey",
+                       "Ukraine": "Ukraine",
+                       ##########ENGLAND########
+                       "United Kingdom": "UK",
+                       "UK": "UK",
+                       #######################
+                       "England": "England",
+                       ##########USA########
+                       "United States of America": "USA",
+                       "United States": "USA",
+                       "USA": "USA",
+                       #######################
+                       "Uruguay": "Uruguay",
+                       "Uzbekistan": "Uzbekistan",
+                       "Venezuela": "Venezuela",
+                       ##########VIETNAM########
+                       "Vietnam": "Vietnam",
+                       "Viet Nam": "Vietnam",
+                       #######################
+                       #########other#########
+                       "Peru": "Peru",
+                       "Kuwait": "Kuwait",
+                       "Sri Lanka": "Sri Lanka",
+                       "Kazakhstan": "Kazakhstan",
+                       "Mongolia": "Mongolia",
+                       "United Arab Emirates": "United Arab Emirates",
+                       "Malaysia": "Malaysia",
+                       "Qatar": "Qatar",
+                       "Kyrgyz Republic": "Kyrgyz Republic",
+                       "Jordan": "Jordan"}
+
 
 def create_record():
     doc = Document()
@@ -27,7 +151,8 @@ def create_record():
     return record
 
 
-def record_add_field(rec, tag, ind1='', ind2='', subfields=[], controlfield_value=''):
+def record_add_field(rec, tag, ind1='', ind2='', subfields=[],
+                     controlfield_value=''):
     doc = Document()
     datafield = doc.createElement('datafield')
     datafield.setAttribute('tag', tag)
@@ -111,3 +236,21 @@ def fix_journal_name(journal, knowledge_base):
             pass
     journal = journal.replace('. ', '.')
     return journal, volume
+
+
+def add_nations_field(authors_subfields):
+    result = []
+    for field in authors_subfields:
+        if field[0] == 'v':
+            values = [x.replace('.', '') for x in field[1].split(', ')]
+            possible_affs = filter(lambda x: x is not None,
+                                   map(NATIONS_DEFAULT_MAP.get, values))
+            if len(possible_affs) == 1:
+                result.append(possible_affs[0])
+            else:
+                result.append('HUMAN CHECK')
+
+    if len(result) == 1:
+        authors_subfields.append(('w', result[0]))
+    else:
+        authors_subfields.append(('w', 'HUMAN CHECK'))

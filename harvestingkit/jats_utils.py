@@ -30,14 +30,16 @@ from harvestingkit.minidom_utils import (get_value_in_tag,
 from harvestingkit.utils import (format_arxiv_id,
                                  record_add_field,
                                  record_xml_output,
-                                 create_record)
+                                 create_record,
+                                 add_nations_field)
 from xml.dom.minidom import parse
 
 
 class JATSParser(object):
-    def __init__(self, tag_to_remove=None):
+    def __init__(self, tag_to_remove=None, extract_nations=False):
         self.references = None
         self.tag_to_remove = tag_to_remove
+        self.extract_nations = extract_nations
 
     def get_article(self, path):
         return parse(open(path))
@@ -344,6 +346,10 @@ class JATSParser(object):
             if 'affiliation' in author:
                 for aff in author["affiliation"]:
                     subfields.append(('v', aff))
+
+                if self.extract_nations:
+                    add_nations_field(subfields)
+
             if author.get('email'):
                     subfields.append(('m', author['email']))
             if first_author:

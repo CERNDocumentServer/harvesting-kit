@@ -22,7 +22,8 @@ from harvestingkit.minidom_utils import (get_value_in_tag,
 from harvestingkit.utils import (format_arxiv_id,
                                  record_add_field,
                                  record_xml_output,
-                                 create_record)
+                                 create_record,
+                                 add_nations_field)
 from invenio.errorlib import register_exception
 from harvestingkit.scoap3utils import MissingFFTError
 from os import pardir
@@ -33,8 +34,9 @@ from os.path import (join,
 
 
 class NLMParser(JATSParser):
-    def __init__(self):
+    def __init__(self, extract_nations=False):
         super(NLMParser, self).__init__()
+        self.extract_nations = extract_nations
 
     def get_references(self, xml):
         references = []
@@ -111,6 +113,10 @@ class NLMParser(JATSParser):
             if 'affiliation' in author:
                 for aff in author["affiliation"]:
                     subfields.append(('v', aff))
+
+                if self.extract_nations:
+                    add_nations_field(subfields)
+
             if author.get('email'):
                     subfields.append(('m', author['email']))
             if first_author:

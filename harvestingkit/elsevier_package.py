@@ -55,7 +55,8 @@ from harvestingkit.utils import (fix_journal_name,
                                  create_record,
                                  record_add_field,
                                  record_xml_output,
-                                 format_arxiv_id)
+                                 format_arxiv_id,
+                                 add_nations_field)
 from unidecode import unidecode
 
 CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
@@ -85,7 +86,8 @@ class ElsevierPackage(object):
     """
     def __init__(self, package_name=None, path=None,
                  run_locally=False, CONSYN=False,
-                 journal_mappings=None):
+                 journal_mappings=None,
+                 extract_nations=False):
         self.CONSYN = CONSYN
         try:
             self.logger = create_logger("Elsevier")
@@ -121,6 +123,8 @@ class ElsevierPackage(object):
             self._crawl_elsevier_and_find_main_xml()
             self._crawl_elsevier_and_find_issue_xml()
             self._build_doi_mapping()
+
+        self.extract_nations = extract_nations
 
     def _build_journal_mappings(self):
         try:
@@ -856,6 +860,10 @@ class ElsevierPackage(object):
             if 'affiliation' in author:
                 for aff in author["affiliation"]:
                     subfields.append(('v', aff))
+
+                if self.extract_nations:
+                    add_nations_field(subfields)
+
             if author.get('email'):
                 subfields.append(('m', author['email']))
             if first_author:
@@ -863,6 +871,7 @@ class ElsevierPackage(object):
                 first_author = False
             else:
                 record_add_field(rec, '700', subfields=subfields)
+
         abstract = self.get_abstract(xml_doc)
         if abstract:
             record_add_field(rec, '520', subfields=[('a', abstract),
