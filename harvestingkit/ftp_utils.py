@@ -19,27 +19,15 @@
 from __future__ import print_function
 
 import sys
+import os
 import time
 
 from ftplib import FTP, error_perm
-from os.path import join, exists
-from os import remove, mkdir, getcwd
+from os.path import join
+from os import remove, getcwd
 from urlparse import urlparse
 from netrc import netrc
 from datetime import datetime
-
-
-def create_folders(new_folder):
-    """ Creates all the missing folders in the path new_folder
-    requires an absolute path.
-    """
-    if not exists(new_folder):
-        folders = new_folder.split("/")
-        folder = "/"
-        for i in range(1, len(folders)):
-            folder = join(folder, folders[i]).strip()
-            if not exists(folder):
-                mkdir(folder)
 
 
 class FtpHandler(object):
@@ -115,21 +103,28 @@ class FtpHandler(object):
 
         if not target_folder.startswith('/'):  # relative path
             target_folder = join(getcwd(), target_folder)
-        folder = '/'.join(source_file.split('/')[:-1])
+
+        folder = os.path.dirname(source_file)
         self.cd(folder)
 
-        destination = join(target_folder, source_file)
-        source_file = source_file.split('/')[-1]
-        create_folders('/'.join(destination.split('/')[:-1]))
-        if not exists(destination):
-            try:
-                with open(destination, 'wb') as result:
-                    self._ftp.retrbinary('RETR %s' % (source_file,),
-                                         result.write)
-            except error_perm as e:  # source_file is a folder
-                print(e)
-                remove(join(target_folder, source_file))
-                raise
+        if folder.startswith("/"):
+            folder = folder[1:]
+
+        destination_folder = join(target_folder, folder)
+        if not os.path.exists(destination_folder):
+            print("Creating folder", destination_folder)
+            os.makedirs(destination_folder)
+
+        source_file = os.path.basename(source_file)
+        destination = join(destination_folder, source_file)
+        try:
+            with open(destination, 'wb') as result:
+                self._ftp.retrbinary('RETR %s' % (source_file,),
+                                     result.write)
+        except error_perm as e:  # source_file is a folder
+            print(e)
+            remove(join(target_folder, source_file))
+            raise
         self._ftp.cwd(current_folder)
 
     def cd(self, folder):
