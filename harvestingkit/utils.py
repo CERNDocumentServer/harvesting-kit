@@ -86,6 +86,21 @@ def collapse_initials(name):
     return name
 
 
+def fix_name_capitalization(lastname, givennames):
+    """ Converts capital letters to lower keeps first letter capital. """
+    if '-' in lastname:
+        names = lastname.split('-')
+        names = map(lambda a: a[0] + a[1:].lower(), names)
+        lastname = '-'.join(names)
+    else:
+        lastname = lastname[0] + lastname[1:].lower()
+    names = []
+    for name in givennames:
+        names.append(name[0] + name[1:].lower())
+    givennames = ' '.join(names)
+    return lastname, givennames
+
+
 def fix_journal_name(journal, knowledge_base):
     """ Converts journal name to Inspire's short form """
     if not journal:
