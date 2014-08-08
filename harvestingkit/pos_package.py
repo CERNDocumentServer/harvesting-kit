@@ -22,7 +22,8 @@ from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from harvestingkit.utils import (collapse_initials,
                                  create_record,
-                                 record_add_field)
+                                 record_add_field,
+                                 fix_name_capitalization)
 
 
 class PosPackage(object):
@@ -34,18 +35,10 @@ class PosPackage(object):
         for tag in self.document.getElementsByTagName('dc:creator'):
             author = xml_to_text(tag)
             lastname = author.split()[-1]
-            if '-' in lastname:
-                names = lastname.split('-')
-                names = map(lambda a: a[0] + a[1:].lower(), names)
-                lastname = '-'.join(names)
-            else:
-                lastname = lastname[0] + lastname[1:].lower()
-            givennames = ''
-            for name in author.split()[:-1]:
-                name = name[0] + name[1:].lower()
-                givennames += name + ' '
-            givennames = collapse_initials(givennames.strip())
-            authors.append("%s, %s" % (lastname, givennames))
+            givenames = author.split()[:-1]
+            lastname, givenames = fix_name_capitalization(lastname, givenames)
+            givenames = collapse_initials(givenames)
+            authors.append("%s, %s" % (lastname, givenames))
         return authors
 
     def _get_title(self):

@@ -22,7 +22,8 @@ from harvestingkit.utils import (record_add_field,
                                  format_arxiv_id,
                                  collapse_initials,
                                  fix_journal_name,
-                                 escape_for_xml)
+                                 escape_for_xml,
+                                 fix_name_capitalization)
 from harvestingkit.tests import journal_mappings
 
 
@@ -67,6 +68,11 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(collapse_initials("T. A. Adams"), "T.A. Adams")
         self.assertEqual(collapse_initials("T.   A. Adams"), "T.A. Adams")
         self.assertEqual(collapse_initials("T. A. V. Adams"), "T.A.V. Adams")
+
+    def test_fix_name_capitalization(self):
+        self.assertEqual(fix_name_capitalization("NORTON", ["EDWARD"]), ("Norton", "Edward"))
+        self.assertEqual(fix_name_capitalization("NORTON", ["E.", "A.", "S."]), ("Norton", "E. A. S."))
+        self.assertEqual(fix_name_capitalization("EL-NORTON", ["EDWARD"]), ("El-Norton", "Edward"))
 
     def test_fix_journal_name(self):
         self.assertEqual(fix_journal_name("A&A", journal_mappings), ('Astron.Astrophys.', ""))
