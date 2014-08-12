@@ -19,6 +19,7 @@
 
 import sys
 import time
+from datetime import datetime
 
 from socket import timeout as socket_timeout_exception
 
@@ -74,6 +75,7 @@ class ContrastOutConnector(object):
         self.found_issues = []
         self.path_r_pkg = []
         self.logger = logger
+        self.packages_delivery = []
 
         self.config = load_config(CFG_CONFIG_PATH, {'ELSEVIER': []})
 
@@ -171,6 +173,8 @@ class ContrastOutConnector(object):
             self.retrieved_packages_unpacked.append(unpack_path)
             try:
                 self.ftp.download(filename, CFG_TAR_FILES)
+                self.retrieved_packages_unpacked.append(unpack_path)
+                self.packages_delivery.append((filename[0:-4], datetime.now()))
             except:
                 register_exception(alert_admin=True,
                                    prefix="Elsevier package download failed.")
@@ -300,7 +304,8 @@ class ContrastOutConnector(object):
                                             tag_list)))
 
                     self.found_articles.append(dict(xml=xml_pathname,
-                                                    pdf=pdf_pathname))
+                                                    pdf=pdf_pathname,
+                                                    package=name.split('.'[0])))
                 except MissingTagException as err:
                     register_exception(alert_admin=True,
                                        prefix=err.message)
