@@ -957,13 +957,20 @@ class ElsevierPackage(object):
                     record_add_field(
                         rec, '653', ind1='1', subfields=[('a', keyword),
                                     ('9', 'author')])
-            record_add_field(rec, '773',
-                             subfields=[('p', journal),
-                                        ('v', volume),
-                                        ('n', issue),
-                                        ('c', '%s-%s' %
-                                            (first_page, last_page)),
-                                        ('y', year)])
+
+            pages = ''
+            if first_page and last_page:
+                pages = '{0}-{1}'.format(first_page, last_page)
+            elif first_page:
+                pages = first_page
+
+            subfields = filter(lambda x: x[1] and x[1] != '-', [('p', journal),
+                                                                ('v', volume),
+                                                                ('n', issue),
+                                                                ('c', pages),
+                                                                ('y', year)])
+
+            record_add_field(rec, '773', subfields=subfields)
             if not no_pdf:
                 query = '0247_a:"%s" AND NOT 980:DELETED"' % (doi,)
                 prev_version = search_pattern(p=query)
