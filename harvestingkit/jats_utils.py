@@ -381,7 +381,13 @@ class JATSParser(object):
             article_meta = xml.getElementsByTagName('article-meta')[0]
             pages = get_value_in_tag(article_meta, "elocation-id")
 
-        record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('n', issue), ('c', pages), ('y', year)])
+        subfields = filter(lambda x: x[1] and x[1] != '-', [('p', journal),
+                                                            ('v', volume),
+                                                            ('n', issue),
+                                                            ('c', pages),
+                                                            ('y', year)])
+        record_add_field(rec, '773', subfields=subfields)
+
         self.get_references(xml)
         for label, authors, doi, issue, page, page_last, title, volume, year, ext_link, plain_text in self.references:
             subfields = []

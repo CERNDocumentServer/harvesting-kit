@@ -254,7 +254,12 @@ class APPParser(object):
             for keyword in keywords:
                 record_add_field(rec, '653', ind1='1', subfields=[('a', keyword), ('9', 'author')])
         record_add_field(rec, "300", subfields=[('a', pages)])
-        record_add_field(rec, '773', subfields=[('p', journal), ('v', volume), ('c', first_page), ('y', year)])
+
+        subfields = filter(lambda x: x[1] and x[1] != '-', [('p', journal),
+                                                            ('v', volume),
+                                                            ('c', first_page),
+                                                            ('y', year)])
+        record_add_field(rec, '773', subfields=subfields)
         references = self.get_references(xml)
         for label, authors, doi, issue, page, title, volume, year in references:
             subfields = []
