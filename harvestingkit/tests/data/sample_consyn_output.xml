@@ -108,9 +108,7 @@
     <subfield code="s">Nucl.Phys.,B287,111</subfield>
   </datafield>
   <datafield ind1="C" ind2="5" tag="999">
-    <subfield code="9">refextract</subfield>
-    <subfield code="h">G. Anderson and G. Moore</subfield>
-    <subfield code="m">IAS preprint IASSNS-HEP-87/69</subfield>
+    <subfield code="m">G. Anderson and G. Moore, IAS preprint IASSNS-HEP-87/69.</subfield>
     <subfield code="o">4</subfield>
   </datafield>
   <datafield ind1="C" ind2="5" tag="999">
@@ -130,9 +128,7 @@
     <subfield code="s">Nucl.Phys.,B281,509</subfield>
   </datafield>
   <datafield ind1="C" ind2="5" tag="999">
-    <subfield code="9">refextract</subfield>
-    <subfield code="h">E. Martinec and S. Shenker</subfield>
-    <subfield code="m">unpublished</subfield>
+    <subfield code="m">E. Martinec and S. Shenker, unpublished.</subfield>
     <subfield code="o">6</subfield>
   </datafield>
   <datafield ind1="C" ind2="5" tag="999">
@@ -158,9 +154,7 @@
     <subfield code="s">Lett.Math.Phys.,13,303</subfield>
   </datafield>
   <datafield ind1="C" ind2="5" tag="999">
-    <subfield code="9">refextract</subfield>
-    <subfield code="h">E. Verlinde</subfield>
-    <subfield code="m">to be published</subfield>
+    <subfield code="m">E. Verlinde, to be published.</subfield>
     <subfield code="o">10</subfield>
   </datafield>
   <datafield ind1="C" ind2="5" tag="999">
@@ -171,21 +165,15 @@
     <subfield code="s">Acta Math.,69,135</subfield>
   </datafield>
   <datafield ind1="C" ind2="5" tag="999">
-    <subfield code="9">refextract</subfield>
-    <subfield code="h">D. Friedan and S. Shenker</subfield>
-    <subfield code="m">unpublished</subfield>
+    <subfield code="m">D. Friedan and S. Shenker, unpublished.</subfield>
     <subfield code="o">12</subfield>
   </datafield>
   <datafield ind1="C" ind2="5" tag="999">
-    <subfield code="9">refextract</subfield>
-    <subfield code="h">J. Harvey, G. Moore, and C. Vafa</subfield>
-    <subfield code="m">Nucl. Phys. B, to be published</subfield>
+    <subfield code="m">J. Harvey, G. Moore, and C. Vafa, Nucl. Phys. B, to be published</subfield>
     <subfield code="o">13</subfield>
   </datafield>
   <datafield ind1="C" ind2="5" tag="999">
-    <subfield code="9">refextract</subfield>
-    <subfield code="h">D. Kastor, E. Martinec and Z. Qiu</subfield>
-    <subfield code="m">E. Fermi Institute preprint EFI-87-58</subfield>
+    <subfield code="m">D. Kastor, E. Martinec and Z. Qiu, E. Fermi Institute preprint EFI-87-58.</subfield>
     <subfield code="o">14</subfield>
   </datafield>
 </record>

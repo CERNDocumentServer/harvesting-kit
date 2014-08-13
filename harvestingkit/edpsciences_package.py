@@ -24,7 +24,6 @@ from urlparse import urlparse
 from os.path import join
 from os import makedirs
 from re import sub
-from invenio.refextract_api import extract_references_from_string_xml
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from harvestingkit.utils import (collapse_initials,
@@ -42,7 +41,7 @@ class EDPSciencesPackage(JatsPackage):
     This class is specialized in parsing files from EdpSciences FTP server
     and converting them in Marc XML.
     """
-    def __init__(self, journal_mappings=None):
+    def __init__(self, journal_mappings={}):
         super(EDPSciencesPackage, self).__init__(journal_mappings)
 
     def _get_references(self):
@@ -76,28 +75,31 @@ class EDPSciencesPackage(JatsPackage):
                 source, vol = fix_journal_name(source, self.journal_mappings)
                 if vol:
                     volume = vol + volume
-            yield label, ref_type, text_ref, ext_link, authors, year, source, volume, page
+            yield (label, ref_type, text_ref, ext_link,
+                   authors, year, source, volume, page)
 
-    def _add_references(self, rec):
+    def _add_references(self, rec, ref_extract_callback=None):
         for label, ref_type, text_ref, ext_link, authors, year, \
                 source, volume, page in self._get_references():
             subfields = []
             if label:
                 subfields.append(('o', label))
             if text_ref:
-                ref_xml = extract_references_from_string_xml(text_ref)
-                dom = parseString(ref_xml)
-                fields = dom.getElementsByTagName("datafield")[0]
-                fields = fields.getElementsByTagName("subfield")
-                for field in fields:
-                    data = field.firstChild.data
-                    code = field.getAttribute("code")
-                    subfields.append((code, data))
-                subfields.append(('9', 'refextract'))
+                if ref_extract_callback:
+                    ref_xml = ref_extract_callback(text_ref)
+                    dom = parseString(ref_xml)
+                    fields = dom.getElementsByTagName("datafield")[0]
+                    fields = fields.getElementsByTagName("subfield")
+                    for field in fields:
+                        data = field.firstChild.data
+                        code = field.getAttribute("code")
+                        subfields.append((code, data))
+                    if fields:
+                        subfields.append(('9', 'refextract'))
+                else:
+                    subfields.append(('m', text_ref))
             if ref_type:
                 subfields.append(('d', ref_type))
-            if text_ref:
-                subfields.append(('m', text_ref))
             if ext_link:
                 subfields.append(('u', ext_link))
             for author in authors:
@@ -112,7 +114,8 @@ class EDPSciencesPackage(JatsPackage):
                 subfields.append(('s', source + "," + page))
             elif source:
                 subfields.append(('s', source))
-            record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
+            record_add_field(rec, '999', ind1='C', ind2='5',
+                             subfields=subfields)
 
     def _get_note(self, note_id):
         for tag in self.document.getElementsByTagName('fn'):
@@ -133,12 +136,17 @@ class EDPSciencesPackage(JatsPackage):
         abstract = abstract.replace("Conclusions..", "<br/>Conclusions:<br/>")
         return abstract
 
-    def get_record(self, fileName):
+    def get_record(self, fileName, ref_extract_callback=None):
         """
         Gets the Marc xml of the files in xaml_jp directory
 
         :param fileName: the name of the file to parse.
         :type fileName: string
+        :param refextract_callback: callback to be used to extract
+                                    unstructured references. It should
+                                    return a marcxml formated string
+                                    of the reference.
+        :type refextract_callback: callable
 
         :returns: a string with the marc xml version of the file.
         """
@@ -163,8 +171,9 @@ class EDPSciencesPackage(JatsPackage):
             if note:
                 record_add_field(rec, '500', subfields=[('a', note)])
         for subject in subjects:
-            record_add_field(rec, '650', ind1='1', ind2='7', subfields=[('2', 'EDPSciences'),
-                                                                        ('a', subject)])
+            record_add_field(rec, '650', ind1='1', ind2='7',
+                             subfields=[('2', 'EDPSciences'),
+                                        ('a', subject)])
         keywords = self._get_keywords()
         for keyword in keywords:
             record_add_field(rec, '653', ind1='1', subfields=[('a', keyword),
@@ -230,7 +239,7 @@ class EDPSciencesPackage(JatsPackage):
         if conference:
             record_add_field(rec, '980', subfields=[('a', 'ConferencePaper')])
             record_add_field(rec, '500', subfields=[('a', conference)])
-        self._add_references(rec)
+        self._add_references(rec, ref_extract_callback)
         self._add_authors(rec)
         try:
             return record_xml_output(rec)
@@ -239,7 +248,7 @@ class EDPSciencesPackage(JatsPackage):
             sys.stderr.write(message)
             return ""
 
-    def get_record_rich(self, filename):
+    def get_record_rich(self, filename, ref_extract_callback=None):
         """
         Gets the Marc xml of the files in xaml_rich directory
 
@@ -285,7 +294,9 @@ class EDPSciencesPackage(JatsPackage):
         affiliations = self.document.getElementsByTagName('Affiliation')
 
         def affiliation_pair(a):
-            return a.getAttribute('ID'), get_value_in_tag(a, 'UnstructuredAffiliation')
+            return a.getAttribute('ID'), get_value_in_tag(
+                a, 'UnstructuredAffiliation'
+            )
 
         affiliations = map(affiliation_pair, affiliations)
         affiliations = dict(affiliations)
@@ -299,7 +310,9 @@ class EDPSciencesPackage(JatsPackage):
             else:
                 name = '%s, %s' % (surname, first_name)
             try:
-                affid = a.getElementsByTagName('AffiliationID')[0].getAttribute('Label')
+                affid = a.getElementsByTagName(
+                    'AffiliationID'
+                )[0].getAttribute('Label')
                 affiliation = affiliations[affid]
             except IndexError:
                 affiliation = ''
@@ -320,7 +333,9 @@ class EDPSciencesPackage(JatsPackage):
             for tag in bibliosets:
                 ref_year = get_value_in_tag(tag, 'Date')
                 ref_journal = get_value_in_tag(tag, 'JournalShortTitle')
-                ref_journal, ref_volume = fix_journal_name(ref_journal, self.journal_mappings)
+                ref_journal, ref_volume = fix_journal_name(
+                    ref_journal, self.journal_mappings
+                )
                 ref_volume += get_value_in_tag(tag, 'Volume')
                 ref_page = get_value_in_tag(tag, 'ArtPageNums')
                 if ref_year:
@@ -331,21 +346,25 @@ class EDPSciencesPackage(JatsPackage):
                                                          ref_page)))
                 reference.removeChild(tag)
             text_ref = xml_to_text(reference)
-            ref_xml = extract_references_from_string_xml(text_ref)
-            dom = parseString(ref_xml)
-            fields = dom.getElementsByTagName("datafield")[0]
-            fields = fields.getElementsByTagName("subfield")
-            if fields:
-                subfields.append(('9', 'refextract'))
-            for field in fields:
-                data = field.firstChild.data
-                code = field.getAttribute("code")
-                if code == 'm' and bibliosets:
-                    continue
-                else:
-                    subfields.append((code, data))
+            if ref_extract_callback:
+                ref_xml = ref_extract_callback(text_ref)
+                dom = parseString(ref_xml)
+                fields = dom.getElementsByTagName("datafield")[0]
+                fields = fields.getElementsByTagName("subfield")
+                if fields:
+                    subfields.append(('9', 'refextract'))
+                for field in fields:
+                    data = field.firstChild.data
+                    code = field.getAttribute("code")
+                    if code == 'm' and bibliosets:
+                        continue
+                    else:
+                        subfields.append((code, data))
+            else:
+                subfields.append(('m', text_ref))
             if subfields:
-                record_add_field(rec, '999', ind1='C', ind2='5', subfields=subfields)
+                record_add_field(rec, '999', ind1='C', ind2='5',
+                                 subfields=subfields)
 
         if title:
             record_add_field(rec, '245', subfields=[('a', title)])
@@ -379,7 +398,8 @@ class EDPSciencesPackage(JatsPackage):
         if first_page and last_page:
             try:
                 nuber_of_pages = int(last_page) - int(first_page)
-                record_add_field(rec, '300', subfields=[('a', str(nuber_of_pages))])
+                record_add_field(rec, '300',
+                                 subfields=[('a', str(nuber_of_pages))])
             except ValueError:
                 pass
             subfields.append(('c', '%s-%s' % (first_page,
@@ -389,10 +409,12 @@ class EDPSciencesPackage(JatsPackage):
         record_add_field(rec, '773', subfields=subfields)
         record_add_field(rec, '980', subfields=[('a', 'HEP')])
         if copyright_statement:
-            record_add_field(rec, '542', subfields=[('f', copyright_statement)])
+            record_add_field(rec, '542',
+                             subfields=[('f', copyright_statement)])
         if subject:
-            record_add_field(rec, '650', ind1='1', ind2='7', subfields=[('2', 'EDPSciences'),
-                                                                        ('a', subject)])
+            record_add_field(rec, '650', ind1='1', ind2='7',
+                             subfields=[('2', 'EDPSciences'),
+                                        ('a', subject)])
         try:
             return record_xml_output(rec)
         except UnicodeDecodeError:
@@ -413,7 +435,9 @@ class EDPSciencesPackage(JatsPackage):
             if 'epjconf' in doi:
                 div = page.body.find('div', attrs={'id': 'header'})
             else:
-                div = page.body.find('div', attrs={'class': 'module_background files'})
+                div = page.body.find('div', attrs={
+                    'class': 'module_background files'
+                })
             links = div.findAll('a')
         except AttributeError:
             return
@@ -424,8 +448,9 @@ class EDPSciencesPackage(JatsPackage):
                                  subfields=[('u', link_to_pdf),
                                             ('y', 'EDP Sciences server')])
                 try:
-                    from invenio.filedownloadutils import (download_url,
-                                                           InvenioFileDownloadError)
+                    from invenio.filedownloadutils import (
+                        download_url, InvenioFileDownloadError
+                    )
                     from invenio.config import CFG_EDPSCIENCE_OUT_FOLDER
                     try:
 
@@ -444,9 +469,10 @@ class EDPSciencesPackage(JatsPackage):
                                                 download_to_file=filename,
                                                 retry_count=5,
                                                 timeout=60.0)
-                        record_add_field(rec, 'FFT', subfields=[('a', filename),
-                                                                ('t', 'INSPIRE-PUBLIC'),
-                                                                ('d', 'Fulltext')])
+                        record_add_field(rec, 'FFT',
+                                         subfields=[('a', filename),
+                                                    ('t', 'INSPIRE-PUBLIC'),
+                                                    ('d', 'Fulltext')])
                     except InvenioFileDownloadError as e:
                         print(e)
                 except ImportError:
