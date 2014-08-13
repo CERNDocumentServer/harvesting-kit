@@ -23,7 +23,8 @@ from harvestingkit.utils import (record_add_field,
                                  collapse_initials,
                                  fix_journal_name,
                                  escape_for_xml,
-                                 fix_name_capitalization)
+                                 fix_name_capitalization,
+                                 fix_dashes)
 from harvestingkit.tests import journal_mappings
 
 
@@ -89,6 +90,11 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(escape_for_xml("asdasdsa <.2 A"), "asdasdsa &lt;.2 A")
         self.assertEqual(escape_for_xml("asdasdsa < 2 A"), "asdasdsa &lt; 2 A")
 
+    def test_fix_dashes(self):
+        self.assertEqual(fix_dashes("A–A"), "A-A")
+        self.assertEqual(fix_dashes('-–'), '-')
+        self.assertEqual(fix_dashes('––'), '-')
+        self.assertEqual(fix_dashes('–––'), '-')
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(UtilsTests)

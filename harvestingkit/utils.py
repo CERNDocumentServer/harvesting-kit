@@ -19,6 +19,7 @@
 import re
 from xml.dom.minidom import Document, parseString
 from xml.parsers.expat import ExpatError
+from unidecode import unidecode
 
 NATIONS_DEFAULT_MAP = {"Algeria": "Algeria",
                        "Argentina": "Argentina",
@@ -277,3 +278,12 @@ def add_nations_field(authors_subfields):
         authors_subfields.extend([('w', res) for res in result])
     else:
         authors_subfields.append(('w', 'HUMAN CHECK'))
+
+
+def fix_dashes(string):
+    string = string.replace(u'\u05BE', '-')
+    string = string.replace(u'\u1806', '-')
+    string = string.replace(u'\u2E3A', '-')
+    string = string.replace(u'\u2E3B', '-')
+    string = unidecode(string)
+    return re.sub(r'--+', '-', string)

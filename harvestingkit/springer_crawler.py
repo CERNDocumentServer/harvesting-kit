@@ -33,7 +33,6 @@ from harvestingkit.utils import (collapse_initials,
                                  create_record)
 from xml.dom.minidom import parseString
 from xml.dom import getDOMImplementation
-from invenio.refextract_api import extract_references_from_string_xml
 from tempfile import mkstemp
 
 
@@ -214,25 +213,32 @@ class SpringerCrawler(object):
         if references_container:
             references = references_container.findAll('li')
             for reference in references:
-                ref = xml_to_text(parseString(reference.decode()))
-                #removes the space between hep-th/ and the identifier
-                ref = re.sub(r'hep-th/\s(\d*)', r'hep-th/\1', ref)
-                ref = extract_references_from_string_xml(ref)
-                ref = parseString(ref)
-                for field in ref.childNodes:
-                    for subfield in field.getElementsByTagName('subfield'):
-                        if subfield.getAttribute('code') == 'm':
-                            text = subfield.firstChild.data
-                            text = re.sub(r'\[?arXiv:', '', text)
-                            text = text.replace('CrossRef', '')
-                            if text.startswith(': '):
-                                text = text[2:]
-                            if text:
-                                subfield.firstChild.data = text
-                            else:
-                                parentNode = subfield.parentNode
-                                parentNode.removeChild(subfield)
-                    ref_fields.append(field.firstChild)
+                try:
+                    from invenio.refextract_api import (
+                        extract_references_from_string_xml
+                    )
+                    ref = xml_to_text(parseString(reference.decode()))
+                    #removes the space between hep-th/ and the identifier
+                    ref = re.sub(r'hep-th/\s(\d*)', r'hep-th/\1', ref)
+                    ref = extract_references_from_string_xml(ref)
+                    ref = parseString(ref)
+                    for field in ref.childNodes:
+                        for subfield in field.getElementsByTagName('subfield'):
+                            if subfield.getAttribute('code') == 'm':
+                                text = subfield.firstChild.data
+                                text = re.sub(r'\[?arXiv:', '', text)
+                                text = text.replace('CrossRef', '')
+                                if text.startswith(': '):
+                                    text = text[2:]
+                                if text:
+                                    subfield.firstChild.data = text
+                                else:
+                                    parentNode = subfield.parentNode
+                                    parentNode.removeChild(subfield)
+                        ref_fields.append(field.firstChild)
+                except ImportError:
+                    record_add_field(rec, '999', ind1='C', ind2='5',
+                                     subfields=[('m', reference.decode())])
             for field in ref_fields:
                 record.firstChild.appendChild(field)
         return record.firstChild

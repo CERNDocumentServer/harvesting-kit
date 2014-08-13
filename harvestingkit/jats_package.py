@@ -18,7 +18,6 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 from __future__ import print_function
 import sys
-from invenio.refextract_kbs import get_kbs
 from datetime import datetime
 from harvestingkit.utils import (fix_journal_name,
                                  collapse_initials,
@@ -32,14 +31,8 @@ from datetime import date
 
 class JatsPackage(object):
 
-    def __init__(self, journal_mappings=None):
-        if journal_mappings:
-            self.journal_mappings = journal_mappings
-        else:
-            try:
-                self.journal_mappings = get_kbs()['journals'][1]
-            except KeyError:
-                self.journal_mappings = {}
+    def __init__(self, journal_mappings={}):
+        self.journal_mappings = journal_mappings
 
     def _get_journal(self):
         try:
