@@ -41,14 +41,12 @@ def bst_elsevier():
             continue
         else:
             write_message("New pacakge discovered for publisher %s: %s" % ('Elsevier', name))
-            run_sql("INSERT INTO package(name, delivery_date) VALUES(%s, %s)", (name, date))
+            run_sql("INSERT INTO package(name, delivery_date) VALUES(%s, %s)", (name.strip(), date))
 
     for dp in els.doi_package_name_mapping:
         try:
             p_name, doi = dp
-            write_message('%s %s' % (p_name, doi))
-            p_id = run_sql("SELECT id FROM package WHERE name=%s", (p_name,))
-            write_message(p_id)
+            p_id = run_sql("SELECT id FROM package WHERE name=%s", (p_name.strip(),))
             try:
                 write_message("Adding doi to package: %d %s" % (p_id[0][0], doi))
                 run_sql("INSERT INTO doi_package VALUES(%s, %s)", (p_id[0][0], doi))
