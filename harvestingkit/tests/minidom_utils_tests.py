@@ -22,7 +22,6 @@ from harvestingkit.minidom_utils import (get_inner_xml,
                                          xml_to_text,
                                          get_value_in_tag,
                                          get_attribute_in_tag)
-from harvestingkit.utils import parse_innerxmls
 
 sample_xml = "<Foo>"\
              "  some text"\
