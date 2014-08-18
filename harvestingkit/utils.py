@@ -168,12 +168,12 @@ def record_add_field(rec, tag, ind1='', ind2='', subfields=[],
             for child in data.childNodes:
                 field.appendChild(child.cloneNode(child))
         except ExpatError:
-            field.appendChild(doc.createTextNode(subfield[1]))
+            field.appendChild(doc.createTextNode(str(subfield[1])))
         datafield.appendChild(field)
     if controlfield_value:
         controlfield = doc.createElement('controlfield')
         controlfield.setAttribute('tag', tag)
-        controlfield.appendChild(doc.createTextNode(controlfield_value))
+        controlfield.appendChild(doc.createTextNode(str(controlfield_value)))
         rec.appendChild(controlfield)
     else:
         rec.appendChild(datafield)
