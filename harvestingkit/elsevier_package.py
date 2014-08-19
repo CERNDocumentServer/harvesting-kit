@@ -43,7 +43,7 @@ from invenio.config import CFG_TMPSHAREDDIR
 from invenio.shellutils import run_shell_command
 from invenio.bibtask import task_low_level_submission
 from invenio.bibdocfile import BibRecDocs
-from invenio.search_engine import search_pattern
+from invenio.search_engine import perform_request_search
 from harvestingkit.scoap3utils import (create_logger,
                                        MissingFFTError,
                                        extract_package as scoap3utils_extract_package)
@@ -766,7 +766,7 @@ class ElsevierPackage(object):
         rec = create_record()
         dummy, dummy, dummy, dummy, dummy, dummy, dummy,\
             dummy, doi = self.get_publication_information(xml_doc)
-        recid = search_pattern(p='0247_a:"%s" AND NOT 980:"DELETED"' % (doi,))
+        recid = perform_request_search(p='0247_a:"%s" AND NOT 980:"DELETED"' % (doi,))
         if recid:
             record_add_field(rec, '001', controlfield_value=recid[0])
         else:
@@ -974,7 +974,7 @@ class ElsevierPackage(object):
             record_add_field(rec, '773', subfields=subfields)
             if not no_pdf:
                 query = '0247_a:"%s" AND NOT 980:DELETED"' % (doi,)
-                prev_version = search_pattern(p=query)
+                prev_version = perform_request_search(p=query)
 
                 old_pdf = False
 
