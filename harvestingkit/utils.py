@@ -35,6 +35,10 @@ NATIONS_DEFAULT_MAP = {"Algeria": "Algeria",
                        "Brazil": "Brazil",
                        "Bulgaria": "Bulgaria",
                        "Canada": "Canada",
+                       ##########CERN########
+                       "CERN": "CERN",
+                       "Cern": "CERN",
+                       #######################
                        "Chile": "Chile",
                        ##########CHINA########
                        "China (PRC)": "China",
@@ -260,12 +264,16 @@ def add_nations_field(authors_subfields):
             values = [x.replace('.', '') for x in field[1].split(', ')]
             possible_affs = filter(lambda x: x is not None,
                                    map(NATIONS_DEFAULT_MAP.get, values))
-            if len(possible_affs) == 1:
-                result.append(possible_affs[0])
-            else:
-                result.append('HUMAN CHECK')
+            if 'CERN' in possible_affs and 'Switzerland' in possible_affs:
+                # Don't use remove in case of multiple Switzerlands
+                possible_affs = [x for x in possible_affs
+                                 if x != 'Switzerland']
 
-    if len(result) == 1:
-        authors_subfields.append(('w', result[0]))
+            result.extend(possible_affs)
+
+    result = sorted(list(set(result)))
+
+    if result:
+        authors_subfields.extend([('w', res) for res in result])
     else:
         authors_subfields.append(('w', 'HUMAN CHECK'))
