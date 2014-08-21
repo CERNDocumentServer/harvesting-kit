@@ -473,6 +473,10 @@ class ElsevierPackage(object):
                 ret = xml_to_text(link).strip()
         return ret
 
+    def _affiliation_from_sa_field(self, affiliation):
+        sa_affiliation = affiliation.getElementsByTagName('sa:affiliation')[0]
+        return xml_to_text(sa_affiliation, ', ')
+
     def get_authors(self, xml_doc):
         authors = []
         for author in xml_doc.getElementsByTagName("ce:author"):
@@ -504,8 +508,7 @@ class ElsevierPackage(object):
         affiliations = {}
         for affiliation in xml_doc.getElementsByTagName("ce:affiliation"):
             aff_id = affiliation.getAttribute("id").encode('utf-8')
-            text = re.sub(
-                r'^(\d+\ ?)', "", get_value_in_tag(affiliation, "ce:textfn"))
+            text = self._affiliation_from_sa_field(affiliation)
             affiliations[aff_id] = text
         implicit_affilations = True
         for author in authors:
