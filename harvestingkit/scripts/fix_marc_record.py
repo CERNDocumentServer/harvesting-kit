@@ -33,15 +33,29 @@ def collapse_initials(name):
 
 def fix_name_capitalization(lastname, givennames):
     """ Converts capital letters to lower keeps first letter capital. """
-    if '-' in lastname:
-        names = lastname.split('-')
-        names = map(lambda a: a[0] + a[1:].lower(), names)
-        lastname = '-'.join(names)
+    lastnames = lastname.split()
+    if len(lastnames) == 1:
+        if '-' in lastname:
+            names = lastname.split('-')
+            names = map(lambda a: a[0] + a[1:].lower(), names)
+            lastname = '-'.join(names)
+        else:
+            lastname = lastname[0] + lastname[1:].lower()
     else:
-        lastname = lastname[0] + lastname[1:].lower()
+        names = []
+        for name in lastnames:
+            if re.search(r'[A-Z]\.', name):
+                names.append(name)
+            else:
+                names.append(name[0] + name[1:].lower())
+        lastname = ' '.join(names)
+        lastname = collapse_initials(lastname)
     names = []
     for name in givennames:
-        names.append(name[0] + name[1:].lower())
+        if re.search(r'[A-Z]\.', name):
+            names.append(name)
+        else:
+            names.append(name[0] + name[1:].lower())
     givennames = ' '.join(names)
     return lastname, givennames
 
@@ -58,27 +72,8 @@ def fix_title_capitalization(title):
     return title
 
 
-def main():
-    usage = """
-    save to file:
-    python fix_name_capitalization.py marc_file.xml >> result_file.xml
-    print to terminal:
-    python fix_name_capitalization.py marc_file.xml
-    """
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "")
-        if len(args) > 1:
-            raise getopt.GetoptError("Too many arguments given!!!")
-        elif not args:
-            raise getopt.GetoptError("Missing mandatory argument url_to_crawl")
-    except getopt.GetoptError as err:
-        print(str(err))  # will print something like "option -a not recognized"
-        print(usage)
-        sys.exit(2)
-    filename = args[0]
-    document = parse(filename)
-
-    datafields = document.getElementsByTagName('datafield')
+def fix_authors(marcxml):
+    datafields = marcxml.getElementsByTagName('datafield')
     # fix author names
     author_tags = []
     for tag in datafields:
@@ -92,14 +87,35 @@ def main():
                     if child.nodeType == child.TEXT_NODE:
                         author += child.nodeValue
                 if author:
-                    lastname, givennames = author.split(',')
-                    lastname, givennames = fix_name_capitalization(
-                        lastname, givennames.split()
-                    )
-                    givennames = collapse_initials(givennames)
-                    subfield.firstChild.nodeValue = "%s, %s" %\
-                        (lastname, givennames)
-    #fix title
+                    author = author.replace(', Rapporteur', '')
+                    if author.find(',') >= 0:
+                        lastname, givennames = author.split(',')
+                        lastname = lastname.strip()
+                        givennames = givennames.strip()
+                        initials = r'([A-Z]\.)'
+                        if re.search(initials, lastname) and not \
+                                re.search(initials, givennames):
+                            lastname, givennames = givennames, lastname
+                        lastname, givennames = fix_name_capitalization(
+                            lastname, givennames.split()
+                        )
+                        givennames = collapse_initials(givennames)
+                        subfield.firstChild.nodeValue = "%s, %s" %\
+                            (lastname, givennames)
+                    else:
+                        names = author.split()
+                        lastname, givennames = names[-1], names[:-1]
+                        lastname, givennames = fix_name_capitalization(
+                            lastname, givennames
+                        )
+                        givennames = collapse_initials(givennames)
+                        subfield.firstChild.nodeValue = "%s, %s" %\
+                            (lastname, givennames)
+    return marcxml
+
+
+def fix_title(marcxml):
+    datafields = marcxml.getElementsByTagName('datafield')
     title_tags = []
     for tag in datafields:
         if tag.getAttribute('tag') in ['242', '245', '246', '247']:
@@ -112,7 +128,66 @@ def main():
                         title = child.nodeValue
                         title = fix_title_capitalization(title)
                         child.nodeValue = title
-    print(document.toxml())
+    return marcxml
+
+
+def main():
+    usage = """
+    save to file:
+    python fix_marc_record.py marc_file.xml >> result_file.xml
+
+    print to terminal:
+    python fix_marc_record.py marc_file.xml
+
+    options:
+    --recid -r
+    fix the record with the given record id from https://inspireheptest.cern.ch
+    e.g. python fix_marc_record.py --recid=1291107
+    --site -s
+    specify a different site useful only when option --recid or -r enabled
+    e.g. python fix_marc_record.py -r 1291107 -s http://inspirehep.net
+    """
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "r:s:", ["recid=", "site="])
+        options = map(lambda a: a[0], opts)
+        if len(args) > 1:
+            raise getopt.GetoptError("Too many arguments given!!!")
+        elif not args and not ('-r' in options or '--recid' in options):
+            raise getopt.GetoptError("Missing argument record to fix")
+    except getopt.GetoptError as err:
+        print(str(err))  # will print something like "option -a not recognized"
+        print(usage)
+        sys.exit(2)
+
+    if '-r' in options or '--recid' in options:
+        from invenio.invenio_connector import InvenioConnector
+        from xml.dom.minidom import parseString
+        site = "http://inspireheptest.cern.ch/"
+        for o, a in opts:
+            if o in ['-s', '--site']:
+                site = a
+            if o in ['-r', '--recid']:
+                recid = a
+        inspiretest = InvenioConnector(site)
+        record = inspiretest.search(p='001:%s' % recid, of='xm')
+        marcxml = parseString(record)
+        try:
+            marcxml = marcxml.getElementsByTagName('record')[0]
+        except IndexError:
+            print("Record not found")
+            sys.exit(2)
+
+        marcxml = fix_authors(marcxml)
+        marcxml = fix_title(marcxml)
+
+        print(marcxml.toxml())
+    else:
+        filename = args[0]
+        marcxml = parse(filename)
+
+        marcxml = fix_authors(marcxml)
+        marcxml = fix_title(marcxml)
+        print(marcxml.toxml())
 
 
 if __name__ == '__main__':
