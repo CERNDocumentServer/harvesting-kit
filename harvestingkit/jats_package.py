@@ -112,6 +112,11 @@ class JatsPackage(object):
     def _get_authors(self):
         authors = []
         for contrib in self.document.getElementsByTagName('contrib'):
+            # Springer puts colaborations in additional "contrib" tag so to
+            # avoid having fake author with all affiliations we skip "contrib"
+            # tag with "contrib" subtags.
+            if contrib.getElementsByTagName('contrib'):
+                continue
             if contrib.getAttribute('contrib-type') == 'author':
                 surname = get_value_in_tag(contrib, 'surname')
                 given_names = get_value_in_tag(contrib, 'given-names')
