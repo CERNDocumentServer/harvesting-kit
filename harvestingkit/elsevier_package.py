@@ -290,7 +290,7 @@ class ElsevierPackage(object):
                 for author in authors:
                     subfields.append(('h', author))
                 if ext_link:
-                    data = fix_dashes(data)
+                    ext_link = fix_dashes(ext_link)
                     subfields.append(('r', ext_link))
                 if title:
                     subfields.append(('t', title))
