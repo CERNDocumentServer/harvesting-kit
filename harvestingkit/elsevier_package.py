@@ -885,15 +885,14 @@ class ElsevierPackage(object):
                 if collaboration:
                     record_add_field(rec, '710',
                                      subfields=[('g', collaboration)])
-            topics = []
+
+            # We add subjects also as author keywords
             subjects = xml_doc.getElementsByTagName('dct:subject')
             for subject in subjects:
                 for listitem in subject.getElementsByTagName('rdf:li'):
-                    topics.append(xml_to_text(listitem))
-            if topics:
-                record_add_field(rec, '650', ind1='1', ind2='7',
-                                 subfields=[('2', 'Elsevier'),
-                                            ('a', ', '.join(topics))])
+                    keyword = xml_to_text(listitem)
+                    if keyword not in keywords:
+                        keywords.append(keyword)
             if keywords:
                 for keyword in keywords:
                     record_add_field(rec, '653', ind1='1',
