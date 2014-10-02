@@ -419,60 +419,115 @@ class ElsevierPackage(object):
                 ret = xml_to_text(link).strip()
         return ret
 
+    def _author_dic_from_xml(self, author):
+        tmp = {}
+        surname = get_value_in_tag(author, "ce:surname")
+        if surname:
+            tmp["surname"] = surname
+        given_name = get_value_in_tag(author, "ce:given-name")
+        if given_name:
+            tmp["given_name"] = given_name
+        initials = get_value_in_tag(author, "ce:initials")
+        if initials:
+            tmp["initials"] = initials
+        orcid = author.getAttribute('orcid').encode('utf-8')
+        if orcid:
+            tmp["orcid"] = orcid
+        emails = author.getElementsByTagName("ce:e-address")
+        for email in emails:
+            if email.getAttribute("type").encode('utf-8') in ('email', ''):
+                tmp["email"] = xml_to_text(email)
+                break
+        cross_refs = author.getElementsByTagName("ce:cross-ref")
+        if cross_refs:
+            tmp["cross_ref"] = []
+            for cross_ref in cross_refs:
+                tmp["cross_ref"].append(
+                    cross_ref.getAttribute("refid").encode('utf-8'))
+
+        return tmp
+
+    def _affiliation_from_sa_field(self, affiliation):
+        sa_affiliation = affiliation.getElementsByTagName('sa:affiliation')[0]
+        return xml_to_text(sa_affiliation, ', ')
+
+    def _find_affiliations(self, xml_doc, doi):
+        try:
+            return {aff.getAttribute("id").encode('utf-8'):
+                    self._affiliation_from_sa_field(aff)
+                    for aff in xml_doc.getElementsByTagName("ce:affiliation")}
+        except IndexError:
+            message = "Elsevier paper: {0} is missing sa:affiliation."
+            register_exception(alert_admin=True, prefix=message.format(doi))
+            return {aff.getAttribute("id").encode('utf-8'):
+                    re.sub(r'^(\d+\ ?)', "",
+                           get_value_in_tag(aff, "ce:textfn"))
+                    for aff in xml_doc.getElementsByTagName("ce:affiliation")}
+
+    def _add_affiliations_to_author(self, author, affs):
+        if affs:
+            try:
+                author['affiliation'].extend(affs)
+            except KeyError:
+                author['affiliation'] = affs
+
+        return len(affs)
+
+    def _add_referenced_affiliation(self, author, affiliations):
+        affs = [affiliations[ref] for ref in author.get("cross_ref", [])
+                if ref in affiliations]
+
+        return self._add_affiliations_to_author(author, affs)
+
+    def _add_group_affiliation(self, author, xml_author):
+        affs = [get_value_in_tag(aff, "ce:textfn") for aff in
+                xml_author.parentNode.getElementsByTagName('ce:affiliation')]
+
+        return self._add_affiliations_to_author(author, affs)
+
+    def _get_direct_children(self, element, tagname):
+        affs = []
+        for child in element.childNodes:
+            try:
+                if child.tagName == tagname:
+                    affs.append(child)
+            except AttributeError:
+                pass
+        return affs
+
+    def _add_global_affiliation(self, author, xml_author):
+        affs = []
+        # get author_group of author, already done in group_affiliation
+        # this goes higher in the hierarchy
+        parent = xml_author.parentNode
+        while True:
+            try:
+                parent = parent.parentNode
+                affs.extend([get_value_in_tag(aff, "ce:textfn") for aff
+                             in self._get_direct_cildren(parent,
+                                                         'ce:affiliation')])
+            except AttributeError:
+                break
+
+        return self._add_affiliations_to_author(author, affs)
+
+    def _add_affiliations(self, authors, xml_authors, affiliations):
+        for xml_author, author in zip(xml_authors, authors):
+            if not self._add_referenced_affiliation(author, affiliations):
+                self._add_group_affiliation(author, xml_author)
+            self._add_global_affiliation(author, xml_author)
+
     def get_authors(self, xml_doc):
-        authors = []
-        for author in xml_doc.getElementsByTagName("ce:author"):
-            tmp = {}
-            surname = get_value_in_tag(author, "ce:surname")
-            if surname:
-                tmp["surname"] = surname
-            given_name = get_value_in_tag(author, "ce:given-name")
-            if given_name:
-                tmp["given_name"] = given_name
-            initials = get_value_in_tag(author, "ce:initials")
-            if initials:
-                tmp["initials"] = initials
-            orcid = author.getAttribute('orcid').encode('utf-8')
-            if orcid:
-                tmp["orcid"] = orcid
-            emails = author.getElementsByTagName("ce:e-address")
-            for email in emails:
-                if email.getAttribute("type").encode('utf-8') in ('email', ''):
-                    tmp["email"] = xml_to_text(email)
-                    break
-            cross_refs = author.getElementsByTagName("ce:cross-ref")
-            if cross_refs:
-                tmp["cross_ref"] = []
-                for cross_ref in cross_refs:
-                    tmp["cross_ref"].append(
-                        cross_ref.getAttribute("refid").encode('utf-8'))
-            authors.append(tmp)
-        affiliations = {}
-        for affiliation in xml_doc.getElementsByTagName("ce:affiliation"):
-            aff_id = affiliation.getAttribute("id").encode('utf-8')
-            text = re.sub(
-                r'^(\d+\ ?)', "", get_value_in_tag(affiliation, "ce:textfn"))
-            affiliations[aff_id] = text
-        implicit_affilations = True
-        for author in authors:
-            matching_ref = [ref for ref in author.get(
-                "cross_ref", []) if ref in affiliations]
-            if matching_ref:
-                implicit_affilations = False
-                author["affiliation"] = []
-                for i in xrange(0, len(matching_ref)):
-                    author["affiliation"].append(affiliations[matching_ref[i]])
-        if implicit_affilations and len(affiliations) > 1:
-            message = "Implicit affiliations are used, "
-            message += ("but there's more than one affiliation: "
-                        + str(affiliations))
-            print(message, file=sys.stderr)
-        if implicit_affilations and len(affiliations) >= 1:
-            for author in authors:
-                author["affiliation"] = []
-                for aff in affiliations.values():
-                    author["affiliation"].append(aff)
-        return authors
+            xml_authors = xml_doc.getElementsByTagName("ce:author")
+            authors = [self._author_dic_from_xml(author) for author
+                       in xml_authors]
+
+            doi = self._get_doi(xml_doc)
+
+            self._add_affiliations(authors, xml_authors,
+                                   self._find_affiliations(xml_doc, doi))
+
+            return authors
 
     def get_publication_information(self, xml_doc, path=''):
         if self.CONSYN:
