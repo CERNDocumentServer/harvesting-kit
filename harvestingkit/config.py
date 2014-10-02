@@ -24,7 +24,12 @@ Basic config for Harvesting Kit.
 import os
 from sys import executable
 
-from invenio.config import CFG_ETCDIR
+try:
+    from invenio.config import CFG_ETCDIR
+except ImportError:
+    CFG_ETCDIR = os.path.join(os.environ.get(
+        "VIRTUAL_ENV", "/tmp"), "/etc/harvestingkit/"
+    )
 
 
 def _get_config_environment_variable():

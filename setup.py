@@ -21,8 +21,14 @@ import os
 
 from setuptools import setup, find_packages
 
-from invenio.config import CFG_PYLIBDIR
 from harvestingkit.config import CFG_DTDS_PATH
+
+try:
+    from invenio.config import CFG_PYLIBDIR
+except ImportError:
+    CFG_PYLIBDIR = os.path.join(os.environ.get(
+        "VIRTUAL_ENV", "/tmp"), "/lib/python/"
+    )
 
 
 bibtasklet_path = os.path.join(CFG_PYLIBDIR, 'invenio', 'bibsched_tasklets')
