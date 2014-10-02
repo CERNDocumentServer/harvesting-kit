@@ -24,7 +24,10 @@ from os import pardir
 from os.path import (join,
                      dirname,
                      basename)
-from invenio.errorlib import register_exception
+try:
+    from invenio.errorlib import register_exception
+except ImportError:
+    register_exception = lambda a=1, b=2: True
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from harvestingkit.utils import (format_arxiv_id,

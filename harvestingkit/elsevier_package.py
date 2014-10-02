@@ -36,12 +36,23 @@ from tempfile import (mkdtemp,
                       mkstemp)
 from zipfile import ZipFile
 from xml.dom.minidom import parse
-from invenio.errorlib import register_exception
-from invenio.config import CFG_TMPSHAREDDIR
-from invenio.shellutils import run_shell_command
-from invenio.bibtask import task_low_level_submission
-from invenio.bibdocfile import BibRecDocs
-from invenio.search_engine import perform_request_search
+
+
+try:
+    from invenio.errorlib import register_exception
+except ImportError:
+    register_exception = lambda a, b: True
+
+try:
+    from invenio.config import CFG_TMPSHAREDDIR
+except ImportError:
+    from distutils.sysconfig import get_python_lib
+    CFG_TMPSHAREDDIR = join(get_python_lib(),
+                            "harvestingkit",
+                            "tmp")
+
+from harvestingkit.utils import run_shell_command
+
 from harvestingkit.scoap3utils import (
     create_logger,
     MissingFFTError,
@@ -216,8 +227,9 @@ class ElsevierPackage(object):
             message += " does not contain an si510 or si520 issue.xml file"
             self.logger.error(message)
             raise ValueError(message)
-        command = "xmllint --format --loaddtd " + join(path, 'issue.xml')
-        command += " --output " + join(path, 'resolved_issue.xml')
+        command = ["xmllint", "--format", "--loaddtd",
+                   join(path, 'issue.xml'),
+                   "--output", join(path, 'resolved_issue.xml')]
         dummy, dummy, cmd_err = run_shell_command(command)
         if cmd_err:
             message = "Error in cleaning %s: %s" % (
@@ -247,8 +259,9 @@ class ElsevierPackage(object):
             message += "does not contain an si520 or si501 main.xml file"
             self.logger.error(message)
             raise ValueError(message)
-        command = "xmllint --format --loaddtd " + join(path, 'main.xml')
-        command += " --output " + join(path, 'resolved_main.xml')
+        command = ["xmllint", "--format", "--loaddtd",
+                   join(path, 'main.xml'),
+                   "--output", join(path, 'resolved_main.xml')]
         dummy, dummy, cmd_err = run_shell_command(command)
         if cmd_err:
             message = "Error in cleaning %s: %s" % (
@@ -734,6 +747,7 @@ class ElsevierPackage(object):
             raise
 
     def get_pdfa_record(self, path=None):
+        from invenio.search_engine import perform_request_search
         xml_doc = self.get_article(path)
         rec = create_record()
         dummy, dummy, dummy, dummy, dummy, dummy, dummy,\
@@ -769,6 +783,7 @@ class ElsevierPackage(object):
 
         ## copy other formats to bibupload file
         if recid:
+            from invenio.bibdocfile import BibRecDocs
             record = BibRecDocs(recid[0])
             for bibfile in record.list_latest_files():
                 if bibfile.get_format() != '.pdf;pdfa':
@@ -954,12 +969,14 @@ class ElsevierPackage(object):
 
             record_add_field(rec, '773', subfields=subfields)
             if not no_pdf:
+                from invenio.search_engine import perform_request_search
                 query = '0247_a:"%s" AND NOT 980:DELETED"' % (doi,)
                 prev_version = perform_request_search(p=query)
 
                 old_pdf = False
 
                 if prev_version:
+                    from invenio.bibdocfile import BibRecDocs
                     prev_rec = BibRecDocs(prev_version[0])
                     try:
                         pdf_path = prev_rec.get_bibdoc('main')
@@ -1011,6 +1028,7 @@ class ElsevierPackage(object):
             return ""
 
     def bibupload_it(self):
+        from invenio.bibtask import task_low_level_submission
         print(self.found_articles)
         if self.found_articles:
             if [x for x in self.found_articles if "vtex" not in x]:

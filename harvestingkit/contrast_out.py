@@ -34,15 +34,28 @@ try:
 except ImportError:
     pass
 
-from invenio.config import (CFG_TMPSHAREDDIR, CFG_PREFIX)
+
+try:
+    from invenio.config import CFG_TMPSHAREDDIR
+except ImportError:
+    from distutils.sysconfig import get_python_lib
+    CFG_TMPSHAREDDIR = join(get_python_lib(),
+                            "harvestingkit",
+                            "tmp")
 
 try:
     from invenio.config import CFG_CONTRASTOUT_DOWNLOADDIR
 except ImportError:
-    CFG_CONTRASTOUT_DOWNLOADDIR = join(CFG_PREFIX, "var", "data",
+    from distutils.sysconfig import get_python_lib
+    CFG_CONTRASTOUT_DOWNLOADDIR = join(get_python_lib(),
+                                       'harvestingkit'
+                                       "var", "data",
                                        "scoap3", "elsevier")
 
-from invenio.errorlib import register_exception
+try:
+    from invenio.errorlib import register_exception
+except ImportError:
+    register_exception = lambda a=1, b=2: True
 
 from .ftp_utils import FtpHandler
 from .scoap3utils import (NoNewFiles,

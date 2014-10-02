@@ -16,7 +16,12 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+import os
 import unittest
+import httpretty
+import tempfile
+
 from harvestingkit.utils import (record_add_field,
                                  create_record,
                                  format_arxiv_id,
@@ -24,7 +29,9 @@ from harvestingkit.utils import (record_add_field,
                                  fix_journal_name,
                                  escape_for_xml,
                                  fix_name_capitalization,
-                                 fix_dashes)
+                                 fix_dashes,
+                                 download_file,
+                                 run_shell_command)
 from harvestingkit.tests import journal_mappings
 
 
@@ -91,10 +98,29 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(escape_for_xml("asdasdsa < 2 A"), "asdasdsa &lt; 2 A")
 
     def test_fix_dashes(self):
-        self.assertEqual(fix_dashes("A–A"), "A-A")
-        self.assertEqual(fix_dashes('-–'), '-')
-        self.assertEqual(fix_dashes('––'), '-')
-        self.assertEqual(fix_dashes('–––'), '-')
+        self.assertEqual(fix_dashes(u"A–A"), "A-A")
+        self.assertEqual(fix_dashes(u'-–'), '-')
+        self.assertEqual(fix_dashes(u'––'), '-')
+        self.assertEqual(fix_dashes(u'–––'), '-')
+
+    @httpretty.activate
+    def test_download_file(self):
+        """Test if download_file works."""
+        httpretty.register_uri(
+            httpretty.GET,
+            "http://example.com/test.txt",
+            body="Lorem ipsum\n",
+            status=200
+        )
+        file_fd, file_name = tempfile.mkstemp()
+        os.close(file_fd)
+        download_file("http://example.com/test.txt", file_name)
+        self.assertEqual("Lorem ipsum\n", open(file_name).read())
+
+    def test_run_shell(self):
+        """Test if run_shell_command works."""
+        code, out, err = run_shell_command(["echo 'hello world'"])
+        self.assertEqual(out, "hello world\n")
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(UtilsTests)

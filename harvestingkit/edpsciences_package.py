@@ -30,10 +30,20 @@ from harvestingkit.utils import (collapse_initials,
                                  fix_journal_name,
                                  record_add_field,
                                  create_record,
-                                 record_xml_output)
+                                 record_xml_output,
+                                 download_file)
 from xml.dom.minidom import (parse,
                              parseString)
 from harvestingkit.jats_package import JatsPackage
+
+try:
+    from invenio.config import CFG_EDPSCIENCE_OUT_FOLDER
+except ImportError:
+    from distutils.sysconfig import get_python_lib
+
+    CFG_EDPSCIENCE_OUT_FOLDER = join(get_python_lib(),
+                                     "harvestingkit",
+                                     "edpsciences")
 
 
 class EDPSciencesPackage(JatsPackage):
@@ -447,36 +457,24 @@ class EDPSciencesPackage(JatsPackage):
                 record_add_field(rec, '856', ind1='4',
                                  subfields=[('u', link_to_pdf),
                                             ('y', 'EDP Sciences server')])
+                out_folder = join(CFG_EDPSCIENCE_OUT_FOLDER,
+                                  "fulltexts")
                 try:
-                    from invenio.filedownloadutils import (
-                        download_url, InvenioFileDownloadError
-                    )
-                    from invenio.config import CFG_EDPSCIENCE_OUT_FOLDER
-                    try:
+                    makedirs(out_folder)
+                    filename = join(out_folder,
+                                    link_to_pdf.split('/')[-1])
+                except (IOError, OSError):
+                    # Problem creating folder
+                    filename = None
 
-                        out_folder = join(CFG_EDPSCIENCE_OUT_FOLDER,
-                                          "fulltexts")
-                        try:
-                            makedirs(out_folder)
-                            filename = join(out_folder,
-                                            link_to_pdf.split('/')[-1])
-                        except (IOError, OSError):
-                            # Problem creating folder
-                            filename = None
+                filename = download_file(from_url=link_to_pdf,
+                                         to_filename=filename,
+                                         retry_count=5)
+                record_add_field(rec, 'FFT',
+                                 subfields=[('a', filename),
+                                            ('t', 'INSPIRE-PUBLIC'),
+                                            ('d', 'Fulltext')])
 
-                        filename = download_url(link_to_pdf,
-                                                content_type="pdf",
-                                                download_to_file=filename,
-                                                retry_count=5,
-                                                timeout=60.0)
-                        record_add_field(rec, 'FFT',
-                                         subfields=[('a', filename),
-                                                    ('t', 'INSPIRE-PUBLIC'),
-                                                    ('d', 'Fulltext')])
-                    except InvenioFileDownloadError as e:
-                        print(e)
-                except ImportError:
-                    pass
 
 
 if __name__ == '__main__':

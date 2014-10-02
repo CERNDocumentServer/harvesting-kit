@@ -22,7 +22,6 @@ Basic config for Harvesting Kit.
 """
 
 import os
-from sys import executable
 
 try:
     from invenio.config import CFG_ETCDIR
@@ -40,8 +39,7 @@ def _get_config_environment_variable():
 
 
 def _get_current_virtualenv():
-    path = executable.split(os.sep)
-    return os.sep.join(path[:-2])
+    return os.environ.get("VIRTUAL_ENV", "")
 
 
 CFG_DTDS_PATH = os.path.join(CFG_ETCDIR, 'harvestingdtds')

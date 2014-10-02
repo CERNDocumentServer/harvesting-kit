@@ -24,7 +24,10 @@ from harvestingkit.utils import (format_arxiv_id,
                                  record_xml_output,
                                  create_record,
                                  add_nations_field)
-from invenio.errorlib import register_exception
+try:
+    from invenio.errorlib import register_exception
+except ImportError:
+    register_exception = lambda a=1, b=2: True
 from harvestingkit.scoap3utils import MissingFFTError
 from os import pardir
 from os.path import (join,

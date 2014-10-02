@@ -16,7 +16,11 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
 import re
+import requests
+import subprocess
+
 from xml.dom.minidom import Document, parseString
 from xml.parsers.expat import ExpatError
 from unidecode import unidecode
@@ -287,3 +291,25 @@ def fix_dashes(string):
     string = string.replace(u'\u2E3B', '-')
     string = unidecode(string)
     return re.sub(r'--+', '-', string)
+
+
+def download_file(from_url, to_filename, chunk_size=1024 * 8, retry_count=3):
+    """Download URL to a file."""
+    session = requests.Session()
+    adapter = requests.adapters.HTTPAdapter(max_retries=retry_count)
+    session.mount(from_url, adapter)
+    response = session.get(from_url, stream=True)
+    with open(to_filename, 'wb') as fd:
+        for chunk in response.iter_content(chunk_size):
+            fd.write(chunk)
+    return to_filename
+
+
+def run_shell_command(commands, **kwargs):
+    """Run a shell command."""
+    p = subprocess.Popen(commands, shell=True,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE,
+                         **kwargs)
+    output, error = p.communicate()
+    return p.returncode, output, error
