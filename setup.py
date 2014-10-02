@@ -27,7 +27,7 @@ try:
     from invenio.config import CFG_PYLIBDIR
 except ImportError:
     CFG_PYLIBDIR = os.path.join(os.environ.get(
-        "VIRTUAL_ENV", "/tmp"), "/lib/python/"
+        "VIRTUAL_ENV", "/tmp"), "lib/python/"
     )
 
 

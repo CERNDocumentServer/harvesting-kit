@@ -28,7 +28,7 @@ try:
     from invenio.config import CFG_ETCDIR
 except ImportError:
     CFG_ETCDIR = os.path.join(os.environ.get(
-        "VIRTUAL_ENV", "/tmp"), "/etc/harvestingkit/"
+        "VIRTUAL_ENV", "/tmp"), "etc/harvestingkit/"
     )
 
 
