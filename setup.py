@@ -52,6 +52,7 @@ setup(name="HarvestingKit",
                    "with Invenio Software."),
       license="GPLv2",
       url="https://github.com/inspirehep/harvesting-kit",
+      test_suite="harvestingkit.tests",
       entry_points='''
       [console_scripts]
       harvestingkit_cli = harvestingkit.harvestingkit_cli:main
