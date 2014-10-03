@@ -461,8 +461,11 @@ class ElsevierPackage(object):
         return tmp
 
     def _affiliation_from_sa_field(self, affiliation):
-        sa_affiliation = affiliation.getElementsByTagName('sa:affiliation')[0]
-        return xml_to_text(sa_affiliation, ', ')
+        sa_affiliation = affiliation.getElementsByTagName('sa:affiliation')
+        if sa_affiliation:
+            return xml_to_text(sa_affiliation[0], ', ')
+        else:
+            return ""
 
     def _find_affiliations(self, xml_doc, doi):
         try:
