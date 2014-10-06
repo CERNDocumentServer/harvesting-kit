@@ -42,7 +42,7 @@ def xml_to_text(xml, delimiter=' ', tag_to_remove=None):
             return ''
 
     if xml.nodeType == xml.TEXT_NODE:
-        return xml.wholeText.encode('utf-8').strip().strip(',')
+        return xml.wholeText.encode('utf-8').strip()
     elif 'mml:' in xml.nodeName:
         return xml.toxml().replace('mml:', '').replace('xmlns:mml', 'xmlns').encode('utf-8')
     elif xml.hasChildNodes():

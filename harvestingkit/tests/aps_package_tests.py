@@ -63,7 +63,10 @@ class APSPackageTests(unittest.TestCase):
         self.assertEqual(self.aps._get_authors(), authors)
 
     def test_affiliations(self):
-        affiliations = {u'a1': 'INFN Sezione di Catania and Dipartimento di Fisica e Astronomia, Universit\xc3\xa1 di Catania , Via Santa Sofia 64, 95123 Catania, Italy', u'a3': 'Center for the Study of Complex Systems, University of Michigan , Ann Arbor, Michigan 48109, USA', u'a2': 'Department of Electrical Engineering and Computer Science, University of Michigan , Ann Arbor, Michigan 48109, USA'}
+        affiliations = {
+            u'a1': 'INFN Sezione di Catania and Dipartimento di Fisica e Astronomia, Universit\xc3\xa1 di Catania , Via Santa Sofia 64, 95123 Catania, Italy',
+            u'a3': 'Center for the Study of Complex Systems, University of Michigan , Ann Arbor, Michigan 48109, USA',
+            u'a2': 'Department of Electrical Engineering and Computer Science, University of Michigan , Ann Arbor, Michigan 48109, USA'}
         self.assertEqual(self.aps._get_affiliations(), affiliations)
 
     def test_author_emails(self):

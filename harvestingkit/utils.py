@@ -18,11 +18,11 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 import re
+import htmlentitydefs
 import requests
 import subprocess
 
-from xml.dom.minidom import Document, parseString
-from xml.parsers.expat import ExpatError
+from lxml import etree
 from unidecode import unidecode
 
 NATIONS_DEFAULT_MAP = {"Algeria": "Algeria",
@@ -155,55 +155,91 @@ NATIONS_DEFAULT_MAP = {"Algeria": "Algeria",
 
 
 def create_record():
-    doc = Document()
-    record = doc.createElement('record')
-    return record
+    """Return a new XML document."""
+    return etree.Element("record")
 
 
 def record_add_field(rec, tag, ind1='', ind2='', subfields=[],
                      controlfield_value=''):
-    doc = Document()
-    datafield = doc.createElement('datafield')
-    datafield.setAttribute('tag', tag)
-    datafield.setAttribute('ind1', ind1)
-    datafield.setAttribute('ind2', ind2)
-    for subfield in subfields:
-        field = doc.createElement('subfield')
-        field.setAttribute('code', subfield[0])
-        ## In order to be parsed it needs to a propper XML
-        data = "<dummy>" + escape_for_xml(subfield[1]) + "</dummy>"
-        try:
-            data = parseString(data).firstChild
-            for child in data.childNodes:
-                field.appendChild(child.cloneNode(child))
-        except ExpatError:
-            field.appendChild(doc.createTextNode(str(subfield[1])))
-        datafield.appendChild(field)
+    """Add a MARCXML datafield as a new child to a XML document."""
     if controlfield_value:
-        controlfield = doc.createElement('controlfield')
-        controlfield.setAttribute('tag', tag)
-        controlfield.appendChild(doc.createTextNode(str(controlfield_value)))
-        rec.appendChild(controlfield)
+        doc = etree.Element("controlfield",
+                            attrib={
+                                "tag": tag,
+                            })
+        doc.text = controlfield_value
     else:
-        rec.appendChild(datafield)
+        doc = etree.Element("datafield",
+                            attrib={
+                                "tag": tag,
+                                "ind1": ind1,
+                                "ind2": ind2,
+                            })
+        for code, value in subfields:
+            field = etree.SubElement(doc, "subfield", attrib={"code": code})
+            try:
+                # In order to be parsed it needs to be proper XML
+                parse_value = "<dummy>{0}</dummy>".format(escape_for_xml(value))
+                sub_tree = etree.fromstring(parse_value)
+                field.append(sub_tree)
+            except etree.XMLSyntaxError:
+                # Not sub XML
+                field.text = value
+    rec.append(doc)
     return rec
 
 
-def record_xml_output(rec):
-    ret = rec.toxml()
-    ret = ret.replace('</datafield>', '  </datafield>\n')
-    ret = re.sub(r'<datafield(.*?)>', r'  <datafield\1>\n', ret)
-    ret = ret.replace('</subfield>', '</subfield>\n')
-    ret = ret.replace('<subfield', '    <subfield')
-    ret = ret.replace('record>', 'record>\n')
-    return ret
+def record_xml_output(rec, pretty=True):
+    """Given a document, return XML prettified."""
+    # FIXME: make the dummy stuff go away - so far it works!(tm) tho
+    ret = etree.tostring(rec, xml_declaration=False).replace("<dummy>", "").replace("</dummy>", "")
+
+    if pretty:
+        # We are doing our own prettyfication as etree pretty_print is too insane.
+        ret = ret.replace('</datafield>', '  </datafield>\n')
+        ret = re.sub(r'<datafield(.*?)>', r'  <datafield\1>\n', ret)
+        ret = ret.replace('</subfield>', '</subfield>\n')
+        ret = ret.replace('<subfield', '    <subfield')
+        ret = ret.replace('record>', 'record>\n')
+
+    # First we bring back most entities, but not &amp; and friends.
+    return unescape(ret)
 
 
 def escape_for_xml(data):
-    """Transform & to XML valid &amp;."""
+    """Transform & and < to XML valid &amp; and &lt."""
     data = re.sub("&(?!(amp|lt|gt);)", "&amp;", data)
     data = re.sub("<(?=[\=\d\.\s])", "&lt;", data)
     return data
+
+
+def unescape(text):
+    """Remove HTML or XML character references and entities from a text string.
+
+    NOTE: Does not remove &amp; &lt; and &gt;.
+
+    @param text The HTML (or XML) source text.
+    @return The plain text, as a Unicode string, if necessary.
+    """
+    def fixup(m):
+        text = m.group(0)
+        if text[:2] == "&#":
+            # character reference
+            try:
+                if text[:3] == "&#x":
+                    return unichr(int(text[3:-1], 16))
+                else:
+                    return unichr(int(text[2:-1]))
+            except ValueError:
+                pass
+        elif text[1:-1] not in ("gt", "lt", "amp"):
+            # named entity
+            try:
+                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
+            except KeyError:
+                pass
+        return text  # leave as is
+    return re.sub("&#?\w+;", fixup, text)
 
 
 def format_arxiv_id(arxiv_id, INSPIRE=False):
@@ -242,6 +278,8 @@ def fix_name_capitalization(lastname, givennames):
 def fix_journal_name(journal, knowledge_base):
     """ Converts journal name to Inspire's short form """
     if not journal:
+        return '', ''
+    if not knowledge_base:
         return '', ''
     if len(journal) < 2:
         return journal, ''
