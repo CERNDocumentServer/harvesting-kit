@@ -31,7 +31,8 @@ from harvestingkit.utils import (record_add_field,
                                  fix_name_capitalization,
                                  fix_dashes,
                                  download_file,
-                                 run_shell_command)
+                                 run_shell_command,
+                                 record_xml_output)
 from harvestingkit.tests import journal_mappings
 
 
@@ -42,7 +43,7 @@ class UtilsTests(unittest.TestCase):
                 u' the six-vertex model and its higher spin generalizations.'
                 u' In [1] we derived a new expression for the higher spin R'
                 u' -matrix associated with the affine quantum algebra '
-                u'<math altimg="si1.gif" xmlns="http://www.w3.org/1998/Math/MathML">'
+                u'<math xmlns="http://www.w3.org/1998/Math/MathML" altimg="si1.gif">'
                 u'<msub><mrow><mi>U</mi></mrow><mrow><mi>q</mi></mrow></msub>'
                 u'<mo stretchy="false">(</mo><mover accent="true"><mrow><mrow>'
                 u'<mi mathvariant="italic">sl</mi></mrow><mo stretchy="false">'
@@ -56,7 +57,7 @@ class UtilsTests(unittest.TestCase):
         data = (u"<record><datafield ind1=\"\" ind2=\"\" tag=\"520\">"
                 u"<subfield code=\"a\">") + data
         data += u"</subfield></datafield></record>"
-        self.assertEqual(rec.toxml(), data)
+        self.assertEqual(record_xml_output(rec, pretty=False), data)
 
     def test_record_add_field_fallback(self):
         rec = create_record()
@@ -64,7 +65,7 @@ class UtilsTests(unittest.TestCase):
         data = (u"<record><datafield ind1=\"\" ind2=\"\" tag=\"035\">"
                 u"<subfield code=\"a\">"
                 u"&lt;arXiv:1234.1242&gt;</subfield></datafield></record>")
-        self.assertEqual(rec.toxml(), data)
+        self.assertEqual(record_xml_output(rec, pretty=False), data)
 
     def test_format_arxiv_id(self):
         self.assertEqual(format_arxiv_id("arXiv:1312.1300"), "arXiv:1312.1300")
