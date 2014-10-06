@@ -1,5 +1,6 @@
-BeautifulSoup4
-unidecode
-argcomplete
-requests
-httpretty
+beautifulsoup4==4.3.2
+Unidecode==0.04.14
+argcomplete==0.8.0
+httpretty==0.8.3
+lxml==3.1.2
+requests==2.2.0
