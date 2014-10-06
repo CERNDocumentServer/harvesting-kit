@@ -453,16 +453,17 @@ class ElsevierPackage(object):
 
     def _find_affiliations(self, xml_doc, doi):
         try:
-            return {aff.getAttribute("id").encode('utf-8'):
-                    self._affiliation_from_sa_field(aff)
-                    for aff in xml_doc.getElementsByTagName("ce:affiliation")}
+            return dict((aff.getAttribute("id").encode('utf-8'),
+                        self._affiliation_from_sa_field(aff))
+                        for aff in xml_doc.getElementsByTagName("ce:affiliation"))
         except IndexError:
             message = "Elsevier paper: {0} is missing sa:affiliation."
             register_exception(alert_admin=True, prefix=message.format(doi))
-            return {aff.getAttribute("id").encode('utf-8'):
-                    re.sub(r'^(\d+\ ?)', "",
-                           get_value_in_tag(aff, "ce:textfn"))
-                    for aff in xml_doc.getElementsByTagName("ce:affiliation")}
+            return dict((aff.getAttribute("id").encode('utf-8'),
+                        re.sub(r'^(\d+\ ?)',
+                               "",
+                               get_value_in_tag(aff, "ce:textfn")))
+                        for aff in xml_doc.getElementsByTagName("ce:affiliation"))
 
     def _add_affiliations_to_author(self, author, affs):
         if affs:
