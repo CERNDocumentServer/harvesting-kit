@@ -28,7 +28,10 @@ import time
 
 from tarfile import TarFile
 from zipfile import ZipFile
-from invenio.errorlib import register_exception
+try:
+    from invenio.errorlib import register_exception
+except ImportError:
+    register_exception = lambda a=1, b=2: True
 
 from os.path import join
 
