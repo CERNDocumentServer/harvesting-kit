@@ -17,21 +17,9 @@
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-import os
-
 from setuptools import setup, find_packages
 
 from harvestingkit.config import CFG_DTDS_PATH
-
-try:
-    from invenio.config import CFG_PYLIBDIR
-except ImportError:
-    CFG_PYLIBDIR = os.path.join(os.environ.get(
-        "VIRTUAL_ENV", "/tmp"), "lib/python/"
-    )
-
-
-bibtasklet_path = os.path.join(CFG_PYLIBDIR, 'invenio', 'bibsched_tasklets')
 
 with open('requirements.txt', 'r') as req:
     requirements = req.readlines()
@@ -40,10 +28,7 @@ setup(name="HarvestingKit",
       version="0.1",
       packages=find_packages(),
       package_data={'': ['data/*.xml']},
-      data_files=[(bibtasklet_path, ["bibtasklets/bst_elsevier.py",
-                                     "bibtasklets/bst_oxford.py",
-                                     "bibtasklets/bst_springer.py"]),
-                  (CFG_DTDS_PATH, ["dtds/ja5_art501.zip",
+      data_files=[(CFG_DTDS_PATH, ["dtds/ja5_art501.zip",
                                    "dtds/ja5_art510.zip",
                                    "dtds/ja5_art520.zip",
                                    "dtds/si510.zip",
