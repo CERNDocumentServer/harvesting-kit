@@ -17,6 +17,9 @@
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
+"""Kit of tools to convert publisher XML (NLM/JATS) to MARCXML."""
+
+
 from setuptools import setup, find_packages
 
 from harvestingkit.config import CFG_DTDS_PATH
@@ -25,7 +28,7 @@ with open('requirements.txt', 'r') as req:
     requirements = req.readlines()
 
 setup(name="HarvestingKit",
-      version="0.1",
+      version="0.2.0",
       packages=find_packages(),
       package_data={'': ['data/*.xml']},
       data_files=[(CFG_DTDS_PATH, ["dtds/ja5_art501.zip",
@@ -39,8 +42,7 @@ setup(name="HarvestingKit",
       install_requires=requirements,
       author="CERN",
       author_email="admin@inspirehep.net",
-      description=("Kit containing scripts and utils for harvesting ",
-                   "with Invenio Software."),
+      description=__doc__,
       license="GPLv2",
       url="https://github.com/inspirehep/harvesting-kit",
       test_suite="harvestingkit.tests",
