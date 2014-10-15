@@ -116,6 +116,16 @@ class JATSParser(object):
             print >> sys.stdout, "Can't find DOI."
         return ret
 
+    def _get_orcid(self, xml_author):
+        try:
+            contrib_id = xml_author.getElementsByTagName('contrib-id')[0]
+            if contrib_id.getAttribute('contrib-id-type') == 'orcid':
+                orcid_raw = xml_to_text(contrib_id)
+                pattern = '\d\d\d\d-\d\d\d\d-\d\d\d\d-\d\d\d[\d|X]'
+                return re.search(pattern, orcid_raw).group()
+        except (IndexError, AttributeError):
+            return None
+
     def get_authors(self, xml):
         authors = []
         for author in xml.getElementsByTagName("contrib"):
@@ -133,10 +143,10 @@ class JATSParser(object):
                 tmp["given_name"] = given_name.replace('\n', ' ')
             if not surname and not given_name:
                 tmp["name"] = get_value_in_tag(author, "string-name")
-            # It's not there
-            # orcid = author.getAttribute('orcid').encode('utf-8')
-            # if orcid:
-            #     tmp["orcid"] = orcid
+            # It's not there yet
+            orcid = self._get_orcid(author)
+            if orcid:
+                tmp["orcid"] = 'ORCID:{0}'.format(orcid)
 
             # cross_refs = author.getElementsByTagName("ce:cross-ref")
             # if cross_refs:

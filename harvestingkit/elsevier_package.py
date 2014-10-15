@@ -534,6 +534,15 @@ class ElsevierPackage(object):
                 self._add_group_affiliation(author, xml_author)
             self._add_global_affiliation(author, xml_author)
 
+    def _add_orcids(self, authors, xml_authors):
+        for author, xml_author in zip(authors, xml_authors):
+            try:
+                orcid = xml_author.getAttribute('orcid')
+                if orcid:
+                    author['orcid'] = 'ORCID:{0}'.format(orcid)
+            except IndexError:
+                continue
+
     def get_authors(self, xml_doc):
             xml_authors = xml_doc.getElementsByTagName("ce:author")
             authors = [self._author_dic_from_xml(author) for author
@@ -543,6 +552,8 @@ class ElsevierPackage(object):
 
             self._add_affiliations(authors, xml_authors,
                                    self._find_affiliations(xml_doc, doi))
+
+            self._add_orcids(authors, xml_authors)
 
             return authors
 
