@@ -18,7 +18,7 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 import unittest
 from harvestingkit.elsevier_package import ElsevierPackage
-from xml.dom.minidom import parse
+from xml.dom.minidom import parse, Element
 from os.path import (join,
                      dirname)
 from harvestingkit.tests import (__file__ as folder,
@@ -55,8 +55,23 @@ class ElsevierPackageTests(unittest.TestCase):
         keywords = ['Heavy quarkonia', 'Quark gluon plasma', 'Mott effect', 'X(3872)']
         self.assertEqual(self.els.get_keywords(self.document), keywords)
 
+    def test_add_orcids(self):
+        """
+        According to "Tag by Tag The Elsevier DTD 5 Family of XML DTDs" orcids will be 
+        distributed as an attribute in the ce:author tag.
+        """
+        xml_author = Element('ce:author')
+        xml_author.setAttribute('orcid' , '1234-5678-4321-8765')
+        authors = [{}]
+
+        # _add_orcids will alter the authors list
+        self.els._add_orcids(authors, [xml_author])
+
+        self.assertEqual(authors, [{'orcid': 'ORCID:1234-5678-4321-8765'}])
+
+
     def test_authors(self):
-        authors = [{'affiliation': ['Lyman Laboratory of Physics, Harvard University, Cambridge, MA 02138, USA'], 'surname': 'Vafa', 'given_name': 'Cumrun'}]
+        authors = [{'affiliation': ['Lyman Laboratory of Physics, Harvard University, Cambridge, MA 02138, USA'], 'surname': 'Vafa', 'given_name': 'Cumrun', 'orcid': 'ORCID:1234-5678-4321-8765'}]
         self.assertEqual(self.els.get_authors(self.document), authors)
 
     def test_copyritght(self):
