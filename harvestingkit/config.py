@@ -47,6 +47,7 @@ CFG_DTDS_PATH = os.path.join(CFG_ETCDIR, 'harvestingdtds')
 CFG_POSSIBLE_CONFIG_PATHS = [_get_config_environment_variable(),
                              (_get_current_virtualenv()
                               + '/var/harvestingkit/user_config.cfg'),
+                             '/usr/var/harvestingkit/user_config.cfg',
                              '/etc/harvestingkit/user_config.cfg']
 CFG_CONFIG_PATH = '../user_config.cfg'
 
