@@ -121,20 +121,19 @@ class APPParser(object):
         return authors
 
     def get_publication_date(self, xml):
-        article_info = xml.getElementsByTagName("ArticleInfo")[0]
-        article_history = article_info.getElementsByTagName("ArticleHistory")[0]
-        online_date = article_history.getElementsByTagName("OnlineDate")
-        if online_date:
-            online_date = online_date[0]
-            year = get_value_in_tag(online_date, "Year")
-            month = get_value_in_tag(online_date, "Month")
-            day = get_value_in_tag(online_date, "Day")
-            try:
+        try:
+            article_info = xml.getElementsByTagName("ArticleInfo")[0]
+            article_history = article_info.getElementsByTagName("ArticleHistory")[0]
+            online_date = article_history.getElementsByTagName("OnlineDate")
+            if online_date:
+                online_date = online_date[0]
+                year = get_value_in_tag(online_date, "Year")
+                month = get_value_in_tag(online_date, "Month")
+                day = get_value_in_tag(online_date, "Day")
                 return "%04d-%02d-%02d" % (int(year), int(month), int(day))
-            except Exception, err:
-                print >> sys.stderr, "Can't reliably extract the publication date: %s" % err
-                return ""
-        return err
+        except Exception, err:
+            print >> sys.stderr, "Can't reliably extract the publication date: %s" % err
+            return ""
 
     def get_abstract(self, xml):
         try:
