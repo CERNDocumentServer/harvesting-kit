@@ -151,6 +151,8 @@ class SpringerPackage(object):
 
                 try:
                     self.ftp.download(filename, CFG_TAR_FILES)
+                    self.packages_delivery.append((filename[0:-4],
+                                                   datetime.now()))
                 except:
                     self.logger.error("Error downloading tar file: %s"
                                       % (filename,))
@@ -170,6 +172,9 @@ class SpringerPackage(object):
         self.logger = create_logger("Springer")
 
         self.config = load_config(CFG_CONFIG_PATH, {'SPRINGER': []})
+
+        self.packages_delivery = []
+        self.doi_package_name_mapping = []
 
         if not path and package_name:
             self.logger.info("Got package: %s" % (package_name,))
@@ -327,6 +332,15 @@ class SpringerPackage(object):
                                                 publisher=publi,
                                                 collection='SCOAP3',
                                                 logger=self.logger)
+
+                        xml_doc = parser.get_article(path)
+                        doi = parser.get_doi(xml_doc)
+                        package_name = [x for x in path.split('/')
+                                        if 'scoap3_package' in x]
+                        if package_name:
+                            doi_name_map = (package_name[0], doi)
+                            self.doi_package_name_mapping.append(doi_name_map)
+
                         print >> out, rec
                         break
                     print path, i + 1, "out of", len(self.found_articles)
@@ -338,3 +352,4 @@ class SpringerPackage(object):
             out.close()
             task_low_level_submission("bibupload", "admin", "-N",
                                       "Springer", "-i", "-r", name)
+
