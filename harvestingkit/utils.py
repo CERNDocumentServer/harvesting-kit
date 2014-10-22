@@ -345,7 +345,7 @@ def download_file(from_url, to_filename, chunk_size=1024 * 8, retry_count=3):
 
 def run_shell_command(commands, **kwargs):
     """Run a shell command."""
-    p = subprocess.Popen(commands, shell=True,
+    p = subprocess.Popen(commands,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
                          **kwargs)
