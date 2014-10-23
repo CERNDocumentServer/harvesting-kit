@@ -167,7 +167,7 @@ def record_add_field(rec, tag, ind1='', ind2='', subfields=[],
                             attrib={
                                 "tag": tag,
                             })
-        doc.text = controlfield_value
+        doc.text = unicode(controlfield_value)
     else:
         doc = etree.Element("datafield",
                             attrib={
@@ -177,6 +177,7 @@ def record_add_field(rec, tag, ind1='', ind2='', subfields=[],
                             })
         for code, value in subfields:
             field = etree.SubElement(doc, "subfield", attrib={"code": code})
+            value = unicode(value)
             try:
                 # In order to be parsed it needs to be proper XML
                 parse_value = "<dummy>{0}</dummy>".format(escape_for_xml(value))
