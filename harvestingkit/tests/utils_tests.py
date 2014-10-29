@@ -21,6 +21,8 @@ import os
 import unittest
 import httpretty
 import tempfile
+from os.path import (join,
+                     dirname)
 
 from harvestingkit.utils import (record_add_field,
                                  create_record,
@@ -33,7 +35,11 @@ from harvestingkit.utils import (record_add_field,
                                  download_file,
                                  run_shell_command,
                                  record_xml_output)
-from harvestingkit.tests import journal_mappings
+from harvestingkit.tests import (__file__ as folder,
+                                 xmllint,
+                                 xmllint_output,
+                                 xmllint_resources,
+                                 journal_mappings)
 
 
 class UtilsTests(unittest.TestCase):
@@ -120,8 +126,22 @@ class UtilsTests(unittest.TestCase):
 
     def test_run_shell(self):
         """Test if run_shell_command works."""
-        code, out, err = run_shell_command(["echo 'hello world'"])
+        code, out, err = run_shell_command(['echo', 'hello world'])
         self.assertEqual(out, "hello world\n")
+
+    def test_run_shell_for_xmllint(self):
+        """Test if run_shell_command works for xmllint."""
+        command = ['xmllint',
+                   '--format',
+                   '--path',
+                   join(dirname(folder), xmllint_resources),
+                   '--loaddtd',
+                   join(dirname(folder), xmllint)]
+        code, out, err = run_shell_command(command)
+        print code
+        print out
+        print err
+        self.assertEqual(out, open(join(dirname(folder), xmllint_output)).read())
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(UtilsTests)
