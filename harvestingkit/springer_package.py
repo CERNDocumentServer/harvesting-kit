@@ -333,7 +333,7 @@ class SpringerPackage(object):
                                                 collection='SCOAP3',
                                                 logger=self.logger)
 
-                        xml_doc = parser.get_article(path)
+                        xml_doc = parser.get_article(join(path, filename))
                         doi = parser.get_doi(xml_doc)
                         package_name = [x for x in path.split('/')
                                         if 'scoap3_package' in x]
@@ -352,4 +352,3 @@ class SpringerPackage(object):
             out.close()
             task_low_level_submission("bibupload", "admin", "-N",
                                       "Springer", "-i", "-r", name)
-
