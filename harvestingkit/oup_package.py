@@ -21,6 +21,8 @@ from __future__ import print_function
 import sys
 import time
 
+from datetime import datetime
+
 from socket import timeout as socket_timeout_exception
 
 from invenio.bibtask import task_low_level_submission
@@ -135,6 +137,8 @@ class OxfordPackage(object):
                     current_location = join(CFG_TAR_FILES, filename)
                     desired_location = join(CFG_TAR_FILES, prefix + filename)
                     copy(current_location, desired_location)
+                    self.packages_delivery.append((filename[0:-4],
+                                                   datetime.now()))
                     remove(current_location)
                 except:
                     self.logger.error("Error downloading tar file: %s"
@@ -159,6 +163,9 @@ class OxfordPackage(object):
         self.logger = create_logger("Oxford")
 
         self.config = load_config(CFG_CONFIG_PATH, {'OXFORD': []})
+
+        self.packages_delivery = []
+        self.doi_package_name_mapping = []
 
         if not path and package_name:
             self.logger.info("Got package: %s" % (package_name,))
@@ -256,6 +263,14 @@ class OxfordPackage(object):
                                                 collection='SCOAP3',
                                                 logger=self.logger),
                           file=out)
+
+                    xml_doc = nlm_parser.get_article(path)
+                    doi = nlm_parser.get_doi(xml_doc)
+                    package_name = [x for x in path.split('/')
+                                    if 'ptep_iss' in x]
+                    if package_name:
+                        self.doi_package_name_mapping.append((package_name[0],
+                                                              doi))
                 except Exception as err:
                     print >> sys.stderr, err
                     raise Exception
