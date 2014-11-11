@@ -37,6 +37,16 @@ class APPParser(object):
         self.references = None
         self.extract_nations = extract_nations
 
+    def get_doi(self, xml):
+        doi = ""
+        try:
+            doi = get_value_in_tag(xml, "ArticleDOI")
+            if not doi:
+                print >> sys.stderr, "DOI not found"
+        except Exception, err:
+            print >> sys.stderr, "Can't find doi: %s" % err
+        return doi
+
     def get_article(self, path):
         return parse(open(path))
 
@@ -47,13 +57,7 @@ class APPParser(object):
             print >> sys.stderr, "Can't find title"
 
     def get_publication_information(self, xml):
-        try:
-            doi = get_value_in_tag(xml, "ArticleDOI")
-            if not doi:
-                raise ValueError("DOI not found")
-        except Exception, err:
-            print >> sys.stderr, "Can't find doi: %s" % err
-            raise
+        doi = self.get_doi(xml)
         #journal, issn, volume, issue, first_page, last_page, year
         journal = get_value_in_tag(xml, "JournalAbbreviatedTitle")
         if journal == 'J. High Energ. Phys.':
