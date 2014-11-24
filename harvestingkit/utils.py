@@ -281,7 +281,7 @@ def fix_journal_name(journal, knowledge_base):
     if not journal:
         return '', ''
     if not knowledge_base:
-        return '', ''
+        return journal, ''
     if len(journal) < 2:
         return journal, ''
     volume = ''
@@ -330,6 +330,18 @@ def fix_dashes(string):
     string = string.replace(u'\u2E3B', '-')
     string = unidecode(string)
     return re.sub(r'--+', '-', string)
+
+
+def fix_title_capitalization(title):
+    words = []
+    for word in title.split():
+        if word.upper() != word:
+            words.append(word)
+        else:
+            words.append(word.lower())
+    title = " ".join(words)
+    title = title[0].upper() + title[1:]
+    return title
 
 
 def download_file(from_url, to_filename, chunk_size=1024 * 8, retry_count=3):

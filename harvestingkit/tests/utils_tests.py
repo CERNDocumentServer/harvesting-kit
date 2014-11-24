@@ -34,7 +34,8 @@ from harvestingkit.utils import (record_add_field,
                                  fix_dashes,
                                  download_file,
                                  run_shell_command,
-                                 record_xml_output)
+                                 record_xml_output,
+                                 fix_title_capitalization)
 from harvestingkit.tests import (__file__ as folder,
                                  xmllint,
                                  xmllint_output,
@@ -109,6 +110,10 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(fix_dashes(u'-–'), '-')
         self.assertEqual(fix_dashes(u'––'), '-')
         self.assertEqual(fix_dashes(u'–––'), '-')
+
+    def test_fix_title_capitalization(self):
+        self.assertEqual(fix_title_capitalization(u"A TITLE"), "A title")
+        self.assertEqual(fix_title_capitalization(u"a title"), "A title")
 
     @httpretty.activate
     def test_download_file(self):
