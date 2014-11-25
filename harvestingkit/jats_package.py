@@ -248,7 +248,7 @@ class JatsPackage(object):
         for tag in self.document.getElementsByTagName('kwd-group'):
             if tag.getAttribute('kwd-group-type') != 'pacs':
                 for kwd in tag.getElementsByTagName('kwd'):
-                    keywords.append(kwd.firstChild.data)
+                    keywords.append(xml_to_text(kwd))
         return keywords
 
     def _add_authors(self, rec):
