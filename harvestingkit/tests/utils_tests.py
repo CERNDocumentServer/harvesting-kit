@@ -89,6 +89,7 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(fix_name_capitalization("NORTON", ["EDWARD"]), ("Norton", "Edward"))
         self.assertEqual(fix_name_capitalization("NORTON", ["E.", "A.", "S."]), ("Norton", "E. A. S."))
         self.assertEqual(fix_name_capitalization("EL-NORTON", ["EDWARD"]), ("El-Norton", "Edward"))
+        self.assertEqual(fix_name_capitalization("VAN ASSCHE", ["WALTER"]), ("Van Assche", "Walter"))
 
     def test_fix_journal_name(self):
         self.assertEqual(fix_journal_name("A&A", journal_mappings), ('Astron.Astrophys.', ""))

@@ -267,6 +267,12 @@ def fix_name_capitalization(lastname, givennames):
         names = lastname.split('-')
         names = map(lambda a: a[0] + a[1:].lower(), names)
         lastname = '-'.join(names)
+    elif len(lastname.split()) > 1:
+        lastnames = lastname.split()
+        corrections = []
+        for lastname in lastnames:
+            corrections.append(lastname[0] + lastname[1:].lower())
+            lastname = ' '.join(corrections)
     else:
         lastname = lastname[0] + lastname[1:].lower()
     names = []
