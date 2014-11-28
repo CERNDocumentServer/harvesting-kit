@@ -57,7 +57,7 @@ class EDPSciencesPackageTests(unittest.TestCase):
         self.assertEqual(self.edp._get_abstract(), abstract)
 
     def test_journal(self):
-        self.assertEqual(self.edp._get_journal(), 'Astron.Astrophys.')
+        self.assertEqual(self.edp._get_journal(), 'A&A')
 
     def test_publisher(self):
         self.assertEqual(self.edp._get_publisher(), 'EDP Sciences')
