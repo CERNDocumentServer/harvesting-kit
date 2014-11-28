@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//Atypon//DTD Atypon Systems Journal Archiving and Interchange NLM DTD v3.0.5 20110520//EN" "article-archivearticle3.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oasis="http://docs.oasis-open.org/ns/oasis-exchange/table" article-type="correction" dtd-version="3.0" xml:lang="en">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">ijmpc</journal-id>
+      <journal-title-group>
+        <journal-title xml:lang="en">International Journal of Modern Physics C</journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">0129-1831</issn>
+      <issn pub-type="epub">1793-6586</issn>
+      <publisher>
+        <publisher-name>World Scientific Publishing Company</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="doi">10.1142/S0129183108012649</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Errata</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>ERRATA: "EFFICIENT NUMERICAL DIAGONALIZATION OF HERMITIAN 3 × 3 MATRICES"</article-title>
+        <fn-group>
+          <fn>
+            <p>[INT. J. MOD. PHYS. C, Vol. 19, No. 3 (2008) 523–548] .</p>
+          </fn>
+        </fn-group>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author" xlink:type="simple">
+          <string-name>
+            <given-names>JOACHIM</given-names>
+            <x xml:space="preserve" />
+            <surname>KOPP</surname>
+          </string-name>
+          <email xlink:type="simple">jkopp@mpi-hd.mpg.de</email>
+          <aff>Max–Planck–Institut für Kernphysik, Postfach 10 39 80, 69029 Heidelberg, Germany</aff>
+        </contrib>
+      </contrib-group>
+      <pub-date pub-type="ppub">
+        <month>05</month>
+        <year>2008</year>
+        <string-date>May 2008</string-date>
+      </pub-date>
+      <volume>19</volume>
+      <issue>05</issue>
+      <fpage>845</fpage>
+      <lpage>845</lpage>
+      <history></history>
+      <permissions>
+        <copyright-year>2008</copyright-year>
+        <copyright-holder>World Scientific Publishing Company</copyright-holder>
+      </permissions>
+      <self-uri content-type="pdf" xlink:href="s0129183108012649.pdf" xlink:type="simple"></self-uri>
+      <related-article related-article-type="corrected-article" vol="19" page="523-548" id="relatedID1" xlink:href="10.1142/S0129183108012303" ext-link-type="doi" xlink:type="simple"></related-article>
+    </article-meta>
+  </front>
+</article>

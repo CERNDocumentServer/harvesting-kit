@@ -208,7 +208,8 @@ class WorldScientific(JatsPackage):
                 record_add_field(rec, '980', subfields=[('a', 'ConferencePaper')])
                 record_add_field(rec, '500', subfields=[('a', conference)])
             self._add_authors(rec)
-        elif article_type == 'correction':
+        elif article_type in ['correction',
+                              'addendum']:
             rec = create_record()
             journal, volume, issue, year, date, doi, page,\
                 fpage, lpage = self._get_publication_information()
@@ -233,7 +234,10 @@ class WorldScientific(JatsPackage):
                 subfields.append(('c', page))
             if year:
                 subfields.append(('y', year))
-            subfields.append(('m', 'Erratum'))
+            if article_type == 'correction':
+                subfields.append(('m', 'Erratum'))
+            else:
+                subfields.append(('m', 'Addendum'))
             record_add_field(rec, '773', subfields=subfields)
         else:
             return ''

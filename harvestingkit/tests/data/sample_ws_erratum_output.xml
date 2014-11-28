@@ -1,0 +1,18 @@
+<record>
+  <datafield ind1="7" ind2="" tag="024">
+    <subfield code="a">10.1142/S0129183108012649</subfield>
+    <subfield code="2">DOI</subfield>
+  </datafield>
+  <datafield ind1="7" ind2="" tag="024">
+    <subfield code="a">10.1142/S0129183108012303</subfield>
+    <subfield code="2">DOI</subfield>
+  </datafield>
+  <datafield ind1="" ind2="" tag="773">
+    <subfield code="p">International Journal of Modern Physics</subfield>
+    <subfield code="n">05</subfield>
+    <subfield code="v">C19</subfield>
+    <subfield code="c">845-845</subfield>
+    <subfield code="y">2008</subfield>
+    <subfield code="m">Erratum</subfield>
+  </datafield>
+</record>
