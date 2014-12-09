@@ -27,9 +27,6 @@ from harvestingkit.tests import (__file__ as folder,
                                  journal_mappings)
 
 
-sample_record = "data/sample_edpsciences_record.xml"
-
-
 class EDPSciencesPackageTests(unittest.TestCase):
     def setUp(self):
         self.edp = EDPSciencesPackage(journal_mappings)
