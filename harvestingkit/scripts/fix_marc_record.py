@@ -20,6 +20,7 @@ from __future__ import print_function
 import re
 import sys
 import getopt
+import unidecode
 from xml.dom.minidom import parse
 
 
@@ -187,7 +188,7 @@ def main():
 
         marcxml = fix_authors(marcxml)
         marcxml = fix_title(marcxml)
-        print(marcxml.toxml())
+        print(unidecode.unidecode(marcxml.toxml()))
 
 
 if __name__ == '__main__':
