@@ -180,14 +180,14 @@ def main():
         marcxml = fix_authors(marcxml)
         marcxml = fix_title(marcxml)
 
-        print(marcxml.toxml())
+        sys.stdout.write(marcxml.toxml().encode('utf8'))
     else:
         filename = args[0]
         marcxml = parse(filename)
 
         marcxml = fix_authors(marcxml)
         marcxml = fix_title(marcxml)
-        print(marcxml.toxml())
+        sys.stdout.write(marcxml.toxml().encode('utf8'))
 
 
 if __name__ == '__main__':
