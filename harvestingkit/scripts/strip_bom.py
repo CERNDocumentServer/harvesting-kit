@@ -26,7 +26,7 @@ import codecs
 BUFSIZE = 4096
 BOMLEN = len(codecs.BOM_UTF8)
 
-for path in sys.argv[1:]
+for path in sys.argv[1:]:
     with open(path, "r+b") as fp:
         print >> sys.stderr, "Stripping BOM from %s" % path
         chunk = fp.read(BUFSIZE)
