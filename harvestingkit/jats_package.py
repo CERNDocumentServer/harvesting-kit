@@ -39,11 +39,6 @@ class JatsPackage(object):
             title = get_value_in_tag(self.document, 'abbrev-journal-title')
             if not title:
                 title = get_value_in_tag(self.document, 'journal-title')
-            try:
-                title = self.journal_mappings[title.upper()]
-            except KeyError:
-                pass
-            title = title.replace('. ', '.')
             return title.strip()
         except Exception:
             print("Can't find journal-title", file=sys.stderr)

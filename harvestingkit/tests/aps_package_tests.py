@@ -33,7 +33,7 @@ class APSPackageTests(unittest.TestCase):
         self.aps.document = parse(join(dirname(folder), aps_test_record))
 
     def test_journal(self):
-        self.assertEqual(self.aps._get_journal(), 'Phys.Rev.C')
+        self.assertEqual(self.aps._get_journal(), 'Phys. Rev. C')
 
     def test_abstract(self):
         abstract = '<p>We calculate the effective masses of neutrons and protons '\
