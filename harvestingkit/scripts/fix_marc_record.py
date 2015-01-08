@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ##
 ## This file is part of Harvesting Kit.
@@ -22,6 +23,7 @@ import sys
 import getopt
 from xml.dom.minidom import parse
 
+XML_PATH = "/afs/cern.ch/project/inspire/conf-proceedings/contentratechnologies/CONFERENCE_PROCEEDINGs/"
 
 def collapse_initials(name):
     """ Removes the space between initials.
@@ -127,9 +129,22 @@ def fix_title(marcxml):
                     if child.nodeType == child.TEXT_NODE:
                         title = child.nodeValue
                         title = fix_title_capitalization(title)
-                        child.nodeValue = title
+                        child.nodeValue = title.replace(u"—", "-")
     return marcxml
 
+def fix_fft(marcxml):
+    datafields = marcxml.getElementsByTagName('datafield')
+    fft_tags = []
+    for tag in datafields:
+        if tag.getAttribute('tag') in ['FFT']:
+            fft_tags.append(tag)
+    for tag in fft_tags:
+        for subfield in tag.getElementsByTagName('subfield'):
+            if subfield.getAttribute('code') in ['a']:
+                for child in subfield.childNodes:
+                    if child.nodeType == child.TEXT_NODE:
+                        child.nodeValue = XML_PATH + child.nodeValue.replace("\\", "/")
+    return marcxml
 
 def main():
     usage = """
@@ -179,6 +194,7 @@ def main():
 
         marcxml = fix_authors(marcxml)
         marcxml = fix_title(marcxml)
+        marcxml = fix_fft(marcxml)
 
         sys.stdout.write(marcxml.toxml().encode('utf8'))
     else:
@@ -187,6 +203,7 @@ def main():
 
         marcxml = fix_authors(marcxml)
         marcxml = fix_title(marcxml)
+        marcxml = fix_fft(marcxml)
         sys.stdout.write(marcxml.toxml().encode('utf8'))
 
 
