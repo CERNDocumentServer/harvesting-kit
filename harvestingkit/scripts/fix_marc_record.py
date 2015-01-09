@@ -21,9 +21,29 @@ from __future__ import print_function
 import re
 import sys
 import getopt
+import os
+import codecs
 from xml.dom.minidom import parse
 
 XML_PATH = "/afs/cern.ch/project/inspire/conf-proceedings/contentratechnologies/CONFERENCE_PROCEEDINGs/"
+BUFSIZE = 4096
+BOMLEN = len(codecs.BOM_UTF8)
+
+
+def strip_bom(path):
+    with open(path, "r+b") as fp:
+        chunk = fp.read(BUFSIZE)
+        if chunk.startswith(codecs.BOM_UTF8):
+            i = 0
+            chunk = chunk[BOMLEN:]
+            while chunk:
+                fp.seek(i)
+                fp.write(chunk)
+                i += len(chunk)
+                fp.seek(BOMLEN, os.SEEK_CUR)
+                chunk = fp.read(BUFSIZE)
+            fp.seek(-BOMLEN, os.SEEK_CUR)
+            fp.truncate()
 
 def collapse_initials(name):
     """ Removes the space between initials.
@@ -149,10 +169,10 @@ def fix_fft(marcxml):
 def main():
     usage = """
     save to file:
-    python fix_marc_record.py marc_file.xml >> result_file.xml
+    python fix_marc_record.py marc_file*.xml >> result_file.xml
 
     print to terminal:
-    python fix_marc_record.py marc_file.xml
+    python fix_marc_record.py marc_file*.xml
 
     options:
     --recid -r
@@ -165,9 +185,7 @@ def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], "r:s:", ["recid=", "site="])
         options = map(lambda a: a[0], opts)
-        if len(args) > 1:
-            raise getopt.GetoptError("Too many arguments given!!!")
-        elif not args and not ('-r' in options or '--recid' in options):
+        if not args and not ('-r' in options or '--recid' in options):
             raise getopt.GetoptError("Missing argument record to fix")
     except getopt.GetoptError as err:
         print(str(err))  # will print something like "option -a not recognized"
@@ -198,13 +216,18 @@ def main():
 
         sys.stdout.write(marcxml.toxml().encode('utf8'))
     else:
-        filename = args[0]
-        marcxml = parse(filename)
-
-        marcxml = fix_authors(marcxml)
-        marcxml = fix_title(marcxml)
-        marcxml = fix_fft(marcxml)
-        sys.stdout.write(marcxml.toxml().encode('utf8'))
+        print("<collection>")
+        for filename in args:
+            try:
+                strip_bom(filename)
+                marcxml = parse(filename)
+                marcxml = fix_authors(marcxml)
+                marcxml = fix_title(marcxml)
+                marcxml = fix_fft(marcxml)
+                sys.stdout.write(marcxml.toxml().encode('utf8'))
+            except Exception, err:
+                print("ERROR with file %s: %s. Skipping file...." % (filename, err), file=sys.stderr)
+        print("</collection>")
 
 
 if __name__ == '__main__':
