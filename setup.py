@@ -22,32 +22,42 @@
 
 from setuptools import setup, find_packages
 
-from harvestingkit.config import CFG_DTDS_PATH
-
 with open('requirements.txt', 'r') as req:
     requirements = req.readlines()
 
-setup(name="HarvestingKit",
-      version="0.2.0",
-      packages=find_packages(),
-      package_data={'': ['data/*.xml']},
-      data_files=[(CFG_DTDS_PATH, ["dtds/ja5_art501.zip",
-                                   "dtds/ja5_art510.zip",
-                                   "dtds/ja5_art520.zip",
-                                   "dtds/si510.zip",
-                                   "dtds/si520.zip",
-                                   "dtds/A++V2.4.zip",
-                                   "dtds/jats-archiving-dtd-1.0.zip",
-                                   "dtds/journal-publishing-dtd-2.3.zip"])],
-      install_requires=requirements,
-      author="CERN",
-      author_email="admin@inspirehep.net",
-      description=__doc__,
-      license="GPLv2",
-      url="https://github.com/inspirehep/harvesting-kit",
-      test_suite="harvestingkit.tests",
-      entry_points='''
-      [console_scripts]
-      harvestingkit_cli = harvestingkit.harvestingkit_cli:main
-      '''
-      )
+setup(
+    name="HarvestingKit",
+    version="0.3.0",
+    packages=find_packages(),
+    package_data={'': ['data/*.xml']},
+    data_files=[("dtds", ["dtds/ja5_art501.zip",
+                          "dtds/ja5_art510.zip",
+                          "dtds/ja5_art520.zip",
+                          "dtds/si510.zip",
+                          "dtds/si520.zip",
+                          "dtds/A++V2.4.zip",
+                          "dtds/jats-archiving-dtd-1.0.zip",
+                          "dtds/journal-publishing-dtd-2.3.zip"])],
+    install_requires=requirements,
+    author="INSPIRE-HEP collaboration",
+    author_email="admin@inspirehep.net",
+    description=__doc__,
+    license="GPLv2",
+    url="https://github.com/inspirehep/harvesting-kit",
+    test_suite="harvestingkit.tests",
+    entry_points={
+        'console_scripts': [
+            'harvestingkit_cli = harvestingkit.harvestingkit_cli:main'
+        ]
+    },
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Developers',
+        'Topic :: Utilities',
+        'Topic :: Text Processing',
+        'Topic :: Text Processing :: Markup :: XML',
+        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+    ]
+)
