@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 ## This file is part of Harvesting Kit.
-## Copyright (C) 2014 CERN.
+## Copyright (C) 2014, 2015 CERN.
 ##
 ## Harvesting Kit is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -16,8 +16,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
 from __future__ import print_function
+
 import sys
+
+from xml.dom.minidom import parse
+
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from harvestingkit.utils import (collapse_initials,
@@ -26,16 +31,15 @@ from harvestingkit.utils import (collapse_initials,
                                  create_record,
                                  record_xml_output,
                                  fix_name_capitalization)
-from xml.dom.minidom import parse
 from harvestingkit.jats_package import JatsPackage
 
 
 class WorldScientific(JatsPackage):
-    """
-    This class is specialized in parsing files from EdpSciences FTP server
-    and converting them in Marc XML.
-    """
+
+    """Parsing articles from World Scientific converting them to MARCXML."""
+
     def __init__(self, journal_mappings={}):
+        """Create instance of WorldScientific package."""
         super(WorldScientific, self).__init__(journal_mappings)
 
     def _get_date(self):
@@ -59,6 +63,7 @@ class WorldScientific(JatsPackage):
                 return '%s-%s-%s' % (year, month, day)
 
     def get_date(self, filename):
+        """Return the date of the article in file."""
         self.document = parse(filename)
         return self._get_date()
 
@@ -79,12 +84,16 @@ class WorldScientific(JatsPackage):
                 emails = []
                 for email in contrib.getElementsByTagName('email'):
                     emails.append(xml_to_text(email))
-                authors.append((name, affiliations, emails))
+                collaborations = []
+                for collaboration in contrib.getElementsByTagName("collab"):
+                    collaborations.append(xml_to_text(collaboration))
+                authors.append((name, affiliations, emails, collaborations))
         return authors
 
     def _add_authors(self, rec):
         authors = self._get_authors()
         first_author = True
+        collaboration_added = False
         for author in authors:
             subfields = [('a', author[0])]
             if author[1]:
@@ -98,6 +107,14 @@ class WorldScientific(JatsPackage):
                 first_author = False
             else:
                 record_add_field(rec, '700', subfields=subfields)
+            if author[3] and not collaboration_added:
+                collaborations = []
+                for collab in author[3]:
+                    collab_stripped = collab.replace("for the", "").strip()
+                    if collab_stripped not in collaborations:
+                        collaborations.append(collab_stripped)
+                        record_add_field(rec, '710', subfields=[("g", collab_stripped)])
+                collaboration_added = True
 
     def _get_related_article(self):
         for tag in self.document.getElementsByTagName('related-article'):
@@ -108,12 +125,11 @@ class WorldScientific(JatsPackage):
                         return tag.getAttributeNS(*attribute)
         return ''
 
-    def get_record(self, fileName, ref_extract_callback=None):
-        """
-        Gets the Marc xml of the files in xaml_jp directory
+    def get_record(self, filename, ref_extract_callback=None):
+        """Get the MARCXML of the files in xaml_jp directory.
 
-        :param fileName: the name of the file to parse.
-        :type fileName: string
+        :param filename: the name of the file to parse.
+        :type filename: string
         :param refextract_callback: callback to be used to extract
                                     unstructured references. It should
                                     return a marcxml formated string
@@ -122,7 +138,7 @@ class WorldScientific(JatsPackage):
 
         :returns: a string with the marc xml version of the file.
         """
-        self.document = parse(fileName)
+        self.document = parse(filename)
         article_type = self._get_article_type()
         if article_type in ['research-article',
                             'introduction',
