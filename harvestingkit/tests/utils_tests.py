@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 ## This file is part of Harvesting Kit.
-## Copyright (C) 2014 CERN.
+## Copyright (C) 2014, 2015 CERN.
 ##
 ## Harvesting Kit is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -77,8 +77,10 @@ class UtilsTests(unittest.TestCase):
     def test_format_arxiv_id(self):
         self.assertEqual(format_arxiv_id("arXiv:1312.1300"), "arXiv:1312.1300")
         self.assertEqual(format_arxiv_id("1312.1300"), "arXiv:1312.1300")
-        self.assertEqual(format_arxiv_id("arxiv:hep/1312/1300", True), "hep/1312/1300")
-        self.assertEqual(format_arxiv_id("arxiv:hep/1312/1300"), "arxiv:hep/1312/1300")
+        self.assertEqual(format_arxiv_id("1312.13005"), "arXiv:1312.13005")
+        self.assertEqual(format_arxiv_id("arxiv:hep/1312002"), "hep/1312002")
+        self.assertEqual(format_arxiv_id("hep/1312002"), "hep/1312002")
+        self.assertEqual(format_arxiv_id("arXiv:1234.12345"), "arXiv:1234.12345")
 
     def test_collapse_initials(self):
         self.assertEqual(collapse_initials("T. A. Adams"), "T.A. Adams")

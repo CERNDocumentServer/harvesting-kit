@@ -32,21 +32,19 @@ from harvestingkit.jats_package import JatsPackage
 
 
 class ApsPackageXMLError(Exception):
-    """ Raised when the XML given is of the wrong format """
-    pass
+
+    """Raised when the XML given is of the wrong format."""
 
 
 class ApsPackage(JatsPackage):
-    """
-    This class is specialized in parsing an APS harvested file in JATS format
-    and creating a Inspire-compatible bibupload containing the original
-    XML and every possible metadata filled in.
-    """
+
+    """Parse an APS harvested file in JATS format and creating a MARCXML."""
+
     def __init__(self, journal_mappings=None):
         super(ApsPackage, self).__init__(journal_mappings)
 
     def _get_reference(self, ref):
-        """ Retrieves the data for a reference """
+        """Retrieve the data for a reference."""
         label = get_value_in_tag(ref, 'label')
         label = re.sub('\D', '', label)
         for innerref in ref.getElementsByTagName('mixed-citation'):
@@ -92,7 +90,7 @@ class ApsPackage(JatsPackage):
             for tag in innerref.getElementsByTagName('pub-id'):
                 if tag.getAttribute('pub-id-type') == 'arxiv':
                     arxiv = tag.firstChild.data
-            arxiv = format_arxiv_id(arxiv, True)
+            arxiv = format_arxiv_id(arxiv)
             publisher = get_value_in_tag(innerref, 'publisher-name')
             publisher_location = get_value_in_tag(innerref, 'publisher-loc')
             if publisher_location:
