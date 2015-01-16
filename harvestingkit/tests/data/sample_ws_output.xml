@@ -74,4 +74,7 @@
     <subfield code="v">School of Chemical Engineering, Sungkyunkwan University, Suwon 440-746, Korea</subfield>
     <subfield code="m">anders.hagfeldt@kemi.uu.se</subfield>
   </datafield>
+  <datafield ind1="" ind2="" tag="710">
+    <subfield code="g">Belle Collaboration</subfield>
+  </datafield>
 </record>

@@ -243,38 +243,38 @@ def unescape(text):
     return re.sub("&#?\w+;", fixup, text)
 
 
-def format_arxiv_id(arxiv_id, INSPIRE=False):
+def format_arxiv_id(arxiv_id):
+    """Properly format arXiv IDs."""
     if arxiv_id and not "/" in arxiv_id and "arXiv" not in arxiv_id:
         return "arXiv:%s" % (arxiv_id,)
-    elif INSPIRE and arxiv_id and not '.' in arxiv_id \
-            and arxiv_id.lower().startswith('arxiv:'):
-        return arxiv_id[6:]
+    elif arxiv_id and not '.' in arxiv_id and arxiv_id.lower().startswith('arxiv:'):
+        return arxiv_id[6:]  # strip away arxiv: for old identifiers
     else:
         return arxiv_id
 
 
 def collapse_initials(name):
-    """ Removes the space between initials.
-        eg T. A. --> T.A."""
+    """Remove the space between initials, eg T. A. --> T.A."""
     if len(name.split()) > 1:
         name = re.sub(r'([A-Z]\.) +(?=[A-Z]\.)', r'\1', name)
     return name
 
 
 def fix_name_capitalization(lastname, givennames):
-    """ Converts capital letters to lower keeps first letter capital. """
-    if '-' in lastname:
-        names = lastname.split('-')
-        names = map(lambda a: a[0] + a[1:].lower(), names)
-        lastname = '-'.join(names)
-    elif len(lastname.split()) > 1:
-        lastnames = lastname.split()
-        corrections = []
-        for lastname in lastnames:
-            corrections.append(lastname[0] + lastname[1:].lower())
-            lastname = ' '.join(corrections)
-    else:
-        lastname = lastname[0] + lastname[1:].lower()
+    """Convert capital letters to lower case keeping the first letter capital."""
+    if lastname:
+        if '-' in lastname:
+            names = lastname.split('-')
+            names = map(lambda a: a[0] + a[1:].lower(), names)
+            lastname = '-'.join(names)
+        elif len(lastname.split()) > 1:
+            lastnames = lastname.split()
+            corrections = []
+            for lastname in lastnames:
+                corrections.append(lastname[0] + lastname[1:].lower())
+                lastname = ' '.join(corrections)
+        else:
+            lastname = lastname[0] + lastname[1:].lower()
     names = []
     for name in givennames:
         names.append(name[0] + name[1:].lower())

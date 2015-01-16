@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2013, 2014 CERN.
+# Copyright (C) 2013, 2014, 2015 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -639,7 +639,7 @@ class ElsevierPackage(object):
         textref = ref.getElementsByTagName("ce:textref")
         if textref:
             textref = xml_to_text(textref[0])
-        ext_link = format_arxiv_id(self.get_ref_link(ref, 'arxiv'), True)
+        ext_link = format_arxiv_id(self.get_ref_link(ref, 'arxiv'))
         authors = []
         for author in ref.getElementsByTagName("sb:author"):
             given_name = get_value_in_tag(author, "ce:given-name")

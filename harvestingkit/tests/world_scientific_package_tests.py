@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 ## This file is part of Harvesting Kit.
-## Copyright (C) 2014 CERN.
+## Copyright (C) 2014, 2015 CERN.
 ##
 ## Harvesting Kit is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -16,11 +16,14 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
 import unittest
-from harvestingkit.world_scientific_package import WorldScientific
-from xml.dom.minidom import parse
+
 from os.path import (join,
                      dirname)
+from xml.dom.minidom import parse
+
+from harvestingkit.world_scientific_package import WorldScientific
 from harvestingkit.tests import (__file__ as folder,
                                  ws_test_record,
                                  ws_erratum_test_record,
@@ -30,6 +33,9 @@ from harvestingkit.tests import (__file__ as folder,
 
 
 class WorldScientificTests(unittest.TestCase):
+
+    """Test WorldScientific package."""
+
     def setUp(self):
         self.ws = WorldScientific(journal_mappings)
         self.ws.document = parse(join(dirname(folder), ws_test_record))
@@ -71,14 +77,17 @@ class WorldScientificTests(unittest.TestCase):
     def test_authors(self):
         authors = [('Bi, Dongqin',
                     ['Department of Chemistry-Angstrom Laboratory, Uppsala University, Box 532, SE 751 20 Uppsala, Sweden'],
+                    [],
                     []),
                    ('Boschloo, Gerrit',
                     ['Department of Chemistry-Angstrom Laboratory, Uppsala University, Box 532, SE 751 20 Uppsala, Sweden'],
+                    [],
                     []),
                    ('Hagfeldt, Anders',
                     ['Department of Chemistry-Angstrom Laboratory, Uppsala University, Box 532, SE 751 20 Uppsala, Sweden',
                      'School of Chemical Engineering, Sungkyunkwan University, Suwon 440-746, Korea'],
-                    ['anders.hagfeldt@kemi.uu.se'])
+                    ['anders.hagfeldt@kemi.uu.se'],
+                    ['for the Belle Collaboration'])
                    ]
         self.assertEqual(self.ws._get_authors(), authors)
 

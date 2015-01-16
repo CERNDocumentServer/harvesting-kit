@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 ## This file is part of Harvesting Kit.
-## Copyright (C) 2014 CERN.
+## Copyright (C) 2014, 2015 CERN.
 ##
 ## Harvesting Kit is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -16,9 +16,13 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
 from __future__ import print_function
+
 import sys
-from datetime import datetime
+
+from datetime import date, datetime
+
 from harvestingkit.utils import (fix_journal_name,
                                  collapse_initials,
                                  record_add_field)
@@ -26,13 +30,16 @@ from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text,
                                          get_attribute_in_tag,
                                          get_inner_xml)
-from datetime import date
 
 
 class JatsPackage(object):
 
+    """Generic package to convert JATS/XML formatted articles."""
+
     def __init__(self, journal_mappings={}):
+        """Create a JatsPackage."""
         self.journal_mappings = journal_mappings
+        self.document = None
 
     def _get_journal(self):
         try:
