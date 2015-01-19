@@ -6,10 +6,12 @@ Harvesting-Kit
 
 A kit containing various utilities and scripts related to content harvesting used in [Invenio Software]( http://invenio-software.org) instances such as INSPIRE and SCOAP3.
 
+Primarily it focuses on converting certain XML meta-data standards, such as [NLM](http://www.nlm.nih.gov/tsd/cataloging/mainpge.html) and [JATS](http://jats.nlm.nih.gov/).
 
-INSTALL
+
+Install
 =======
 
-`$ python setup.py install`
+`pip install HarvestingKit`
 
 
