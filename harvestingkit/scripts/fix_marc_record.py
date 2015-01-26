@@ -93,6 +93,18 @@ def fix_title_capitalization(title):
     title = title[0].upper() + title[1:]
     return title
 
+def amend_initials(name):
+    def repl(match):
+        try:
+            if name[match.end()] != '.':
+                return match.group() + '.'
+        except IndexError:
+            ## We have reached the end of the string
+            return match.group() + '.'
+        return match.group()
+
+    return re.sub(r"(\b\w\b)", repl, name)
+
 
 def fix_authors(marcxml):
     datafields = marcxml.getElementsByTagName('datafield')
@@ -111,6 +123,7 @@ def fix_authors(marcxml):
                 if author:
                     author = author.replace(', Rapporteur', '')
                     if author.find(',') >= 0:
+                        author = amend_initials(author)
                         lastname, givennames = author.split(',')
                         lastname = lastname.strip()
                         givennames = givennames.strip()
