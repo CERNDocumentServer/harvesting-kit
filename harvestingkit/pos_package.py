@@ -32,13 +32,17 @@ class PosPackage(object):
 
     def _get_authors(self):
         authors = []
-        for tag in self.document.getElementsByTagName('dc:creator'):
-            author = xml_to_text(tag)
-            lastname = author.split()[-1]
-            givenames = author.split()[:-1]
-            lastname, givenames = fix_name_capitalization(lastname, givenames)
-            givenames = collapse_initials(givenames)
-            authors.append("%s, %s" % (lastname, givenames))
+        for pextag in self.document.getElementsByTagName('pex-dc:creator'):
+            affiliations = []
+            for auttag in pextag.getElementsByTagName('pex-dc:name'):
+                author = xml_to_text(auttag)
+                lastname = author.split()[-1]
+                givenames = author.split()[:-1]
+                lastname, givenames = fix_name_capitalization(lastname, givenames)
+                givenames = collapse_initials(givenames)
+                for afftag in pextag.getElementsByTagName('pex-dc:affiliation'):
+                    affiliations.append(xml_to_text(afftag))
+                authors.append(("%s, %s" % (lastname, givenames), affiliations))
         return authors
 
     def _get_title(self):
@@ -50,14 +54,14 @@ class PosPackage(object):
 
     def _get_language(self):
         try:
-            return get_value_in_tag(self.document, 'dc:language')
+            return get_value_in_tag(self.document, 'pex-dc:language')
         except Exception:
             print >> sys.stderr, "Can't find language"
             return ''
 
     def _get_publisher(self):
         try:
-            publisher = get_value_in_tag(self.document, 'dc:publisher')
+            publisher = get_value_in_tag(self.document, 'pex-dc:publisher')
             if publisher == 'Sissa Medialab':
                 publisher = 'SISSA'
             return publisher
@@ -67,7 +71,7 @@ class PosPackage(object):
 
     def _get_date(self):
         try:
-            date = get_value_in_tag(self.document, 'dc:date')
+            date = get_value_in_tag(self.document, 'pex-dc:date')
             if len(date) == 20:
                 date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
                 date = date.strftime("%Y-%m-%d")
@@ -79,7 +83,7 @@ class PosPackage(object):
 
     def _get_copyright(self):
         try:
-            record_copyright = get_value_in_tag(self.document, 'dc:rights')
+            record_copyright = get_value_in_tag(self.document, 'pex-dc:rights')
             if record_copyright == 'Creative Commons Attribution-NonCommercial-ShareAlike':
                 record_copyright = 'CC-BY-NC-SA'
             return record_copyright
@@ -89,7 +93,7 @@ class PosPackage(object):
 
     def _get_subject(self):
         try:
-            return get_value_in_tag(self.document, 'dc:subject')
+            return get_value_in_tag(self.document, 'pex-dc:subject')
         except Exception:
             print >> sys.stderr, "Can't find subject"
             return ''
@@ -134,7 +138,9 @@ class PosPackage(object):
         authors = self._get_authors()
         first_author = True
         for author in authors:
-            subfields = [('a', author)]
+            subfields = [('a', author[0])]
+            for affiliation in author[1]:
+                subfields.append(('v', affiliation))
             if first_author:
                 record_add_field(rec, '100', subfields=subfields)
                 first_author = False
