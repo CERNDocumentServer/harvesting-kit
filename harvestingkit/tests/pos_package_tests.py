@@ -31,7 +31,8 @@ class POSPackageTests(unittest.TestCase):
         self.pos.document = parse(join(dirname(folder), pos_test_record))
 
     def test_authors(self):
-        self.assertEqual(self.pos._get_authors(), ['El-Khadra, Aida', 'Johnson, A.T.'])
+        self.assertEqual(self.pos._get_authors(),
+                         [('El-Khadra, Aida', ['Physics Department, University of Illinois, Urbana, Illinois 61801, USA'])])
 
     def test_language(self):
         self.assertEqual(self.pos._get_language(), 'en')
