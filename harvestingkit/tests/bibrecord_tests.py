@@ -25,8 +25,6 @@ import unittest
 import os
 import pkg_resources
 
-from lxml import etree
-
 from harvestingkit import bibrecord
 
 
@@ -1628,7 +1626,7 @@ class BibRecordExtractIdentifiersTest(unittest.TestCase):
 
     def setUp(self):
         """Initialize stuff"""
-        from invenio.config import CFG_BIBUPLOAD_EXTERNAL_OAIID_TAG
+        from harvestingkit.bibrecord import CFG_BIBUPLOAD_EXTERNAL_OAIID_TAG
         xml_example_record = """
         <record>
         <controlfield tag="001">1</controlfield>
@@ -1669,42 +1667,4 @@ class BibRecordExtractIdentifiersTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    test_classes_to_run = [
-        BibRecordSuccessTest,
-        BibRecordParsersTest,
-        BibRecordBadInputTreatmentTest,
-        BibRecordGettingFieldValuesTest,
-        BibRecordGettingFieldValuesViaWildcardsTest,
-        BibRecordAddFieldTest,
-        BibRecordDeleteFieldTest,
-        BibRecordManageMultipleFieldsTest,
-        BibRecordDeleteFieldFromTest,
-        BibRecordAddSubfieldIntoTest,
-        BibRecordModifyControlfieldTest,
-        BibRecordModifySubfieldTest,
-        BibRecordDeleteSubfieldFromTest,
-        BibRecordMoveSubfieldTest,
-        BibRecordCompareSubfieldTest,
-        BibRecordAccentedUnicodeLettersTest,
-        BibRecordSpecialTagParsingTest,
-        BibRecordPrintingTest,
-        BibRecordCreateFieldTest,
-        BibRecordFindFieldTest,
-        BibRecordDeleteSubfieldTest,
-        BibRecordSingletonTest,
-        BibRecordNumCharRefTest,
-        BibRecordExtractIdentifiersTest,
-        BibRecordDropDuplicateFieldsTest
-    ]
-
-    loader = unittest.TestLoader()
-
-    suites_list = []
-    for test_class in test_classes_to_run:
-        suite = loader.loadTestsFromTestCase(test_class)
-        suites_list.append(suite)
-
-    big_suite = unittest.TestSuite(suites_list)
-
-    runner = unittest.TextTestRunner()
-    results = runner.run(big_suite)
+    unittest.main()

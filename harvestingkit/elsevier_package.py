@@ -114,7 +114,7 @@ class ElsevierPackage(object):
         self.doi_package_name_mapping = []
         try:
             self.logger = create_logger(
-                "Elsevier"
+                "Elsevier",
                 filename=join(CFG_LOGDIR, 'scoap3_harvesting.log')
             )
         except IOError:  # Could not access log file

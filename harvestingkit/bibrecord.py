@@ -20,76 +20,33 @@
 """
 BibRecord - XML MARC processing library for Invenio adapted for Harvesting Kit.
 
-BibRecord library offer a whole set of API function to handle record metadata.
+The main usage of BibRecord in Harvesting Kit is linked to MARCXML conversions:
 
-Managing metadata with BibRecord
-In order to work with bibrecord library you first need to have available a
-record representation.
-
-If you have a MARCXML representation of the record to be handled, you can use
-the create_record function to obtain a bibrecord internal representation::
-
-    from invenio.legacy.bibrecord import create_record
-    record = create_record(marcxml)[0]
-
-
-If you want to handle a record stored in the system and you know the record ID,
-then you can easily exploit Invenio search_engine API to obtain the
-corresponding marcxml::
-
-    from invenio.legacy.bibrecord import create_record
-    from invenio.legacy.search_engine import print_record
-    marcxml = print_record(rec_id, 'xm')
-    record = create_record(marcxml)[0]
-
-
-Having an internal representation of a record you can manipulate it by means of
-bibrecord functions like
-:func:`~invenio.legacy.bibrecord.record_get_field_instances`,
-:func:`~invenio.legacy.bibrecord.record_has_field`,
-:func:`~invenio.legacy.bibrecord.record_add_field`,
-:func:`~invenio.legacy.bibrecord.record_delete_field`,
-:func:`~invenio.legacy.bibrecord.record_delete_subfield`,
-:func:`~invenio.legacy.bibrecord.record_add_or_modify_subfield`,
-:func:`~invenio.legacy.bibrecord.record_add_subfield`,
-:func:`~invenio.legacy.bibrecord.record_does_field_exist`,
-:func:`~invenio.legacy.bibrecord.record_filter_fields`,
-:func:`~invenio.legacy.bibrecord.record_replace_in_subfields`,
-:func:`~invenio.legacy.bibrecord.record_get_field_value`,
-:func:`~invenio.legacy.bibrecord.record_get_field_values`...
-
-At the end, if you want the MARCXML representation of the record you can use
-record_xml_output::
-
-   from invenio.legacy.bibrecord import create_record
-   from invenio.legacy.search_engine import print_record
-   marcxml = print_record(rec_id, 'xm')
-   record = create_record(marcxml)[0]
-   # ... manipulation ...
-   new_marcxml = record_xml_output(record)
-
-
-
-In order to write back such a record into the system you should use the
-BibUpload utility.
-
-Please referer to bibrecord.py for a complete and up-to-date description of the
-API, see :func:`~invenio.legacy.bibrecordcreate_record`,
-:func:`~invenio.legacy.bibrecordrecord_get_field_instances` and friends in the
-source code of this file in the section entitled INTERFACE.
-
-
-As always, a good entry point to the bibrecord library and its record structure
-manipulating functions is to read the unit test cases that are located in
-bibrecord_tests.py and bibupload_regression_tests.py.
+    >>> from harvestingkit.bibrecord import BibRecordPackage
+    >>> from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+    >>> bibrecs = BibRecordPackage("inspire.xml")
+    >>> xml = Inspire2CDS.convert(bibrecs)
 
 """
 
 import re
 import sys
+import os
+
 from lxml import etree
 from six import StringIO
-from .utils import escape_for_xml
+from xml.etree import ElementTree as ET
+
+from .utils import (
+    escape_for_xml,
+    create_logger,
+)
+from .etree_utils import (
+    element_tree_oai_records,
+    element_tree_collection_to_records,
+    strip_xml_namespace,
+    get_request_subfields,
+)
 
 if sys.hexversion < 0x2040000:
     # pylint: disable=W0622
@@ -124,6 +81,8 @@ CFG_BIBRECORD_DEFAULT_VERBOSE_LEVEL = 0
 # correction level to be used when creating records from XML: (0=no, 1=yes)
 CFG_BIBRECORD_DEFAULT_CORRECT = 0
 
+CFG_BIBUPLOAD_EXTERNAL_OAIID_TAG = "035__a"
+
 
 class InvenioBibRecordParserError(Exception):
 
@@ -133,6 +92,106 @@ class InvenioBibRecordParserError(Exception):
 class InvenioBibRecordFieldError(Exception):
 
     """An generic error for BibRecord."""
+
+
+class BibRecordPackage(object):
+
+    """Parsing a MARCXML document from to BibRecords.
+
+    NOTE: It also supports OAI-PMH MARCXML.
+    """
+
+    def __init__(self, path=None):
+        """Given a path to a MARCXML file, create an object to parse & convert it.
+
+        :param path: the actual path of a Invenio style MARCXML.
+        """
+        self.path = path
+        self.records = []
+        self.deleted_records = []
+        self.logger = create_logger("BibRecord")
+
+    def parse(self, path_to_xml=None):
+        """Parse an XML document and clean any namespaces."""
+        if not path_to_xml:
+            if not self.path:
+                self.logger.error("No path defined!")
+                return
+            path_to_xml = self.path
+        root = self._clean_xml(path_to_xml)
+
+        # See first of this XML is clean or OAI request
+        if root.tag.lower() == 'collection':
+            tree = ET.ElementTree(root)
+            self.records = element_tree_collection_to_records(tree)
+        elif root.tag.lower() == 'record':
+            new_root = ET.Element('collection')
+            new_root.append(root)
+            tree = ET.ElementTree(new_root)
+            self.records = element_tree_collection_to_records(tree)
+        else:
+            # We have an OAI request
+            header_subs = get_request_subfields(root)
+            records = root.find('ListRecords')
+            if records is None:
+                records = root.find('GetRecord')
+            if records is None:
+                raise ValueError("Cannot find ListRecords or GetRecord!")
+
+            tree = ET.ElementTree(records)
+            for record, is_deleted in element_tree_oai_records(tree, header_subs):
+                if is_deleted:
+                    # It was OAI deleted. Create special record
+                    self.deleted_records.append(
+                        self.create_deleted_record(record)
+                    )
+                else:
+                    self.records.append(record)
+
+    def _clean_xml(self, path_to_xml):
+        """Clean MARCXML harvested from OAI.
+
+        Allows the xml to be used with BibUpload or BibRecord.
+
+        :param xml: either XML as a string or path to an XML file
+
+        :return: ElementTree of clean data
+        """
+        try:
+            if os.path.isfile(path_to_xml):
+                tree = ET.parse(path_to_xml)
+            else:
+                self.logger.warning(
+                    "input is not a valid file," +
+                    " attempting to parse input as XML..."
+                )
+                tree = ET.fromstring(path_to_xml)
+        except Exception, e:
+            self.logger.error("Could not read OAI XML, aborting filter!")
+            raise e
+        root = tree.getroot()
+        strip_xml_namespace(root)
+        return root
+
+    def create_deleted_record(self, record):
+        """Generate the record deletion if deleted form OAI-PMH."""
+        identifier = record_get_field_value(record,
+                                            tag="037",
+                                            code="a")
+        recid = identifier.split(":")[-1]
+        try:
+            source = identifier.split(":")[1]
+        except IndexError:
+            source = "Unknown"
+        record_add_field(record, "035",
+                         subfields=[("9", source), ("a", recid)])
+        record_add_field(record, "980",
+                         subfields=[("c", "DELETED")])
+        return record
+
+    def get_records(self):
+        """Return all records found."""
+        return self.records
 
 
 def create_field(subfields=None, ind1=' ', ind2=' ', controlfield_value='',
@@ -1497,6 +1556,25 @@ def record_empty(rec):
         if key not in ('001', '005'):
             return False
     return True
+
+
+def field_get_subfields(field):
+    """ Given a field, will place all subfields into a dictionary
+    Parameters:
+     * field - tuple: The field to get subfields for
+    Returns: a dictionary, codes as keys and a list of values as the value """
+    pairs = {}
+    for key, value in field[0]:
+        if key in pairs and pairs[key] != value:
+            pairs[key].append(value)
+        else:
+            pairs[key] = [value]
+    return pairs
+
+
+def field_swap_subfields(field, subs):
+    """ Recreates a field with a new set of subfields """
+    return subs, field[1], field[2], field[3], field[4]
 
 
 def _compare_fields(field1, field2, strict=True):

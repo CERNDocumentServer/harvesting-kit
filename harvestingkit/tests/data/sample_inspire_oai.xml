@@ -1,0 +1,926 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://inspirehep.net/css/oai2.xsl.v1.0" ?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+<responseDate>2015-02-05T11:09:18Z</responseDate><request from="2015-01-01" verb="ListRecords" set="ForCDS" metadataPrefix="marcxml">http://inspirehep.net/oai2d</request><ListRecords>
+<record><header><identifier>oai:inspirehep.net:1334431</identifier><datestamp>2014-12-18T13:44:00Z</datestamp><setSpec>CERN</setSpec><setSpec>INSPIRE:HEP</setSpec><setSpec>ForCDS</setSpec></header><metadata><marc:record xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd" type="Bibliographic">
+     <marc:leader>00000coc  2200000uu 4500</marc:leader>
+  <marc:controlfield tag="001">1334431</marc:controlfield>
+  <marc:controlfield tag="005">20141218144359.0</marc:controlfield>
+  <marc:datafield tag="020" ind1=" " ind2=" ">
+    <marc:subfield code="a">978-5-94990010-9</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="024" ind1="7" ind2=" ">
+    <marc:subfield code="2">DOI</marc:subfield>
+    <marc:subfield code="a">10.1016/j.nima.2014.09.061</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="224" ind1="7" ind2=" ">
+    <marc:subfield code="2">DOI</marc:subfield>
+    <marc:subfield code="a">10.1016/j.nima.2014.09.061</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="035" ind1=" " ind2=" ">
+    <marc:subfield code="a">Sahin:2014haa</marc:subfield>
+    <marc:subfield code="9">INSPIRETeX</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="035" ind1=" " ind2=" ">
+    <marc:subfield code="9">DESY</marc:subfield>
+    <marc:subfield code="z">DA14-kp48u</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="100" ind1=" " ind2=" ">
+    <marc:subfield code="a">Şahin, Özkan</marc:subfield>
+    <marc:subfield code="u">Uludag U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="245" ind1=" " ind2=" ">
+    <marc:subfield code="a">High-precision gas gain and energy transfer measurements in Ar–CO2 mixtures</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="300" ind1=" " ind2=" ">
+    <marc:subfield code="a">8</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="500" ind1=" " ind2=" ">
+    <marc:subfield code="a"> *Brief entry*</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="500" ind1=" " ind2=" ">
+    <marc:subfield code="a">3 pages, 2 figures</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="520" ind1=" " ind2=" ">
+    <marc:subfield code="a">Ar–CO2 is a Penning mixture since a fraction of the energy stored in Ar 3p53d3p53d and higher excited states can be transferred to ionize CO2 molecules. In the present work, concentration and pressure dependence of Penning transfer rate and photon feedback parameter in Ar–CO2 mixtures have been investigated with recent systematic high-precision gas gain measurements which cover the range 1–50% CO2 at 400, 800, 1200, 1800 hPa and gas gain from 1 to 5×105.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="595" ind1=" " ind2=" ">
+    <marc:subfield code="c">CDS</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="595" ind1=" " ind2="D">
+    <marc:subfield code="a">G</marc:subfield>
+    <marc:subfield code="d">2014-12-18</marc:subfield>
+    <marc:subfield code="s">abs</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="650" ind1="1" ind2="7">
+    <marc:subfield code="a">Instrumentation</marc:subfield>
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="693" ind1=" " ind2=" ">
+    <marc:subfield code="e">CERN-LHC-CMS</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Kowalski, Tadeusz Z.</marc:subfield>
+    <marc:subfield code="u">AGH-UST, Cracow</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Veenhof, Rob</marc:subfield>
+    <marc:subfield code="u">Uludag U.</marc:subfield>
+    <marc:subfield code="u">CERN</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="773" ind1=" " ind2=" ">
+    <marc:subfield code="c">104-111</marc:subfield>
+    <marc:subfield code="p">Nucl.Instrum.Meth.</marc:subfield>
+    <marc:subfield code="v">A768</marc:subfield>
+    <marc:subfield code="y">2014</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="856" ind1="4" ind2=" ">
+    <marc:subfield code="u">http://www.humanamente.eu/Issues/Issue13.html</marc:subfield>
+    <marc:subfield code="y">HumanaMente server</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="856" ind1="4" ind2=" ">
+    <marc:subfield code="s">231482</marc:subfield>
+    <marc:subfield code="u">http://inspirehep.net/record/1333477/files/Issue13_Paper_Veneziano.pdf</marc:subfield>
+    <marc:subfield code="y">Fulltext</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="909" ind1="C" ind2="O">
+    <marc:subfield code="o">oai:inspirehep.net:1334431</marc:subfield>
+    <marc:subfield code="p">CERN</marc:subfield>
+    <marc:subfield code="p">INSPIRE:HEP</marc:subfield>
+    <marc:subfield code="p">ForCDS</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">Published</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">citeable</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">HEP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">M.J. Druyvesteyn, F.M. Penning</marc:subfield>
+    <marc:subfield code="m">Erratum: View Record in Scopus | Full Text via CrossRef | Citing articles (118)</marc:subfield>
+    <marc:subfield code="o">1</marc:subfield>
+    <marc:subfield code="s">Rev.Mod.Phys.,12,87</marc:subfield>
+    <marc:subfield code="s">Rev.Mod.Phys.,13,72</marc:subfield>
+    <marc:subfield code="y">1940</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">F.M. Penning</marc:subfield>
+    <marc:subfield code="m">View Record in Scopus | Full Text via CrossRef | Citing articles (8)</marc:subfield>
+    <marc:subfield code="o">2</marc:subfield>
+    <marc:subfield code="s">Z.Phys.,46,335</marc:subfield>
+    <marc:subfield code="y">1928</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">F.M. Penning</marc:subfield>
+    <marc:subfield code="m">Article | PDF (709 K) | View Record in Scopus | Citing articles (12)</marc:subfield>
+    <marc:subfield code="o">3</marc:subfield>
+    <marc:subfield code="s">Physica,1,1028</marc:subfield>
+    <marc:subfield code="y">1934</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">K. Jeleń</marc:subfield>
+    <marc:subfield code="m">Avalanche multiplication of electron in the mixtures of gases and vapours, Scientific Bulletins of the Stanislaw Staszic University of Mining and Metallurgy, No 786, Craców(in Polish)</marc:subfield>
+    <marc:subfield code="o">4</marc:subfield>
+    <marc:subfield code="y">1980</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">J. Zajac</marc:subfield>
+    <marc:subfield code="m">Electron multiplication process in the mixtures of gases and vapours at low mixture pressure (Ph.D. thesis), AGH, University of Science and Technology, Craców, Poland</marc:subfield>
+    <marc:subfield code="o">5</marc:subfield>
+    <marc:subfield code="y">1994</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">H. Zhan-Ying, et al.</marc:subfield>
+    <marc:subfield code="m">View Record in Scopus | Citing articles (1)</marc:subfield>
+    <marc:subfield code="o">6</marc:subfield>
+    <marc:subfield code="s">Chin.Phys.,C38,219</marc:subfield>
+    <marc:subfield code="y">2014</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">A. Yoshikawa, et al.</marc:subfield>
+    <marc:subfield code="o">7</marc:subfield>
+    <marc:subfield code="s">JINST,7,C06006-1</marc:subfield>
+    <marc:subfield code="y">2012</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">S. Chakravarty, J.C. Armitage Nuclear</marc:subfield>
+    <marc:subfield code="m">Instruments and Methods in Physics Research Section A 321 , p. 1 View Record in Scopus | Citing articles (1)</marc:subfield>
+    <marc:subfield code="o">8</marc:subfield>
+    <marc:subfield code="y">1992</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">T. Zhao, et al.</marc:subfield>
+    <marc:subfield code="m">Nuclear Instruments and Methods in Physics Research Section A 340 (3) , p. 485 Article | PDF (468 K) | View Record in Scopus | Citing articles (10)</marc:subfield>
+    <marc:subfield code="o">9</marc:subfield>
+    <marc:subfield code="y">1994</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">P. Colas, et al.</marc:subfield>
+    <marc:subfield code="m">Nuclear Instruments and Methods in Physics Research Section A 478 (1-2) , p. 215 Article | PDF (215 K) | View Record in Scopus | Citing articles (12)</marc:subfield>
+    <marc:subfield code="o">10</marc:subfield>
+    <marc:subfield code="y">2002</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">A. Andronic, et al.</marc:subfield>
+    <marc:subfield code="m">Nuclear Instruments and Methods in Physics Research Section A 523 , p. 302 Article | PDF (242 K) | View Record in Scopus | Citing articles (9)</marc:subfield>
+    <marc:subfield code="o">11</marc:subfield>
+    <marc:subfield code="y">2004</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">T.Z. Kowalski, et al.</marc:subfield>
+    <marc:subfield code="m">Nuclear Instruments and Methods in Physics Research Section A 323 , p. 289 Article | PDF (214 K) | View Record in Scopus | Citing articles (3)</marc:subfield>
+    <marc:subfield code="o">12</marc:subfield>
+    <marc:subfield code="y">1992</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">Ö. Şahin, et al.</marc:subfield>
+    <marc:subfield code="m">1-30</marc:subfield>
+    <marc:subfield code="o">13</marc:subfield>
+    <marc:subfield code="s">JINST,5,05002</marc:subfield>
+    <marc:subfield code="y">2010</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">S.F. Biagi Nuclear</marc:subfield>
+    <marc:subfield code="m">Instruments and Methods in Physics Research Section A 421 , p. 234 Article | PDF (143 K) | View Record in Scopus | Citing articles (160)</marc:subfield>
+    <marc:subfield code="o">14</marc:subfield>
+    <marc:subfield code="y">1999</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">F. Sauli Nuclear</marc:subfield>
+    <marc:subfield code="m">Instruments and Methods in Physics Research Section A 386 , p. 531 Article | PDF (568 K) | View Record in Scopus | Citing articles (1008)</marc:subfield>
+    <marc:subfield code="o">15</marc:subfield>
+    <marc:subfield code="y">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">I. Krajcar Bronić, B. Grosswendt Nuclear</marc:subfield>
+    <marc:subfield code="m">Instruments and Methods in Physics Research Section B 142 , p. 219 Article | PDF (618 K) | View Record in Scopus | Citing articles (12)</marc:subfield>
+    <marc:subfield code="o">16</marc:subfield>
+    <marc:subfield code="y">1998</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">P. Millet, et al.</marc:subfield>
+    <marc:subfield code="m">Journal of Physics B: Atomic, Molecular and Optical View Record in Scopus | Full Text via CrossRef | Citing articles (20)</marc:subfield>
+    <marc:subfield code="o">17</marc:subfield>
+    <marc:subfield code="s">Physics,15,2935</marc:subfield>
+    <marc:subfield code="y">1982</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">T. Oka, et al.</marc:subfield>
+    <marc:subfield code="m">View Record in Scopus | Full Text via CrossRef | Citing articles (16)</marc:subfield>
+    <marc:subfield code="o">18</marc:subfield>
+    <marc:subfield code="s">J.Chem.Phys.,70,3384</marc:subfield>
+    <marc:subfield code="y">1979</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">W. Wieme, J. Lenaerts</marc:subfield>
+    <marc:subfield code="m">View Record in Scopus | Full Text via CrossRef | Citing articles (13)</marc:subfield>
+    <marc:subfield code="o">19</marc:subfield>
+    <marc:subfield code="s">J.Chem.Phys.,74,483</marc:subfield>
+    <marc:subfield code="y">1981</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">J. Wieser, et al.</marc:subfield>
+    <marc:subfield code="m">View Record in Scopus | Full Text via CrossRef | Citing articles (95)</marc:subfield>
+    <marc:subfield code="o">20</marc:subfield>
+    <marc:subfield code="s">Rev.Sci.Instrum.,68,1360</marc:subfield>
+    <marc:subfield code="y">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="5">
+    <marc:subfield code="h">J. Berkowitz Atomic</marc:subfield>
+    <marc:subfield code="m">and Molecular Photoabsorption Press, UK and USA  chapter 5, pp. 189-197</marc:subfield>
+    <marc:subfield code="o">21</marc:subfield>
+    <marc:subfield code="p">Academic</marc:subfield>
+    <marc:subfield code="y">2002</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="999" ind1="C" ind2="6">
+    <marc:subfield code="a">0-0-0-1-0-0-1</marc:subfield>
+    <marc:subfield code="t">2014-12-16 11:31:00</marc:subfield>
+    <marc:subfield code="v">Invenio/1.1.2.1260-aa76f refextract/1.5.44</marc:subfield>
+  </marc:datafield>
+</marc:record>
+</metadata></record>
+<record><header><identifier>oai:inspirehep.net:460516</identifier><datestamp>2015-01-19T09:57:09Z</datestamp><setSpec>INSPIRE:HEP</setSpec><setSpec>CERN</setSpec><setSpec>ForCDS</setSpec></header><metadata><marc:record xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd" type="Bibliographic">
+     <marc:leader>00000coc  2200000uu 4500</marc:leader>
+  <marc:controlfield tag="001">460516</marc:controlfield>
+  <marc:controlfield tag="005">20150119105709.0</marc:controlfield>
+  <marc:datafield tag="024" ind1="7" ind2=" ">
+    <marc:subfield code="2">DOI</marc:subfield>
+    <marc:subfield code="9">bibcheck</marc:subfield>
+    <marc:subfield code="a">10.1016/S0920-5632(97)00097-2</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="035" ind1=" " ind2=" ">
+    <marc:subfield code="9">SPIRESTeX</marc:subfield>
+    <marc:subfield code="z">Annis:1997hs</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="100" ind1=" " ind2=" ">
+    <marc:subfield code="a">Annis, P.</marc:subfield>
+    <marc:subfield code="u">Brussels U., IIHE</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="970" ind1=" " ind2=" ">
+    <marc:subfield code="a">SPIRES-5059135</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="909" ind1="C" ind2="O">
+    <marc:subfield code="o">oai:inspirehep.net:460516</marc:subfield>
+    <marc:subfield code="p">CERN</marc:subfield>
+    <marc:subfield code="p">INSPIRE:HEP</marc:subfield>
+    <marc:subfield code="p">ForCDS</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="245" ind1=" " ind2=" ">
+    <marc:subfield code="a">Capillary detectors for high resolution tracking</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="260" ind1=" " ind2=" ">
+    <marc:subfield code="c">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">ConferencePaper</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">Citeable</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">CORE</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">HEP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="269" ind1=" " ind2=" ">
+    <marc:subfield code="c">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="300" ind1=" " ind2=" ">
+    <marc:subfield code="a">5</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="520" ind1=" " ind2=" ">
+    <marc:subfield code="a">We present a new tracking device based on glass capillary bundles or layers filled with highly purified liquid scintillator and read out at one end by means of image intensifiers and CCD devices. A large-volume prototype consisting of 5 × 105 capillaries with a diameter of 20 μm and a length of 180 cm and read out by a megapixel CCD has been tested with muon and neutrino beams at CERN. With this prototype a two track resolution of 33 μm was achieved with passing through muons. Images of neutrino interactions in a capillary bundle have also been acquired and analysed. Read-out chains based on Electron Bombarded CCD (EBCCD) and image pipeline devices are also investigated. Preliminary results obtained with a capillary bundle read out by an EBCCD are presented.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="650" ind1="1" ind2="7">
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+    <marc:subfield code="a">Instrumentation</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="690" ind1="C" ind2=" ">
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+    <marc:subfield code="a">Conference Paper</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="695" ind1=" " ind2=" ">
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+    <marc:subfield code="a">talk: San Miniato 1996/05/20</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Bay, A.</marc:subfield>
+    <marc:subfield code="u">Lausanne U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Bonekamper, D.</marc:subfield>
+    <marc:subfield code="q">Bonekaemper, D.</marc:subfield>
+    <marc:subfield code="u">Munster U., ITP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Buontempo, S.</marc:subfield>
+    <marc:subfield code="u">Naples U.</marc:subfield>
+    <marc:subfield code="u">INFN, Naples</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Ereditato, A.</marc:subfield>
+    <marc:subfield code="u">Naples U.</marc:subfield>
+    <marc:subfield code="u">INFN, Naples</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Fabre, J.P.</marc:subfield>
+    <marc:subfield code="u">CERN</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Fiorillo, G.</marc:subfield>
+    <marc:subfield code="u">Naples U.</marc:subfield>
+    <marc:subfield code="u">INFN, Naples</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Frekers, D.</marc:subfield>
+    <marc:subfield code="u">Munster U., ITP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="I">NFN, Rome</marc:subfield>
+    <marc:subfield code="a">Frenkel, A.</marc:subfield>
+    <marc:subfield code="u">Rome U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="I">NFN, Rome</marc:subfield>
+    <marc:subfield code="a">Galeazzi, F.</marc:subfield>
+    <marc:subfield code="u">Rome U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Garufi, F.</marc:subfield>
+    <marc:subfield code="u">Naples U.</marc:subfield>
+    <marc:subfield code="u">INFN, Naples</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Goldberg, J.</marc:subfield>
+    <marc:subfield code="u">Technion</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Golovkin, S.</marc:subfield>
+    <marc:subfield code="u">Moscow, ITEP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Hoepfner, K.</marc:subfield>
+    <marc:subfield code="u">Humboldt U., Berlin</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Konijn, J.</marc:subfield>
+    <marc:subfield code="u">NIKHEF, Amsterdam</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Kozarenko, E.</marc:subfield>
+    <marc:subfield code="u">Dubna, JINR</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Kreslo, I.</marc:subfield>
+    <marc:subfield code="u">Dubna, JINR</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="I">NFN, Rome</marc:subfield>
+    <marc:subfield code="a">Liberti, B.</marc:subfield>
+    <marc:subfield code="u">Rome U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="I">NFN, Rome</marc:subfield>
+    <marc:subfield code="a">Martellotti, G.</marc:subfield>
+    <marc:subfield code="u">Rome U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Medvedkov, A.</marc:subfield>
+    <marc:subfield code="u">Moscow, ITEP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Mommaert, C.</marc:subfield>
+    <marc:subfield code="u">Brussels U., IIHE</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Panman, J.</marc:subfield>
+    <marc:subfield code="u">CERN</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="I">NFN, Rome</marc:subfield>
+    <marc:subfield code="a">Penso, G.</marc:subfield>
+    <marc:subfield code="u">Rome U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Petukhov, Yu.P.</marc:subfield>
+    <marc:subfield code="u">Dubna, JINR</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Rondeshagen, D.</marc:subfield>
+    <marc:subfield code="u">Munster U., ITP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Tyukov, V.</marc:subfield>
+    <marc:subfield code="u">Dubna, JINR</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Vasilchenko, V.</marc:subfield>
+    <marc:subfield code="u">Moscow, ITEP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Vilain, P.</marc:subfield>
+    <marc:subfield code="u">Brussels U., IIHE</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Vischers, J.L.</marc:subfield>
+    <marc:subfield code="u">NIKHEF, Amsterdam</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Wilquet, G.</marc:subfield>
+    <marc:subfield code="u">Brussels U., IIHE</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Winter, K.</marc:subfield>
+    <marc:subfield code="u">Humboldt U., Berlin</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Wolff, T.</marc:subfield>
+    <marc:subfield code="u">Munster U., ITP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Wong, H.</marc:subfield>
+    <marc:subfield code="u">CERN</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="773" ind1=" " ind2=" ">
+    <marc:subfield code="c">86-91</marc:subfield>
+    <marc:subfield code="p">Nucl.Phys.Proc.Suppl.</marc:subfield>
+    <marc:subfield code="v">54B</marc:subfield>
+    <marc:subfield code="w">C96-05-21</marc:subfield>
+    <marc:subfield code="y">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="961" ind1=" " ind2=" ">
+    <marc:subfield code="x">2002-08-21</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="961" ind1=" " ind2=" ">
+    <marc:subfield code="c">2012-06-12</marc:subfield>
+  </marc:datafield>
+</marc:record>
+</metadata></record>
+<record><header><identifier>oai:inspirehep.net:460517</identifier><datestamp>2015-01-19T09:57:29Z</datestamp><setSpec>INSPIRE:HEP</setSpec><setSpec>CERN</setSpec><setSpec>ForCDS</setSpec></header><metadata><marc:record xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd" type="Bibliographic">
+     <marc:leader>00000coc  2200000uu 4500</marc:leader>
+  <marc:controlfield tag="001">460517</marc:controlfield>
+  <marc:controlfield tag="005">20150119105729.0</marc:controlfield>
+  <marc:datafield tag="024" ind1="7" ind2=" ">
+    <marc:subfield code="2">DOI</marc:subfield>
+    <marc:subfield code="9">bibcheck</marc:subfield>
+    <marc:subfield code="a">10.1016/S0920-5632(97)00098-4</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="035" ind1=" " ind2=" ">
+    <marc:subfield code="9">SPIRESTeX</marc:subfield>
+    <marc:subfield code="z">Arneodo:1997ht</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="100" ind1=" " ind2=" ">
+    <marc:subfield code="a">Arneodo, F.</marc:subfield>
+    <marc:subfield code="u">INFN, Aquila</marc:subfield>
+    <marc:subfield code="u">L'Aquila U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="970" ind1=" " ind2=" ">
+    <marc:subfield code="a">SPIRES-5059143</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="909" ind1="C" ind2="O">
+    <marc:subfield code="o">oai:inspirehep.net:460517</marc:subfield>
+    <marc:subfield code="p">CERN</marc:subfield>
+    <marc:subfield code="p">INSPIRE:HEP</marc:subfield>
+    <marc:subfield code="p">ForCDS</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="245" ind1=" " ind2=" ">
+    <marc:subfield code="a">The liquid argon TPC for the ICARUS experiment</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="260" ind1=" " ind2=" ">
+    <marc:subfield code="c">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="693" ind1=" " ind2=" ">
+    <marc:subfield code="e">ICARUS</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="695" ind1=" " ind2=" ">
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+    <marc:subfield code="a">talk: San Miniato 1996/05/20</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Benetti, P.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Bettini, A.</marc:subfield>
+    <marc:subfield code="u">INFN, Padua</marc:subfield>
+    <marc:subfield code="u">Padua U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Borio, A.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Calligarich, E.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Carpanese, C.</marc:subfield>
+    <marc:subfield code="u">INFN, Padua</marc:subfield>
+    <marc:subfield code="u">Padua U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Casagrande, F.</marc:subfield>
+    <marc:subfield code="u">Frascati</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Cavalli, D.</marc:subfield>
+    <marc:subfield code="u">INFN, Milan</marc:subfield>
+    <marc:subfield code="u">Milan U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Cavanna, F.</marc:subfield>
+    <marc:subfield code="u">INFN, Aquila</marc:subfield>
+    <marc:subfield code="u">L'Aquila U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Cennini, P.</marc:subfield>
+    <marc:subfield code="u">CERN</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Centro, S.</marc:subfield>
+    <marc:subfield code="u">INFN, Padua</marc:subfield>
+    <marc:subfield code="u">Padua U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Cesana, E.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Cline, D.</marc:subfield>
+    <marc:subfield code="u">UCLA</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Dolfini, R.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Ferrari, A.</marc:subfield>
+    <marc:subfield code="u">INFN, Milan</marc:subfield>
+    <marc:subfield code="u">Milan U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Gigli Berzolari, A.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Mannocchi, G.</marc:subfield>
+    <marc:subfield code="u">Frascati</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Mauri, F.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Montanari, C.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Otwinowski, S.</marc:subfield>
+    <marc:subfield code="u">UCLA</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Parlati, S.</marc:subfield>
+    <marc:subfield code="u">INFN, Aquila</marc:subfield>
+    <marc:subfield code="u">L'Aquila U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Pascoli, D.</marc:subfield>
+    <marc:subfield code="u">INFN, Padua</marc:subfield>
+    <marc:subfield code="u">Padua U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Pepato, A.</marc:subfield>
+    <marc:subfield code="u">INFN, Padua</marc:subfield>
+    <marc:subfield code="u">Padua U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Periale, L.</marc:subfield>
+    <marc:subfield code="u">Turin, Cosmo-Geofisica Lab</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Piano Mortari, Giovanni</marc:subfield>
+    <marc:subfield code="u">INFN, Aquila</marc:subfield>
+    <marc:subfield code="u">L'Aquila U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Piazzoli, A.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Picchi, P.</marc:subfield>
+    <marc:subfield code="u">Frascati</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Pietropaolo, F.</marc:subfield>
+    <marc:subfield code="u">INFN, Padua</marc:subfield>
+    <marc:subfield code="u">Padua U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Rappoldi, A.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Raselli, G.L.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Resconi, S.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Revol, J.P.</marc:subfield>
+    <marc:subfield code="u">CERN</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Rossella, M.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Rossi, C.</marc:subfield>
+    <marc:subfield code="u">INFN, Aquila</marc:subfield>
+    <marc:subfield code="u">L'Aquila U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Rubbia, C.</marc:subfield>
+    <marc:subfield code="u">CERN</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Sala, P.</marc:subfield>
+    <marc:subfield code="u">Milan U.</marc:subfield>
+    <marc:subfield code="u">INFN, Milan</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Scannicchio, D.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Sergiampietri, F.</marc:subfield>
+    <marc:subfield code="u">INFN, Pisa</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Suzuki, S.</marc:subfield>
+    <marc:subfield code="u">Turin, Cosmo-Geofisica Lab</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Terrani, M.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Torre, P.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Ventura, S.</marc:subfield>
+    <marc:subfield code="u">INFN, Padua</marc:subfield>
+    <marc:subfield code="u">Padua U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Verdecchia, M.</marc:subfield>
+    <marc:subfield code="u">INFN, Aquila</marc:subfield>
+    <marc:subfield code="u">L'Aquila U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Vignoli, C.</marc:subfield>
+    <marc:subfield code="u">INFN, Pavia</marc:subfield>
+    <marc:subfield code="u">Pavia U.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="700" ind1=" " ind2=" ">
+    <marc:subfield code="a">Wang, H.</marc:subfield>
+    <marc:subfield code="u">UCLA</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="773" ind1=" " ind2=" ">
+    <marc:subfield code="c">95-104</marc:subfield>
+    <marc:subfield code="p">Nucl.Phys.Proc.Suppl.</marc:subfield>
+    <marc:subfield code="v">54B</marc:subfield>
+    <marc:subfield code="w">C96-05-21</marc:subfield>
+    <marc:subfield code="y">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">ConferencePaper</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">Citeable</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">CORE</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">HEP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="269" ind1=" " ind2=" ">
+    <marc:subfield code="c">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="300" ind1=" " ind2=" ">
+    <marc:subfield code="a">9</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="520" ind1=" " ind2=" ">
+    <marc:subfield code="a">The ICARUS project aims at the realisation of a large liquid argon TPC to be run at the Underground Laboratories of Gran Sasso in Italy. An intense R&amp;D activity has put on firm grounds this new detector technology and experimentally confirmed its feasibility on a few ton scale. Based on these solid achievements, the collaboration is now confident of being able to build and safely operate a multi-kton detector. The reseach program of the experiment involves the systematic study of a wide spectrum of physical phenomena covering many orders of magnitude in the energy deposited in the detector: from the few MeV of solar neutrino interactions, to the about one GeV of the proton decay and atmospheric neutrinos, up to the higher energies of neutrinos from accelerators.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="650" ind1="1" ind2="7">
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+    <marc:subfield code="a">Instrumentation</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="690" ind1="C" ind2=" ">
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+    <marc:subfield code="a">Conference Paper</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="961" ind1=" " ind2=" ">
+    <marc:subfield code="x">2002-08-21</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="961" ind1=" " ind2=" ">
+    <marc:subfield code="c">2012-06-17</marc:subfield>
+  </marc:datafield>
+</marc:record>
+</metadata></record>
+<record><header><identifier>oai:inspirehep.net:460518</identifier><datestamp>2015-01-19T09:57:40Z</datestamp><setSpec>INSPIRE:HEP</setSpec><setSpec>CERN</setSpec><setSpec>ForCDS</setSpec></header><metadata><marc:record xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd" type="Bibliographic">
+     <marc:leader>00000coc  2200000uu 4500</marc:leader>
+  <marc:controlfield tag="001">460518</marc:controlfield>
+  <marc:controlfield tag="005">20150119105740.0</marc:controlfield>
+  <marc:datafield tag="024" ind1="7" ind2=" ">
+    <marc:subfield code="2">DOI</marc:subfield>
+    <marc:subfield code="9">bibcheck</marc:subfield>
+    <marc:subfield code="a">10.1016/S0920-5632(97)00099-6</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="035" ind1=" " ind2=" ">
+    <marc:subfield code="9">SPIRESTeX</marc:subfield>
+    <marc:subfield code="z">VanderDonckt:1997hu</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="970" ind1=" " ind2=" ">
+    <marc:subfield code="a">SPIRES-5059151</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="100" ind1=" " ind2=" ">
+    <marc:subfield code="a">Vander Donckt, M.</marc:subfield>
+    <marc:subfield code="u">Brussels U., IIHE</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="710" ind1=" " ind2=" ">
+    <marc:subfield code="g">CHORUS Collaboration</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="773" ind1=" " ind2=" ">
+    <marc:subfield code="c">105-110</marc:subfield>
+    <marc:subfield code="p">Nucl.Phys.Proc.Suppl.</marc:subfield>
+    <marc:subfield code="v">54B</marc:subfield>
+    <marc:subfield code="w">C96-05-21</marc:subfield>
+    <marc:subfield code="y">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="909" ind1="C" ind2="O">
+    <marc:subfield code="o">oai:inspirehep.net:460518</marc:subfield>
+    <marc:subfield code="p">CERN</marc:subfield>
+    <marc:subfield code="p">INSPIRE:HEP</marc:subfield>
+    <marc:subfield code="p">ForCDS</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="245" ind1=" " ind2=" ">
+    <marc:subfield code="a">Performances of the CHORUS scintillating fibre trackers</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="260" ind1=" " ind2=" ">
+    <marc:subfield code="c">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="693" ind1=" " ind2=" ">
+    <marc:subfield code="e">CERN-WA-095</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="695" ind1=" " ind2=" ">
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+    <marc:subfield code="a">talk: San Miniato 1996/05/20</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">ConferencePaper</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">Citeable</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">CORE</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">HEP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="269" ind1=" " ind2=" ">
+    <marc:subfield code="c">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="300" ind1=" " ind2=" ">
+    <marc:subfield code="a">5</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="520" ind1=" " ind2=" ">
+    <marc:subfield code="a">A scintillating fibre tracker system made up of more than one million scintillating fibres has been successfully constructed for the CERN WA95/CHORUS experiment. The design and construction of the traker system as well as its opto-electronics readout are discussed. Performances of the detector are presented.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="650" ind1="1" ind2="7">
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+    <marc:subfield code="a">Instrumentation</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="690" ind1="C" ind2=" ">
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+    <marc:subfield code="a">Conference Paper</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="961" ind1=" " ind2=" ">
+    <marc:subfield code="x">2002-08-21</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="961" ind1=" " ind2=" ">
+    <marc:subfield code="c">2012-06-12</marc:subfield>
+  </marc:datafield>
+</marc:record>
+</metadata></record>
+<record><header><identifier>oai:inspirehep.net:460520</identifier><datestamp>2015-01-19T09:58:09Z</datestamp><setSpec>INSPIRE:HEP</setSpec><setSpec>CERN</setSpec><setSpec>ForCDS</setSpec></header><metadata><marc:record xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd" type="Bibliographic">
+     <marc:leader>00000coc  2200000uu 4500</marc:leader>
+  <marc:controlfield tag="001">460520</marc:controlfield>
+  <marc:controlfield tag="005">20150119105809.0</marc:controlfield>
+  <marc:datafield tag="024" ind1="7" ind2=" ">
+    <marc:subfield code="2">DOI</marc:subfield>
+    <marc:subfield code="9">bibcheck</marc:subfield>
+    <marc:subfield code="a">10.1016/S0920-5632(97)00101-1</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="035" ind1=" " ind2=" ">
+    <marc:subfield code="9">SPIRESTeX</marc:subfield>
+    <marc:subfield code="z">Ebersberger:1997hw</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="970" ind1=" " ind2=" ">
+    <marc:subfield code="a">SPIRES-5059178</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="100" ind1=" " ind2=" ">
+    <marc:subfield code="a">Ebersberger, C.</marc:subfield>
+    <marc:subfield code="u">Mainz U., Inst. Phys.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="710" ind1=" " ind2=" ">
+    <marc:subfield code="g">NA48 Collaboration</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="773" ind1=" " ind2=" ">
+    <marc:subfield code="c">119-124</marc:subfield>
+    <marc:subfield code="p">Nucl.Phys.Proc.Suppl.</marc:subfield>
+    <marc:subfield code="v">54B</marc:subfield>
+    <marc:subfield code="w">C96-05-21</marc:subfield>
+    <marc:subfield code="y">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="909" ind1="C" ind2="O">
+    <marc:subfield code="o">oai:inspirehep.net:460520</marc:subfield>
+    <marc:subfield code="p">CERN</marc:subfield>
+    <marc:subfield code="p">INSPIRE:HEP</marc:subfield>
+    <marc:subfield code="p">ForCDS</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="245" ind1=" " ind2=" ">
+    <marc:subfield code="a">The tagging detector of the NA48 experiment</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="260" ind1=" " ind2=" ">
+    <marc:subfield code="c">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="693" ind1=" " ind2=" ">
+    <marc:subfield code="e">CERN-NA-048</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="695" ind1=" " ind2=" ">
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+    <marc:subfield code="a">talk: San Miniato 1996/05/20</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">ConferencePaper</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">Citeable</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">CORE</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">HEP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="269" ind1=" " ind2=" ">
+    <marc:subfield code="c">1997</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="300" ind1=" " ind2=" ">
+    <marc:subfield code="a">5</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="520" ind1=" " ind2=" ">
+    <marc:subfield code="a">First test results are reported from the NA48 Ks tagging system. The system consists of two subdetectors. One samples the passing time of each proton which will hit the Ks target (tagging detector), the other one measures the event time of a charged Kaon decay (hodoscope for charged decays). The tagging detector was read out with a FADC system operating with a sampling frequency of 480MHz. A time resolution of 182ps and resolving of double pulses down to 4ns could be achieved.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="650" ind1="1" ind2="7">
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+    <marc:subfield code="a">Instrumentation</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="690" ind1="C" ind2=" ">
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+    <marc:subfield code="a">Conference Paper</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="961" ind1=" " ind2=" ">
+    <marc:subfield code="x">2002-08-21</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="961" ind1=" " ind2=" ">
+    <marc:subfield code="c">2012-06-19</marc:subfield>
+  </marc:datafield>
+</marc:record>
+</metadata></record>
+</ListRecords>
+</OAI-PMH>
