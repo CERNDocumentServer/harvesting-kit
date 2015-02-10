@@ -1,157 +1,37 @@
 # -*- coding: utf-8 -*-
-##
-## This file is part of Harvesting Kit.
-## Copyright (C) 2014 CERN.
-##
-## Harvesting Kit is free software; you can redistribute it and/or
-## modify it under the terms of the GNU General Public License as
-## published by the Free Software Foundation; either version 2 of the
-## License, or (at your option) any later version.
-##
-## Harvesting Kit is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
-## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+#
+# This file is part of Harvesting Kit.
+# Copyright (C) 2014, 2015 CERN.
+#
+# Harvesting Kit is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Harvesting Kit is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+"""Utility functions for Harvesting Kit."""
 
 import re
+import os
 import htmlentitydefs
 import requests
 import subprocess
+import logging
+import fnmatch
+import zipfile
 
+from datetime import datetime
+from tempfile import mkdtemp
 from lxml import etree
 from unidecode import unidecode
-
-NATIONS_DEFAULT_MAP = {"Algeria": "Algeria",
-                       "Argentina": "Argentina",
-                       "Armenia": "Armenia",
-                       "Australia": "Australia",
-                       "Austria": "Austria",
-                       "Azerbaijan": "Azerbaijan",
-                       "Belarus": "Belarus",
-                       ##########BELGIUM########
-                       "Belgium": "Belgium",
-                       "Belgique": "Belgium",
-                       #######################
-                       "Bangladesh": "Bangladesh",
-                       "Brazil": "Brazil",
-                       "Bulgaria": "Bulgaria",
-                       "Canada": "Canada",
-                       ##########CERN########
-                       "CERN": "CERN",
-                       "Cern": "CERN",
-                       #######################
-                       "Chile": "Chile",
-                       ##########CHINA########
-                       "China (PRC)": "China",
-                       "PR China": "China",
-                       "China": "China",
-                       #######################
-                       "Colombia": "Colombia",
-                       "Costa Rica": "Costa Rica",
-                       "Cuba": "Cuba",
-                       "Croatia": "Croatia",
-                       "Cyprus": "Cyprus",
-                       "Czech Republic": "Czech Republic",
-                       "Denmark": "Denmark",
-                       "Egypt": "Egypt",
-                       "Estonia": "Estonia",
-                       "Finland": "Finland",
-                       "France": "France",
-                       "Georgia": "Georgia",
-                       ##########GERMANY########
-                       "Germany": "Germany",
-                       "Deutschland": "Germany",
-                       #######################
-                       "Greece": "Greece",
-                       ##########HONG KONG########
-                       "Hong Kong": "Hong Kong",
-                       "Hong-Kong": "Hong Kong",
-                       #######################
-                       "Hungary": "Hungary",
-                       "Iceland": "Iceland",
-                       "India": "India",
-                       "Indonesia": "Indonesia",
-                       "Iran": "Iran",
-                       "Ireland": "Ireland",
-                       "Israel": "Israel",
-                       ##########ITALY########
-                       "Italy": "Italy",
-                       "Italia": "Italy",
-                       #######################
-                       "Japan": "Japan",
-                       ##########SOUTH KOREA########
-                       "Korea": "South Korea",
-                       "Republic of Korea": "South Korea",
-                       "South Korea": "South Korea",
-                       #######################
-                       "Lebanon": "Lebanon",
-                       "Lithuania": "Lithuania",
-                       "México": "México",
-                       "Montenegro": "Montenegro",
-                       "Morocco": "Morocco",
-                       ##########NETHERLANDS########
-                       "Netherlands": "Netherlands",
-                       "The Netherlands": "Netherlands",
-                       #######################
-                       "New Zealand": "New Zealand",
-                       "Norway": "Norway",
-                       "Pakistan": "Pakistan",
-                       "Poland": "Poland",
-                       "Portugal": "Portugal",
-                       "Romania": "Romania",
-                       ##########RUSSIA########
-                       "Russia": "Russia",
-                       "Russian Federation": "Russia",
-                       #######################
-                       "Saudi Arabia": "Saudi Arabia",
-                       "Serbia": "Serbia",
-                       "Singapore": "Singapore",
-                       "Slovak Republic": "Slovakia",
-                       ##########SLOVAKIA########
-                       "Slovakia": "Slovakia",
-                       "Slovenia": "Slovenia",
-                       #######################
-                       "South Africa": "South Africa",
-                       "Spain": "Spain",
-                       "Sweden": "Sweden",
-                       "Switzerland": "Switzerland",
-                       "Taiwan": "Taiwan",
-                       "Thailand": "Thailand",
-                       "Tunisia": "Tunisia",
-                       "Turkey": "Turkey",
-                       "Ukraine": "Ukraine",
-                       ##########ENGLAND########
-                       "United Kingdom": "UK",
-                       "UK": "UK",
-                       #######################
-                       "England": "England",
-                       ##########USA########
-                       "United States of America": "USA",
-                       "United States": "USA",
-                       "USA": "USA",
-                       #######################
-                       "Uruguay": "Uruguay",
-                       "Uzbekistan": "Uzbekistan",
-                       "Venezuela": "Venezuela",
-                       ##########VIETNAM########
-                       "Vietnam": "Vietnam",
-                       "Viet Nam": "Vietnam",
-                       #######################
-                       #########other#########
-                       "Peru": "Peru",
-                       "Kuwait": "Kuwait",
-                       "Sri Lanka": "Sri Lanka",
-                       "Kazakhstan": "Kazakhstan",
-                       "Mongolia": "Mongolia",
-                       "United Arab Emirates": "United Arab Emirates",
-                       "Malaysia": "Malaysia",
-                       "Qatar": "Qatar",
-                       "Kyrgyz Republic": "Kyrgyz Republic",
-                       "Jordan": "Jordan"}
 
 
 def create_record():
@@ -245,9 +125,9 @@ def unescape(text):
 
 def format_arxiv_id(arxiv_id):
     """Properly format arXiv IDs."""
-    if arxiv_id and not "/" in arxiv_id and "arXiv" not in arxiv_id:
+    if arxiv_id and "/" not in arxiv_id and "arXiv" not in arxiv_id:
         return "arXiv:%s" % (arxiv_id,)
-    elif arxiv_id and not '.' in arxiv_id and arxiv_id.lower().startswith('arxiv:'):
+    elif arxiv_id and '.' not in arxiv_id and arxiv_id.lower().startswith('arxiv:'):
         return arxiv_id[6:]  # strip away arxiv: for old identifiers
     else:
         return arxiv_id
@@ -283,7 +163,7 @@ def fix_name_capitalization(lastname, givennames):
 
 
 def fix_journal_name(journal, knowledge_base):
-    """ Converts journal name to Inspire's short form """
+    """Convert journal name to Inspire's short form."""
     if not journal:
         return '', ''
     if not knowledge_base:
@@ -308,6 +188,8 @@ def fix_journal_name(journal, knowledge_base):
 
 
 def add_nations_field(authors_subfields):
+    """Add correct nations field according to mapping in NATIONS_DEFAULT_MAP."""
+    from .config import NATIONS_DEFAULT_MAP
     result = []
     for field in authors_subfields:
         if field[0] == 'v':
@@ -330,6 +212,7 @@ def add_nations_field(authors_subfields):
 
 
 def fix_dashes(string):
+    """Fix bad Unicode special dashes in string."""
     string = string.replace(u'\u05BE', '-')
     string = string.replace(u'\u1806', '-')
     string = string.replace(u'\u2E3A', '-')
@@ -339,6 +222,7 @@ def fix_dashes(string):
 
 
 def fix_title_capitalization(title):
+    """Try to capitalize properly a title string."""
     words = []
     for word in title.split():
         if word.upper() != word:
@@ -370,3 +254,189 @@ def run_shell_command(commands, **kwargs):
                          **kwargs)
     output, error = p.communicate()
     return p.returncode, output, error
+
+
+def create_logger(name,
+                  filename=None,
+                  logging_level=logging.DEBUG):
+    """Create a logger object."""
+    logger = logging.getLogger(name)
+    formatter = logging.Formatter(('%(asctime)s - %(name)s - '
+                                   '%(levelname)-8s - %(message)s'))
+
+    if filename:
+        fh = logging.FileHandler(filename=filename)
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
+
+    ch = logging.StreamHandler()
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+
+    logger.setLevel(logging_level)
+
+    return logger
+
+
+def unzip(zipped_file, output_directory=None,
+          prefix="harvestingkit_unzip_", suffix=""):
+    """Uncompress a zipped file from given filepath to an (optional) location.
+
+    If no location is given, a temporary folder will be generated inside
+    CFG_TMPDIR, prefixed with "apsharvest_unzip_".
+    """
+    if not output_directory:
+        # We create a temporary directory to extract our stuff in
+        try:
+            output_directory = mkdtemp(suffix=suffix,
+                                       prefix=prefix)
+        except Exception, e:
+            try:
+                os.removedirs(output_directory)
+            except TypeError:
+                pass
+            raise e
+    return _do_unzip(zipped_file, output_directory)
+
+
+def _do_unzip(zipped_file, output_directory):
+    """Perform the actual uncompression."""
+    z = zipfile.ZipFile(zipped_file)
+    for path in z.namelist():
+        relative_path = os.path.join(output_directory, path)
+        dirname, dummy = os.path.split(relative_path)
+        try:
+            if relative_path.endswith(os.sep) and not os.path.exists(dirname):
+                os.makedirs(relative_path)
+            elif not os.path.exists(relative_path):
+                dirname = os.path.join(output_directory, os.path.dirname(path))
+                if os.path.dirname(path) and not os.path.exists(dirname):
+                    os.makedirs(dirname)
+                fd = open(relative_path, "w")
+                fd.write(z.read(path))
+                fd.close()
+        except IOError, e:
+            raise e
+    return output_directory
+
+
+def locate(pattern, root=os.curdir):
+    """Locate all files matching supplied filename pattern recursively."""
+    for path, dummy, files in os.walk(os.path.abspath(root)):
+        for filename in fnmatch.filter(files, pattern):
+            yield os.path.join(path, filename)
+
+
+def punctuate_authorname(an):
+    """Punctuate author names properly.
+
+    Expects input in the form 'Bloggs, J K' and will return 'Bloggs, J. K.'.
+    """
+    name = an.strip()
+    parts = [x for x in name.split(',') if x != '']
+    ret_str = ''
+    for idx, part in enumerate(parts):
+        subparts = part.strip().split(' ')
+        for sidx, substr in enumerate(subparts):
+            ret_str += substr
+            if len(substr) == 1:
+                ret_str += '.'
+            if sidx < (len(subparts) - 1):
+                ret_str += ' '
+        if idx < (len(parts) - 1):
+            ret_str += ', '
+    return ret_str.strip()
+
+
+def convert_date_to_iso(value):
+    """Convert a date-value to the ISO date standard."""
+    date_formats = ["%d %b %Y", "%Y/%m/%d"]
+    for dformat in date_formats:
+        try:
+            date = datetime.strptime(value, dformat)
+            return date.strftime("%Y-%m-%d")
+        except ValueError:
+            pass
+    return value
+
+
+def convert_date_from_iso_to_human(value):
+    """Convert a date-value to the ISO date standard for humans."""
+    try:
+        year, month, day = value.split("-")
+    except ValueError:
+        # Not separated by "-". Space?
+        try:
+            year, month, day = value.split(" ")
+        except ValueError:
+            # What gives? OK, lets just return as is
+            return value
+
+    try:
+        date_object = datetime(int(year), int(month), int(day))
+    except TypeError:
+        return value
+    return date_object.strftime("%d %b %Y")
+
+
+def get_converted_image_name(image):
+    """Return the name of the image after it has been converted to png format.
+
+    Strips off the old extension.
+
+    :param image: The fullpath of the image before conversion
+    :type image: string
+
+    :return: the fullpath of the image after convertion
+    """
+    png_extension = '.png'
+
+    if image[(0 - len(png_extension)):] == png_extension:
+        # it already ends in png!  we're golden
+        return image
+
+    img_dir = os.path.split(image)[0]
+    image = os.path.split(image)[-1]
+
+    # cut off the old extension
+    if len(image.split('.')) > 1:
+        old_extension = '.' + image.split('.')[-1]
+        converted_image = image[:(0 - len(old_extension))] + png_extension
+
+    else:
+        converted_image = image + png_extension
+
+    return os.path.join(img_dir, converted_image)
+
+
+def convert_images(image_list):
+    """Convert list of images to PNG format.
+
+    @param: image_list ([string, string, ...]): the list of image files
+        extracted from the tarball in step 1
+
+    @return: image_list ([str, str, ...]): The list of image files when all
+        have been converted to PNG format.
+    """
+    png_output_contains = 'PNG image'
+    ret_list = []
+    for image_file in image_list:
+        if os.path.isdir(image_file):
+            continue
+
+        dummy1, cmd_out, dummy2 = run_shell_command('file %s', (image_file,))
+        if cmd_out.find(png_output_contains) > -1:
+            ret_list.append(image_file)
+        else:
+            # we're just going to assume that ImageMagick can convert all
+            # the image types that we may be faced with
+            # for sure it can do EPS->PNG and JPG->PNG and PS->PNG
+            # and PSTEX->PNG
+            converted_image_file = get_converted_image_name(image_file)
+            cmd_list = ['convert', image_file, converted_image_file]
+            dummy1, cmd_out, cmd_err = run_shell_command(cmd_list)
+            if cmd_err == '':
+                ret_list.append(converted_image_file)
+            else:
+                raise Exception(cmd_err)
+    return ret_list
