@@ -1,22 +1,27 @@
 # -*- coding: utf-8 -*-
-##
-## This file is part of Harvesting Kit.
-## Copyright (C) 2014 CERN.
-##
-## Harvesting Kit is free software; you can redistribute it and/or
-## modify it under the terms of the GNU General Public License as
-## published by the Free Software Foundation; either version 2 of the
-## License, or (at your option) any later version.
-##
-## Harvesting Kit is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
-## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+#
+# This file is part of Harvesting Kit.
+# Copyright (C) 2014, 2015 CERN.
+#
+# Harvesting Kit is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Harvesting Kit is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+
+"""Unit tests for APS."""
+
 import unittest
+
 from harvestingkit.aps_package import ApsPackage
 from xml.dom.minidom import parse
 from os.path import (join,
@@ -28,132 +33,241 @@ from harvestingkit.tests import (__file__ as folder,
 
 
 class APSPackageTests(unittest.TestCase):
+
+    """Test that metadata are exported correctly."""
+
     def setUp(self):
+        """Setup sample parsing used in tests."""
         self.aps = ApsPackage(journal_mappings)
         self.aps.document = parse(join(dirname(folder), aps_test_record))
 
     def test_journal(self):
-        self.assertEqual(self.aps._get_journal(), 'Phys. Rev. C')
+        """Test that journal name is extracted correctly."""
+        self.assertEqual(self.aps._get_journal(), 'Phys. Rev. D')
 
     def test_abstract(self):
-        abstract = '<p>We calculate the effective masses of neutrons and protons '\
-                   'in dense nuclear matter within the microscopic Brueckner-Hartree-Fock '\
-                   'many-body theory and study the impact on the neutrino emissivity '\
-                   'processes of neutron stars. We compare results based on different '\
-                   'nucleon-nucleon potentials and nuclear three-body forces. Useful '\
-                   'parametrizations of the numerical results are given. We find '\
-                   'substantial in-medium suppression of the emissivities, '\
-                   'strongly dependent on the interactions.</p>'
+        """Test that abstract is extracted correctly."""
+        abstract = '<p>In conformally flat background geometries the' \
+                   ' long-wavelength gravitons can be described in the ' \
+                   'fluid approximation and they induce scalar fluctuations ' \
+                   'both during inflation and in the subsequent ' \
+                   'radiation-dominated epoch. While this effect is minute ' \
+                   'and suppressed for a de Sitter stage of expansion, the ' \
+                   'fluctuations of the energy-momentum pseudotensor of the ' \
+                   'graviton fluid lead to curvature perturbations that ' \
+                   'increase with time all along the post-inflationary evolution.' \
+                   ' An explicit calculation of these effects is presented for' \
+                   ' a standard thermal history and it is shown that the growth' \
+                   ' of the curvature perturbations caused by the long-wavelength ' \
+                   'modes is approximately compensated by the slope of the power ' \
+                   'spectra of the energy density, pressure and anisotropic ' \
+                   'stress of the relic gravitons.</p>'
         self.assertEqual(self.aps._get_abstract(), abstract)
 
     def test_title(self):
-        title = 'Nucleon effective masses within the Brueckner-Hartree-Fock '\
-                'theory: Impact on stellar neutrino emission', '', []
+        """Check that title is correct."""
+        title = 'Scalar modes of the relic gravitons', '', []
         self.assertEqual(self.aps._get_title(), title)
 
     def test_doi(self):
-        self.assertEqual(self.aps._get_doi(), '10.1103/PhysRevC.89.048801')
+        """Check that DOI is correct."""
+        self.assertEqual(self.aps._get_doi(), '10.1103/PhysRevD.91.023521')
 
     def test_authors(self):
-        authors = [('Baldo, M.', [], []),
-                   ('Burgio, G.F.', [], []),
-                   ('Schulze, H.-J.', [], []),
-                   ('Newman, M.E.J.', [u'a2', u'a3'], []),
-                   ('Taranto, G.', [u'a1'], [u'n1'])]
+        """Check that authors are correct."""
+        authors = [('Giovannini, Massimo', [u'a1'], [u'n1'])]
         self.assertEqual(self.aps._get_authors(), authors)
 
     def test_affiliations(self):
+        """Check that affiliations are correct."""
         affiliations = {
-            u'a1': 'INFN Sezione di Catania and Dipartimento di Fisica e Astronomia, Universit\xc3\xa1 di Catania , Via Santa Sofia 64, 95123 Catania, Italy',
-            u'a3': 'Center for the Study of Complex Systems, University of Michigan , Ann Arbor, Michigan 48109, USA',
-            u'a2': 'Department of Electrical Engineering and Computer Science, University of Michigan , Ann Arbor, Michigan 48109, USA'}
+            u'a1': 'Department of Physics, Theory Division, CERN , 1211 Geneva 23, Switzerland INFN, Section of Milan-Bicocca, 20126 Milan, Italy'
+        }
         self.assertEqual(self.aps._get_affiliations(), affiliations)
 
     def test_author_emails(self):
-        emails = {u'n1': ['tarantogabriele@gmail.com', 'gabriele.taranto@ct.infn.it']}
+        """Check email from author."""
+        emails = {u'n1': ['massimo.giovannini@cern.ch']}
         self.assertEqual(self.aps._get_author_emails(), emails)
 
     def test_copyright(self):
-        self.assertEqual(self.aps._get_copyright(), ('American Physical Society', '2014', '\xc2\xa92014 American Physical Society'))
+        """Check that Copyright is extracted."""
+        self.assertEqual(self.aps._get_copyright(), ('authors', '2015', 'Published by the American Physical Society'))
 
     def test_date(self):
-        self.assertEqual(self.aps._get_date(), '2014-04-28')
+        """Check published date."""
+        self.assertEqual(self.aps._get_date(), '2015-01-29')
 
     def test_publisher(self):
+        """Check correct publisher."""
         self.assertEqual(self.aps._get_publisher(), 'American Physical Society')
 
     def test_publication_information(self):
+        """Check extracted pubinfo."""
         publication_information = ('Phys.Rev.',
-                                   'C89',
-                                   '4',
-                                   u'2014',
-                                   u'2014-04-28',
-                                   u'10.1103/PhysRevC.89.048801',
-                                   '048801',
+                                   'D91',
+                                   '2',
+                                   u'2015',
+                                   u'2015-01-29',
+                                   u'10.1103/PhysRevD.91.023521',
+                                   '023521',
                                    '',
                                    '')
         self.assertEqual(self.aps._get_publication_information(), publication_information)
 
     def test_pagecount(self):
-        self.assertEqual(self.aps._get_page_count(), '5')
+        """Check pagecount."""
+        self.assertEqual(self.aps._get_page_count(), '15')
 
     def test_pacscodes(self):
-        self.assertEqual(self.aps._get_pacscodes(), ['26.60.Kp', '97.10.Cv'])
+        """Check that PACS are extracted."""
+        self.assertEqual(self.aps._get_pacscodes(), ['98.80.Cq', '04.30.-w', '04.62.+v', '98.70.Vc'])
 
     def test_subject(self):
-        self.assertEqual(self.aps._get_subject(), 'Nuclear Astrophysics')
+        """Check subject."""
+        self.assertEqual(self.aps._get_subject(), 'Cosmology')
 
     def test_license(self):
-        self.assertEqual(self.aps._get_license(), ('', '', ''))
+        """Check license."""
+        self.assertEqual(
+             self.aps._get_license(),
+             ('Creative Commons Attribution 3.0 License',
+              'creative-commons',
+              'http://creativecommons.org/licenses/by/3.0/')
+        )
 
     def test_keywords(self):
+        """Check keywords."""
         self.assertEqual(self.aps._get_keywords(), [])
 
     def test_references(self):
-        references = [(u'journal', u'10.1016/S0370-1573(00)00131-9', [u'D. G. Yakovlev', u'A. D. Kaminker', u'O. Y. Gnedin', u'P. Haensel'], '', 'Phys.Rep.', '354', '1', '2001', '1', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1016/0370-1573(76)90017-X', [u'J. P. Jeukenne', u'A. Lejeune', u'C. Mahaux'], '', 'Phys.Rep.', 'C25', '83', '1976', '2', '', '', '', [], '', '', []),
-                      (u'book', '', [u'M. Baldo'], '', 'Nuclear Methods and the Nuclear Equation of State, International Review of Nuclear Physics, Vol.8', '', '', '1999', '3', '', 'Singapore: World Scientific', '', [], '', '', []),
-                      (u'journal', u'10.1088/0034-4885/75/2/026301', [u'M. Baldo', u'G. F. Burgio'], '', 'Rep.Prog.Phys.', '75', '026301', '2012', '4', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.24.1203', [u'B. D. Day'], '', 'Phys.Rev.', 'C24', '1203', '1981', '5', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevLett.81.1584', [u'H. Q. Song', u'M. Baldo', u'G. Giansiracusa', u'U. Lombardo'], '', 'Phys.Rev.Lett.', '81', '1584', '1998', '5', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1016/S0370-2693(99)01463-X', [u'M. Baldo', u'G. Giansiracusa', u'U. Lombardo', u'H. Q. Song'], '', 'Phys.Lett.', 'B473', '1', '2000', '5', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.65.017303', [u'M. Baldo', u'A. Fiasconaro', u'H. Q. Song', u'G. Giansiracusa', u'U. Lombardo'], '', 'Phys.Rev.', 'C65', '017303', '2001', '5', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.73.034307', [u'R. Sartor'], '', 'Phys.Rev.', 'C73', '034307', '2006', '5', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.74.047304', [u'Z. H. Li', u'U. Lombardo', u'H.-J. Schulze', u'W. Zuo', u'L. W. Chen', u'H. R. Ma'], '', 'Phys.Rev.', 'C74', '047304', '2006', '6', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.86.064001', [u'M. Baldo', u'A. Polls', u'A. Rios', u'H.-J. Schulze', u'I. Vida\xf1a'], '', 'Phys.Rev.', 'C86', '064001', '2012', '7', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.40.1040', [u'P. Grang\xe9', u'A. Lejeune', u'M. Martzolff', u'J.-F. Mathiot'], '', 'Phys.Rev.', 'C40', '1040', '1989', '8', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1016/S0375-9474(02)00750-9', [u'W. Zuo', u'A. Lejeune', u'U. Lombardo', u'J.-F. Mathiot'], '', 'Nucl.Phys.', 'A706', '418', '2002', '8', '', '', '', [], '', '', []),
-                      (u'journal', '', [u'M. Baldo', u'I. Bombaci', u'G. F. Burgio'], '', 'Astron.Astrophys.', '328', '274', '1997', '9', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.69.018801', [u'X. R. Zhou', u'G. F. Burgio', u'U. Lombardo', u'H.-J. Schulze', u'W. Zuo'], '', 'Phys.Rev.', 'C69', '018801', '2004', '10', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.77.034316', [u'Z. H. Li', u'U. Lombardo', u'H.-J. Schulze', u'W. Zuo'], '', 'Phys.Rev.', 'C77', '034316', '2008', '11', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.85.064002', [u'Z. H. Li', u'H.-J. Schulze'], '', 'Phys.Rev.', 'C85', '064002', '2012', '11', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.88.054326', [u'A. Carbone', u'A. Cipollone', u'C. Barbieri', u'A. Rios', u'A. Polls'], '', 'Phys.Rev.', 'C88', '054326', '2013', '12', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1016/0375-9474(83)90336-6', [u'J. Carlson', u'V. R. Pandharipande', u'R. B. Wiringa'], '', 'Nucl.Phys.', 'A401', '59', '1983', '13', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1016/0375-9474(86)90003-5', [u'R. Schiavilla', u'V. R. Pandharipande', u'R. B. Wiringa'], '', 'Nucl.Phys.', 'A449', '219', '1986', '13', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.56.1720', [u'B. S. Pudliner', u'V. R. Pandharipande', u'J. Carlson', u'S. C. Pieper', u'R. B. Wiringa'], '', 'Phys.Rev.', 'C56', '1720', '1997', '13', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1016/j.physletb.2008.02.040', [u'M. Baldo', u'A. E. Shaban'], '', 'Phys.Lett.', 'B661', '373', '2008', '14', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.51.38', [u'R. B. Wiringa', u'V. G. J. Stoks', u'R. Schiavilla'], '', 'Phys.Rev.', 'C51', '38', '1995', '15', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.63.024001', [u'R. Machleidt'], '', 'Phys.Rev.', 'C63', '024001', '2001', '16', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.78.028801', [u'Z. H. Li', u'H.-J. Schulze'], '', 'Phys.Rev.', 'C78', '028801', '2008', '17', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.74.014317', [u'W. Zuo', u'U. Lombardo', u'H.-J. Schulze', u'Z. H. Li'], '', 'Phys.Rev.', 'C74', '014317', '2006', '18', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1088/0256-307X/29/4/042102', [u'S.-X. Gan', u'W. Zuo', u'U. Lombardo'], '', 'Chin.Phys.Lett.', '29', '042102', '2012', '18', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1016/S0370-2693(97)01600-6', [u'W. Zuo', u'G. Giansiracusa', u'U. Lombardo', u'N. Sandulescu', u'H.-J. Schulze'], '', 'Phys.Lett.', 'B421', '1', '1998', '19', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1016/S0370-2693(98)00656-X', [u'W. Zuo', u'U. Lombardo', u'H.-J. Schulze'], '', 'Phys.Lett.', 'B432', '241', '1998', '19', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.82.014314', [u'K. Hebeler', u'A. Schwenk'], '', 'Phys.Rev.', 'C82', '014314', '2010', '20', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1016/j.nuclphysa.2011.12.001', [u'J. W. Holt', u'N. Kaiser', u'W. Weise'], '', 'Nucl.Phys.', 'A876', '61', '2012', '20', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevLett.66.2701', [u'J. M. Lattimer', u'C. J. Pethick', u'M. Prakash', u'P. Haensel'], '', 'Phys.Rev.Lett.', '66', '2701', '1991', '21', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1086/157313', [u'B. L. Friman', u'O. V. Maxwell'], '', 'Astrophys.J.', '232', '541', '1979', '22', '', '', '', [], '', '', []),
-                      (u'journal', '', [u'D. G. Yakovlev', u'K. P. Levenfish'], '', 'Astron.Astrophys.', '297', '717', '1995', '23', '', '', '', [], '', '', []),
-                      (u'journal', u'10.1103/PhysRevC.88.015804', [u'Peng Yin', u'Wei Zuo'], '', 'Phys.Rev.', 'C88', '015804', '2013', '24', '', '', '', [], '', '', [])
-                      ]
+        """Check references."""
+        references = [
+            (u'journal', '', [u'L.\u2009P. Grishchuk'], '', 'Zh.\xc3\x89ksp.Teor.Fiz.',
+             '67', '825', '1974', '1', '', '', '', [], '', '', []),
+            (u'journal', '', [u'L.\u2009P. Grishchuk'], '', 'Sov.Phys.JETP',
+             '40', '409', '1975', '1', '', '', '', [], '', '', []),
+            (u'journal', '10.1111/j.1749-6632.1977.tb37064.x', [u'L.\u2009P. Grishchuk'],
+             '', 'Ann.N.Y.Acad.Sci.', '302', '439', '1977', '1', '', '', '', [], '', '', []),
+            (u'journal', '10.1111/j.1749-6632.1977.tb37064.x', [u'L.\u2009P. Grishchuk'], '',
+             'Ann.N.Y.Acad.Sci.', '302', '439', '1977', '1', '', '', '', [], '', '', []),
+            (u'journal', '', [u'A.\u2009A. Starobinsky'], '', 'JETP Lett.',
+             '30', '682', '1979', '2', '', '', '', [], '', '', []),
+            (u'journal', '10.1016/0370-2693(82)90641-4', [u'V.\u2009A. Rubakov', u'M.\u2009V. Sazhin', u'A.\u2009V. Veryaskin'],
+             '', 'Phys.Lett.', 'B115', '189', '1982', '2', '', '', '', [], '', '', []),
+            (u'journal', '10.1016/0370-2693(83)91322-9', [u'R. Fabbri', u'M.\u2009D. Pollock'],
+             '', 'Phys.Lett.', 'B125', '445', '1983', '3', '', '', '', [], '', '', []),
+            (u'journal', '10.1016/0550-3213(84)90329-8', [u'L.\u2009F. Abbott', u'M.\u2009B. Wise'],
+             '', 'Nucl.Phys.', '244', '541', '1984', '3', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.43.2566', [u'L.\u2009P. Grishchuk', u'M. Solokhin'], '',
+             'Phys.Rev.', 'D43', '2566', '1991', '4', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.42.453', [u'V. Sahni'], '', 'Phys.Rev.',
+             'D42', '453', '1990', '4', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.58.083504', [u'M. Giovannini'], '', 'Phys.Rev.',
+             'D58', '083504', '1998', '5', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.60.123511', [u'M. Giovannini'], '', 'Phys.Rev.',
+             'D60', '123511', '1999', '5', '', '', '', [], '', '', []),
+            (u'journal', '10.1088/0264-9381/26/4/045004', [u'M. Giovannini'], '',
+             'Classical Quantum Gravity', '26', '045004', '2009', '5', '', '', '', [], '', '', []),
+            (u'journal', '10.1016/j.physletb.2009.09.018', [u'W. Zhao', u'D. Baskaran', u'P. Coles'],
+             '', 'Phys.Lett.', 'B680', '411', '2009', '5', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.80.042002', [u'M.\u2009S. Pshirkov', u'D. Baskaran'],
+             '', 'Phys.Rev.', 'D80', '042002', '2009', '6', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.81.083503', [u'T. Chiba', u'K. Kamada', u'M. Yamaguchi'],
+             '', 'Phys.Rev.', 'D81', '083503', '2010', '6', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.89.123513', [u'M.\u2009W. Hossain', u'R. Myrzakulov', u'M. Sami', u'E.\u2009N. Saridakis'],
+             '', 'Phys.Rev.', 'D89', '123513', '2014', '6', '', '', '', [], '', '', []),
+            (u'book', '', [u'C.\u2009W. Misner', u'K.\u2009S. Thorne', u'J.\u2009A. Wheeler'],
+             '', 'Gravitation', '', '467', '1973', '7', '', 'Freeman', '', u'New York,', '', '', []),
+            (u'book', '', [u'S. Weinberg'], '', 'Gravitation and Cosmology',
+             '', '166', '1972', '8', '', 'Wiley', '', u'New York,', '', '', []),
+            (u'book', '', [u'L.\u2009D. Landau', u'E.\u2009M. Lifshitz'], '',
+             'The Classical Theory of Fields', '', '', '1971', '9', '', 'Pergamon Press', '', u'New York,', '', '', []),
+            (u'journal', '10.1103/PhysRev.166.1263', [u'R. Isaacson'], '', 'Phys.Rev.', '166', '1263',
+             '1968', '10', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRev.166.1272', [u'R. Isaacson'], '', 'Phys.Rev.', '166', '1272',
+             '1968', '10', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.56.3248', [u'L.\u2009R. Abramo', u'R. Brandenberger', u'V. Mukahanov'],
+             '', 'Phys.Rev.', 'D56', '3248', '1997', '11', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.60.064004', [u'L.\u2009R. Abramo'], '',
+             'Phys Rev.', 'D60', '064004', '1999', '11', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.61.024038', [u'S.\u2009V. Babak', u'L.\u2009P. Grishchuk'],
+             '', 'Phys.Rev.', 'D61', '024038', '1999', '11', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.73.083505', [u'M. Giovannini'], '',
+             'Phys.Rev.', 'D73', '083505', '2006', '12', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.85.104012', [u'D. Su', u'Y. Zhang'],
+             '', 'Phys.Rev.', 'D85', '104012', '2012', '12', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.16.1601', [u'L.\u2009H. Ford', u'L. Parker'],
+             '', 'Phys.Rev.', 'D16', '1601', '1977', '13', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.16.245', [u'L.\u2009H. Ford', u'L. Parker'],
+             '', 'Phys.Rev.', 'D16', '245', '1977', '13', '', '', '', [], '', '', []),
+            (u'journal', '10.1016/0375-9601(77)90880-5', [u'B.\u2009L. Hu', u'L. Parker'],
+             '', 'Phys.Lett', 'A63', '217', '1977', '13', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.22.1882', [u'J. Bardeen'], '',
+             'Phys.Rev.', 'D22', '1882', '1980', '14', '', '', '', [], '', '', []),
+            (u'journal', '10.1093/mnras/200.3.535', [u'G.\u2009V. Chibisov', u'V.\u2009F. Mukhanov'],
+             '', 'Mon.Not.R.Astron.Soc.', '200', '535', '1982', '14', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.28.679', [u'J. Bardeen', u'P. Steinhardt', u'M. Turner'],
+             '', 'Phys.Rev.', 'D28', '679', '1983', '14', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.30.265', [u'J.\u2009A. Frieman', u'M.\u2009S. Turner'],
+             '', 'Phys.Rev.', 'D30', '265', '1984', '14', '', '', '', [], '', '', []),
+            (u'journal', '10.1143/PTPS.78.1', [u'H. Kodama', u'M. Sasaki'], '',
+             'Prog.Theor.Phys.Suppl.', '78', '1', '1984', '14', '', '', '', [], '', '', []),
+            (u'journal', '10.1086/170206', [u'J-c. Hwang'], '',
+             'Astrophys.J.', '375', '443', '1991', '14', '', '', '', [], '', '', []),
+            (u'journal', '', [u'V.\u2009N. Lukash'], '',
+             'Zh.Eksp.Teor.Fiz.', '79', '1601', '1980', '15', '', '', '', [], '', '', []),
+            (u'journal', '', [u'V.\u2009N. Lukash'], '',
+             'Sov.Phys.JETP', '52', '807', '1980', '15', '', '', '', [], '', '', []),
+            (u'journal', '10.1134/S1063772907060017', [u'V. Strokov'],
+             '', 'Astronomy Reports', '51', '431', '2007', '15', '', '', '', [], '', '', []),
+            (u'journal', '10.1088/0067-0049/192/2/15', [u'B. Gold'],
+             '', 'Astrophys.J.Suppl.Ser.', '192', '15', '2011', '16', '', '', '', [], '', '', []),
+            (u'journal', '10.1088/0067-0049/192/2/16', [u'D. Larson'],
+             '', 'Astrophys.J.Suppl.Ser.', '192', '16', '2011', '16', '', '', '', [], '', '', []),
+            (u'journal', '10.1088/0067-0049/192/2/17', [u'C.\u2009L. Bennett'],
+             '', 'Astrophys.J.Suppl.Ser.', '192', '17', '2011', '16', '', '', '', [], '', '', []),
+            (u'journal', '10.1088/0067-0049/208/2/19', [u'G. Hinshaw'],
+             '', 'Astrophys.J.Suppl.Ser.', '208', '19', '2013', '16', '', '', '', [], '', '', []),
+            (u'journal', '10.1088/0067-0049/208/2/20', [u'C.\u2009L. Bennett'],
+             '', 'Astrophys.J.Suppl.Ser.', '208', '20', '2013', '16', '', '', '', [], '', '', []),
+            (u'journal', '10.1086/377226', [u'D.\u2009N. Spergel'],
+             '', 'Astrophys.J.Suppl.Ser.', '148', '175', '2003', '17', '', '', '', [], '', '', []),
+            (u'journal', '10.1086/513700', [u'D.\u2009N. Spergel'],
+             '', 'Astrophys.J.Suppl.Ser.', '170', '377', '2007', '17', '', '', '', [], '', '', []),
+            (u'journal', '10.1086/513699', [u'L. Page'], '',
+             'Astrophys.J.Suppl.Ser.', '170', '335', '2007', '17', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevLett.112.241101',
+             [u'P.\u2009A.\u2009R. Ade'], 'BICEP2 Collaboration', 'Phys.Rev.Lett.', '112', '241101', '2014', '18', '', '', '', [], '', '', []),
+            (u'journal', '10.1088/0004-637X/792/1/62', [u'P.\u2009A.\u2009R. Ade'],
+             'BICEP2 Collaboration', 'Astrophys.J.', '792', '62', '2014', '18', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.8.4231', [u'G.\u2009L. Murphy'],
+             '', 'Phys.Rev.', 'D8', '4231', '1973', '19', '', '', '', [], '', '', []),
+            (u'journal', '10.1016/0375-9601(77)90953-7', [u'G.\u2009L. Murphy'],
+             '', 'Phys.Lett.', 'A62', '75', '1977', '19', '', '', '', [], '', '', []),
+            (u'journal', '', [u'V.\u2009A. Belinskii', u'I.\u2009M. Khalatnikov'],
+             '', 'Zh.Eksp.Teor.Fiz.', '69', '401', '1975', '20', '', '', '', [], '', '', []),
+            (u'journal', '', [u'V.\u2009A. Belinskii', u'I.\u2009M. Khalatnikov'],
+             '', 'Sov.Phys.JETP', '42', '205', '1976', '20', '', '', '', [], '', '', []),
+            (u'journal', '', [u'V.\u2009A. Belinskii', u'I.\u2009M. Khalatnikov'],
+             '', 'Zh.Eksp.Teor.Fiz.Pis.Red.', '21', '223', '1975', '20', '', '', '', [], '', '', []),
+            (u'journal', '', [u'V.\u2009A. Belinskii', u'I.\u2009M. Khalatnikov'],
+             '', 'JETP Lett.', '21', '99', '1975', '20', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.72.043514', [u'S. Weinberg'],
+             '', 'Phys.Rev.', 'D72', '043514', '2005', '21', '', '', '', [], '', '', []),
+            (u'journal', '10.1103/PhysRevD.74.023508', [u'S. Weinberg'],
+             '', 'Phys.Rev.', 'D74', '023508', '2006', '21', '', '', '', [], '', '', []),
+        ]
         for ref in self.aps.document.getElementsByTagName('ref'):
             for innerref in self.aps._get_reference(ref):
                 self.assertTrue(innerref in references)
 
     def test_article_type(self):
-        self.assertEqual(self.aps._get_article_type(), 'brief-report')
+        """Check extracted article type."""
+        self.assertEqual(self.aps._get_article_type(), 'research-article')
 
     def test_get_record(self):
+        """Check full record conversion."""
         source_file = join(dirname(folder), aps_test_record)
         marc_file = join(dirname(folder), aps_output)
         with open(marc_file) as marc:
