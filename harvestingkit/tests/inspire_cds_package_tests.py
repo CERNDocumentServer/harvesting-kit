@@ -23,10 +23,6 @@ import os
 import unittest
 import pkg_resources
 
-from harvestingkit.bibrecord import BibRecordPackage, record_get_field_values
-from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
-from harvestingkit.inspire_cds_package.from_cds import CDS2Inspire
-
 
 class TestConversions(unittest.TestCase):
 
@@ -45,12 +41,17 @@ class TestConversions(unittest.TestCase):
 
     def test_record_parsing(self):
         """Test parsing of sample file."""
+        from harvestingkit.bibrecord import BibRecordPackage
+
         bibrecs = BibRecordPackage(self.inspire_demo_data_path_oai)
         bibrecs.parse()
         self.assertEqual(len(bibrecs.get_records()), 5)
 
     def test_record_config_load(self):
         """Test loading of kbs."""
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+        from harvestingkit.inspire_cds_package.from_cds import CDS2Inspire
+
         conversion = Inspire2CDS({})
         self.assertTrue(conversion.kbs)
         self.assertEqual(
@@ -67,6 +68,9 @@ class TestConversions(unittest.TestCase):
 
     def test_multiple_conversions(self):
         """Test conversion of multiple records."""
+        from harvestingkit.bibrecord import BibRecordPackage
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
         bibrecs = BibRecordPackage(self.inspire_demo_data_path_oai)
         bibrecs.parse()
         xml = Inspire2CDS.convert_all(bibrecs.get_records())
@@ -75,6 +79,9 @@ class TestConversions(unittest.TestCase):
 
     def test_non_oai_conversion(self):
         """Test conversion of non-OAI-PMH input MARCXML."""
+        from harvestingkit.bibrecord import BibRecordPackage
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
         bibrecs = BibRecordPackage(self.inspire_demo_data_path)
         bibrecs.parse()
         xml = Inspire2CDS.convert_all(bibrecs.get_records())
@@ -83,6 +90,9 @@ class TestConversions(unittest.TestCase):
 
     def test_single_conversion(self):
         """Test conversion of non-OAI-PMH input MARCXML."""
+        from harvestingkit.bibrecord import BibRecordPackage
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
         bibrecs = BibRecordPackage(self.inspire_demo_data_path)
         bibrecs.parse()
         conversion = Inspire2CDS(bibrecs.get_records()[0])
@@ -97,6 +107,9 @@ class TestINSPIRE2CDS(unittest.TestCase):
 
     def setUp(self):
         """Load demo data."""
+        from harvestingkit.bibrecord import BibRecordPackage
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
         self.inspire_demo_data_path = pkg_resources.resource_filename(
             'harvestingkit.tests',
             os.path.join('data', 'sample_inspire_oai.xml')
@@ -116,6 +129,8 @@ class TestINSPIRE2CDS(unittest.TestCase):
 
     def test_inspire_id(self):
         """Test for INSPIRE ID in 035."""
+        from harvestingkit.bibrecord import record_get_field_values
+
         self.assertTrue(
             record_get_field_values(self.converted_record,
                                     tag="035",
@@ -127,6 +142,8 @@ class TestINSPIRE2CDS(unittest.TestCase):
 
     def test_subject(self):
         """Test for subject in 65017."""
+        from harvestingkit.bibrecord import record_get_field_values
+
         self.assertTrue(
             record_get_field_values(self.converted_record,
                                     tag="650", ind1="1", ind2="7",
@@ -138,6 +155,8 @@ class TestINSPIRE2CDS(unittest.TestCase):
 
     def test_notex(self):
         """Make sure that no SPIRES/INSPIRE TeX code is there."""
+        from harvestingkit.bibrecord import record_get_field_values
+
         self.assertFalse(
             record_get_field_values(self.converted_record,
                                     tag="035",
@@ -149,6 +168,8 @@ class TestINSPIRE2CDS(unittest.TestCase):
 
     def test_nodesy(self):
         """Make sure that no DESY fields are there."""
+        from harvestingkit.bibrecord import record_get_field_values
+
         self.assertFalse(
             record_get_field_values(self.converted_record,
                                     tag="035",
@@ -160,6 +181,8 @@ class TestINSPIRE2CDS(unittest.TestCase):
 
     def test_nohiddenfield(self):
         """Make sure that no hidden INSPIRE field is there."""
+        from harvestingkit.bibrecord import record_get_field_values
+
         self.assertFalse(
             record_get_field_values(self.converted_record,
                                     tag="595",
@@ -168,6 +191,8 @@ class TestINSPIRE2CDS(unittest.TestCase):
 
     def test_noinspirenotes(self):
         """Make sure that no INSPIRE specific notes are there."""
+        from harvestingkit.bibrecord import record_get_field_values
+
         self.assertFalse(
             record_get_field_values(self.converted_record,
                                     tag="500",
@@ -185,6 +210,8 @@ class TestINSPIRE2CDS(unittest.TestCase):
 
     def test_experiments(self):
         """Test for correct experiments values in 693."""
+        from harvestingkit.bibrecord import record_get_field_values
+
         self.assertEqual(
             record_get_field_values(self.converted_record,
                                     tag="693",
@@ -200,6 +227,8 @@ class TestINSPIRE2CDS(unittest.TestCase):
 
     def test_isbn(self):
         """Test for correct ISBN."""
+        from harvestingkit.bibrecord import record_get_field_values
+
         self.assertEqual(
             record_get_field_values(self.converted_record,
                                     tag="020",
@@ -209,6 +238,8 @@ class TestINSPIRE2CDS(unittest.TestCase):
 
     def test_fft(self):
         """Test for existence of FFT on PDF URL."""
+        from harvestingkit.bibrecord import record_get_field_values
+
         self.assertTrue(
             record_get_field_values(self.converted_record,
                                     tag="FFT",
@@ -229,6 +260,9 @@ class TestINSPIRE2CDSProceeding(unittest.TestCase):
 
     def setUp(self):
         """Load demo data."""
+        from harvestingkit.bibrecord import BibRecordPackage
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
         self.inspire_demo_data_path = pkg_resources.resource_filename(
             'harvestingkit.tests',
             os.path.join('data', 'sample_inspire_oai.xml')
@@ -243,6 +277,8 @@ class TestINSPIRE2CDSProceeding(unittest.TestCase):
 
     def test_cnum(self):
         """Make sure that CNUM is okay."""
+        from harvestingkit.bibrecord import record_get_field_values
+
         self.assertTrue(
             record_get_field_values(self.converted_record,
                                     tag="773",
@@ -262,6 +298,8 @@ class TestINSPIRE2CDSProceeding(unittest.TestCase):
 
     def test_noinspirekeywords(self):
         """Make sure that no INSPIRE keywords are there."""
+        from harvestingkit.bibrecord import record_get_field_values
+
         self.assertFalse(
             record_get_field_values(self.converted_record,
                                     tag="695",
@@ -273,6 +311,8 @@ class TestINSPIRE2CDSProceeding(unittest.TestCase):
 
     def test_collectionname(self):
         """Make sure that the right collection name is there."""
+        from harvestingkit.bibrecord import record_get_field_values
+
         self.assertTrue(
             record_get_field_values(self.converted_record,
                                     tag="980",

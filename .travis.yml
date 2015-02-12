@@ -26,12 +26,14 @@ python:
 
 install:
   - sudo apt-get update
-  - pip install coveralls --use-mirrors
+  - pip install python-coveralls
+  - pip install nose
+  - pip install -I coverage
   - pip install -r requirements.txt
   - python setup.py install
 
 script:
-  - coverage run --source=harvestingkit setup.py test
+  - nosetests --with-coverage
 
 after_success:
   - coveralls
