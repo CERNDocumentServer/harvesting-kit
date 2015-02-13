@@ -34,7 +34,8 @@ from harvestingkit.utils import (record_add_field,
                                  download_file,
                                  run_shell_command,
                                  record_xml_output,
-                                 fix_title_capitalization)
+                                 fix_title_capitalization,
+                                 return_letters_from_string)
 from harvestingkit.tests import journal_mappings
 
 
@@ -165,6 +166,25 @@ class UtilsTests(unittest.TestCase):
                    xmllint]
         code, out, err = run_shell_command(command)
         self.assertEqual(out, xmllint_output)
+
+    def test_letters_from_string(self):
+        """Test that only letters are returned."""
+        self.assertEqual(
+            return_letters_from_string("65B"), "B"
+        )
+        self.assertEqual(
+            return_letters_from_string("65"), ""
+        )
+        self.assertEqual(
+            return_letters_from_string("6sdf5"), "sdf"
+        )
+        self.assertEqual(
+            return_letters_from_string("sas24ss"), "sasss"
+        )
+        self.assertEqual(
+            return_letters_from_string("sasss"), "sasss"
+        )
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(UtilsTests)

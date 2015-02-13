@@ -462,3 +462,12 @@ def get_temporary_file(prefix="tmp_",
             pass
         raise e
     return filepath
+
+
+def return_letters_from_string(text):
+    """Get letters from string only."""
+    out = ""
+    for letter in text:
+        if letter.isalpha():
+            out += letter
+    return out

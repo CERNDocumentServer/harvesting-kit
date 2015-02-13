@@ -85,8 +85,8 @@ class TestConversions(unittest.TestCase):
         bibrecs = BibRecordPackage(self.inspire_demo_data_path)
         bibrecs.parse()
         xml = Inspire2CDS.convert_all(bibrecs.get_records())
-        self.assertEqual(xml.count("</record>"), 9)
-        self.assertEqual(xml.count('<controlfield tag="003">SzGeCERN</controlfield>'), 9)
+        self.assertEqual(xml.count("</record>"), 3)
+        self.assertEqual(xml.count('<controlfield tag="003">SzGeCERN</controlfield>'), 3)
 
     def test_single_conversion(self):
         """Test conversion of non-OAI-PMH input MARCXML."""
@@ -138,6 +138,56 @@ class TestINSPIRE2CDS(unittest.TestCase):
                                     filter_subfield_code="a",
                                     filter_subfield_value=self.recid,
                                     filter_subfield_mode="e")
+        )
+
+    def test_pubnote(self):
+        """Check that the 773 field is good."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="773",
+                                    code="v"),
+            ["768"]
+        )
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="773",
+                                    code="p"),
+            ["Nucl. Instrum. Methods Phys. Res. A"]
+        )
+
+    def test_language(self):
+        """Test for language."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="041",
+                                    code="a"),
+            ["eng"]
+        )
+
+    def test_page_number(self):
+        """Test for page number."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="300",
+                                    code="a"),
+            ["8 p"]
+        )
+
+    def test_date(self):
+        """Test for proper date in 260."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="260",
+                                    code="c"),
+            ["2014"]
         )
 
     def test_subject(self):
@@ -253,8 +303,94 @@ class TestINSPIRE2CDS(unittest.TestCase):
                                     code="u")
         )
 
+    def test_cern_tag(self):
+        """Test for CERN tag in 690."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="690",
+                                    ind1="C",
+                                    code="a"),
+            ["CERN"]
+        )
+
+    def test_oai_tag(self):
+        """Test for OAI tag in 035."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="035",
+                                    code="m"),
+            ["marcxml"]
+        )
+
+    def test_oai_tag_024(self):
+        """Test for OAI tag in 024."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="024",
+                                    ind1="8",
+                                    code="p"),
+            ["CERN", "INSPIRE:HEP", "ForCDS"]
+        )
+
 
 class TestINSPIRE2CDSProceeding(unittest.TestCase):
+
+    """Test converted record data."""
+
+    def setUp(self):
+        """Load demo data."""
+        from harvestingkit.bibrecord import BibRecordPackage
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        self.inspire_demo_data_path = pkg_resources.resource_filename(
+            'harvestingkit.tests',
+            os.path.join('data', 'sample_inspire.xml')
+        )
+
+        bibrecs = BibRecordPackage(self.inspire_demo_data_path)
+        bibrecs.parse()
+        self.parsed_record = bibrecs.get_records()[0]
+        self.package = Inspire2CDS(self.parsed_record)
+        self.recid = self.package.get_recid()
+        self.converted_record = self.package.get_record()
+
+    def test_conference_tag(self):
+        """Test for conference tag in 690C."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="690",
+                                    ind1="C",
+                                    code="a"),
+            ["CONFERENCE", "CERN"]
+        )
+
+    def test_cnum(self):
+        """Make sure that CNUM is okay."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="773",
+                                    code="w"),
+            ["C10-09-06.10"]
+        )
+        values = record_get_field_values(
+            self.converted_record,
+            tag="035",
+            code="9"
+        )
+        self.assertTrue("INSPIRE-CNUM" in values)
+
+
+class TestINSPIRE2CDSConferencePaper(unittest.TestCase):
 
     """Test converted record data."""
 
@@ -287,7 +423,7 @@ class TestINSPIRE2CDSProceeding(unittest.TestCase):
                                     filter_subfield_value="C96-05-21",
                                     filter_subfield_mode="e")
         )
-        self.assertTrue(
+        self.assertFalse(
             record_get_field_values(self.converted_record,
                                     tag="035",
                                     code="a",
@@ -322,6 +458,28 @@ class TestINSPIRE2CDSProceeding(unittest.TestCase):
                                     filter_subfield_mode="e")
         )
 
+    def test_date(self):
+        """Test for proper date in 260."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="260",
+                                    code="c"),
+            ["1997"]
+        )
+
+    def test_cern_tag(self):
+        """Test for CERN tag in 690."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="690",
+                                    ind1="C",
+                                    code="a"),
+            ["CERN"]
+        )
 
 if __name__ == '__main__':
     unittest.main()

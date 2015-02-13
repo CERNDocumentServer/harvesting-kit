@@ -37,7 +37,10 @@ from ..bibrecord import (record_get_field_instances,
                          field_swap_subfields,
                          field_get_subfields)
 
-from ..utils import convert_date_from_iso_to_human
+from ..utils import (
+    convert_date_from_iso_to_human,
+    return_letters_from_string
+)
 
 from .base import MARCXMLConversion
 
@@ -78,6 +81,19 @@ class Inspire2CDS(MARCXMLConversion):
         self.update_experiments()
         self.update_isbn()
         self.update_links_and_ffts()
+        self.update_date()
+        self.update_date_year()
+        self.update_hidden_notes()
+        self.update_oai_info()
+        self.update_cnum()
+
+        self.fields_list = [
+            "909", "541", "961",
+            "970", "690", "695",
+            "981"
+        ]
+        self.strip_fields()
+
         if "THESIS" in self.collections:
             self.update_thesis_information()
             self.update_thesis_supervisors()
@@ -86,18 +102,49 @@ class Inspire2CDS(MARCXMLConversion):
             # Special proceeding syntax
             self.update_title_to_proceeding()
             self.update_author_to_proceeding()
+            record_add_field(self.record, "690", ind1="C", subfields=[("a", "CONFERENCE")])
 
         # 690 tags
         if self.tag_as_cern:
             record_add_field(self.record, "690", ind1="C", subfields=[("a", "CERN")])
 
-        self.fields_list = [
-            "909", "541", "961",
-            "970", "690", "595",
-            "695",
-        ]
-        self.strip_fields()
         return self.record
+
+    def update_oai_info(self):
+        """Add the 909 OAI info to 035."""
+        for field in record_get_field_instances(self.record, '909', ind1="C", ind2="O"):
+            new_subs = []
+            for tag, value in field[0]:
+                if tag == "o":
+                    new_subs.append(("a", value))
+                else:
+                    new_subs.append((tag, value))
+                if value in ["CERN", "CDS", "ForCDS"]:
+                    self.tag_as_cern = True
+            record_add_field(self.record, '024', ind1="8", subfields=new_subs)
+        record_delete_fields(self.record, '909')
+
+    def update_cnum(self):
+        """Check if we shall add cnum in 035."""
+        if "ConferencePaper" not in self.collections:
+            cnums = record_get_field_values(self.record, '773', code="w")
+            for cnum in cnums:
+                cnum_subs = [
+                    ("9", "INSPIRE-CNUM"),
+                    ("a", cnum)
+                ]
+                record_add_field(self.record, "035", subfields=cnum_subs)
+
+    def update_hidden_notes(self):
+        """Remove hidden notes and tag a CERN if detected."""
+        if not self.tag_as_cern:
+            notes = record_get_field_instances(self.record,
+                                               tag="595")
+            for field in notes:
+                for dummy, value in field[0]:
+                    if value == "CDS":
+                        self.tag_as_cern = True
+        record_delete_fields(self.record, tag="595")
 
     def update_system_numbers(self):
         """035 Externals."""
@@ -129,7 +176,10 @@ class Inspire2CDS(MARCXMLConversion):
         if self.is_published() \
            and "PROCEEDINGS" not in self.collections \
            and "ConferencePaper" not in self.collections:
-            self.collections.add("ARTICLE")
+            if record_get_field_values(self.record, '980', code='c'):
+                self.collections.add("ARTICLE")
+            else:
+                self.collections.add("PREPRINT")
 
         # Clear out any existing ones.
         record_delete_fields(self.record, "980")
@@ -253,23 +303,29 @@ class Inspire2CDS(MARCXMLConversion):
         for field in record_get_field_instances(self.record, '773'):
             subs = field_get_subfield_instances(field)
             new_subs = []
-            cnum_subs = []
+            volume_letter = ""
+            journal_name = ""
             for idx, (key, value) in enumerate(subs):
                 if key == 'p':
-                    new_subs.append(
-                        (key, self.get_config_item(value, "journals")))
+                    journal_name = self.get_config_item(value, "journals")
+                elif key == 'v':
+                    volume_letter = value
                 else:
                     new_subs.append((key, value))
-                    if key == "w":
-                        cnum_subs = [
-                            ("9", "INSPIRE-CNUM"),
-                            ("a", value)
-                        ]
+
+            # Special handling of journal name and volumes
+            letter = return_letters_from_string(volume_letter)
+            if letter:
+                journal_name = "{0} {1}".format(journal_name, letter)
+                volume_letter = volume_letter.strip(letter)
+            if journal_name:
+                new_subs.append(("p", journal_name))
+            if volume_letter:
+                new_subs.append(("v", volume_letter))
             record_delete_field(self.record, tag="773",
                                 field_position_global=field[4])
             record_add_field(self.record, "773", subfields=new_subs)
-            if cnum_subs:
-                record_add_field(self.record, "035", subfields=cnum_subs)
+
 
     def update_thesis_supervisors(self):
         """700 -> 701 Thesis supervisors."""
@@ -295,19 +351,11 @@ class Inspire2CDS(MARCXMLConversion):
 
     def update_pagenumber(self):
         """300 page number."""
-        fields_300 = record_get_field_instances(self.record, '300')
-        for idx, field in enumerate(fields_300):
-            new_subs = []
-            old_subs = field[0]
-            for code, value in old_subs:
-                if code == "a":
-                    new_subs.append((
-                        "a",
-                        "%s p" % (value,)
-                    ))
-                else:
-                    new_subs.append((code, value))
-            fields_300[idx] = field_swap_subfields(field, new_subs)
+        pages = record_get_field_instances(self.record, '300')
+        for field in pages:
+            for idx, (key, value) in enumerate(field[0]):
+                if key == 'a':
+                    field[0][idx] = ('a', "{0} p".format(value))
 
     def update_date(self):
         """269 Date normalization."""
@@ -325,15 +373,23 @@ class Inspire2CDS(MARCXMLConversion):
                     new_subs.append((code, value))
             dates_269[idx] = field_swap_subfields(field, new_subs)
 
-        published_years = record_get_field_values(self.record, "773", code="y")
-        if published_years:
-            record_add_field(
-                self.record, "260", subfields=[("c", published_years[0])])
-        else:
-            other_years = record_get_field_values(self.record, "269", code="c")
-            if other_years:
+    def update_date_year(self):
+        """260 Date normalization."""
+        dates = record_get_field_instances(self.record, '260')
+        for field in dates:
+            for idx, (key, value) in enumerate(field[0]):
+                if key == 'c':
+                    field[0][idx] = ('c', value[:4])
+        if not dates:
+            published_years = record_get_field_values(self.record, "773", code="y")
+            if published_years:
                 record_add_field(
-                    self.record, "260", subfields=[("c", other_years[0][:4])])
+                    self.record, "260", subfields=[("c", published_years[0][:4])])
+            else:
+                other_years = record_get_field_values(self.record, "269", code="c")
+                if other_years:
+                    record_add_field(
+                        self.record, "260", subfields=[("c", other_years[0][:4])])
 
     def is_published(self):
         """Check fields 980 and 773 to see if the record has already been published.
@@ -373,3 +429,16 @@ class Inspire2CDS(MARCXMLConversion):
                     record_add_field(self.record, 'FFT', subfields=newsubs)
                     record_delete_field(self.record, '856', ind1='4',
                                         field_position_global=field[4])
+
+    def update_languages(self):
+        """041 Language."""
+        language_fields = record_get_field_instances(self.record, '041')
+        language = "eng"
+        record_delete_fields(self.record, "041")
+        for field in language_fields:
+            subs = field_get_subfields(field)
+            if 'a' in subs:
+                language = self.get_config_item(subs['a'][0], "languages")
+                break
+        new_subs = [('a', language)]
+        record_add_field(self.record, "041", subfields=new_subs)

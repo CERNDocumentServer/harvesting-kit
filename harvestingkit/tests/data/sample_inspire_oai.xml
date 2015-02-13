@@ -13,10 +13,6 @@
     <marc:subfield code="2">DOI</marc:subfield>
     <marc:subfield code="a">10.1016/j.nima.2014.09.061</marc:subfield>
   </marc:datafield>
-  <marc:datafield tag="224" ind1="7" ind2=" ">
-    <marc:subfield code="2">DOI</marc:subfield>
-    <marc:subfield code="a">10.1016/j.nima.2014.09.061</marc:subfield>
-  </marc:datafield>
   <marc:datafield tag="035" ind1=" " ind2=" ">
     <marc:subfield code="a">Sahin:2014haa</marc:subfield>
     <marc:subfield code="9">INSPIRETeX</marc:subfield>
@@ -272,7 +268,7 @@
     <marc:subfield code="a">Capillary detectors for high resolution tracking</marc:subfield>
   </marc:datafield>
   <marc:datafield tag="260" ind1=" " ind2=" ">
-    <marc:subfield code="c">1997</marc:subfield>
+    <marc:subfield code="c">1997-11</marc:subfield>
   </marc:datafield>
   <marc:datafield tag="980" ind1=" " ind2=" ">
     <marc:subfield code="a">ConferencePaper</marc:subfield>
