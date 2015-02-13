@@ -22,9 +22,6 @@
 
 from setuptools import setup, find_packages
 
-with open('requirements.txt', 'r') as req:
-    requirements = req.readlines()
-
 setup(
     name="HarvestingKit",
     version="0.4.0",
@@ -38,7 +35,15 @@ setup(
                           "dtds/A++V2.4.zip",
                           "dtds/jats-archiving-dtd-1.0.zip",
                           "dtds/journal-publishing-dtd-2.3.zip"])],
-    install_requires=requirements,
+    install_requires=[
+        "beautifulsoup4>=4.1.3",
+        "Unidecode==0.04.14",
+        "argcomplete==0.8.0",
+        "httpretty==0.8.3",
+        "lxml>=3.1.2",
+        "requests>=2.2.0",
+        "six>=1.7.3",
+    ],
     author="INSPIRE-HEP collaboration",
     author_email="admin@inspirehep.net",
     description=__doc__,
