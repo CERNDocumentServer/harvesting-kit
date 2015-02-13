@@ -37,3 +37,12 @@ script:
 
 after_success:
   - coveralls
+
+deploy:
+  provider: pypi
+  user: inspirehep
+  password:
+    secure: DIL6/onKZ2zogDqF3Fl77pcti7v/3tNbRmwTI9rwtnwiGVnc4Xzp3LLwzIe5bsubbJ47FOjEGJDEJli2qK6Jk+to5+xVKHYa75uGKVAwaCuuFRhxPVSCfSqb6TK/Vi1THBDLq5muUoGgVJu3rujAUq3YZuHD9U68JNgHlcACIeE=
+  on:
+    tags: true
+    repo: inspirehep/harvesting-kit
