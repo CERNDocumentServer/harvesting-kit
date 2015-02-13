@@ -44,17 +44,19 @@ except ImportError:
     register_exception = lambda a, b: True
 
 try:
-    from invenio.config import CFG_TMPSHAREDDIR
+    from invenio.config import CFG_TMPSHAREDDIR, CFG_LOGDIR
 except ImportError:
     from distutils.sysconfig import get_python_lib
     CFG_TMPSHAREDDIR = join(get_python_lib(),
                             "harvestingkit",
                             "tmp")
+    CFG_LOGDIR = join(get_python_lib(),
+                      "harvestingkit",
+                      "log")
 
-from harvestingkit.utils import run_shell_command
+from harvestingkit.utils import run_shell_command, create_logger
 
 from harvestingkit.scoap3utils import (
-    create_logger,
     MissingFFTError,
     extract_package as scoap3utils_extract_package
 )
@@ -111,7 +113,10 @@ class ElsevierPackage(object):
         self.CONSYN = CONSYN
         self.doi_package_name_mapping = []
         try:
-            self.logger = create_logger("Elsevier")
+            self.logger = create_logger(
+                "Elsevier",
+                filename=join(CFG_LOGDIR, 'scoap3_harvesting.log')
+            )
         except IOError:  # Could not access log file
                          # Use std.out for logging
             self.logger = self

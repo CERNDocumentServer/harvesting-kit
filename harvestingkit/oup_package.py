@@ -27,11 +27,13 @@ from socket import timeout as socket_timeout_exception
 
 from invenio.bibtask import task_low_level_submission
 from invenio.config import (CFG_TMPSHAREDDIR,
-                            CFG_PREFIX)
+                            CFG_PREFIX,
+                            CFG_LOGDIR)
 from invenio.errorlib import register_exception
 from os import (listdir,
                 fdopen,
                 remove)
+from configparser import load_config
 from os.path import (join,
                      walk,
                      basename)
@@ -44,7 +46,6 @@ except ImportError:
 from .ftp_utils import FtpHandler
 
 from .scoap3utils import (LoginException,
-                          create_logger,
                           NoNewFiles)
 from .nlm_utils import NLMParser
 from shutil import copy
@@ -55,8 +56,7 @@ from .config import (CFG_CONFIG_PATH,
                      CFG_DTDS_PATH,
                      CFG_FTP_CONNECTION_ATTEMPTS,
                      CFG_FTP_TIMEOUT_SLEEP_DURATION)
-
-from configparser import load_config
+from .utils import create_logger
 
 CFG_OXFORD_JATS_PATH = join(CFG_DTDS_PATH, 'journal-publishing-dtd-2.3.zip')
 
@@ -160,7 +160,10 @@ class OxfordPackage(object):
         self.path = path
         self._dois = []
         self.articles_normalized = []
-        self.logger = create_logger("Oxford")
+        self.logger = create_logger(
+            "Oxford",
+            filename=join(CFG_LOGDIR, 'scoap3_harvesting.log')
+        )
 
         self.config = load_config(CFG_CONFIG_PATH, {'OXFORD': []})
 

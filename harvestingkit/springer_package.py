@@ -24,7 +24,8 @@ from socket import timeout as socket_timeout_exception
 from datetime import datetime
 from invenio.bibtask import task_low_level_submission
 from invenio.config import (CFG_PREFIX,
-                            CFG_TMPSHAREDDIR)
+                            CFG_TMPSHAREDDIR,
+                            CFG_LOGDIR)
 from os.path import (join,
                      walk,
                      exists)
@@ -39,7 +40,6 @@ from invenio.shellutils import run_shell_command
 from harvestingkit.ftp_utils import FtpHandler
 from os import listdir, fdopen
 from .scoap3utils import (LoginException,
-                          create_logger,
                           NoNewFiles)
 from .jats_utils import JATSParser
 from .app_utils import APPParser
@@ -52,6 +52,9 @@ from .config import (CFG_CONFIG_PATH,
                      CFG_DTDS_PATH,
                      CFG_FTP_CONNECTION_ATTEMPTS,
                      CFG_FTP_TIMEOUT_SLEEP_DURATION)
+
+from .utils import create_logger
+
 
 CFG_SPRINGER_AV24_PATH = join(CFG_DTDS_PATH, 'A++V2.4.zip')
 CFG_SPRINGER_JATS_PATH = join(CFG_DTDS_PATH, 'jats-archiving-dtd-1.0.zip')
@@ -169,7 +172,10 @@ class SpringerPackage(object):
         self.path = path
         self._dois = []
         self.articles_normalized = []
-        self.logger = create_logger("Springer")
+        self.logger = create_logger(
+            "Springer",
+            filename=join(CFG_LOGDIR, 'scoap3_harvesting.log')
+        )
 
         self.config = load_config(CFG_CONFIG_PATH, {'SPRINGER': []})
 
