@@ -29,7 +29,7 @@ import fnmatch
 import zipfile
 
 from datetime import datetime
-from tempfile import mkdtemp
+from tempfile import mkdtemp, mkstemp
 from lxml import etree
 from unidecode import unidecode
 
@@ -234,8 +234,12 @@ def fix_title_capitalization(title):
     return title
 
 
-def download_file(from_url, to_filename, chunk_size=1024 * 8, retry_count=3):
+def download_file(from_url, to_filename=None,
+                  chunk_size=1024 * 8, retry_count=3):
     """Download URL to a file."""
+    if not to_filename:
+        to_filename = get_temporary_file()
+
     session = requests.Session()
     adapter = requests.adapters.HTTPAdapter(max_retries=retry_count)
     session.mount(from_url, adapter)
@@ -440,3 +444,21 @@ def convert_images(image_list):
             else:
                 raise Exception(cmd_err)
     return ret_list
+
+
+def get_temporary_file(prefix="tmp_",
+                       suffix="",
+                       directory=None):
+    """Generate a safe and closed filepath."""
+    try:
+        file_fd, filepath = mkstemp(prefix=prefix,
+                                    suffix=suffix,
+                                    dir=directory)
+        os.close(file_fd)
+    except IOError, e:
+        try:
+            os.remove(filepath)
+        except Exception:
+            pass
+        raise e
+    return filepath

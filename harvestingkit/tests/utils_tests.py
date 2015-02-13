@@ -1,28 +1,27 @@
 # -*- coding: utf-8 -*-
-##
-## This file is part of Harvesting Kit.
-## Copyright (C) 2014, 2015 CERN.
-##
-## Harvesting Kit is free software; you can redistribute it and/or
-## modify it under the terms of the GNU General Public License as
-## published by the Free Software Foundation; either version 2 of the
-## License, or (at your option) any later version.
-##
-## Harvesting Kit is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-## General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
-## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+#
+# This file is part of Harvesting Kit.
+# Copyright (C) 2014, 2015 CERN.
+#
+# Harvesting Kit is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Harvesting Kit is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 import os
 import unittest
 import httpretty
 import tempfile
-from os.path import (join,
-                     dirname)
+import pkg_resources
 
 from harvestingkit.utils import (record_add_field,
                                  create_record,
@@ -36,16 +35,15 @@ from harvestingkit.utils import (record_add_field,
                                  run_shell_command,
                                  record_xml_output,
                                  fix_title_capitalization)
-from harvestingkit.tests import (__file__ as folder,
-                                 xmllint,
-                                 xmllint_output,
-                                 xmllint_resources,
-                                 journal_mappings)
+from harvestingkit.tests import journal_mappings
 
 
 class UtilsTests(unittest.TestCase):
 
+    """Tests for all utility functions."""
+
     def test_record_add_field(self):
+        """Test adding field to record."""
         data = (u'In this paper we continue the study of Q -operators in'
                 u' the six-vertex model and its higher spin generalizations.'
                 u' In [1] we derived a new expression for the higher spin R'
@@ -67,6 +65,7 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(record_xml_output(rec, pretty=False), data)
 
     def test_record_add_field_fallback(self):
+        """Test adding field with special data to record."""
         rec = create_record()
         record_add_field(rec, "035", subfields=[('a', "<arXiv:1234.1242>")])
         data = (u"<record><datafield ind1=\"\" ind2=\"\" tag=\"035\">"
@@ -75,6 +74,7 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(record_xml_output(rec, pretty=False), data)
 
     def test_format_arxiv_id(self):
+        """Test arXiv formatting."""
         self.assertEqual(format_arxiv_id("arXiv:1312.1300"), "arXiv:1312.1300")
         self.assertEqual(format_arxiv_id("1312.1300"), "arXiv:1312.1300")
         self.assertEqual(format_arxiv_id("1312.13005"), "arXiv:1312.13005")
@@ -83,23 +83,27 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(format_arxiv_id("arXiv:1234.12345"), "arXiv:1234.12345")
 
     def test_collapse_initials(self):
+        """Test proper initial handling."""
         self.assertEqual(collapse_initials("T. A. Adams"), "T.A. Adams")
         self.assertEqual(collapse_initials("T.   A. Adams"), "T.A. Adams")
         self.assertEqual(collapse_initials("T. A. V. Adams"), "T.A.V. Adams")
 
     def test_fix_name_capitalization(self):
+        """Test name capitalization."""
         self.assertEqual(fix_name_capitalization("NORTON", ["EDWARD"]), ("Norton", "Edward"))
         self.assertEqual(fix_name_capitalization("NORTON", ["E.", "A.", "S."]), ("Norton", "E. A. S."))
         self.assertEqual(fix_name_capitalization("EL-NORTON", ["EDWARD"]), ("El-Norton", "Edward"))
         self.assertEqual(fix_name_capitalization("VAN ASSCHE", ["WALTER"]), ("Van Assche", "Walter"))
 
     def test_fix_journal_name(self):
+        """Test journal name handling."""
         self.assertEqual(fix_journal_name("A&A", journal_mappings), ('Astron.Astrophys.', ""))
         self.assertEqual(fix_journal_name("A&A B", journal_mappings), ('Astron.Astrophys.', "B"))
         self.assertEqual(fix_journal_name("A&A.B", journal_mappings), ('A&A.', "B"))
         self.assertEqual(fix_journal_name("A&AB.", journal_mappings), ("A&AB.", ""))
 
     def test_escape_ampersand(self):
+        """Test ampersand handling."""
         self.assertEqual(escape_for_xml("A&A"), "A&amp;A")
         self.assertEqual(escape_for_xml("A&amp;A & B"), "A&amp;A &amp; B")
         self.assertEqual(escape_for_xml("A &amp; A.B"), "A &amp; A.B")
@@ -109,12 +113,14 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(escape_for_xml("asdasdsa < 2 A"), "asdasdsa &lt; 2 A")
 
     def test_fix_dashes(self):
+        """Test dashes."""
         self.assertEqual(fix_dashes(u"A–A"), "A-A")
         self.assertEqual(fix_dashes(u'-–'), '-')
         self.assertEqual(fix_dashes(u'––'), '-')
         self.assertEqual(fix_dashes(u'–––'), '-')
 
     def test_fix_title_capitalization(self):
+        """Test title capitalization."""
         self.assertEqual(fix_title_capitalization(u"A TITLE"), "A title")
         self.assertEqual(fix_title_capitalization(u"a title"), "A title")
 
@@ -139,17 +145,26 @@ class UtilsTests(unittest.TestCase):
 
     def test_run_shell_for_xmllint(self):
         """Test if run_shell_command works for xmllint."""
+        xmllint_resources = pkg_resources.resource_filename(
+            'harvestingkit.tests',
+            os.path.join('data', 'si520')
+        )
+        xmllint = pkg_resources.resource_filename(
+            'harvestingkit.tests',
+            os.path.join('data', 'sample_elsevier_issue_input.xml')
+        )
+        xmllint_output = pkg_resources.resource_string(
+            'harvestingkit.tests',
+            os.path.join('data', 'sample_elsevier_issue_output.xml')
+        )
         command = ['xmllint',
                    '--format',
                    '--path',
-                   join(dirname(folder), xmllint_resources),
+                   xmllint_resources,
                    '--loaddtd',
-                   join(dirname(folder), xmllint)]
+                   xmllint]
         code, out, err = run_shell_command(command)
-        print code
-        print out
-        print err
-        self.assertEqual(out, open(join(dirname(folder), xmllint_output)).read())
+        self.assertEqual(out, xmllint_output)
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(UtilsTests)
