@@ -31,7 +31,6 @@ journal_mappings = {'A&A': 'Astron.Astrophys.',
                     'Physics Letters': 'Phys.Lett.'}
 edp_test_record = 'data/sample_edpsciences_record.xml'
 aps_test_record = 'data/sample_aps_record.xml'
-pos_test_record = 'data/sample_pos_record.xml'
 consyn_test_record = 'data/sample_consyn_record.xml'
 ws_test_record = 'data/sample_ws_record.xml'
 ws_erratum_test_record = 'data/sample_ws_erratum_record.xml'
