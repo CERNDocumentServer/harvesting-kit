@@ -47,7 +47,7 @@ class PosPackage(object):
 
     def _get_title(self):
         try:
-            return get_value_in_tag(self.document, 'dc:title')
+            return get_value_in_tag(self.document, 'pex-dc:title')
         except Exception:
             print >> sys.stderr, "Can't find title"
             return ''
