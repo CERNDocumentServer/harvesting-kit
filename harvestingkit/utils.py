@@ -90,10 +90,8 @@ def record_xml_output(rec, pretty=True):
 def escape_for_xml(data):
     """Transform & and < to XML valid &amp; and &lt."""
     data = re.sub("&(?!(#?)(\d{1,5}|\w{1,8});)", "&amp;", data)
-    data = data.replace('<=', '&lt;=')
-    data = data.replace('<.', '&lt;.')
-    data = data.replace('< ', '&lt; ')
-    data = re.sub('(<)([\d\.?]+)', '&lt;\g<2>', data)
+    # Cover these special cases where in mathematical expressions '<'' is used.
+    data = re.sub('(<)([\$\%\=\-\_\.\+\d\c\s\b]+)', '&lt;\g<2>', data)
     data = re.sub('(<)([a-z]{1}[^a-z>])', '&lt;\g<2>', data)
     return data
 
