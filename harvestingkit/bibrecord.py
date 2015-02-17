@@ -38,9 +38,9 @@ from six import StringIO
 from xml.etree import ElementTree as ET
 
 from .utils import (
-    escape_for_xml,
     create_logger,
 )
+from .html_utils import MathMLParser
 from .etree_utils import (
     element_tree_oai_records,
     element_tree_collection_to_records,
@@ -1284,7 +1284,7 @@ def field_xml_output(field, tag):
     marcxml = []
     if field[3]:
         marcxml.append('  <controlfield tag="%s">%s</controlfield>' %
-                       (tag, escape_for_xml(field[3])))
+                       (tag, MathMLParser.html_to_text(field[3])))
     else:
         marcxml.append('  <datafield tag="%s" ind1="%s" ind2="%s">' %
                        (tag, field[1], field[2]))
@@ -1835,7 +1835,7 @@ def _concat(alist):
 def _subfield_xml_output(subfield):
     """Generate the XML for a subfield object and return it as a string."""
     return '    <subfield code="%s">%s</subfield>' % \
-        (subfield[0], escape_for_xml(subfield[1]))
+        (subfield[0], MathMLParser.html_to_text(subfield[1]))
 
 
 def _order_by_ord(field1, field2):
