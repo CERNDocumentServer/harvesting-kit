@@ -113,6 +113,7 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(escape_for_xml("asdasdsa <.2 A"), "asdasdsa &lt;.2 A")
         self.assertEqual(escape_for_xml("asdasdsa < 2 A"), "asdasdsa &lt; 2 A")
         self.assertEqual(escape_for_xml("asdasdsa 2.2<y<3.4 A"), "asdasdsa 2.2&lt;y&lt;3.4 A")
+        self.assertEqual(escape_for_xml("range -4.0&lt; @h<-2.5"), "range -4.0&lt; @h&lt;-2.5")
 
         longtext = "range 2.7<y<3.8, are presented, <p_T^2> with"
         self.assertEqual(
