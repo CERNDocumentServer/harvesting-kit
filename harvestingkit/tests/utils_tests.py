@@ -112,6 +112,16 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(escape_for_xml("asdasdsa <=1 A"), "asdasdsa &lt;=1 A")
         self.assertEqual(escape_for_xml("asdasdsa <.2 A"), "asdasdsa &lt;.2 A")
         self.assertEqual(escape_for_xml("asdasdsa < 2 A"), "asdasdsa &lt; 2 A")
+        self.assertEqual(escape_for_xml("asdasdsa 2.2<y<3.4 A"), "asdasdsa 2.2&lt;y&lt;3.4 A")
+
+        longtext = "range 2.7<y<3.8, are presented, <p_T^2> with"
+        self.assertEqual(
+            escape_for_xml(longtext),
+            "range 2.7&lt;y&lt;3.8, are presented, &lt;p_T^2> with"
+        )
+
+        keep_existing = "for 0.03&lt;x&lt;0.1 and fit to world data"
+        self.assertEqual(escape_for_xml(keep_existing), keep_existing)
 
     def test_fix_dashes(self):
         """Test dashes."""

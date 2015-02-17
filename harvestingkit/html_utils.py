@@ -24,7 +24,7 @@ from HTMLParser import HTMLParser
 from harvestingkit.utils import escape_for_xml
 
 
-class MathMLStripper(HTMLParser):
+class MathMLParser(HTMLParser):
 
     """Special HTML stripper that allows MathML."""
 

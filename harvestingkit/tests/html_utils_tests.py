@@ -19,7 +19,7 @@
 
 import unittest
 
-from harvestingkit.html_utils import MathMLStripper
+from harvestingkit.html_utils import MathMLParser
 
 
 class HTMLUtilsTests(unittest.TestCase):
@@ -41,7 +41,7 @@ class HTMLUtilsTests(unittest.TestCase):
                 u' . Taking a special limit in this R -matrix we obtained new'
                 u' formulas for the Q -operators acting in the tensor product'
                 u' of representation spaces with arbitrary complex spin.')
-        self.assertEqual(MathMLStripper.html_to_text(data), data)
+        self.assertEqual(MathMLParser.html_to_text(data), data)
 
     def test_html(self):
         """Test that HTML is stripped."""
@@ -53,23 +53,23 @@ class HTMLUtilsTests(unittest.TestCase):
         expected_data = (u'CH3NH3PbX(X = Br, I, Cl) perovskites have recently'
                          u'been used as light absorbers in hybrid organic-inorganic solid-state '
                          u'solar cells, with efficiencies above 15%.')
-        self.assertEqual(MathMLStripper.html_to_text(data), expected_data)
+        self.assertEqual(MathMLParser.html_to_text(data), expected_data)
 
     def test_htmlentity(self):
         """Test that HTML entities are kept."""
         data = "This &amp; that and &lt; or &gt; is there."
-        self.assertEqual(MathMLStripper.html_to_text(data), data)
+        self.assertEqual(MathMLParser.html_to_text(data), data)
 
     def test_htmlcharref(self):
         """Test that HTML entities are kept."""
         data = "This &#62; that and &#x3E; or &gt; is there."
-        self.assertEqual(MathMLStripper.html_to_text(data), data)
+        self.assertEqual(MathMLParser.html_to_text(data), data)
 
     def test_xml_encoding(self):
         """Test that HTML entities are kept."""
         data = "This & that and 2<y<3 is > there."
         expected_data = "This &amp; that and 2&lt;y&lt;3 is > there."
-        self.assertEqual(MathMLStripper.html_to_text(data), expected_data)
+        self.assertEqual(MathMLParser.html_to_text(data), expected_data)
 
 
 if __name__ == '__main__':
