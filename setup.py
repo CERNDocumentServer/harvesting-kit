@@ -43,6 +43,7 @@ setup(
         "lxml>=3.1.2",
         "requests>=2.2.0",
         "six>=1.7.3",
+        "python-dateutil==1.5",
     ],
     author="INSPIRE-HEP collaboration",
     author_email="admin@inspirehep.net",

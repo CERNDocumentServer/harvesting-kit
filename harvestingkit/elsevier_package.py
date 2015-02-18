@@ -24,6 +24,7 @@ import sys
 import time
 import requests
 import xml.dom.minidom
+import datetime
 
 from bs4 import BeautifulSoup
 from os import (listdir,
@@ -601,25 +602,8 @@ class ElsevierPackage(object):
                     pass
             if vol:
                 volume += vol
-            try:
-                year = xml_doc.getElementsByTagName(
-                    'ce:copyright')[0].getAttribute("year")
-                year = year.encode('utf-8')
-            except IndexError:
-                year = ''
-            start_date = get_value_in_tag(xml_doc, "prism:coverDate")
-            if len(xml_doc.getElementsByTagName('ce:date-accepted')) > 0:
-                full_date = xml_doc.getElementsByTagName('ce:date-accepted')[0]
-                y = full_date.getAttribute('year').encode('utf-8')
-                m = full_date.getAttribute('month').encode('utf-8').zfill(2)
-                d = full_date.getAttribute('day').encode('utf-8').zfill(2)
-                start_date = "%s-%s-%s" % (y, m, d)
-            elif len(start_date) is 8:
-                start_date = time.strftime(
-                    '%Y-%m-%d', time.strptime(start_date, '%Y%m%d'))
-            elif len(start_date) is 6:
-                start_date = time.strftime(
-                    '%Y-%m', time.strptime(start_date, '%Y%m'))
+            start_date = self.get_publication_date(xml_doc)
+            year = start_date.split("-")[0]
             doi = get_value_in_tag(xml_doc, "ce:doi")
             return (journal, issn, volume, issue, first_page,
                     last_page, year, start_date, doi)
@@ -629,6 +613,37 @@ class ElsevierPackage(object):
                 return self._dois[doi] + (doi, )
             except KeyError:
                 return ('', '', '', '', '', '', '', '', doi)
+
+    def get_publication_date(self, xml_doc):
+        """Return the best effort start_date."""
+        start_date = get_value_in_tag(xml_doc, 'oa:openAccessEffective')
+        if start_date:
+            start_date = datetime.datetime.strptime(
+                start_date, "%Y-%m-%dT%H:%M:%SZ"
+            )
+            return start_date.strftime("%Y-%m-%d")
+        start_date = get_value_in_tag(xml_doc, "prism:coverDate")
+        if not start_date:
+            start_date = get_value_in_tag(xml_doc, "prism:coverDisplayDate")
+            import dateutil.parser
+            try:
+                date = dateutil.parser.parse(start_date)
+            except ValueError:
+                return ''
+            # Special case where we ignore the deduced day form dateutil
+            # in case it was not given in the first place.
+            if len(start_date.split(" ")) == 3:
+                return date.strftime("%Y-%m-%d")
+            else:
+                return date.strftime("%Y-%m")
+        else:
+            if len(start_date) is 8:
+                start_date = time.strftime(
+                    '%Y-%m-%d', time.strptime(start_date, '%Y%m%d'))
+            elif len(start_date) is 6:
+                start_date = time.strftime(
+                    '%Y-%m', time.strptime(start_date, '%Y%m'))
+            return start_date
 
     def _get_ref(self, ref, label):
         doi = get_value_in_tag(ref, "ce:doi")

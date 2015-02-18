@@ -31,11 +31,9 @@ journal_mappings = {'A&A': 'Astron.Astrophys.',
                     'Physics Letters': 'Phys.Lett.'}
 edp_test_record = 'data/sample_edpsciences_record.xml'
 aps_test_record = 'data/sample_aps_record.xml'
-consyn_test_record = 'data/sample_consyn_record.xml'
 ws_test_record = 'data/sample_ws_record.xml'
 ws_erratum_test_record = 'data/sample_ws_erratum_record.xml'
 aps_output = 'data/sample_aps_output.xml'
 edp_output = 'data/sample_edp_output.xml'
-consyn_output = 'data/sample_consyn_output.xml'
 ws_output = 'data/sample_ws_output.xml'
 ws_erratum_output = 'data/sample_ws_erratum_output.xml'
