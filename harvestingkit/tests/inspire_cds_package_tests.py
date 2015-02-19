@@ -100,6 +100,26 @@ class TestConversions(unittest.TestCase):
         self.assertEqual(xml.count("</record>"), 1)
         self.assertEqual(xml.count('<controlfield tag="003">SzGeCERN</controlfield>'), 1)
 
+    def test_is_not_published(self):
+        """Test if published is correct."""
+        from harvestingkit.bibrecord import BibRecordPackage
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        bibrecs = BibRecordPackage(self.inspire_demo_data_path)
+        bibrecs.parse()
+        non_published_record = Inspire2CDS(bibrecs.get_records()[0])
+        self.assertFalse(non_published_record.is_published())
+
+    def test_is_published(self):
+        """Test if published is correct."""
+        from harvestingkit.bibrecord import BibRecordPackage
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        bibrecs = BibRecordPackage(self.inspire_demo_data_path_oai)
+        bibrecs.parse()
+        non_published_record = Inspire2CDS(bibrecs.get_records()[0])
+        self.assertTrue(non_published_record.is_published())
+
 
 class TestINSPIRE2CDS(unittest.TestCase):
 
@@ -389,6 +409,22 @@ class TestINSPIRE2CDSProceeding(unittest.TestCase):
         )
         self.assertTrue("INSPIRE-CNUM" in values)
 
+    def test_date(self):
+        """Test for proper date in 260."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="260",
+                                    code="c"),
+            ["2010"]
+        )
+        self.assertFalse(
+            record_get_field_values(self.converted_record,
+                                    tag="260",
+                                    code="t")
+        )
+
 
 class TestINSPIRE2CDSConferencePaper(unittest.TestCase):
 
@@ -449,14 +485,14 @@ class TestINSPIRE2CDSConferencePaper(unittest.TestCase):
         """Make sure that the right collection name is there."""
         from harvestingkit.bibrecord import record_get_field_values
 
-        self.assertTrue(
-            record_get_field_values(self.converted_record,
-                                    tag="980",
-                                    code="a",
-                                    filter_subfield_code="a",
-                                    filter_subfield_value="ConferencePaper",
-                                    filter_subfield_mode="e")
+        collections = record_get_field_values(
+            self.converted_record,
+            tag="980",
+            code="a"
         )
+        self.assertTrue("ConferencePaper" in collections)
+        self.assertTrue("ARTICLE" in collections)
+        self.assertTrue("PREPRINT" not in collections)
 
     def test_date(self):
         """Test for proper date in 260."""

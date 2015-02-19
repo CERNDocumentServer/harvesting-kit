@@ -18,6 +18,7 @@
   </datafield>
   <datafield tag="260" ind1=" " ind2=" ">
     <subfield code="c">2010</subfield>
+    <subfield code="t">published</subfield>
   </datafield>
   <datafield tag="595" ind1=" " ind2=" ">
     <subfield code="c">CDS</subfield>

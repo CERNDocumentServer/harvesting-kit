@@ -277,6 +277,9 @@
     <marc:subfield code="a">Citeable</marc:subfield>
   </marc:datafield>
   <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">ConferencePaper</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
     <marc:subfield code="a">CORE</marc:subfield>
   </marc:datafield>
   <marc:datafield tag="980" ind1=" " ind2=" ">
