@@ -517,5 +517,43 @@ class TestINSPIRE2CDSConferencePaper(unittest.TestCase):
             ["CERN"]
         )
 
+
+class TestINSPIRE2CDSGeneric(unittest.TestCase):
+
+    """Test specific conversions operations."""
+
+    def test_experiments_conversion(self):
+        """Load demo data."""
+        from harvestingkit.bibrecord import BibRecordPackage, record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """<collection>
+        <record>
+        <datafield tag="693" ind1=" " ind2=" ">
+            <subfield code="e">CERN-RD-053</subfield>
+        </datafield>
+        </record></collection>
+        """
+        bibrecs = BibRecordPackage(xml)
+        bibrecs.parse()
+        parsed_record = bibrecs.get_records()[0]
+
+        package = Inspire2CDS(parsed_record)
+        converted_record = package.get_record()
+
+        self.assertEqual(
+            record_get_field_values(converted_record,
+                                    tag="693",
+                                    code="a"),
+            ["Not applicable"]
+        )
+        self.assertEqual(
+            record_get_field_values(converted_record,
+                                    tag="693",
+                                    code="e"),
+            ["RD53"]
+        )
+
+
 if __name__ == '__main__':
     unittest.main()

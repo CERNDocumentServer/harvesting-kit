@@ -249,7 +249,18 @@ class Inspire2CDS(MARCXMLConversion):
                 acc_experiment = subs.get("a", [])
                 if not acc_experiment:
                     continue
-            translated_experiment = self.get_config_item(acc_experiment[-1],
+            experiment = acc_experiment[-1]
+
+            # Handle special case of leading experiments numbers NA-050 -> NA 50
+            e_suffix = ""
+            if "-NA-" in experiment or "-RD-" in experiment or "-WD-" in experiment:
+                splitted_experiment = experiment.split("-")
+                e_suffix = "-".join(splitted_experiment[2:])
+                if e_suffix.startswith("0"):
+                    e_suffix = e_suffix[1:]
+                experiment = "-".join(splitted_experiment[:2])  # only CERN-NA
+
+            translated_experiment = self.get_config_item(experiment,
                                                          "experiments")
             if not translated_experiment:
                 continue
@@ -259,7 +270,7 @@ class Inspire2CDS(MARCXMLConversion):
                 new_subs.append(("a", experiment_a.replace("-", " ")))
             else:
                 experiment_e = translated_experiment
-            new_subs.append(("e", experiment_e.replace("-", " ")))
+            new_subs.append(("e", experiment_e.replace("-", " ") + e_suffix))
             record_delete_field(self.record, tag="693",
                                 field_position_global=field[4])
             record_add_field(self.record, "693", subfields=new_subs)

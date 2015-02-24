@@ -72,8 +72,13 @@ class MARCXMLConversion(object):
     def get_config_item(cls, key, kb_name):
         """Return the opposite mapping by searching the imported KB."""
         config_dict = cls.kbs.get(kb_name, None)
-        if config_dict and key in config_dict:
-            return config_dict[key]
+        if config_dict:
+            if key in config_dict:
+                return config_dict[key]
+            else:
+                res = [v for k, v in config_dict.items() if key in k]
+                if res:
+                    return res[0]
         return key
 
     @staticmethod

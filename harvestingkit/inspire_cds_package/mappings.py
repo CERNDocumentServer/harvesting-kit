@@ -217,27 +217,79 @@ mappings = {
     ],
     "experiments": [
       {
-        "cds": "CERN-LHC---ATLAS",
+        "cds": "CERN LHC---ATLAS",
         "inspire": "CERN-LHC-ATLAS"
       },
       {
-        "cds": "CERN-LHC---CMS",
+        "cds": "CERN LHC---CMS",
         "inspire": "CERN-LHC-CMS"
       },
       {
-        "cds": "CERN-LHC---LHCb",
+        "cds": "CERN LHC---LHCb",
         "inspire": "CERN-LHC-LHCb"
       },
       {
-        "cds": "CERN-LHC---ALICE",
+        "cds": "CERN LHC---ALICE",
         "inspire": "CERN-LHC-ALICE"
       },
       {
-        "cds": "CERN-SPS---NA",
-        "inspire": "CERN-NA-"
+        "cds": "CERN LHC---TOTEM",
+        "inspire": "CERN-LHC-TOTEM"
       },
       {
-        "cds": "DESY-HERA---ZEUS",
+        "cds": "CERN LHC---LHCf",
+        "inspire": "CERN-LHC-LHCf"
+      },
+      {
+        "cds": "CERN LHC---MoEDAL",
+        "inspire": "CERN-LHC-MoEDAL"
+      },
+      {
+        "cds": "CERN PS---nTOF",
+        "inspire": "CERN-nTOF"
+      },
+      {
+        "cds": "CERN LEP---ALEPH",
+        "inspire": "CERN-LEP-ALEPH"
+      },
+      {
+        "cds": "CERN LEP---DELPHI",
+        "inspire": "CERN-LEP-DELPHI"
+      },
+      {
+        "cds": "CERN LEP---OPAL",
+        "inspire": "CERN-LEP-OPAL"
+      },
+      {
+        "cds": "CERN LEP---L3",
+        "inspire": "CERN-LEP-L3"
+      },
+      {
+        "cds": "CERN SPS---ICARUS CNGS2",
+        "inspire": "ICARUS"
+      },
+      {
+        "cds": "CERN SPS---OPERA CNGS1",
+        "inspire": "OPERA"
+      },
+      {
+        "cds": "Not applicable---RD",
+        "inspire": "CERN-RD-0"
+      },
+      {
+        "cds": "CERN LHC---LHCf",
+        "inspire": "CERN-LHC-LHCf"
+      },
+      {
+        "cds": "CERN SPS---NA",
+        "inspire": "CERN-NA-0"
+      },
+      {
+        "cds": "CERN SPS---WA",
+        "inspire": "CERN-WA-0"
+      },
+      {
+        "cds": "DESY HERA---ZEUS",
         "inspire": "DESY-HERA-ZEUS"
       }
     ],
