@@ -522,9 +522,9 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
 
     """Test specific conversions operations."""
 
-    def test_experiments_conversion(self):
-        """Load demo data."""
-        from harvestingkit.bibrecord import BibRecordPackage, record_get_field_values
+    def test_experiments_conversion_with_leading_zero(self):
+        """Test experiments conversion with removing leading zero."""
+        from harvestingkit.bibrecord import record_get_field_values
         from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
 
         xml = """<collection>
@@ -534,26 +534,142 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
         </datafield>
         </record></collection>
         """
-        bibrecs = BibRecordPackage(xml)
-        bibrecs.parse()
-        parsed_record = bibrecs.get_records()[0]
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
 
-        package = Inspire2CDS(parsed_record)
-        converted_record = package.get_record()
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="693",
+                                        code="a"),
+                ["Not applicable"]
+            )
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="693",
+                                        code="e"),
+                ["RD53"]
+            )
 
-        self.assertEqual(
-            record_get_field_values(converted_record,
-                                    tag="693",
-                                    code="a"),
-            ["Not applicable"]
-        )
-        self.assertEqual(
-            record_get_field_values(converted_record,
-                                    tag="693",
-                                    code="e"),
-            ["RD53"]
-        )
+    def test_experiments_conversion_with_no_a(self):
+        """Test experiments conversion with no $$a."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
 
+        xml = """<collection>
+        <record>
+        <datafield tag="693" ind1=" " ind2=" ">
+            <subfield code="e">CERN-CAST</subfield>
+        </datafield>
+        </record></collection>
+        """
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="693",
+                                        code="a"),
+                []
+            )
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="693",
+                                        code="e"),
+                ["CAST"]
+            )
+
+    def test_pubnote_conversion_with_pos_special_case(self):
+        """Test pubnote conversion with the PoS special case for $p and $v."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """<collection>
+        <record>
+          <datafield tag="773" ind1=" " ind2=" ">
+            <subfield code="c">018</subfield>
+            <subfield code="p">PoS</subfield>
+            <subfield code="v">QFTHEP2011</subfield>
+            <subfield code="w">C11-09-24</subfield>
+            <subfield code="y">2013</subfield>
+          </datafield>
+        </record></collection>
+        """
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="773",
+                                        code="p"),
+                ["PoS"]
+            )
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="773",
+                                        code="v"),
+                ["QFTHEP2011"]
+            )
+
+    def test_author_conversion_with_no_v(self):
+        """Test author conversion with the special case for $v."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """<collection>
+        <record>
+        <datafield tag="100" ind1=" " ind2=" ">
+          <subfield code="a">Mokhov, N.V.</subfield>
+          <subfield code="v">Fermilab</subfield>
+        </datafield>
+        </record></collection>
+        """
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="100",
+                                        code="v"),
+                []
+            )
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="100",
+                                        code="a"),
+                ["Mokhov, N V"]
+            )
+
+    def test_link_conversion_with_no_w(self):
+        """Test link conversion with the special case for $w."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """<collection>
+        <record>
+          <datafield tag="856" ind1="4" ind2=" ">
+            <subfield code="u">http://www.adsabs.harvard.edu/abs/1990NuPhS..13..535R</subfield>
+            <subfield code="w">1990NuPhS..13..535R</subfield>
+            <subfield code="y">ADSABS</subfield>
+          </datafield>
+        </record></collection>
+        """
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="856",
+                                        ind1="4",
+                                        code="w"),
+                []
+            )
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="856",
+                                        ind1="4",
+                                        code="u"),
+                ["http://www.adsabs.harvard.edu/abs/1990NuPhS..13..535R"]
+            )
 
 if __name__ == '__main__':
     unittest.main()

@@ -253,7 +253,9 @@ class Inspire2CDS(MARCXMLConversion):
 
             # Handle special case of leading experiments numbers NA-050 -> NA 50
             e_suffix = ""
-            if "-NA-" in experiment or "-RD-" in experiment or "-WD-" in experiment:
+            if "-NA-" in experiment or \
+               "-RD-" in experiment or \
+               "-WA-" in experiment:
                 splitted_experiment = experiment.split("-")
                 e_suffix = "-".join(splitted_experiment[2:])
                 if e_suffix.startswith("0"):
@@ -298,6 +300,8 @@ class Inspire2CDS(MARCXMLConversion):
             for idx, (key, value) in enumerate(field[0]):
                 if key == 'a':
                     field[0][idx] = ('a', value.replace(".", " ").strip())
+                elif key == 'v':
+                    del field[0][idx]
             if subs.get("u", None) == "CERN":
                 self.tag_as_cern = True
 
@@ -324,11 +328,13 @@ class Inspire2CDS(MARCXMLConversion):
                 else:
                     new_subs.append((key, value))
 
-            # Special handling of journal name and volumes
-            letter = return_letters_from_string(volume_letter)
-            if letter:
-                journal_name = "{0} {1}".format(journal_name, letter)
-                volume_letter = volume_letter.strip(letter)
+            if not journal_name == "PoS":
+                # Special handling of journal name and volumes, except PoS
+                letter = return_letters_from_string(volume_letter)
+                if letter:
+                    journal_name = "{0} {1}".format(journal_name, letter)
+                    volume_letter = volume_letter.strip(letter)
+
             if journal_name:
                 new_subs.append(("p", journal_name))
             if volume_letter:
@@ -438,6 +444,11 @@ class Inspire2CDS(MARCXMLConversion):
                     record_add_field(self.record, 'FFT', subfields=newsubs)
                     record_delete_field(self.record, '856', ind1='4',
                                         field_position_global=field[4])
+            else:
+                # Remove $w
+                for idx, (key, value) in enumerate(field[0]):
+                    if key == 'w':
+                        del field[0][idx]
 
     def update_languages(self):
         """041 Language."""

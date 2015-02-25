@@ -249,6 +249,14 @@ mappings = {
         "inspire": "CERN-nTOF"
       },
       {
+        "cds": "CAST",
+        "inspire": "CERN-CAST"
+      },
+      {
+        "cds": "CERN PS---nTOF",
+        "inspire": "CERN-PS-nTOF"
+      },
+      {
         "cds": "CERN LEP---ALEPH",
         "inspire": "CERN-LEP-ALEPH"
       },
@@ -5193,10 +5201,6 @@ mappings = {
       {
         "cds": "Int. J. Mod. Phys.",
         "inspire": "Int.J.Mod.Phys."
-      },
-      {
-        "cds": "PoS",
-        "inspire": "PoS"
       },
       {
         "cds": "Sov. Phys. - Tech. Phys.",
