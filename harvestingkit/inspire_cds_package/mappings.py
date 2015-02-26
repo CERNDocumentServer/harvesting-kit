@@ -12529,7 +12529,7 @@ mappings = {
         "inspire": "Z.Phys."
       },
       {
-        "cds": "Nucl. Instrum. Methods Phys. Res.",
+        "cds": "Nucl. Instrum. Methods Phys. Res.,",
         "inspire": "Nucl.Instrum.Meth."
       },
       {

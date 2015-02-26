@@ -345,14 +345,16 @@ class Inspire2CDS(MARCXMLConversion):
 
     def update_thesis_supervisors(self):
         """700 -> 701 Thesis supervisors."""
-        for field in record_get_field_instances(self.record, '700'):
-            record_add_field(self.record, '701', subfields=field[0])
-        record_delete_fields(self.record, '700')
+        for field in record_get_field_instances(self.record, '701'):
+            subs = list(field[0])
+            subs.append(("e", "dir."))
+            record_add_field(self.record, '700', subfields=subs)
+        record_delete_fields(self.record, '701')
 
     def update_thesis_information(self):
         """501 degree info - move subfields."""
         fields_501 = record_get_field_instances(self.record, '502')
-        for idx, field in enumerate(fields_501):
+        for field in fields_501:
             new_subs = []
             for key, value in field[0]:
                 if key == 'b':
@@ -363,7 +365,9 @@ class Inspire2CDS(MARCXMLConversion):
                     new_subs.append(('c', value))
                 else:
                     new_subs.append((key, value))
-            fields_501[idx] = field_swap_subfields(field, new_subs)
+            record_delete_field(self.record, tag="502",
+                                field_position_global=field[4])
+            record_add_field(self.record, "502", subfields=new_subs)
 
     def update_pagenumber(self):
         """300 page number."""

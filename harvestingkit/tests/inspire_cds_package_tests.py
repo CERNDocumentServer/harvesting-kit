@@ -174,7 +174,7 @@ class TestINSPIRE2CDS(unittest.TestCase):
             record_get_field_values(self.converted_record,
                                     tag="773",
                                     code="p"),
-            ["Nucl. Instrum. Methods Phys. Res. A"]
+            ["Nucl. Instrum. Methods Phys. Res., A"]
         )
 
     def test_language(self):
@@ -670,6 +670,94 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
                                         code="u"),
                 ["http://www.adsabs.harvard.edu/abs/1990NuPhS..13..535R"]
             )
+
+    def test_thesis_conversion(self):
+        """Test link conversion with the special case for $w."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """<collection>
+        <record>
+          <datafield tag="502" ind1=" " ind2=" ">
+            <subfield code="b">Diploma</subfield>
+            <subfield code="c">Freiburg U.</subfield>
+            <subfield code="d">2005</subfield>
+          </datafield>
+          <datafield tag="980" ind1=" " ind2=" ">
+            <subfield code="a">THESIS</subfield>
+          </datafield>
+        </record></collection>
+        """
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="980",
+                                        code="a"),
+                ["THESIS"]
+            )
+
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="502",
+                                        code="a"),
+                ["Diploma"]
+            )
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="502",
+                                        code="b"),
+                ["Freiburg U."]
+            )
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="502",
+                                        code="c"),
+                ["2005"]
+            )
+
+    def test_thesis_conversion_supervisors(self):
+        """Test link conversion with the special case for $w."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """<collection>
+        <record>
+          <datafield tag="701" ind1=" " ind2=" ">
+            <subfield code="a">Besançon, Marc</subfield>
+          </datafield>
+          <datafield tag="701" ind1=" " ind2=" ">
+            <subfield code="a">Ferri, Frederico</subfield>
+          </datafield>
+          <datafield tag="980" ind1=" " ind2=" ">
+            <subfield code="a">THESIS</subfield>
+          </datafield>
+        </record></collection>
+        """
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="980",
+                                        code="a"),
+                ["THESIS"]
+            )
+
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="700",
+                                        code="a"),
+                ["Besançon, Marc", "Ferri, Frederico"]
+            )
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="700",
+                                        code="e"),
+                ["dir.", "dir."]
+            )
+
 
 if __name__ == '__main__':
     unittest.main()
