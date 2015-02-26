@@ -165,21 +165,21 @@ class Inspire2CDS(MARCXMLConversion):
             if 'THESIS' in value.upper():
                 self.collections.add('THESIS')
 
+            if 'PUBLISHED' in value.upper():
+                self.collections.add('ARTICLE')
+
             if 'PROCEEDINGS' in value.upper():
                 self.collections.add('PROCEEDINGS')
-            elif 'CONFERENCEPAPER' in value.upper():
+            elif 'CONFERENCEPAPER' in value.upper() and \
+                 "ConferencePaper" not in self.collections:
                 self.collections.add('ConferencePaper')
+                if self.is_published() and "ARTICLE" not in self.collections:
+                    self.collections.add('ARTICLE')
+                else:
+                    self.collections.add('PREPRINT')
 
             if "HIDDEN" in value.upper():
                 self.hidden = True
-
-        if self.is_published() \
-           and "PROCEEDINGS" not in self.collections \
-           and "ConferencePaper" not in self.collections:
-            if record_get_field_values(self.record, '980', code='c'):
-                self.collections.add("ARTICLE")
-            else:
-                self.collections.add("PREPRINT")
 
         # Clear out any existing ones.
         record_delete_fields(self.record, "980")
@@ -249,7 +249,20 @@ class Inspire2CDS(MARCXMLConversion):
                 acc_experiment = subs.get("a", [])
                 if not acc_experiment:
                     continue
-            translated_experiment = self.get_config_item(acc_experiment[-1],
+            experiment = acc_experiment[-1]
+
+            # Handle special case of leading experiments numbers NA-050 -> NA 50
+            e_suffix = ""
+            if "-NA-" in experiment or \
+               "-RD-" in experiment or \
+               "-WA-" in experiment:
+                splitted_experiment = experiment.split("-")
+                e_suffix = "-".join(splitted_experiment[2:])
+                if e_suffix.startswith("0"):
+                    e_suffix = e_suffix[1:]
+                experiment = "-".join(splitted_experiment[:2])  # only CERN-NA
+
+            translated_experiment = self.get_config_item(experiment,
                                                          "experiments")
             if not translated_experiment:
                 continue
@@ -259,7 +272,7 @@ class Inspire2CDS(MARCXMLConversion):
                 new_subs.append(("a", experiment_a.replace("-", " ")))
             else:
                 experiment_e = translated_experiment
-            new_subs.append(("e", experiment_e.replace("-", " ")))
+            new_subs.append(("e", experiment_e.replace("-", " ") + e_suffix))
             record_delete_field(self.record, tag="693",
                                 field_position_global=field[4])
             record_add_field(self.record, "693", subfields=new_subs)
@@ -287,6 +300,8 @@ class Inspire2CDS(MARCXMLConversion):
             for idx, (key, value) in enumerate(field[0]):
                 if key == 'a':
                     field[0][idx] = ('a', value.replace(".", " ").strip())
+                elif key == 'v':
+                    del field[0][idx]
             if subs.get("u", None) == "CERN":
                 self.tag_as_cern = True
 
@@ -313,11 +328,13 @@ class Inspire2CDS(MARCXMLConversion):
                 else:
                     new_subs.append((key, value))
 
-            # Special handling of journal name and volumes
-            letter = return_letters_from_string(volume_letter)
-            if letter:
-                journal_name = "{0} {1}".format(journal_name, letter)
-                volume_letter = volume_letter.strip(letter)
+            if not journal_name == "PoS":
+                # Special handling of journal name and volumes, except PoS
+                letter = return_letters_from_string(volume_letter)
+                if letter:
+                    journal_name = "{0} {1}".format(journal_name, letter)
+                    volume_letter = volume_letter.strip(letter)
+
             if journal_name:
                 new_subs.append(("p", journal_name))
             if volume_letter:
@@ -326,17 +343,18 @@ class Inspire2CDS(MARCXMLConversion):
                                 field_position_global=field[4])
             record_add_field(self.record, "773", subfields=new_subs)
 
-
     def update_thesis_supervisors(self):
         """700 -> 701 Thesis supervisors."""
-        for field in record_get_field_instances(self.record, '700'):
-            record_add_field(self.record, '701', subfields=field[0])
-        record_delete_fields(self.record, '700')
+        for field in record_get_field_instances(self.record, '701'):
+            subs = list(field[0])
+            subs.append(("e", "dir."))
+            record_add_field(self.record, '700', subfields=subs)
+        record_delete_fields(self.record, '701')
 
     def update_thesis_information(self):
         """501 degree info - move subfields."""
         fields_501 = record_get_field_instances(self.record, '502')
-        for idx, field in enumerate(fields_501):
+        for field in fields_501:
             new_subs = []
             for key, value in field[0]:
                 if key == 'b':
@@ -347,7 +365,9 @@ class Inspire2CDS(MARCXMLConversion):
                     new_subs.append(('c', value))
                 else:
                     new_subs.append((key, value))
-            fields_501[idx] = field_swap_subfields(field, new_subs)
+            record_delete_field(self.record, tag="502",
+                                field_position_global=field[4])
+            record_add_field(self.record, "502", subfields=new_subs)
 
     def update_pagenumber(self):
         """300 page number."""
@@ -380,6 +400,8 @@ class Inspire2CDS(MARCXMLConversion):
             for idx, (key, value) in enumerate(field[0]):
                 if key == 'c':
                     field[0][idx] = ('c', value[:4])
+                elif key == 't':
+                    del field[0][idx]
         if not dates:
             published_years = record_get_field_values(self.record, "773", code="y")
             if published_years:
@@ -396,13 +418,10 @@ class Inspire2CDS(MARCXMLConversion):
 
         :return: True is published, else False
         """
-        field980 = record_get_field_instances(self.record, '980')
         field773 = record_get_field_instances(self.record, '773')
-        for f980 in field980:
-            if 'a' in field_get_subfields(f980):
-                for f773 in field773:
-                    if 'p' in field_get_subfields(f773):
-                        return True
+        for f773 in field773:
+            if 'c' in field_get_subfields(f773):
+                return True
         return False
 
     def update_links_and_ffts(self):
@@ -429,6 +448,11 @@ class Inspire2CDS(MARCXMLConversion):
                     record_add_field(self.record, 'FFT', subfields=newsubs)
                     record_delete_field(self.record, '856', ind1='4',
                                         field_position_global=field[4])
+            else:
+                # Remove $w
+                for idx, (key, value) in enumerate(field[0]):
+                    if key == 'w':
+                        del field[0][idx]
 
     def update_languages(self):
         """041 Language."""

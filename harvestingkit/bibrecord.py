@@ -160,16 +160,12 @@ class BibRecordPackage(object):
         try:
             if os.path.isfile(path_to_xml):
                 tree = ET.parse(path_to_xml)
+                root = tree.getroot()
             else:
-                self.logger.warning(
-                    "input is not a valid file," +
-                    " attempting to parse input as XML..."
-                )
-                tree = ET.fromstring(path_to_xml)
+                root = ET.fromstring(path_to_xml)
         except Exception, e:
             self.logger.error("Could not read OAI XML, aborting filter!")
             raise e
-        root = tree.getroot()
         strip_xml_namespace(root)
         return root
 

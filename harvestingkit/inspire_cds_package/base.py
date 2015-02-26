@@ -28,7 +28,8 @@ from ..bibrecord import (record_get_field_instances,
                          record_delete_fields,
                          record_strip_controlfields,
                          record_xml_output,
-                         field_get_subfields)
+                         field_get_subfields,
+                         BibRecordPackage)
 
 from ..utils import create_logger
 
@@ -69,11 +70,30 @@ class MARCXMLConversion(object):
         return "\n".join(out)
 
     @classmethod
+    def from_source(cls, source):
+        """Yield single conversion objects from a MARCXML file or string.
+
+        >>> from harvestingkit.inspire_cds_package import Inspire2CDS
+        >>> for record in Inspire2CDS.from_source("inspire.xml"):
+        >>>     xml = record.convert()
+
+        """
+        bibrecs = BibRecordPackage(source)
+        bibrecs.parse()
+        for bibrec in bibrecs.get_records():
+            yield cls(bibrec)
+
+    @classmethod
     def get_config_item(cls, key, kb_name):
         """Return the opposite mapping by searching the imported KB."""
         config_dict = cls.kbs.get(kb_name, None)
-        if config_dict and key in config_dict:
-            return config_dict[key]
+        if config_dict:
+            if key in config_dict:
+                return config_dict[key]
+            else:
+                res = [v for k, v in config_dict.items() if key in k]
+                if res:
+                    return res[0]
         return key
 
     @staticmethod
@@ -101,7 +121,8 @@ class MARCXMLConversion(object):
         >>> bibrecs = BibRecordPackage("inspire.xml")
         >>> bibrecs.parse()
         >>> for bibrec in bibrecs:
-        >>>     xml = Inspire2CDS.convert(bibrec)
+        >>>     rec = Inspire2CDS(bibrec)
+        >>>     xml = rec.convert(bibrec)
 
         :returns: MARCXML as string
         """
