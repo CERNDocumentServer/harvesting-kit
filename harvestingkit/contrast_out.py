@@ -58,7 +58,8 @@ except ImportError:
     register_exception = lambda a=1, b=2: True
 
 from .ftp_utils import FtpHandler
-from .scoap3utils import (NoNewFiles,
+from .scoap3utils import (MD5Error,
+                          NoNewFiles,
                           LoginException,
                           MissingTagException,
                           extract_package as scoap3utils_extract_package)
