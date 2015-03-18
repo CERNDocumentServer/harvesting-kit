@@ -87,12 +87,18 @@ def record_xml_output(rec, pretty=True):
     return unescape(ret)
 
 
-def escape_for_xml(data):
-    """Transform & and < to XML valid &amp; and &lt."""
+def escape_for_xml(data, tags_to_keep=None):
+    """Transform & and < to XML valid &amp; and &lt.
+
+    Pass a list of tags as string to enable replacement of
+    '<' globally but keep any XML tags in the list.
+    """
     data = re.sub("&(?!(#?)(\d{1,5}|\w{1,8});)", "&amp;", data)
     # Cover these special cases where in mathematical expressions '<'' is used.
     data = re.sub('(<)([\$\%\=\-\_\.\+\d\c\s\b]+)', '&lt;\g<2>', data)
     data = re.sub('(<)([a-z]{1}[^a-z>])', '&lt;\g<2>', data)
+    if tags_to_keep:
+        data = re.sub("(<)(?!([\/]?{0}))".format("|[\/]?".join(tags_to_keep)), '&lt;', data)
     return data
 
 

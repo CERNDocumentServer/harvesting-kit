@@ -90,5 +90,5 @@ class MathMLParser(HTMLParser):
     def html_to_text(cls, html):
         """Return stripped HTML, keeping only MathML."""
         s = cls()
-        s.feed(escape_for_xml(html))
-        return s.get_data()
+        s.feed(html)
+        return escape_for_xml(s.get_data(), tags_to_keep=s.mathml_elements)
