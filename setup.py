@@ -24,7 +24,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="HarvestingKit",
-    version="0.4.4",
+    version="0.4.5",
     packages=find_packages(),
     package_data={'': ['data/*.xml']},
     data_files=[("dtds", ["dtds/ja5_art501.zip",
