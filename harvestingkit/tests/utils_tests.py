@@ -124,6 +124,14 @@ class UtilsTests(unittest.TestCase):
         keep_existing = "for 0.03&lt;x&lt;0.1 and fit to world data"
         self.assertEqual(escape_for_xml(keep_existing), keep_existing)
 
+        from harvestingkit.html_utils import MathMLParser
+
+        self.assertEqual(
+            escape_for_xml("ont essayé à<ll' pliquer",
+                           tags_to_keep=MathMLParser.mathml_elements),
+            "ont essayé à&lt;ll' pliquer"
+        )
+
     def test_fix_dashes(self):
         """Test dashes."""
         self.assertEqual(fix_dashes(u"A–A"), "A-A")
