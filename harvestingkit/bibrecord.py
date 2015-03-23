@@ -224,7 +224,7 @@ def create_records(marcxml, verbose=CFG_BIBRECORD_DEFAULT_VERBOSE_LEVEL,
             for record_xml in record_xmls]
 
 
-def create_record(marcxml, verbose=CFG_BIBRECORD_DEFAULT_VERBOSE_LEVEL,
+def create_record(marcxml=None, verbose=CFG_BIBRECORD_DEFAULT_VERBOSE_LEVEL,
                   correct=CFG_BIBRECORD_DEFAULT_CORRECT, parser='',
                   sort_fields_by_indicators=False,
                   keep_singletons=CFG_BIBRECORD_KEEP_SINGLETONS):
@@ -278,6 +278,8 @@ def create_record(marcxml, verbose=CFG_BIBRECORD_DEFAULT_VERBOSE_LEVEL,
     :return: a tuple (record, status_code, list_of_errors), where status
              code is 0 where there are errors, 1 when no errors
     """
+    if marcxml is None:
+        return {}
     try:
         rec = _create_record_lxml(marcxml, verbose, correct,
                                   keep_singletons=keep_singletons)

@@ -66,12 +66,15 @@ from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from harvestingkit.config import CFG_DTDS_PATH as CFG_SCOAP3DTDS_PATH
 from harvestingkit.utils import (fix_journal_name,
-                                 create_record,
-                                 record_add_field,
-                                 record_xml_output,
                                  format_arxiv_id,
                                  add_nations_field,
                                  fix_dashes)
+
+from harvestingkit.bibrecord import (
+    record_add_field,
+    create_record,
+    record_xml_output,
+)
 
 CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
 CFG_ELSEVIER_ART510_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art510.zip')

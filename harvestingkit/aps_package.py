@@ -22,10 +22,12 @@ import re
 
 from xml.dom.minidom import parse
 from harvestingkit.utils import (fix_journal_name,
-                                 format_arxiv_id,
-                                 create_record,
-                                 record_add_field,
-                                 record_xml_output)
+                                 format_arxiv_id)
+from harvestingkit.bibrecord import (
+    record_add_field,
+    create_record,
+    record_xml_output,
+)
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from harvestingkit.jats_package import JatsPackage

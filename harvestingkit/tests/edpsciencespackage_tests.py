@@ -163,9 +163,12 @@ class EDPSciencesPackageTests(unittest.TestCase):
     def test_get_record(self):
         source_file = join(dirname(folder), edp_test_record)
         marc_file = join(dirname(folder), edp_output)
+        xml = self.edp.get_record(source_file)
         with open(marc_file) as marc:
             result = marc.read()
-        self.assertEqual(self.edp.get_record(source_file), result)
+        with open("/tmp/test.xml", "w") as marc:
+            marc.write(xml)
+        self.assertEqual(xml.strip(), result.strip())
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(EDPSciencesPackageTests)

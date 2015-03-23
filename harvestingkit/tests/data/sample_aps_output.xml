@@ -1,87 +1,87 @@
 <record>
-  <datafield ind1="" ind2="" tag="300">
-    <subfield code="a">15</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="084">
-    <subfield code="2">PACS</subfield>
-    <subfield code="a">98.80.Cq</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="084">
-    <subfield code="2">PACS</subfield>
-    <subfield code="a">04.30.-w</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="084">
-    <subfield code="2">PACS</subfield>
-    <subfield code="a">04.62.+v</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="084">
-    <subfield code="2">PACS</subfield>
-    <subfield code="a">98.70.Vc</subfield>
-  </datafield>
-  <datafield ind1="1" ind2="7" tag="650">
-    <subfield code="2">APS</subfield>
-    <subfield code="a">Cosmology</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="245">
-    <subfield code="a">Scalar modes of the relic gravitons</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="260">
-    <subfield code="c">2015-01-29</subfield>
-    <subfield code="t">published</subfield>
-  </datafield>
-  <datafield ind1="7" ind2="" tag="024">
+  <datafield tag="024" ind1="7" ind2=" ">
     <subfield code="a">10.1103/PhysRevD.91.023521</subfield>
     <subfield code="2">DOI</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="520">
-    <subfield code="a"><p>In conformally flat background geometries the long-wavelength gravitons can be described in the fluid approximation and they induce scalar fluctuations both during inflation and in the subsequent radiation-dominated epoch. While this effect is minute and suppressed for a de Sitter stage of expansion, the fluctuations of the energy-momentum pseudotensor of the graviton fluid lead to curvature perturbations that increase with time all along the post-inflationary evolution. An explicit calculation of these effects is presented for a standard thermal history and it is shown that the growth of the curvature perturbations caused by the long-wavelength modes is approximately compensated by the slope of the power spectra of the energy density, pressure and anisotropic stress of the relic gravitons.</p></subfield>
+  <datafield tag="084" ind1=" " ind2=" ">
+    <subfield code="2">PACS</subfield>
+    <subfield code="a">98.80.Cq</subfield>
+  </datafield>
+  <datafield tag="084" ind1=" " ind2=" ">
+    <subfield code="2">PACS</subfield>
+    <subfield code="a">04.30.-w</subfield>
+  </datafield>
+  <datafield tag="084" ind1=" " ind2=" ">
+    <subfield code="2">PACS</subfield>
+    <subfield code="a">04.62.+v</subfield>
+  </datafield>
+  <datafield tag="084" ind1=" " ind2=" ">
+    <subfield code="2">PACS</subfield>
+    <subfield code="a">98.70.Vc</subfield>
+  </datafield>
+  <datafield tag="100" ind1=" " ind2=" ">
+    <subfield code="a">Giovannini, Massimo</subfield>
+    <subfield code="v">Department of Physics, Theory Division, CERN , 1211 Geneva 23, Switzerland INFN, Section of Milan-Bicocca, 20126 Milan, Italy</subfield>
+    <subfield code="m">massimo.giovannini@cern.ch</subfield>
+  </datafield>
+  <datafield tag="245" ind1=" " ind2=" ">
+    <subfield code="a">Scalar modes of the relic gravitons</subfield>
+  </datafield>
+  <datafield tag="260" ind1=" " ind2=" ">
+    <subfield code="c">2015-01-29</subfield>
+    <subfield code="t">published</subfield>
+  </datafield>
+  <datafield tag="300" ind1=" " ind2=" ">
+    <subfield code="a">15</subfield>
+  </datafield>
+  <datafield tag="520" ind1=" " ind2=" ">
+    <subfield code="a">In conformally flat background geometries the long-wavelength gravitons can be described in the fluid approximation and they induce scalar fluctuations both during inflation and in the subsequent radiation-dominated epoch. While this effect is minute and suppressed for a de Sitter stage of expansion, the fluctuations of the energy-momentum pseudotensor of the graviton fluid lead to curvature perturbations that increase with time all along the post-inflationary evolution. An explicit calculation of these effects is presented for a standard thermal history and it is shown that the growth of the curvature perturbations caused by the long-wavelength modes is approximately compensated by the slope of the power spectra of the energy density, pressure and anisotropic stress of the relic gravitons.</subfield>
     <subfield code="9">APS</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="540">
+  <datafield tag="540" ind1=" " ind2=" ">
     <subfield code="a">Creative Commons Attribution 3.0 License</subfield>
     <subfield code="u">http://creativecommons.org/licenses/by/3.0/</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="542">
+  <datafield tag="542" ind1=" " ind2=" ">
     <subfield code="d">authors</subfield>
     <subfield code="g">2015</subfield>
     <subfield code="e">Article</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="773">
+  <datafield tag="650" ind1="1" ind2="7">
+    <subfield code="2">APS</subfield>
+    <subfield code="a">Cosmology</subfield>
+  </datafield>
+  <datafield tag="773" ind1=" " ind2=" ">
     <subfield code="p">Phys.Rev.</subfield>
     <subfield code="v">D91</subfield>
     <subfield code="n">2</subfield>
     <subfield code="y">2015</subfield>
     <subfield code="c">023521</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="980">
+  <datafield tag="980" ind1=" " ind2=" ">
     <subfield code="a">HEP</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="980">
+  <datafield tag="980" ind1=" " ind2=" ">
     <subfield code="a">Citeable</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="980">
+  <datafield tag="980" ind1=" " ind2=" ">
     <subfield code="a">Published</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="100">
-    <subfield code="a">Giovannini, Massimo</subfield>
-    <subfield code="v">Department of Physics, Theory Division, CERN , 1211 Geneva 23, Switzerland INFN, Section of Milan-Bicocca, 20126 Milan, Italy</subfield>
-    <subfield code="m">massimo.giovannini@cern.ch</subfield>
-  </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">L. P. Grishchuk</subfield>
     <subfield code="y">1974</subfield>
     <subfield code="o">1</subfield>
     <subfield code="s">Zh.Éksp.Teor.Fiz.,67,825</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">L. P. Grishchuk</subfield>
     <subfield code="y">1975</subfield>
     <subfield code="o">1</subfield>
     <subfield code="s">Sov.Phys.JETP,40,409</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1111/j.1749-6632.1977.tb37064.x</subfield>
     <subfield code="h">L. P. Grishchuk</subfield>
     <subfield code="y">1977</subfield>
@@ -89,14 +89,14 @@
     <subfield code="s">Ann.N.Y.Acad.Sci.,302,439</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">A. A. Starobinsky</subfield>
     <subfield code="y">1979</subfield>
     <subfield code="o">2</subfield>
     <subfield code="s">JETP Lett.,30,682</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1016/0370-2693(82)90641-4</subfield>
     <subfield code="h">V. A. Rubakov</subfield>
     <subfield code="h">M. V. Sazhin</subfield>
@@ -106,7 +106,7 @@
     <subfield code="s">Phys.Lett.,B115,189</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1016/0370-2693(83)91322-9</subfield>
     <subfield code="h">R. Fabbri</subfield>
     <subfield code="h">M. D. Pollock</subfield>
@@ -115,7 +115,7 @@
     <subfield code="s">Phys.Lett.,B125,445</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1016/0550-3213(84)90329-8</subfield>
     <subfield code="h">L. F. Abbott</subfield>
     <subfield code="h">M. B. Wise</subfield>
@@ -124,7 +124,7 @@
     <subfield code="s">Nucl.Phys.,244,541</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.43.2566</subfield>
     <subfield code="h">L. P. Grishchuk</subfield>
     <subfield code="h">M. Solokhin</subfield>
@@ -133,7 +133,7 @@
     <subfield code="s">Phys.Rev.,D43,2566</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.42.453</subfield>
     <subfield code="h">V. Sahni</subfield>
     <subfield code="y">1990</subfield>
@@ -141,7 +141,7 @@
     <subfield code="s">Phys.Rev.,D42,453</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.58.083504</subfield>
     <subfield code="h">M. Giovannini</subfield>
     <subfield code="y">1998</subfield>
@@ -149,7 +149,7 @@
     <subfield code="s">Phys.Rev.,D58,083504</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.60.123511</subfield>
     <subfield code="h">M. Giovannini</subfield>
     <subfield code="y">1999</subfield>
@@ -157,7 +157,7 @@
     <subfield code="s">Phys.Rev.,D60,123511</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1088/0264-9381/26/4/045004</subfield>
     <subfield code="h">M. Giovannini</subfield>
     <subfield code="y">2009</subfield>
@@ -165,7 +165,7 @@
     <subfield code="s">Classical Quantum Gravity,26,045004</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1016/j.physletb.2009.09.018</subfield>
     <subfield code="h">W. Zhao</subfield>
     <subfield code="h">D. Baskaran</subfield>
@@ -175,7 +175,7 @@
     <subfield code="s">Phys.Lett.,B680,411</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.80.042002</subfield>
     <subfield code="h">M. S. Pshirkov</subfield>
     <subfield code="h">D. Baskaran</subfield>
@@ -184,7 +184,7 @@
     <subfield code="s">Phys.Rev.,D80,042002</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.81.083503</subfield>
     <subfield code="h">T. Chiba</subfield>
     <subfield code="h">K. Kamada</subfield>
@@ -194,7 +194,7 @@
     <subfield code="s">Phys.Rev.,D81,083503</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.89.123513</subfield>
     <subfield code="h">M. W. Hossain</subfield>
     <subfield code="h">R. Myrzakulov</subfield>
@@ -205,7 +205,7 @@
     <subfield code="s">Phys.Rev.,D89,123513</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">C. W. Misner</subfield>
     <subfield code="h">K. S. Thorne</subfield>
     <subfield code="h">J. A. Wheeler</subfield>
@@ -216,7 +216,7 @@
     <subfield code="t">Gravitation</subfield>
     <subfield code="d">book</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">S. Weinberg</subfield>
     <subfield code="y">1972</subfield>
     <subfield code="m">New York,, 166</subfield>
@@ -225,7 +225,7 @@
     <subfield code="t">Gravitation and Cosmology</subfield>
     <subfield code="d">book</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">L. D. Landau</subfield>
     <subfield code="h">E. M. Lifshitz</subfield>
     <subfield code="y">1971</subfield>
@@ -235,7 +235,7 @@
     <subfield code="t">The Classical Theory of Fields</subfield>
     <subfield code="d">book</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRev.166.1263</subfield>
     <subfield code="h">R. Isaacson</subfield>
     <subfield code="y">1968</subfield>
@@ -243,7 +243,7 @@
     <subfield code="s">Phys.Rev.,166,1263</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRev.166.1272</subfield>
     <subfield code="h">R. Isaacson</subfield>
     <subfield code="y">1968</subfield>
@@ -251,7 +251,7 @@
     <subfield code="s">Phys.Rev.,166,1272</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.56.3248</subfield>
     <subfield code="h">L. R. Abramo</subfield>
     <subfield code="h">R. Brandenberger</subfield>
@@ -261,7 +261,7 @@
     <subfield code="s">Phys.Rev.,D56,3248</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.60.064004</subfield>
     <subfield code="h">L. R. Abramo</subfield>
     <subfield code="y">1999</subfield>
@@ -269,7 +269,7 @@
     <subfield code="s">Phys Rev.,D60,064004</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.61.024038</subfield>
     <subfield code="h">S. V. Babak</subfield>
     <subfield code="h">L. P. Grishchuk</subfield>
@@ -278,7 +278,7 @@
     <subfield code="s">Phys.Rev.,D61,024038</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.73.083505</subfield>
     <subfield code="h">M. Giovannini</subfield>
     <subfield code="y">2006</subfield>
@@ -286,7 +286,7 @@
     <subfield code="s">Phys.Rev.,D73,083505</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.85.104012</subfield>
     <subfield code="h">D. Su</subfield>
     <subfield code="h">Y. Zhang</subfield>
@@ -295,7 +295,7 @@
     <subfield code="s">Phys.Rev.,D85,104012</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.16.1601</subfield>
     <subfield code="h">L. H. Ford</subfield>
     <subfield code="h">L. Parker</subfield>
@@ -304,7 +304,7 @@
     <subfield code="s">Phys.Rev.,D16,1601</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.16.245</subfield>
     <subfield code="h">L. H. Ford</subfield>
     <subfield code="h">L. Parker</subfield>
@@ -313,7 +313,7 @@
     <subfield code="s">Phys.Rev.,D16,245</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1016/0375-9601(77)90880-5</subfield>
     <subfield code="h">B. L. Hu</subfield>
     <subfield code="h">L. Parker</subfield>
@@ -322,7 +322,7 @@
     <subfield code="s">Phys.Lett,A63,217</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.22.1882</subfield>
     <subfield code="h">J. Bardeen</subfield>
     <subfield code="y">1980</subfield>
@@ -330,7 +330,7 @@
     <subfield code="s">Phys.Rev.,D22,1882</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1093/mnras/200.3.535</subfield>
     <subfield code="h">G. V. Chibisov</subfield>
     <subfield code="h">V. F. Mukhanov</subfield>
@@ -339,7 +339,7 @@
     <subfield code="s">Mon.Not.R.Astron.Soc.,200,535</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.28.679</subfield>
     <subfield code="h">J. Bardeen</subfield>
     <subfield code="h">P. Steinhardt</subfield>
@@ -349,7 +349,7 @@
     <subfield code="s">Phys.Rev.,D28,679</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.30.265</subfield>
     <subfield code="h">J. A. Frieman</subfield>
     <subfield code="h">M. S. Turner</subfield>
@@ -358,7 +358,7 @@
     <subfield code="s">Phys.Rev.,D30,265</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1143/PTPS.78.1</subfield>
     <subfield code="h">H. Kodama</subfield>
     <subfield code="h">M. Sasaki</subfield>
@@ -367,7 +367,7 @@
     <subfield code="s">Prog.Theor.Phys.Suppl.,78,1</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1086/170206</subfield>
     <subfield code="h">J-c. Hwang</subfield>
     <subfield code="y">1991</subfield>
@@ -375,21 +375,21 @@
     <subfield code="s">Astrophys.J.,375,443</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">V. N. Lukash</subfield>
     <subfield code="y">1980</subfield>
     <subfield code="o">15</subfield>
     <subfield code="s">Zh.Eksp.Teor.Fiz.,79,1601</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">V. N. Lukash</subfield>
     <subfield code="y">1980</subfield>
     <subfield code="o">15</subfield>
     <subfield code="s">Sov.Phys.JETP,52,807</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1134/S1063772907060017</subfield>
     <subfield code="h">V. Strokov</subfield>
     <subfield code="y">2007</subfield>
@@ -397,7 +397,7 @@
     <subfield code="s">Astronomy Reports,51,431</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1088/0067-0049/192/2/15</subfield>
     <subfield code="h">B. Gold</subfield>
     <subfield code="y">2011</subfield>
@@ -405,7 +405,7 @@
     <subfield code="s">Astrophys.J.Suppl.Ser.,192,15</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1088/0067-0049/192/2/16</subfield>
     <subfield code="h">D. Larson</subfield>
     <subfield code="y">2011</subfield>
@@ -413,7 +413,7 @@
     <subfield code="s">Astrophys.J.Suppl.Ser.,192,16</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1088/0067-0049/192/2/17</subfield>
     <subfield code="h">C. L. Bennett</subfield>
     <subfield code="y">2011</subfield>
@@ -421,7 +421,7 @@
     <subfield code="s">Astrophys.J.Suppl.Ser.,192,17</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1088/0067-0049/208/2/19</subfield>
     <subfield code="h">G. Hinshaw</subfield>
     <subfield code="y">2013</subfield>
@@ -429,7 +429,7 @@
     <subfield code="s">Astrophys.J.Suppl.Ser.,208,19</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1088/0067-0049/208/2/20</subfield>
     <subfield code="h">C. L. Bennett</subfield>
     <subfield code="y">2013</subfield>
@@ -437,7 +437,7 @@
     <subfield code="s">Astrophys.J.Suppl.Ser.,208,20</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1086/377226</subfield>
     <subfield code="h">D. N. Spergel</subfield>
     <subfield code="y">2003</subfield>
@@ -445,7 +445,7 @@
     <subfield code="s">Astrophys.J.Suppl.Ser.,148,175</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1086/513700</subfield>
     <subfield code="h">D. N. Spergel</subfield>
     <subfield code="y">2007</subfield>
@@ -453,7 +453,7 @@
     <subfield code="s">Astrophys.J.Suppl.Ser.,170,377</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1086/513699</subfield>
     <subfield code="h">L. Page</subfield>
     <subfield code="y">2007</subfield>
@@ -461,7 +461,7 @@
     <subfield code="s">Astrophys.J.Suppl.Ser.,170,335</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevLett.112.241101</subfield>
     <subfield code="h">P. A. R. Ade</subfield>
     <subfield code="y">2014</subfield>
@@ -470,7 +470,7 @@
     <subfield code="s">Phys.Rev.Lett.,112,241101</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1088/0004-637X/792/1/62</subfield>
     <subfield code="h">P. A. R. Ade</subfield>
     <subfield code="y">2014</subfield>
@@ -479,7 +479,7 @@
     <subfield code="s">Astrophys.J.,792,62</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.8.4231</subfield>
     <subfield code="h">G. L. Murphy</subfield>
     <subfield code="y">1973</subfield>
@@ -487,7 +487,7 @@
     <subfield code="s">Phys.Rev.,D8,4231</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1016/0375-9601(77)90953-7</subfield>
     <subfield code="h">G. L. Murphy</subfield>
     <subfield code="y">1977</subfield>
@@ -495,7 +495,7 @@
     <subfield code="s">Phys.Lett.,A62,75</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">V. A. Belinskii</subfield>
     <subfield code="h">I. M. Khalatnikov</subfield>
     <subfield code="y">1975</subfield>
@@ -503,7 +503,7 @@
     <subfield code="s">Zh.Eksp.Teor.Fiz.,69,401</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">V. A. Belinskii</subfield>
     <subfield code="h">I. M. Khalatnikov</subfield>
     <subfield code="y">1976</subfield>
@@ -511,7 +511,7 @@
     <subfield code="s">Sov.Phys.JETP,42,205</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">V. A. Belinskii</subfield>
     <subfield code="h">I. M. Khalatnikov</subfield>
     <subfield code="y">1975</subfield>
@@ -519,7 +519,7 @@
     <subfield code="s">Zh.Eksp.Teor.Fiz.Pis.Red.,21,223</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">V. A. Belinskii</subfield>
     <subfield code="h">I. M. Khalatnikov</subfield>
     <subfield code="y">1975</subfield>
@@ -527,7 +527,7 @@
     <subfield code="s">JETP Lett.,21,99</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.72.043514</subfield>
     <subfield code="h">S. Weinberg</subfield>
     <subfield code="y">2005</subfield>
@@ -535,7 +535,7 @@
     <subfield code="s">Phys.Rev.,D72,043514</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="a">10.1103/PhysRevD.74.023508</subfield>
     <subfield code="h">S. Weinberg</subfield>
     <subfield code="y">2006</subfield>

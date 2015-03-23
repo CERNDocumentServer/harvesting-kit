@@ -127,14 +127,17 @@ class WorldScientificTests(unittest.TestCase):
     def test_get_record(self):
         source_file = join(dirname(folder), ws_test_record)
         marc_file = join(dirname(folder), ws_output)
+        xml = self.ws.get_record(source_file)
         with open(marc_file) as marc:
             result = marc.read()
-        self.assertEqual(self.ws.get_record(source_file), result)
+        self.assertEqual(xml.strip(), result.strip())
+
         source_file_erratum = join(dirname(folder), ws_erratum_test_record)
         marc_file_erratum = join(dirname(folder), ws_erratum_output)
+        erratum_xml = self.ws.get_record(source_file_erratum)
         with open(marc_file_erratum) as marc:
             result = marc.read()
-        self.assertEqual(self.ws.get_record(source_file_erratum), result)
+        self.assertEqual(erratum_xml.strip(), result.strip())
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(

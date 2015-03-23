@@ -272,7 +272,8 @@ class APSPackageTests(unittest.TestCase):
         marc_file = join(dirname(folder), aps_output)
         with open(marc_file) as marc:
             result = marc.read()
-        self.assertEqual(self.aps.get_record(source_file), result)
+        xml = self.aps.get_record(source_file)
+        self.assertEqual(xml.strip(), result.strip())
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(APSPackageTests)

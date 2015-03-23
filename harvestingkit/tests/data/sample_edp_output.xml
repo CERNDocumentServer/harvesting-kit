@@ -1,72 +1,86 @@
 <record>
-  <datafield ind1="" ind2="" tag="245">
-    <subfield code="b">An energy-constrained smallest fragment size</subfield>
-    <subfield code="a">A dearth of small particles in debris disks</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="500">
-    <subfield code="a">Appendices are available in electronic form at http://www.aanda.org</subfield>
-  </datafield>
-  <datafield ind1="1" ind2="7" tag="650">
-    <subfield code="2">EDPSciences</subfield>
-    <subfield code="a">dust, extinction</subfield>
-  </datafield>
-  <datafield ind1="1" ind2="7" tag="650">
-    <subfield code="2">EDPSciences</subfield>
-    <subfield code="a">ISM: abundances</subfield>
-  </datafield>
-  <datafield ind1="1" ind2="" tag="653">
-    <subfield code="a">dust, extinction</subfield>
-    <subfield code="9">author</subfield>
-  </datafield>
-  <datafield ind1="1" ind2="" tag="653">
-    <subfield code="a">ISM: abundances</subfield>
-    <subfield code="9">author</subfield>
-  </datafield>
-  <datafield ind1="1" ind2="7" tag="650">
-    <subfield code="2">INSPIRE</subfield>
-    <subfield code="a">Astrophysics</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="260">
-    <subfield code="c">2014-05-23</subfield>
-    <subfield code="t">published</subfield>
-  </datafield>
-  <datafield ind1="7" ind2="" tag="024">
+  <datafield tag="024" ind1="7" ind2=" ">
     <subfield code="a">10.1051/0004-6361/201423985</subfield>
     <subfield code="2">DOI</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="520">
-    <subfield code="a"><p><italic>Context:<br/> </italic>The depletion of iron and sulphur into dust in the interstellar medium and the exact nature of interstellar amorphous silicate grains is still an open question.</p> <p><italic><br/>Aims:<br/> </italic>We study the incorporation of iron and sulphur into amorphous silicates of olivine- and pyroxene-types and their effects on the dust spectroscopy and thermal emission.</p> <p><italic><br/>Methods:<br/> </italic>We used the Maxwell-Garnett effective-medium theory to construct the optical constants for a mixture of silicates, metallic iron, and iron sulphide. We also studied the effects of iron and iron sulphide in aggregate grains.</p> <p><italic><br/>Results:<br/> </italic>Iron sulphide inclusions within amorphous silicates that contain iron metal inclusions show no strong differences in the optical properties of the grains. A mix of amorphous olivine- and pyroxene-type silicate broadens the silicate features. An amorphous carbon mantle with a thickness of 10 nm on the silicate grains leads to an increase in absorption on the short-wavelength side of the 10 <inline-formula specific-use="simple-math"><italic>μ</italic></inline-formula>m silicate band.</p> <p><italic>Conclusions. </italic>The assumption of amorphous olivine-type and pyroxene-type silicates and a 10 nm thick amorphous carbon mantle better matches the interstellar silicate band profiles. Including iron nano-particles leads to an increase in the mid-IR extinction, while up to 5 ppm of sulphur can be incorporated as Fe/FeS nano inclusions into silicate grains without leaving a significant trace of its presence.</p></subfield>
+  <datafield tag="100" ind1=" " ind2=" ">
+    <subfield code="a">Krause, Martin</subfield>
+    <subfield code="v">Institut d’Astrophysique Spatiale (IAS), Université Paris-Sud &amp; CNRS , Bât. 121 , 91405 Orsay , France</subfield>
+    <subfield code="v">Excellence Cluster Universe, Technische Universität München , Boltzmannstrasse 2 , 85748 Garching , Germany</subfield>
+  </datafield>
+  <datafield tag="245" ind1=" " ind2=" ">
+    <subfield code="b">An energy-constrained smallest fragment size</subfield>
+    <subfield code="a">A dearth of small particles in debris disks</subfield>
+  </datafield>
+  <datafield tag="260" ind1=" " ind2=" ">
+    <subfield code="c">2014-05-23</subfield>
+    <subfield code="t">published</subfield>
+  </datafield>
+  <datafield tag="300" ind1=" " ind2=" ">
+    <subfield code="a">4</subfield>
+  </datafield>
+  <datafield tag="500" ind1=" " ind2=" ">
+    <subfield code="a">Appendices are available in electronic form at http://www.aanda.org</subfield>
+  </datafield>
+  <datafield tag="520" ind1=" " ind2=" ">
+    <subfield code="a">Context: The depletion of iron and sulphur into dust in the interstellar medium and the exact nature of interstellar amorphous silicate grains is still an open question. Aims: We study the incorporation of iron and sulphur into amorphous silicates of olivine- and pyroxene-types and their effects on the dust spectroscopy and thermal emission. Methods: We used the Maxwell-Garnett effective-medium theory to construct the optical constants for a mixture of silicates, metallic iron, and iron sulphide. We also studied the effects of iron and iron sulphide in aggregate grains. Results: Iron sulphide inclusions within amorphous silicates that contain iron metal inclusions show no strong differences in the optical properties of the grains. A mix of amorphous olivine- and pyroxene-type silicate broadens the silicate features. An amorphous carbon mantle with a thickness of 10 nm on the silicate grains leads to an increase in absorption on the short-wavelength side of the 10 μm silicate band. Conclusions. The assumption of amorphous olivine-type and pyroxene-type silicates and a 10 nm thick amorphous carbon mantle better matches the interstellar silicate band profiles. Including iron nano-particles leads to an increase in the mid-IR extinction, while up to 5 ppm of sulphur can be incorporated as Fe/FeS nano inclusions into silicate grains without leaving a significant trace of its presence.</subfield>
     <subfield code="9">EDPSciences</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="540">
+  <datafield tag="540" ind1=" " ind2=" ">
     <subfield code="a">Creative Commons Attribution License 2.0</subfield>
     <subfield code="u">http://creativecommons.org/licenses/by/2.0/</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="300">
-    <subfield code="a">4</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="542">
+  <datafield tag="542" ind1=" " ind2=" ">
     <subfield code="d">ESO</subfield>
     <subfield code="g">2014</subfield>
     <subfield code="e">Article</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="773">
+  <datafield tag="650" ind1="1" ind2="7">
+    <subfield code="2">EDPSciences</subfield>
+    <subfield code="a">dust, extinction</subfield>
+  </datafield>
+  <datafield tag="650" ind1="1" ind2="7">
+    <subfield code="2">EDPSciences</subfield>
+    <subfield code="a">ISM: abundances</subfield>
+  </datafield>
+  <datafield tag="650" ind1="1" ind2="7">
+    <subfield code="2">INSPIRE</subfield>
+    <subfield code="a">Astrophysics</subfield>
+  </datafield>
+  <datafield tag="653" ind1="1" ind2=" ">
+    <subfield code="a">dust, extinction</subfield>
+    <subfield code="9">author</subfield>
+  </datafield>
+  <datafield tag="653" ind1="1" ind2=" ">
+    <subfield code="a">ISM: abundances</subfield>
+    <subfield code="9">author</subfield>
+  </datafield>
+  <datafield tag="700" ind1=" " ind2=" ">
+    <subfield code="a">Köhler, M.</subfield>
+  </datafield>
+  <datafield tag="700" ind1=" " ind2=" ">
+    <subfield code="a">Jones, A.</subfield>
+  </datafield>
+  <datafield tag="700" ind1=" " ind2=" ">
+    <subfield code="a">Ysard, N.</subfield>
+  </datafield>
+  <datafield tag="773" ind1=" " ind2=" ">
     <subfield code="p">Astron.Astrophys.</subfield>
     <subfield code="v">565</subfield>
     <subfield code="c">L9</subfield>
     <subfield code="y">2014</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="980">
+  <datafield tag="980" ind1=" " ind2=" ">
     <subfield code="a">HEP</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">2</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Bradley, J.P.</subfield>
     <subfield code="y">1994</subfield>
     <subfield code="s">Science,265,925</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">3</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Caselli, P.</subfield>
@@ -75,7 +89,7 @@
     <subfield code="y">1994</subfield>
     <subfield code="s">Astrophys.J.,421,206</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">4</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Chiar, J.E.</subfield>
@@ -83,7 +97,7 @@
     <subfield code="y">2006</subfield>
     <subfield code="s">Astrophys.J.,637,774</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">5</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Compiègne, M.</subfield>
@@ -92,7 +106,7 @@
     <subfield code="y">2011</subfield>
     <subfield code="s">Astron.Astrophys.,525,A103</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">6</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Costantini, E.</subfield>
@@ -101,7 +115,7 @@
     <subfield code="y">2005</subfield>
     <subfield code="s">Astron.Astrophys.,444,187</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">7</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Davoisne, C.</subfield>
@@ -110,7 +124,7 @@
     <subfield code="y">2006</subfield>
     <subfield code="s">Astron.Astrophys.,448,L1</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">8</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Demyk, K.</subfield>
@@ -119,7 +133,7 @@
     <subfield code="y">2001</subfield>
     <subfield code="s">Astron.Astrophys.,368,L38</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">9</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Djouadi, Z.</subfield>
@@ -128,35 +142,35 @@
     <subfield code="y">2007</subfield>
     <subfield code="s">Astron.Astrophys.,468,L9</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">10</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Draine, B.</subfield>
     <subfield code="y">1988</subfield>
     <subfield code="s">Astrophys.J.,333,848</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">12</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Jenkins, E.B.</subfield>
     <subfield code="y">2009</subfield>
     <subfield code="s">Astrophys.J.,700,1299</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">13</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Jones, A.P.</subfield>
     <subfield code="y">2000</subfield>
     <subfield code="s">J.Geophys.Res.,105,10257</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">14</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Jones, A.P.</subfield>
     <subfield code="y">2011</subfield>
     <subfield code="s">Astron.Astrophys.,528,A98</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">15</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Jones, R.V.</subfield>
@@ -164,7 +178,7 @@
     <subfield code="y">1967</subfield>
     <subfield code="s">Astrophys.J.,147,943</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">16</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Jones, A.P.</subfield>
@@ -173,7 +187,7 @@
     <subfield code="y">2013</subfield>
     <subfield code="s">Astron.Astrophys.,558,A62</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">17</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Joseph, C.L.</subfield>
@@ -183,7 +197,7 @@
     <subfield code="y">1986</subfield>
     <subfield code="s">Astrophys.J.,309,771</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">18</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Keller, L.P.</subfield>
@@ -192,7 +206,7 @@
     <subfield code="y">2002</subfield>
     <subfield code="s">Nature,417,148</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">19</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Leroux, H.</subfield>
@@ -201,21 +215,21 @@
     <subfield code="y">2009</subfield>
     <subfield code="s">Geochim.Cosmochim.Acta,73,767</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">20</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Mathis, J.S.</subfield>
     <subfield code="y">1990</subfield>
     <subfield code="s">Ann.Rev.Astron.Astrophys.,28,37</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">21</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">McClure, M.</subfield>
     <subfield code="y">2009</subfield>
     <subfield code="s">Astrophys.J.,693,L81</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">22</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Millar, T.J.</subfield>
@@ -223,7 +237,7 @@
     <subfield code="y">1990</subfield>
     <subfield code="s">Astron.Astrophys.,231,466</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">23</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Min, M.</subfield>
@@ -232,7 +246,7 @@
     <subfield code="y">2007</subfield>
     <subfield code="s">Astron.Astrophys.,462,667</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">24</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Nguyen, A.N.</subfield>
@@ -241,7 +255,7 @@
     <subfield code="y">2007</subfield>
     <subfield code="s">Astrophys.J.,656,1223</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">25</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Ordal, M.A.</subfield>
@@ -252,7 +266,7 @@
     <subfield code="y">1985</subfield>
     <subfield code="s">Appl.Opt.,24,4493</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">26</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Ordal, M.A.</subfield>
@@ -263,7 +277,7 @@
     <subfield code="y">1988</subfield>
     <subfield code="s">Appl.Opt.,27,1203</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">28</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Pollack, J.B.</subfield>
@@ -272,7 +286,7 @@
     <subfield code="y">1994</subfield>
     <subfield code="s">Astrophys.J.,421,615</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">29</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Purcell, E.M.</subfield>
@@ -280,7 +294,7 @@
     <subfield code="y">1973</subfield>
     <subfield code="s">Astrophys.J.,186,705</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">30</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Rieke, G.H.</subfield>
@@ -288,7 +302,7 @@
     <subfield code="y">1985</subfield>
     <subfield code="s">Astrophys.J.,288,618</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">31</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Roskosz, M.</subfield>
@@ -299,7 +313,7 @@
     <subfield code="y">2011</subfield>
     <subfield code="s">Astron.Astrophys.,529,A111</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">32</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Savage, B.D.</subfield>
@@ -307,7 +321,7 @@
     <subfield code="y">1979</subfield>
     <subfield code="s">Astrophys.J.,229,136</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">33</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Savage, B.D.</subfield>
@@ -315,7 +329,7 @@
     <subfield code="y">1979</subfield>
     <subfield code="s">Ann.Rev.Astron.Astrophys.,17,73</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">34</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Scott, A.</subfield>
@@ -323,7 +337,7 @@
     <subfield code="y">1996</subfield>
     <subfield code="s">Astrophys.J.Suppl.,105,401</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">35</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Sofia, U.J.</subfield>
@@ -331,7 +345,7 @@
     <subfield code="y">1995</subfield>
     <subfield code="s">Bull.Am.Astron.Soc.,27,860</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">36</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Ueda, Y.</subfield>
@@ -341,7 +355,7 @@
     <subfield code="y">2005</subfield>
     <subfield code="s">Astrophys.J.,620,274</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="o">37</subfield>
     <subfield code="d">journal</subfield>
     <subfield code="h">Xiang, J.</subfield>
@@ -350,19 +364,5 @@
     <subfield code="h">Wilms, J.</subfield>
     <subfield code="y">2011</subfield>
     <subfield code="s">Astrophys.J.,738,78</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="100">
-    <subfield code="a">Krause, Martin</subfield>
-    <subfield code="v">Institut d’Astrophysique Spatiale (IAS), Université Paris-Sud &amp; CNRS , Bât. 121 , 91405 Orsay , France</subfield>
-    <subfield code="v">Excellence Cluster Universe, Technische Universität München , Boltzmannstrasse 2 , 85748 Garching , Germany</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="700">
-    <subfield code="a">Köhler, M.</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="700">
-    <subfield code="a">Jones, A.</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="700">
-    <subfield code="a">Ysard, N.</subfield>
   </datafield>
 </record>

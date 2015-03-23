@@ -1,13 +1,13 @@
 <record>
-  <datafield ind1="7" ind2="" tag="024">
+  <datafield tag="024" ind1="7" ind2=" ">
     <subfield code="a">10.1142/S0129183108012649</subfield>
     <subfield code="2">DOI</subfield>
   </datafield>
-  <datafield ind1="7" ind2="" tag="024">
+  <datafield tag="024" ind1="7" ind2=" ">
     <subfield code="a">10.1142/S0129183108012303</subfield>
     <subfield code="2">DOI</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="773">
+  <datafield tag="773" ind1=" " ind2=" ">
     <subfield code="p">International Journal of Modern Physics</subfield>
     <subfield code="n">05</subfield>
     <subfield code="v">C19</subfield>

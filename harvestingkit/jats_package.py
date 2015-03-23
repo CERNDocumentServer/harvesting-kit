@@ -24,8 +24,8 @@ import sys
 from datetime import date, datetime
 
 from harvestingkit.utils import (fix_journal_name,
-                                 collapse_initials,
-                                 record_add_field)
+                                 collapse_initials)
+from harvestingkit.bibrecord import record_add_field
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text,
                                          get_attribute_in_tag,

@@ -1,62 +1,62 @@
 <record>
-  <datafield ind1="" ind2="" tag="245">
-    <subfield code="a">Toward classification of conformal theories</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="260">
-    <subfield code="c">1988-05-26</subfield>
-    <subfield code="t">published</subfield>
-  </datafield>
-  <datafield ind1="7" ind2="" tag="024">
+  <datafield tag="024" ind1="7" ind2=" ">
     <subfield code="a">10.1016/0370-2693(88)91603-6</subfield>
     <subfield code="2">DOI</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="100">
+  <datafield tag="100" ind1=" " ind2=" ">
     <subfield code="a">Vafa, Cumrun</subfield>
     <subfield code="j">ORCID:1234-5678-4321-8765</subfield>
     <subfield code="v">Lyman Laboratory of Physics, Harvard University, Cambridge, MA 02138, USA</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="520">
+  <datafield tag="245" ind1=" " ind2=" ">
+    <subfield code="a">Toward classification of conformal theories</subfield>
+  </datafield>
+  <datafield tag="260" ind1=" " ind2=" ">
+    <subfield code="c">1988-05-26</subfield>
+    <subfield code="t">published</subfield>
+  </datafield>
+  <datafield tag="300" ind1=" " ind2=" ">
+    <subfield code="a">5</subfield>
+  </datafield>
+  <datafield tag="520" ind1=" " ind2=" ">
     <subfield code="a">By studying the representations of the mapping class groups which arise in 2D conformal theories we derive some restrictions on the value of the conformal dimension h i of operators and the central charge c of the Virasoro algebra. As a simple application we show that when there are a finite number of operators in the conformal algebra, the h i and c are all rational.</subfield>
     <subfield code="9">Elsevier</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="542">
+  <datafield tag="542" ind1=" " ind2=" ">
     <subfield code="f">Copyright unknown. Published by Elsevier B.V.</subfield>
   </datafield>
-  <datafield ind1="1" ind2="" tag="653">
+  <datafield tag="653" ind1="1" ind2=" ">
     <subfield code="a">Heavy quarkonia</subfield>
     <subfield code="9">author</subfield>
   </datafield>
-  <datafield ind1="1" ind2="" tag="653">
+  <datafield tag="653" ind1="1" ind2=" ">
     <subfield code="a">Quark gluon plasma</subfield>
     <subfield code="9">author</subfield>
   </datafield>
-  <datafield ind1="1" ind2="" tag="653">
+  <datafield tag="653" ind1="1" ind2=" ">
     <subfield code="a">Mott effect</subfield>
     <subfield code="9">author</subfield>
   </datafield>
-  <datafield ind1="1" ind2="" tag="653">
+  <datafield tag="653" ind1="1" ind2=" ">
     <subfield code="a">X(3872)</subfield>
     <subfield code="9">author</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="300">
-    <subfield code="a">5</subfield>
-  </datafield>
-  <datafield ind1="" ind2="" tag="773">
+  <datafield tag="773" ind1=" " ind2=" ">
     <subfield code="p">Phys.Lett.</subfield>
     <subfield code="c">421-426</subfield>
     <subfield code="v">B206</subfield>
     <subfield code="y">1988</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="980">
+  <datafield tag="980" ind1=" " ind2=" ">
     <subfield code="a">HEP</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="980">
+  <datafield tag="980" ind1=" " ind2=" ">
     <subfield code="a">Citeable</subfield>
   </datafield>
-  <datafield ind1="" ind2="" tag="980">
+  <datafield tag="980" ind1=" " ind2=" ">
     <subfield code="a">Published</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">Belavin, A.A.</subfield>
     <subfield code="h">Polyakov, A.M.</subfield>
     <subfield code="h">Zamolodchikov, A.B.</subfield>
@@ -65,7 +65,7 @@
     <subfield code="o">1</subfield>
     <subfield code="s">Nucl.Phys.,B241,333</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">Friedan, D.</subfield>
     <subfield code="h">Qiu, Z.</subfield>
     <subfield code="h">Shenker, S.H.</subfield>
@@ -74,7 +74,7 @@
     <subfield code="o">2</subfield>
     <subfield code="s">Phys.Rev.Lett.,52,1575</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">Cardy, J.L.</subfield>
     <subfield code="v">270</subfield>
     <subfield code="y">1986</subfield>
@@ -82,7 +82,7 @@
     <subfield code="o">3</subfield>
     <subfield code="s">Nucl.Phys.,B270,186</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">Capelli, A.</subfield>
     <subfield code="h">Itzykson, C.</subfield>
     <subfield code="h">Zuber, J.-B.</subfield>
@@ -92,7 +92,7 @@
     <subfield code="o">3</subfield>
     <subfield code="s">Nucl.Phys.,B280,445</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">Capelli, A.</subfield>
     <subfield code="h">Itzykson, C.</subfield>
     <subfield code="h">Zuber, J.-B.</subfield>
@@ -101,18 +101,18 @@
     <subfield code="o">3</subfield>
     <subfield code="s">Commun.Math.Phys.,113,1</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">Gepner, D.</subfield>
     <subfield code="v">287</subfield>
     <subfield code="y">1987</subfield>
     <subfield code="o">3</subfield>
     <subfield code="s">Nucl.Phys.,B287,111</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="m">G. Anderson and G. Moore, IAS preprint IASSNS-HEP-87/69.</subfield>
     <subfield code="o">4</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">Friedan, D.</subfield>
     <subfield code="h">Shenker, S.</subfield>
     <subfield code="v">175</subfield>
@@ -120,7 +120,7 @@
     <subfield code="o">5</subfield>
     <subfield code="s">Phys.Lett.,B175,287</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">Friedan, D.</subfield>
     <subfield code="h">Shenker, S.</subfield>
     <subfield code="v">281</subfield>
@@ -128,25 +128,25 @@
     <subfield code="o">5</subfield>
     <subfield code="s">Nucl.Phys.,B281,509</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="m">E. Martinec and S. Shenker, unpublished.</subfield>
     <subfield code="o">6</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">Vafa, C.</subfield>
     <subfield code="v">199</subfield>
     <subfield code="y">1987</subfield>
     <subfield code="o">7</subfield>
     <subfield code="s">Phys.Lett.,B199,195</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">Harer, J.</subfield>
     <subfield code="v">72</subfield>
     <subfield code="y">1983</subfield>
     <subfield code="o">8</subfield>
     <subfield code="s">Inv.Math.,72,221</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">Tsuchiya, A.</subfield>
     <subfield code="h">Kanie, Y.</subfield>
     <subfield code="v">13</subfield>
@@ -154,26 +154,26 @@
     <subfield code="o">9</subfield>
     <subfield code="s">Lett.Math.Phys.,13,303</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="m">E. Verlinde, to be published.</subfield>
     <subfield code="o">10</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="h">Dehn, M.</subfield>
     <subfield code="v">69</subfield>
     <subfield code="y">1938</subfield>
     <subfield code="o">11</subfield>
     <subfield code="s">Acta Math.,69,135</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="m">D. Friedan and S. Shenker, unpublished.</subfield>
     <subfield code="o">12</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="m">J. Harvey, G. Moore, and C. Vafa, Nucl. Phys. B, to be published</subfield>
     <subfield code="o">13</subfield>
   </datafield>
-  <datafield ind1="C" ind2="5" tag="999">
+  <datafield tag="999" ind1="C" ind2="5">
     <subfield code="m">D. Kastor, E. Martinec and Z. Qiu, E. Fermi Institute preprint EFI-87-58.</subfield>
     <subfield code="o">14</subfield>
   </datafield>

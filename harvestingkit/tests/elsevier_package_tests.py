@@ -197,9 +197,10 @@ class ElsevierPackageTests(unittest.TestCase):
             'harvestingkit.tests',
             os.path.join('data', 'sample_consyn_output.xml')
         )
+        xml = self.els.get_record(source_file, test=True)
         with open(marc_file) as marc:
             result = marc.read()
-        self.assertEqual(self.els.get_record(source_file, test=True), result)
+        self.assertEqual(xml.strip(), result.strip())
 
 
 if __name__ == '__main__':

@@ -16,22 +16,29 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
 from __future__ import print_function
+
 import sys
 import requests
+
 from bs4 import BeautifulSoup
 from urlparse import urlparse
 from os.path import join
 from os import makedirs
 from re import sub
+
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from harvestingkit.utils import (collapse_initials,
                                  fix_journal_name,
-                                 record_add_field,
-                                 create_record,
-                                 record_xml_output,
                                  download_file)
+from harvestingkit.bibrecord import (
+    record_add_field,
+    create_record,
+    record_xml_output,
+)
+
 from xml.dom.minidom import (parse,
                              parseString)
 from harvestingkit.jats_package import JatsPackage

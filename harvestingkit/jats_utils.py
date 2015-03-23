@@ -31,10 +31,12 @@ except ImportError:
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from harvestingkit.utils import (format_arxiv_id,
-                                 record_add_field,
-                                 record_xml_output,
-                                 create_record,
                                  add_nations_field)
+from harvestingkit.bibrecord import (
+    record_add_field,
+    create_record,
+    record_xml_output,
+)
 from xml.dom.minidom import parse
 
 

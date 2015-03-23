@@ -27,10 +27,12 @@ from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from harvestingkit.utils import (collapse_initials,
                                  fix_title_capitalization,
-                                 record_add_field,
-                                 create_record,
-                                 record_xml_output,
                                  fix_name_capitalization)
+from harvestingkit.bibrecord import (
+    record_add_field,
+    create_record,
+    record_xml_output,
+)
 from harvestingkit.jats_package import JatsPackage
 
 
