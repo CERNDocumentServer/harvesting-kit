@@ -35,7 +35,8 @@ from harvestingkit.utils import (record_add_field,
                                  run_shell_command,
                                  record_xml_output,
                                  fix_title_capitalization,
-                                 return_letters_from_string)
+                                 return_letters_from_string,
+                                 unescape)
 from harvestingkit.tests import journal_mappings
 
 
@@ -71,7 +72,16 @@ class UtilsTests(unittest.TestCase):
         record_add_field(rec, "035", subfields=[('a', "<arXiv:1234.1242>")])
         data = (u"<record><datafield ind1=\"\" ind2=\"\" tag=\"035\">"
                 u"<subfield code=\"a\">"
-                u"&lt;arXiv:1234.1242&gt;</subfield></datafield></record>")
+                u"&lt;arXiv:1234.1242></subfield></datafield></record>")
+        self.assertEqual(record_xml_output(rec, pretty=False), data)
+
+    def test_record_add_field_with_special_content(self):
+        """Test adding field with special data to record."""
+        rec = create_record()
+        record_add_field(rec, "035", subfields=[('a', "4.0<as 123")])
+        data = (u"<record><datafield ind1=\"\" ind2=\"\" tag=\"035\">"
+                u"<subfield code=\"a\">"
+                u"4.0&lt;as 123</subfield></datafield></record>")
         self.assertEqual(record_xml_output(rec, pretty=False), data)
 
     def test_format_arxiv_id(self):
@@ -106,14 +116,10 @@ class UtilsTests(unittest.TestCase):
     def test_escape_ampersand(self):
         """Test ampersand handling."""
         self.assertEqual(escape_for_xml("A&A"), "A&amp;A")
-        self.assertEqual(escape_for_xml("A&amp;A & B"), "A&amp;A &amp; B")
-        self.assertEqual(escape_for_xml("A &amp; A.B"), "A &amp; A.B")
-        self.assertEqual(escape_for_xml("asdasdsa &lt;1 A"), "asdasdsa &lt;1 A")
-        self.assertEqual(escape_for_xml("asdasdsa <=1 A"), "asdasdsa &lt;=1 A")
-        self.assertEqual(escape_for_xml("asdasdsa <.2 A"), "asdasdsa &lt;.2 A")
-        self.assertEqual(escape_for_xml("asdasdsa < 2 A"), "asdasdsa &lt; 2 A")
         self.assertEqual(escape_for_xml("asdasdsa 2.2<y<3.4 A"), "asdasdsa 2.2&lt;y&lt;3.4 A")
-        self.assertEqual(escape_for_xml("range -4.0&lt; @h<-2.5"), "range -4.0&lt; @h&lt;-2.5")
+        self.assertEqual(escape_for_xml("range -4.0< @h<-2.5"), "range -4.0&lt; @h&lt;-2.5")
+        # happens if not unescaped..
+        self.assertEqual(escape_for_xml("A &amp; A.B"), "A &amp;amp; A.B")
 
         longtext = "range 2.7<y<3.8, are presented, <p_T^2> with"
         self.assertEqual(
@@ -121,11 +127,11 @@ class UtilsTests(unittest.TestCase):
             "range 2.7&lt;y&lt;3.8, are presented, &lt;p_T^2> with"
         )
 
-        keep_existing = "for 0.03&lt;x&lt;0.1 and fit to world data"
-        self.assertEqual(escape_for_xml(keep_existing), keep_existing)
-
         from harvestingkit.html_utils import MathMLParser
 
+        keep_existing = "for 0.03&lt;x&lt;0.1 and fit to world data"
+        self.assertEqual(escape_for_xml(MathMLParser().unescape(keep_existing)), keep_existing)
+        self.assertEqual(escape_for_xml(MathMLParser().unescape("A&amp;A & B")), "A&amp;A &amp; B")
         self.assertEqual(
             escape_for_xml("ont essayé à<ll' pliquer",
                            tags_to_keep=MathMLParser.mathml_elements),

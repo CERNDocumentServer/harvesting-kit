@@ -57,24 +57,19 @@ def record_add_field(rec, tag, ind1='', ind2='', subfields=[],
                             })
         for code, value in subfields:
             field = etree.SubElement(doc, "subfield", attrib={"code": code})
-            value = unicode(value)
-            try:
-                # In order to be parsed it needs to be proper XML
-                parse_value = "<dummy>{0}</dummy>".format(escape_for_xml(value))
-                sub_tree = etree.fromstring(parse_value)
-                field.append(sub_tree)
-            except etree.XMLSyntaxError:
-                # Not sub XML
-                field.text = value
+            field.text = value
     rec.append(doc)
     return rec
 
 
 def record_xml_output(rec, pretty=True):
     """Given a document, return XML prettified."""
-    # FIXME: make the dummy stuff go away - so far it works!(tm) tho
-    ret = etree.tostring(rec, xml_declaration=False).replace("<dummy>", "").replace("</dummy>", "")
+    from .html_utils import MathMLParser
+    ret = etree.tostring(rec, xml_declaration=False)
 
+    # Special MathML handling
+    ret = re.sub("(&lt;)(([\/]?{0}))".format("|[\/]?".join(MathMLParser.mathml_elements)), '<\g<2>', ret)
+    ret = re.sub("&gt;", '>', ret)
     if pretty:
         # We are doing our own prettyfication as etree pretty_print is too insane.
         ret = ret.replace('</datafield>', '  </datafield>\n')
@@ -82,9 +77,7 @@ def record_xml_output(rec, pretty=True):
         ret = ret.replace('</subfield>', '</subfield>\n')
         ret = ret.replace('<subfield', '    <subfield')
         ret = ret.replace('record>', 'record>\n')
-
-    # First we bring back most entities, but not &amp; and friends.
-    return unescape(ret)
+    return ret
 
 
 def escape_for_xml(data, tags_to_keep=None):
@@ -93,12 +86,11 @@ def escape_for_xml(data, tags_to_keep=None):
     Pass a list of tags as string to enable replacement of
     '<' globally but keep any XML tags in the list.
     """
-    data = re.sub("&(?!(#?)(\d{1,5}|\w{1,8});)", "&amp;", data)
-    # Cover these special cases where in mathematical expressions '<'' is used.
-    data = re.sub('(<)([\$\%\=\-\_\.\+\d\c\s\b]+)', '&lt;\g<2>', data)
-    data = re.sub('(<)([a-z]{1}[^a-z>])', '&lt;\g<2>', data)
+    data = re.sub("&", "&amp;", data)
     if tags_to_keep:
         data = re.sub("(<)(?!([\/]?{0}))".format("|[\/]?".join(tags_to_keep)), '&lt;', data)
+    else:
+        data = re.sub("<", "&lt;", data)
     return data
 
 

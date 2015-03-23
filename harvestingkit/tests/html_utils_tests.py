@@ -57,12 +57,7 @@ class HTMLUtilsTests(unittest.TestCase):
 
     def test_htmlentity(self):
         """Test that HTML entities are kept."""
-        data = "This &amp; that and &lt; or &gt; is there."
-        self.assertEqual(MathMLParser.html_to_text(data), data)
-
-    def test_htmlcharref(self):
-        """Test that HTML entities are kept."""
-        data = "This &#62; that and &#x3E; or &gt; is there."
+        data = "This &amp; that and &lt; is there."
         self.assertEqual(MathMLParser.html_to_text(data), data)
 
     def test_xml_encoding(self):
@@ -71,6 +66,11 @@ class HTMLUtilsTests(unittest.TestCase):
         expected_data = "This &amp; that and 2&lt;y&lt;3 is > there."
         self.assertEqual(MathMLParser.html_to_text(data), expected_data)
 
+    def test_htmlentity_case(self):
+        """Test that HTML entities are dealt with smartly."""
+        data = (u'Project at CERN, Proc. of the Workshop on Future Directions in Detector R&D;')
+        expected_data = (u'Project at CERN, Proc. of the Workshop on Future Directions in Detector R&amp;D;')
+        self.assertEqual(MathMLParser.html_to_text(data), expected_data)
 
 if __name__ == '__main__':
     unittest.main()
