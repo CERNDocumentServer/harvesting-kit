@@ -937,7 +937,7 @@ class ElsevierPackage(object):
             subfields = []
             doctype = self.get_doctype(xml_doc)
             try:
-                page_count = int(last_page) - int(first_page)
+                page_count = int(last_page) - int(first_page) + 1
                 record_add_field(rec, '300',
                                  subfields=[('a', str(page_count))])
             except ValueError:  # do nothing
