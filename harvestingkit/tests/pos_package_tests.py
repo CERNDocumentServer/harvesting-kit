@@ -44,7 +44,7 @@ class POSPackageTests(unittest.TestCase):
     def test_authors(self):
         """Test the field authors."""
         self.assertEqual(self.pos._get_authors(),
-                         [('El-Khadra, Aida', ['Physics Department, University of Illinois, Urbana, Illinois 61801, USA'])])
+                         [('El-Khadra, Aida', ['INFN and Università di Firenze'])])
 
     def test_language(self):
         """Test the field language."""
@@ -74,6 +74,11 @@ class POSPackageTests(unittest.TestCase):
         """Test the field identifier."""
         self.assertEqual(self.pos.get_identifier(), 'oai:pos.sissa.it:LATTICE 2013/001')
 
+    def test_record(self):
+        """Test the field identifier."""
+        record = self.pos.get_record(self.pos.document)
+        self.assertTrue(record["100"])
+        self.assertTrue(record["980"])
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(POSPackageTests)
