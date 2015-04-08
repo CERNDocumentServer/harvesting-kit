@@ -23,8 +23,7 @@ from datetime import datetime
 
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
-from harvestingkit.utils import (collapse_initials,
-                                 fix_name_capitalization)
+from harvestingkit.utils import collapse_initials, safe_title
 from harvestingkit.bibrecord import (
     record_add_field,
     create_record,
@@ -42,12 +41,13 @@ class PosPackage(object):
             for auttag in pextag.getElementsByTagName('pex-dc:name'):
                 author = xml_to_text(auttag)
                 lastname = author.split()[-1]
-                givenames = author.split()[:-1]
-                lastname, givenames = fix_name_capitalization(lastname, givenames)
+                givenames = " ".join(author.split()[:-1])
                 givenames = collapse_initials(givenames)
+                name = "%s, %s" % (lastname, givenames)
+                name = safe_title(name)
                 for afftag in pextag.getElementsByTagName('pex-dc:affiliation'):
                     affiliations.append(xml_to_text(afftag))
-                authors.append(("%s, %s" % (lastname, givenames), affiliations))
+                authors.append((name, affiliations))
         return authors
 
     def _get_title(self):
