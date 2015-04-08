@@ -96,7 +96,9 @@ class UtilsTests(unittest.TestCase):
     def test_collapse_initials(self):
         """Test proper initial handling."""
         self.assertEqual(collapse_initials("T. A. Adams"), "T.A. Adams")
+        self.assertEqual(collapse_initials("T.-A. Adams"), "T.A. Adams")
         self.assertEqual(collapse_initials("T.   A. Adams"), "T.A. Adams")
+        self.assertEqual(collapse_initials("T. A."), "T.A.")
         self.assertEqual(collapse_initials("T. A. V. Adams"), "T.A.V. Adams")
 
     def test_fix_name_capitalization(self):
