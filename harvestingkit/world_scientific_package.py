@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
-##
-## This file is part of Harvesting Kit.
-## Copyright (C) 2014, 2015 CERN.
-##
-## Harvesting Kit is free software; you can redistribute it and/or
-## modify it under the terms of the GNU General Public License as
-## published by the Free Software Foundation; either version 2 of the
-## License, or (at your option) any later version.
-##
-## Harvesting Kit is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
-## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+#
+# This file is part of Harvesting Kit.
+# Copyright (C) 2014, 2015 CERN.
+#
+# Harvesting Kit is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Harvesting Kit is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Harvesting Kit; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 from __future__ import print_function
 
@@ -25,9 +25,12 @@ from xml.dom.minidom import parse
 
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
-from harvestingkit.utils import (collapse_initials,
-                                 fix_title_capitalization,
-                                 fix_name_capitalization)
+from harvestingkit.utils import (
+    collapse_initials,
+    fix_title_capitalization,
+    convert_html_subscripts_to_latex,
+    safe_title
+)
 from harvestingkit.bibrecord import (
     record_add_field,
     create_record,
@@ -76,10 +79,8 @@ class WorldScientific(JatsPackage):
                 surname = get_value_in_tag(contrib, 'surname')
                 given_names = get_value_in_tag(contrib, 'given-names')
                 given_names = collapse_initials(given_names)
-                surname, given_names = fix_name_capitalization(
-                    surname, given_names.split()
-                )
                 name = '%s, %s' % (surname, given_names)
+                name = safe_title(name)
                 affiliations = []
                 for aff in contrib.getElementsByTagName('aff'):
                     affiliations.append(xml_to_text(aff))
@@ -127,6 +128,18 @@ class WorldScientific(JatsPackage):
                         return tag.getAttributeNS(*attribute)
         return ''
 
+    def get_collection(self, journal):
+        """Return this articles' collection."""
+        conference = ''
+        for tag in self.document.getElementsByTagName('conference'):
+            conference = xml_to_text(tag)
+        if conference or journal == "International Journal of Modern Physics: Conference Series":
+            return [('a', 'HEP'), ('a', 'ConferencePaper')]
+        elif self._get_article_type() == "review-article":
+            return [('a', 'HEP'), ('a', 'Review')]
+        else:
+            return [('a', 'HEP'), ('a', 'Published')]
+
     def get_record(self, filename, ref_extract_callback=None):
         """Get the MARCXML of the files in xaml_jp directory.
 
@@ -141,132 +154,107 @@ class WorldScientific(JatsPackage):
         :returns: a string with the marc xml version of the file.
         """
         self.document = parse(filename)
+
         article_type = self._get_article_type()
-        if article_type in ['research-article',
-                            'introduction',
-                            'letter']:
-            rec = create_record()
-            title, subtitle, notes = self._get_title()
-            subfields = []
-            if subtitle:
-                subfields.append(('b', subtitle))
-            if title:
-                title = fix_title_capitalization(title)
-                subfields.append(('a', title))
-                record_add_field(rec, '245', subfields=subfields)
-            subjects = self.document.getElementsByTagName('kwd')
-            subjects = map(xml_to_text, subjects)
-            for note_id in notes:
-                note = self._get_note(note_id)
-                if note:
-                    record_add_field(rec, '500', subfields=[('a', note)])
-            for subject in subjects:
-                record_add_field(rec, '650', ind1='1', ind2='7',
-                                 subfields=[('2', 'World Scientific'),
-                                            ('a', subject)])
-            keywords = self._get_keywords()
-            for keyword in keywords:
-                record_add_field(rec, '653', ind1='1', subfields=[('a', keyword),
-                                                                  ('9', 'author')])
-            journal, volume, issue, year, date, doi, page,\
-                fpage, lpage = self._get_publication_information()
-            if date:
-                record_add_field(rec, '260', subfields=[('c', date),
-                                                        ('t', 'published')])
-            if doi:
-                record_add_field(rec, '024', ind1='7', subfields=[('a', doi),
-                                                                  ('2', 'DOI')])
-            abstract = self._get_abstract()
-            if abstract:
-                record_add_field(rec, '520', subfields=[('a', abstract),
-                                                        ('9', 'World Scientific')])
-            license, license_type, license_url = self._get_license()
-            subfields = []
-            if license:
-                subfields.append(('a', license))
-            if license_url:
-                subfields.append(('u', license_url))
-            if subfields:
-                record_add_field(rec, '540', subfields=subfields)
-            if license_type == 'open-access':
-                self._attach_fulltext(rec, doi)
-            number_of_pages = self._get_page_count()
-            if number_of_pages:
-                record_add_field(rec, '300', subfields=[('a', number_of_pages)])
-            c_holder, c_year, c_statement = self._get_copyright()
-            if c_holder and c_year:
-                record_add_field(rec, '542', subfields=[('d', c_holder),
-                                                        ('g', c_year),
-                                                        ('e', 'Article')])
-            elif c_statement:
-                record_add_field(rec, '542', subfields=[('f', c_statement),
-                                                        ('e', 'Article')])
-            subfields = []
-            if journal:
-                subfields.append(('p', journal))
-            if issue:
-                subfields.append(('n', issue))
-            if volume:
-                subfields.append(('v', volume))
-            if fpage and lpage:
-                subfields.append(('c', '%s-%s' % (fpage,
-                                                  lpage)))
-            elif page:
-                subfields.append(('c', page))
-            if year:
-                subfields.append(('y', year))
+        if article_type not in ['research-article',
+                                'corrected-article',
+                                'original-article',
+                                'introduction',
+                                'letter',
+                                'correction',
+                                'addendum',
+                                'review-article',
+                                'rapid-communications']:
+            return ""
+
+        rec = create_record()
+        title, subtitle, notes = self._get_title()
+        subfields = []
+        if subtitle:
+            subfields.append(('b', subtitle))
+        if title:
+            title = fix_title_capitalization(title)
+            subfields.append(('a', title))
+            record_add_field(rec, '245', subfields=subfields)
+        for note_id in notes:
+            note = self._get_note(note_id)
+            if note:
+                record_add_field(rec, '500', subfields=[('a', note)])
+        keywords = self._get_keywords()
+        for keyword in keywords:
+            record_add_field(rec, '653', ind1='1', subfields=[('a', keyword),
+                                                              ('9', 'author')])
+        journal, volume, issue, year, date, doi, page,\
+            fpage, lpage = self._get_publication_information()
+        if date:
+            record_add_field(rec, '260', subfields=[('c', date),
+                                                    ('t', 'published')])
+        if doi:
+            record_add_field(rec, '024', ind1='7', subfields=[('a', doi),
+                                                              ('2', 'DOI')])
+        abstract = self._get_abstract()
+        if abstract:
+            abstract = convert_html_subscripts_to_latex(abstract)
+            record_add_field(rec, '520', subfields=[('a', abstract),
+                                                    ('9', 'World Scientific')])
+        license, license_type, license_url = self._get_license()
+        subfields = []
+        if license:
+            subfields.append(('a', license))
+        if license_url:
+            subfields.append(('u', license_url))
+        if subfields:
+            record_add_field(rec, '540', subfields=subfields)
+        if license_type == 'open-access':
+            self._attach_fulltext(rec, doi)
+        number_of_pages = self._get_page_count()
+        if number_of_pages:
+            record_add_field(rec, '300', subfields=[('a', number_of_pages)])
+        c_holder, c_year, c_statement = self._get_copyright()
+        if c_holder and c_year:
+            record_add_field(rec, '542', subfields=[('d', c_holder),
+                                                    ('g', c_year),
+                                                    ('e', 'Article')])
+        elif c_statement:
+            record_add_field(rec, '542', subfields=[('f', c_statement),
+                                                    ('e', 'Article')])
+        subfields = []
+        if journal:
+            subfields.append(('p', journal))
+        if issue:
+            subfields.append(('n', issue))
+        if volume:
+            subfields.append(('v', volume))
+        if fpage and lpage:
+            subfields.append(('c', '%s-%s' % (fpage,
+                                              lpage)))
+        elif page:
+            subfields.append(('c', page))
+        if year:
+            subfields.append(('y', year))
+        if article_type == 'correction':
             subfields.append(('m', 'Erratum'))
-            record_add_field(rec, '773', subfields=subfields)
-            record_add_field(rec, '980', subfields=[('a', 'HEP')])
-            record_add_field(rec, '980', subfields=[('a', 'Published')])
-            conference = ''
-            for tag in self.document.getElementsByTagName('conference'):
-                conference = xml_to_text(tag)
-            if conference:
-                record_add_field(rec, '980', subfields=[('a', 'ConferencePaper')])
-                record_add_field(rec, '500', subfields=[('a', conference)])
-            self._add_authors(rec)
-        elif article_type in ['correction',
-                              'addendum']:
-            rec = create_record()
-            journal, volume, issue, year, date, doi, page,\
-                fpage, lpage = self._get_publication_information()
-            if doi:
-                record_add_field(rec, '024', ind1='7', subfields=[('a', doi),
-                                                                  ('2', 'DOI')])
+        elif article_type == 'addendum':
+            subfields.append(('m', 'Addendum'))
+        record_add_field(rec, '773', subfields=subfields)
+
+        collections = self.get_collection(journal)
+        for collection in collections:
+            record_add_field(rec, '980', subfields=[collection])
+
+        self._add_authors(rec)
+        if article_type in ['correction',
+                            'addendum']:
             related_article = self._get_related_article()
             if related_article:
                 record_add_field(rec, '024', ind1='7', subfields=[('a', related_article),
                                                                   ('2', 'DOI')])
-            subfields = []
-            if journal:
-                subfields.append(('p', journal))
-            if issue:
-                subfields.append(('n', issue))
-            if volume:
-                subfields.append(('v', volume))
-            if fpage and lpage:
-                subfields.append(('c', '%s-%s' % (fpage,
-                                                  lpage)))
-            elif page:
-                subfields.append(('c', page))
-            if year:
-                subfields.append(('y', year))
-            if article_type == 'correction':
-                subfields.append(('m', 'Erratum'))
-            else:
-                subfields.append(('m', 'Addendum'))
-            record_add_field(rec, '773', subfields=subfields)
-        else:
-            return ''
-
         try:
             return record_xml_output(rec)
         except UnicodeDecodeError:
             message = "Found a bad char in the file for the article " + doi
             sys.stderr.write(message)
             return ""
-
 
 if __name__ == '__main__':
     filename = sys.argv[1]

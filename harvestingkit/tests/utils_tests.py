@@ -29,14 +29,14 @@ from harvestingkit.utils import (record_add_field,
                                  collapse_initials,
                                  fix_journal_name,
                                  escape_for_xml,
-                                 fix_name_capitalization,
                                  fix_dashes,
                                  download_file,
                                  run_shell_command,
                                  record_xml_output,
                                  fix_title_capitalization,
                                  return_letters_from_string,
-                                 unescape)
+                                 convert_html_subscripts_to_latex,
+                                 safe_title)
 from harvestingkit.tests import journal_mappings
 
 
@@ -96,15 +96,10 @@ class UtilsTests(unittest.TestCase):
     def test_collapse_initials(self):
         """Test proper initial handling."""
         self.assertEqual(collapse_initials("T. A. Adams"), "T.A. Adams")
+        self.assertEqual(collapse_initials("T.-A. Adams"), "T.A. Adams")
         self.assertEqual(collapse_initials("T.   A. Adams"), "T.A. Adams")
+        self.assertEqual(collapse_initials("T. A."), "T.A.")
         self.assertEqual(collapse_initials("T. A. V. Adams"), "T.A.V. Adams")
-
-    def test_fix_name_capitalization(self):
-        """Test name capitalization."""
-        self.assertEqual(fix_name_capitalization("NORTON", ["EDWARD"]), ("Norton", "Edward"))
-        self.assertEqual(fix_name_capitalization("NORTON", ["E.", "A.", "S."]), ("Norton", "E. A. S."))
-        self.assertEqual(fix_name_capitalization("EL-NORTON", ["EDWARD"]), ("El-Norton", "Edward"))
-        self.assertEqual(fix_name_capitalization("VAN ASSCHE", ["WALTER"]), ("Van Assche", "Walter"))
 
     def test_fix_journal_name(self):
         """Test journal name handling."""
@@ -112,6 +107,12 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(fix_journal_name("A&A B", journal_mappings), ('Astron.Astrophys.', "B"))
         self.assertEqual(fix_journal_name("A&A.B", journal_mappings), ('A&A.', "B"))
         self.assertEqual(fix_journal_name("A&AB.", journal_mappings), ("A&AB.", ""))
+
+    def test_safe_title(self):
+        """Test journal name handling."""
+        self.assertEqual(safe_title("García"), "García")
+        self.assertEqual(safe_title("a garcía"), "A García")
+        self.assertEqual(safe_title("THIS IS A LONG"), "This Is A Long")
 
     def test_escape_ampersand(self):
         """Test ampersand handling."""
@@ -145,10 +146,27 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(fix_dashes(u'––'), '-')
         self.assertEqual(fix_dashes(u'–––'), '-')
 
+    def test_html_latex_subscripts(self):
+        """Test dashes."""
+        data = (u'In this paper we continue the study of Q -operators in'
+                u' the six-vertex model <roman><sub>3</sub>M</roman>.'
+                u' In [1] <sup>2</sup>x new expression for the higher spin R')
+        expected_data = (
+            u'In this paper we continue the study of Q -operators in'
+            u' the six-vertex model <roman>$_{3}$M</roman>.'
+            u' In [1] $^{2}$x new expression for the higher spin R'
+        )
+
+        self.assertEqual(
+            convert_html_subscripts_to_latex(data), expected_data
+        )
+
     def test_fix_title_capitalization(self):
         """Test title capitalization."""
-        self.assertEqual(fix_title_capitalization(u"A TITLE"), "A title")
-        self.assertEqual(fix_title_capitalization(u"a title"), "A title")
+        self.assertEqual(fix_title_capitalization(u"A TITLE"), "A Title")
+        self.assertEqual(fix_title_capitalization(u"a title"), "A Title")
+        self.assertEqual(fix_title_capitalization(u"A TITLE LHC IS"), "A Title LHC is")
+        self.assertEqual(fix_title_capitalization(u"A title LHC is"), "A title LHC is")
 
     @httpretty.activate
     def test_download_file(self):

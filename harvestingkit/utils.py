@@ -33,6 +33,8 @@ from tempfile import mkdtemp, mkstemp
 from lxml import etree
 from unidecode import unidecode
 
+from .config import COMMON_ACRONYMS
+
 
 def create_record():
     """Return a new XML document."""
@@ -133,33 +135,16 @@ def format_arxiv_id(arxiv_id):
         return arxiv_id
 
 
+def safe_title(text):
+    """Perform a UTF-8 safe str.title() wrapper."""
+    return unicode(text, "utf-8").title().encode("utf-8")
+
+
 def collapse_initials(name):
     """Remove the space between initials, eg T. A. --> T.A."""
-    if len(name.split()) > 1:
-        name = re.sub(r'([A-Z]\.) +(?=[A-Z]\.)', r'\1', name)
+    if len(name.split(".")) > 1:
+        name = re.sub(r'([A-Z]\.)[\s\-]+(?=[A-Z]\.)', r'\1', name)
     return name
-
-
-def fix_name_capitalization(lastname, givennames):
-    """Convert capital letters to lower case keeping the first letter capital."""
-    if lastname:
-        if '-' in lastname:
-            names = lastname.split('-')
-            names = map(lambda a: a[0] + a[1:].lower(), names)
-            lastname = '-'.join(names)
-        elif len(lastname.split()) > 1:
-            lastnames = lastname.split()
-            corrections = []
-            for lastname in lastnames:
-                corrections.append(lastname[0] + lastname[1:].lower())
-                lastname = ' '.join(corrections)
-        else:
-            lastname = lastname[0] + lastname[1:].lower()
-    names = []
-    for name in givennames:
-        names.append(name[0] + name[1:].lower())
-    givennames = ' '.join(names)
-    return lastname, givennames
 
 
 def fix_journal_name(journal, knowledge_base):
@@ -223,15 +208,25 @@ def fix_dashes(string):
 
 def fix_title_capitalization(title):
     """Try to capitalize properly a title string."""
-    words = []
-    for word in title.split():
-        if word.upper() != word:
-            words.append(word)
+    if re.search("[A-Z]", title) and re.search("[a-z]", title):
+        return title
+    word_list = re.split(' +', title)
+    final = [word_list[0].capitalize()]
+    for word in word_list[1:]:
+        if word.upper() in COMMON_ACRONYMS:
+            final.append(word.upper())
+        elif len(word) > 3:
+            final.append(word.capitalize())
         else:
-            words.append(word.lower())
-    title = " ".join(words)
-    title = title[0].upper() + title[1:]
-    return title
+            final.append(word.lower())
+    return " ".join(final)
+
+
+def convert_html_subscripts_to_latex(text):
+    """Convert some HTML tags to latex equivalents."""
+    text = re.sub("<sub>(.*?)</sub>", r"$_{\1}$", text)
+    text = re.sub("<sup>(.*?)</sup>", r"$^{\1}$", text)
+    return text
 
 
 def download_file(from_url, to_filename=None,

@@ -7,6 +7,23 @@
     <subfield code="a">10.1142/S0129183108012303</subfield>
     <subfield code="2">DOI</subfield>
   </datafield>
+  <datafield tag="100" ind1=" " ind2=" ">
+    <subfield code="a">Kopp, Joachim</subfield>
+    <subfield code="v">Max–Planck–Institut für Kernphysik, Postfach 10 39 80, 69029 Heidelberg, Germany</subfield>
+    <subfield code="m">jkopp@mpi-hd.mpg.de</subfield>
+  </datafield>
+  <datafield tag="245" ind1=" " ind2=" ">
+    <subfield code="a">ERRATA: "EFFICIENT NUMERICAL DIAGONALIZATION OF HERMITIAN 3 × 3 MATRICES"</subfield>
+  </datafield>
+  <datafield tag="260" ind1=" " ind2=" ">
+    <subfield code="c">2008-05-01</subfield>
+    <subfield code="t">published</subfield>
+  </datafield>
+  <datafield tag="542" ind1=" " ind2=" ">
+    <subfield code="d">World Scientific Publishing Company</subfield>
+    <subfield code="g">2008</subfield>
+    <subfield code="e">Article</subfield>
+  </datafield>
   <datafield tag="773" ind1=" " ind2=" ">
     <subfield code="p">International Journal of Modern Physics</subfield>
     <subfield code="n">05</subfield>
@@ -14,5 +31,11 @@
     <subfield code="c">845-845</subfield>
     <subfield code="y">2008</subfield>
     <subfield code="m">Erratum</subfield>
+  </datafield>
+  <datafield tag="980" ind1=" " ind2=" ">
+    <subfield code="a">HEP</subfield>
+  </datafield>
+  <datafield tag="980" ind1=" " ind2=" ">
+    <subfield code="a">Published</subfield>
   </datafield>
 </record>
