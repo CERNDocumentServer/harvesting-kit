@@ -275,8 +275,8 @@ class OxfordPackage(object):
                         self.doi_package_name_mapping.append((package_name[0],
                                                               doi))
                 except Exception as err:
-                    print >> sys.stderr, err
-                    raise Exception
+                    print(err, file=sys.stderr)
+                    raise
                 print(path, i + 1, "out of", len(self.found_articles))
             print("</collection>", file=out)
             out.close()

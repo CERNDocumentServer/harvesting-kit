@@ -177,8 +177,9 @@ class JATSParser(object):
         emails = {}
         for contact in xml.getElementsByTagName("corresp"):
             contact_id = contact.getAttribute("id").encode('utf-8')
-            text = xml_to_text(contact.getElementsByTagName('email')[0])
-            emails[contact_id] = text
+            if contact.getElementsByTagName('email'):
+                text = xml_to_text(contact.getElementsByTagName('email')[0])
+                emails[contact_id] = text
 
         implicit_affilations = True
         for author in authors:
