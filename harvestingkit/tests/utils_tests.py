@@ -36,7 +36,8 @@ from harvestingkit.utils import (record_add_field,
                                  fix_title_capitalization,
                                  return_letters_from_string,
                                  convert_html_subscripts_to_latex,
-                                 safe_title)
+                                 safe_title,
+                                 license_is_oa)
 from harvestingkit.tests import journal_mappings
 
 
@@ -227,6 +228,17 @@ class UtilsTests(unittest.TestCase):
         self.assertEqual(
             return_letters_from_string("sasss"), "sasss"
         )
+
+    def test_license_is_oa(self):
+        """Test OA from license determination."""
+        self.assertEqual(license_is_oa("OA"), True)
+        self.assertEqual(license_is_oa("CC-BY-NC 2.0"), True)
+        self.assertEqual(
+            license_is_oa("http://creativecommons.org/licenses/by-nc/3.0/"),
+            True
+        )
+        self.assertEqual(license_is_oa("APS"), False)
+        self.assertEqual(license_is_oa("not OA"), False)
 
 
 if __name__ == '__main__':

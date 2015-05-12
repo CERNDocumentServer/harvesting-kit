@@ -252,3 +252,11 @@ COMMON_ACRONYMS = [
     'H1',
     'GRB'
 ]
+
+OA_LICENSES = [
+    r'^CC-BY',
+    r'^https?://creativecommons.org/',
+    r'^Creative Commons Attribution',
+    r'^OA$',
+    r'^Open Access$'
+]

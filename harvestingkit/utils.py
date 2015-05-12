@@ -33,7 +33,7 @@ from tempfile import mkdtemp, mkstemp
 from lxml import etree
 from unidecode import unidecode
 
-from .config import COMMON_ACRONYMS
+from .config import COMMON_ACRONYMS, OA_LICENSES
 
 
 def create_record():
@@ -466,3 +466,11 @@ def return_letters_from_string(text):
         if letter.isalpha():
             out += letter
     return out
+
+def license_is_oa(license):
+    """Return True if license is compatible with Open Access"""
+    for oal in OA_LICENSES:
+        if re.search(oal, license):
+            return True
+    return False
+
