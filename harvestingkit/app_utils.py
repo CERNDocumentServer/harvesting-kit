@@ -21,10 +21,10 @@ import re
 import sys
 from os.path import (join,
                      exists)
-from harvestingkit.utils import (record_add_field,
-                                 create_record,
-                                 record_xml_output,
-                                 add_nations_field)
+from harvestingkit.bibrecord import (record_add_field,
+                                     create_record,
+                                     record_xml_output)
+from harvestingkit.utils import add_nations_field
 from harvestingkit.minidom_utils import (get_value_in_tag,
                                          xml_to_text)
 from xml.dom.minidom import parse
