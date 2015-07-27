@@ -49,7 +49,11 @@ class NLMParser(JATSParser):
         references = []
         for reference in xml.getElementsByTagName("ref"):
             plain_text = None
-            ref_type = reference.getElementsByTagName('citation')[0].getAttribute('publication-type').encode('utf-8')
+            refs = reference.getElementsByTagName('citation')
+            if refs:
+                ref_type = refs[0].getAttribute('publication-type').encode('utf-8')
+            else:
+                ref_type = None
             label = get_value_in_tag(reference, "label").strip('.')
             authors = []
             for author in reference.getElementsByTagName("name"):
