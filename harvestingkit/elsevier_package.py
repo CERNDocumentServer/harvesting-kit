@@ -79,8 +79,10 @@ from harvestingkit.bibrecord import (
 CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
 CFG_ELSEVIER_ART510_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art510.zip')
 CFG_ELSEVIER_ART520_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art520.zip')
+CFG_ELSEVIER_ART540_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art540.zip')
 CFG_ELSEVIER_SI510_PATH = join(CFG_SCOAP3DTDS_PATH, 'si510.zip')
 CFG_ELSEVIER_SI520_PATH = join(CFG_SCOAP3DTDS_PATH, 'si520.zip')
+CFG_ELSEVIER_SI540_PATH = join(CFG_SCOAP3DTDS_PATH, 'si540.zip')
 CFG_ELSEVIER_JID_MAP = {'PLB': 'Physics letters B',
                         'NUPHB': 'Nuclear Physics B',
                         'CEMGE': 'Chemical Geology',
@@ -113,7 +115,8 @@ class ElsevierPackage(object):
     def __init__(self, package_name=None, path=None,
                  run_locally=False, CONSYN=False,
                  journal_mappings={},
-                 extract_nations=False):
+                 extract_nations=False,
+                 no_harvest=False):
         self.CONSYN = CONSYN
         self.doi_package_name_mapping = []
         try:
@@ -131,25 +134,26 @@ class ElsevierPackage(object):
         if self.CONSYN:
             self.journal_mappings = journal_mappings
         else:
-            self.package_name = package_name
-            self.path = path
-            self.found_articles = []
-            self._found_issues = []
-            if run_locally:
-                from harvestingkit.contrast_out import ContrastOutConnector
-                self.conn = ContrastOutConnector(self.logger)
-                self.conn.run(run_locally)
-            else:
-                if not path and package_name:
-                    self.logger.info("Got package: %s" % (package_name,))
-                    self._extract_package()
-                elif not path and not package_name:
+            if not no_harvest:
+                self.package_name = package_name
+                self.path = path
+                self.found_articles = []
+                self._found_issues = []
+                if run_locally:
                     from harvestingkit.contrast_out import ContrastOutConnector
                     self.conn = ContrastOutConnector(self.logger)
-                    self.conn.run()
-            self._crawl_elsevier_and_find_main_xml()
-            self._crawl_elsevier_and_find_issue_xml()
-            self._build_doi_mapping()
+                    self.conn.run(run_locally)
+                else:
+                    if not path and package_name:
+                        self.logger.info("Got package: %s" % (package_name,))
+                        self._extract_package()
+                    elif not path and not package_name:
+                        from harvestingkit.contrast_out import ContrastOutConnector
+                        self.conn = ContrastOutConnector(self.logger)
+                        self.conn.run()
+                self._crawl_elsevier_and_find_main_xml()
+                self._crawl_elsevier_and_find_issue_xml()
+                self._build_doi_mapping()
         self.extract_nations = extract_nations
 
     def _extract_package(self):
@@ -214,6 +218,13 @@ class ElsevierPackage(object):
                               % (dirname, err))
             walk(self.path, visit, None)
 
+
+    def _extract_correct_dtd_package(self, si_name, path):
+            ZipFile(eval("CFG_ELSEVIER_%s_PATH" % si_name.upper())).extractall(path)
+            for filename in listdir(join(path, si_name)):
+                rename(join(path, si_name, filename), join(path, filename))
+
+
     def _normalize_issue_dir_with_dtd(self, path):
         """
         issue.xml from Elsevier assume the existence of a local DTD.
@@ -223,17 +234,17 @@ class ElsevierPackage(object):
         """
         if exists(join(path, 'resolved_issue.xml')):
             return
-        if 'si510.dtd' in open(join(path, 'issue.xml')).read():
-            ZipFile(CFG_ELSEVIER_SI510_PATH).extractall(path)
-            for filename in listdir(join(path, 'si510')):
-                rename(join(path, 'si510', filename), join(path, filename))
-        elif 'si520.dtd' in open(join(path, 'issue.xml')).read():
-            ZipFile(CFG_ELSEVIER_SI520_PATH).extractall(path)
-            for filename in listdir(join(path, 'si520')):
-                rename(join(path, 'si520', filename), join(path, filename))
-        else:
+        issue_xml_content = open(join(path, 'issue.xml')).read()
+        sis = ['si510.dtd', 'si520.dtd', 'si540.dtd']
+        tmp_extracted = 0
+        for si in sis:
+            if si in issue_xml_content:
+                self._extract_correct_dtd_package(si.split('.')[0], path)
+                tmp_extracted = 1
+
+        if not tmp_extracted:
             message = "It looks like the path " + path
-            message += " does not contain an si510 or si520 issue.xml file"
+            message += " does not contain an si510, si520 or si540 in issue.xml file"
             self.logger.error(message)
             raise ValueError(message)
         command = ["xmllint", "--format", "--loaddtd",
@@ -255,17 +266,17 @@ class ElsevierPackage(object):
         """
         if exists(join(path, 'resolved_main.xml')):
             return
-        if 'art520' in open(join(path, 'main.xml')).read():
-            ZipFile(CFG_ELSEVIER_ART520_PATH).extractall(path)
-            for filename in listdir(join(path, 'art520')):
-                rename(join(path, 'art520', filename), join(path, filename))
-        elif 'art501' in open(join(path, 'main.xml')).read():
-            ZipFile(CFG_ELSEVIER_ART501_PATH).extractall(path)
-            for filename in listdir(join(path, 'art501')):
-                rename(join(path, 'art501', filename), join(path, filename))
-        else:
+        main_xml_content = open(join(path, 'main.xml')).read()
+        arts = ['art501.dtd','art510.dtd','art520.dtd','art540.dtd']
+        tmp_extracted = 0
+        for art in arts:
+            if art in issue_xml_content:
+                self._extract_correct_dtd_package(art.split('.')[0], path)
+                tmp_extracted = 1
+
+        if not tmp_extracted:
             message = "It looks like the path " + path
-            message += "does not contain an si520 or si501 main.xml file"
+            message += "does not contain an art501, art510, art520 or art540 in main.xml file"
             self.logger.error(message)
             raise ValueError(message)
         command = ["xmllint", "--format", "--loaddtd",
@@ -474,7 +485,11 @@ class ElsevierPackage(object):
         if sa_affiliation:
             return xml_to_text(sa_affiliation[0], ', ')
         else:
-            return ""
+            affiliation = re.sub(r'^(\d+\ ?)',"",get_value_in_tag(affiliation, "ce:textfn"))
+            if affiliation:
+                return affiliation
+            else:
+                raise IndexError
 
     def _find_affiliations(self, xml_doc, doi):
         try:
@@ -484,11 +499,6 @@ class ElsevierPackage(object):
         except IndexError:
             message = "Elsevier paper: {0} is missing sa:affiliation."
             register_exception(alert_admin=True, prefix=message.format(doi))
-            return dict((aff.getAttribute("id").encode('utf-8'),
-                        re.sub(r'^(\d+\ ?)',
-                               "",
-                               get_value_in_tag(aff, "ce:textfn")))
-                        for aff in xml_doc.getElementsByTagName("ce:affiliation"))
 
     def _add_affiliations_to_author(self, author, affs):
         if affs:

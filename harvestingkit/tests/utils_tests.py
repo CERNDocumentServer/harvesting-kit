@@ -196,12 +196,37 @@ class UtilsTests(unittest.TestCase):
         )
         xmllint = pkg_resources.resource_filename(
             'harvestingkit.tests',
-            os.path.join('data', 'sample_elsevier_issue_input.xml')
+            os.path.join('data', 'sample_elsevier_issue', 'issue.xml')
         )
         xmllint_output = pkg_resources.resource_string(
             'harvestingkit.tests',
-            os.path.join('data', 'sample_elsevier_issue_output.xml')
+            os.path.join('data', 'sample_elsevier_issue', 'resolved_issue.xml')
         )
+
+        command = ['xmllint',
+                   '--format',
+                   '--path',
+                   xmllint_resources,
+                   '--loaddtd',
+                   xmllint]
+        code, out, err = run_shell_command(command)
+        self.assertEqual(out, xmllint_output)
+
+    def test_run_shell_for_xmllint_with_dtd540(self):
+        """Test if run_shell_command works for xmllint."""
+        xmllint_resources = pkg_resources.resource_filename(
+            'harvestingkit.tests',
+            os.path.join('data', 'si540')
+        )
+        xmllint = pkg_resources.resource_filename(
+            'harvestingkit.tests',
+            os.path.join('data', 'sample_elsevier_540_issue', 'issue.xml')
+        )
+        xmllint_output = pkg_resources.resource_string(
+            'harvestingkit.tests',
+            os.path.join('data', 'sample_elsevier_540_issue', 'resolved_issue.xml')
+        )
+
         command = ['xmllint',
                    '--format',
                    '--path',
