@@ -48,7 +48,7 @@ try:
 except ImportError:
     from distutils.sysconfig import get_python_lib
     CFG_CONTRASTOUT_DOWNLOADDIR = join(get_python_lib(),
-                                       'harvestingkit'
+                                       "harvestingkit",
                                        "var", "data",
                                        "scoap3", "elsevier")
 
@@ -347,8 +347,9 @@ class ContrastOutConnector(object):
                                    prefix=('Failed to connect to '
                                            'the Elsevier server. %s') % (err,))
                 return
-            except:
+            except Exception as e:
                 self.logger.info('No new packages to process')
+                self.logger.info('Registered error: %s' % e)
                 return
             self._get_packages()
             self._download_tars()

@@ -270,7 +270,7 @@ class ElsevierPackage(object):
         arts = ['art501.dtd','art510.dtd','art520.dtd','art540.dtd']
         tmp_extracted = 0
         for art in arts:
-            if art in issue_xml_content:
+            if art in main_xml_content:
                 self._extract_correct_dtd_package(art.split('.')[0], path)
                 tmp_extracted = 1
 
