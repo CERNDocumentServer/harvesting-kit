@@ -220,9 +220,12 @@ class ElsevierPackage(object):
 
 
     def _extract_correct_dtd_package(self, si_name, path):
+        try:
             ZipFile(eval("CFG_ELSEVIER_%s_PATH" % si_name.upper())).extractall(path)
-            for filename in listdir(join(path, si_name)):
-                rename(join(path, si_name, filename), join(path, filename))
+        except Exception as e:
+                raise e
+        for filename in listdir(join(path, si_name)):
+            rename(join(path, si_name, filename), join(path, filename))
 
 
     def _normalize_issue_dir_with_dtd(self, path):
