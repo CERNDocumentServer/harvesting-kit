@@ -48,7 +48,7 @@ try:
 except ImportError:
     from distutils.sysconfig import get_python_lib
     CFG_CONTRASTOUT_DOWNLOADDIR = join(get_python_lib(),
-                                       'harvestingkit'
+                                       "harvestingkit",
                                        "var", "data",
                                        "scoap3", "elsevier")
 
@@ -239,44 +239,43 @@ class ContrastOutConnector(object):
                                       "is not valid." % (", ".join(tag_list)))
 
     def _get_issues(self):
-        for name in self.files_list:
-            dataset_link = join(self.path_unpacked, name.split('.')[0],
-                                'dataset.xml')
+        if "path_unpacked" in self.__dict__:
+            for name in self.files_list:
+                dataset_link = join(self.path_unpacked, name.split('.')[0],
+                                    'dataset.xml')
 
-            try:
-                dataset_xml = parse(dataset_link)
-            except Exception:
-                register_exception(alert_admin=True,
-                                   prefix=("Elsevier error reading "
-                                           "dataset.xml file."))
-                error_msg = "Error reading dataset.xml file: %s"
-                self.logger.error(error_msg % (dataset_link,))
-                continue
+                try:
+                    dataset_xml = parse(dataset_link)
+                except Exception:
+                    register_exception(alert_admin=True, prefix=("Elsevier error reading dataset.xml file."))
+                    error_msg = "Error reading dataset.xml file: %s"
+                    self.logger.error(error_msg % (dataset_link,))
+                    continue
 
-            journal_issues = dataset_xml.getElementsByTagName('journal-issue')
-            if journal_issues:
-                for journal_issue in journal_issues:
-                    try:
-                        tag_list = ['ml', 'pathname']
-                        filename = (self
-                                    ._get_text_from_journal_item(journal_issue,
-                                                                 tag_list))
-                        self.logger.info("Found issue %s in %s."
-                                         % (filename, name))
-                        pathname = join(self.path_unpacked,
-                                        name.split('.')[0],
-                                        filename)
-                        self.found_issues.append(pathname)
-                    except Exception as err:
-                        register_exception(alert_admin=True,
-                                           prefix=err.message)
-                        self.logger.error("%s", err.message)
-                        continue
-            else:
-                def visit(arg, dirname, names):
-                    if "issue.xml" in names:
-                        self.found_issues.append(join(dirname, "issue.xml"))
-                walk(join(self.path_unpacked, name.split('.')[0]), visit, None)
+                journal_issues = dataset_xml.getElementsByTagName('journal-issue')
+                if journal_issues:
+                    for journal_issue in journal_issues:
+                        try:
+                            tag_list = ['ml', 'pathname']
+                            filename = (self
+                                        ._get_text_from_journal_item(journal_issue,
+                                                                     tag_list))
+                            self.logger.info("Found issue %s in %s."
+                                             % (filename, name))
+                            pathname = join(self.path_unpacked,
+                                            name.split('.')[0],
+                                            filename)
+                            self.found_issues.append(pathname)
+                        except Exception as err:
+                            register_exception(alert_admin=True,
+                                               prefix=err.message)
+                            self.logger.error("%s", err.message)
+                            continue
+                else:
+                    def visit(arg, dirname, names):
+                        if "issue.xml" in names:
+                            self.found_issues.append(join(dirname, "issue.xml"))
+                    walk(join(self.path_unpacked, name.split('.')[0]), visit, None)
         return self.found_issues
 
     def _get_metadata_and_fulltex_dir(self):
@@ -348,8 +347,9 @@ class ContrastOutConnector(object):
                                    prefix=('Failed to connect to '
                                            'the Elsevier server. %s') % (err,))
                 return
-            except:
+            except Exception as e:
                 self.logger.info('No new packages to process')
+                self.logger.info('Registered error: %s' % e)
                 return
             self._get_packages()
             self._download_tars()

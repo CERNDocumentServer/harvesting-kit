@@ -1,0 +1,2629 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//ES//DTD journal article DTD version 5.4.0//EN//XML" "art540.dtd" [
+<!ENTITY gr1 SYSTEM "gr1" NDATA IMAGE>
+<!ENTITY gr2 SYSTEM "gr2" NDATA IMAGE>
+<!ENTITY gr3 SYSTEM "gr3" NDATA IMAGE>
+<!ENTITY gr4 SYSTEM "gr4" NDATA IMAGE>
+<!ENTITY gr5 SYSTEM "gr5" NDATA IMAGE>
+<!ENTITY gr6 SYSTEM "gr6" NDATA IMAGE>
+<!ENTITY gr7 SYSTEM "gr7" NDATA IMAGE>
+<!ENTITY figs1 SYSTEM "figs1" NDATA IMAGE>
+<!ENTITY figs2 SYSTEM "figs2" NDATA IMAGE>
+<!ENTITY figs3 SYSTEM "figs3" NDATA IMAGE>
+<!ENTITY figs4 SYSTEM "figs4" NDATA IMAGE>
+<!ENTITY figs5 SYSTEM "figs5" NDATA IMAGE>
+<!ENTITY fx1 SYSTEM "fx1" NDATA IMAGE>
+<!ENTITY mmc1 SYSTEM "mmc1" NDATA APPLICATION>
+<!ENTITY mmc2 SYSTEM "mmc2" NDATA VIDEO>
+]>
+<article xmlns="http://www.elsevier.com/xml/ja/dtd" xmlns:ce="http://www.elsevier.com/xml/common/dtd" xmlns:sa="http://www.elsevier.com/xml/common/struct-aff/dtd" xmlns:sb="http://www.elsevier.com/xml/common/struct-bib/dtd" xmlns:xlink="http://www.w3.org/1999/xlink" docsubtype="fla">
+  <item-info>
+    <jid>CELL</jid>
+    <aid>8125</aid>
+    <ce:article-number>700004</ce:article-number>
+    <ce:pii>S0092-8674(15)30001-5</ce:pii>
+    <ce:doi>10.1016/j.cell.2015.03.041</ce:doi>
+    <ce:copyright type="full-transfer" year="2015">Elsevier Inc.</ce:copyright>
+  </item-info>
+  <ce:floats>
+    <ce:figure id="fig1">
+      <ce:label>Figure 1</ce:label>
+      <ce:caption id="cap0010">
+        <ce:simple-para id="fspara0010">Intestinal Stem Cell Markers Are Expressed Uniformly in the Early Mammalian Embryo and Are Refined during Development</ce:simple-para>
+        <ce:simple-para id="fspara0015">(A) Lgr5-EGFP-positive cells in heterozygous mouse intestines from E12.5 to E15.5. High-magnification views (below) show progressive restriction of expression from the villus tip. Sections from a littermate control lacking the knock-in allele (right column) show no GFP expression.</ce:simple-para>
+        <ce:simple-para id="fspara0020">(B) CD44 immunohistochemistry in mouse intestines from E12.5 to E15.5. High-magnification views (below) show similar progressive restriction of expression from the villus tip.</ce:simple-para>
+        <ce:simple-para id="fspara0025">(C) Sections of the intestine from two different P0 mice that resulted from crossing the Lgr5 knock-in allele containing an inducible Cre with a Rosa26-TdTomato floxed reporter after tamoxifen induction at E13.5. GFP represents Lgr5 expression at P0, and tdTomato indicates the location of cells and their descendants that expressed Lgr5 during induction at E13.5. Scale bars, 50 μm.</ce:simple-para>
+      </ce:caption>
+      <ce:link locator="gr1"/>
+    </ce:figure>
+    <ce:figure id="fig2">
+      <ce:label>Figure 2</ce:label>
+      <ce:caption id="cap0015">
+        <ce:simple-para id="fspara0030">Restriction of Progenitor Identity Is Observed during the Slower Progression of Villus Formation in Chick</ce:simple-para>
+        <ce:simple-para id="fspara0035">(A) Quantification of single LGR5 mRNA molecules per unit length across the base, middle, and tip of epithelial folds over time (quantifications were done on at least three gut samples for each stage). Data are represented as mean ± 1 SD. See also <ce:cross-ref refid="figs2" id="crosref0545">Figure S2</ce:cross-ref>.</ce:simple-para>
+        <ce:simple-para id="fspara0040">(B) Immunofluorescence for Sox9 in the chick intestine across development from E13 when expression is uniform in the epithelium through E15 when Sox9 is restricted from the tips of the folds and at hatch when Sox9 is expressed predominantly in the intervillous space. Scale bars, 50 μm.</ce:simple-para>
+      </ce:caption>
+      <ce:link locator="gr2"/>
+    </ce:figure>
+    <ce:figure id="fig3">
+      <ce:label>Figure 3</ce:label>
+      <ce:caption id="cap0020">
+        <ce:simple-para id="fspara0045">As the Proto-villi Form from E13 to E15, the Villus Cluster Signaling Center Forms in the Mesenchyme at the Distal Tip</ce:simple-para>
+        <ce:simple-para id="fspara0050">(A) Luminal views of the zigzag topography from E13 to E15, and expression of cluster genes goes from uniform under the wide folds of the epithelium at E13 (left) to predominantly localized to the mesenchyme under the forming villi at E15 (right).</ce:simple-para>
+        <ce:simple-para id="fspara0055">(B) PhophoSMAD staining demonstrates high BMP activity in the villus cluster and the adjacent epithelium. Close-up views (below) of a single fold at E15 highlight epithelial staining (arrowhead), which is less intense than staining in the mesenchymal cluster. Scale bars, 50 μm.</ce:simple-para>
+      </ce:caption>
+      <ce:link locator="gr3"/>
+    </ce:figure>
+    <ce:figure id="fig4">
+      <ce:label>Figure 4</ce:label>
+      <ce:caption id="cap0025">
+        <ce:simple-para id="fspara0060">ISC Localization Is Regulated by BMP Signaling from the Underlying Mesenchymal Villus Cluster Signaling Center</ce:simple-para>
+        <ce:simple-para id="fspara0065">(A) In situ hybridizations of E14 chick intestines cultured for 36 hr without (control) or with cyclopamine or recombinant Shh ligand.</ce:simple-para>
+        <ce:simple-para id="fspara0070">(B) PhosphoSMAD staining of cultured samples demonstrates the impact of compounds and recombinant proteins on BMP activity.</ce:simple-para>
+        <ce:simple-para id="fspara0075">(C) Edu labeling of E14 chick intestines cultured for 36 hr with the listed compounds and recombinant proteins. Below: quantification of percent Edu-positive cells across the sub-regions of epithelial folds, and at least three folds on each of three samples were counted.</ce:simple-para>
+        <ce:simple-para id="fspara0080">(D) Sox9 staining of cultured samples demonstrates the effect of compounds and recombinant proteins on Wnt activity.</ce:simple-para>
+        <ce:simple-para id="fspara0085">(E) Quantification of single-molecule FISH for LGR5 performed on sections from at least 3 E14 chick intestines cultured for 36 hr without (control) or with cyclopamine. See also <ce:cross-ref refid="figs2" id="crosref0550">Figure S2</ce:cross-ref>. Data are represented as mean ± 1 SD. Scale bars, 50 μm.</ce:simple-para>
+      </ce:caption>
+      <ce:link locator="gr4"/>
+    </ce:figure>
+    <ce:figure id="fig5">
+      <ce:label>Figure 5</ce:label>
+      <ce:caption id="cap0030">
+        <ce:simple-para id="fspara0090">Non-uniform Mesenchymal Signals Are Downstream of Uniform Epithelial Signal</ce:simple-para>
+        <ce:simple-para id="fspara0095">(A) Luminal views of the chick intestine from E13 to E15, as progenitor identity is lost from the tips of the folds (also shown in <ce:cross-ref refid="fig3" id="crosref0555">Figure 3</ce:cross-ref>A). Dotted lines represent the plane of section for transverse views in (B)–(D).</ce:simple-para>
+        <ce:simple-para id="fspara0100">(B) Schematic of diffusion of signal from an epithelium of the particular shape at each stage; darker color represents more signal. Note the increasing signal overlap in the underlying mesenchyme as the fold narrows. See also <ce:cross-ref refid="figs3" id="crosref0560">Figure S3</ce:cross-ref>.</ce:simple-para>
+        <ce:simple-para id="fspara0105">(C) In situ hybridization for Bmp4 (above) PDGFRα (below) expression from E13 to E15 matches the predicted pattern in (B) (also shown in <ce:cross-ref refid="fig3" id="crosref0565">Figure 3</ce:cross-ref>A).</ce:simple-para>
+        <ce:simple-para id="fspara0110">(D) Distribution of Shh protein in folded tips of the chick intestine at E13 and E15 (left). Antibody staining intensity across the 100 μm region boxed on the left was quantified using the Plot Profile function in Fiji (right). Brightness values were normalized to background levels for each image. A comparison of Shh staining intensity in E13 (graphed in blue) versus E15 (graphed in red) shows increased Shh staining in the E15 mesenchyme (dotted line denotes epithelial-mesenchymal border). The staining intensities across the E13 and E15 epithelia are not significantly different (p &lt; 0.08). Three different z slices from each of three samples were averaged for each stage. Below, the staining intensity found in a 5 μm by 5 μm region that is 5 μm from the E15 tip epithelium (pink) is significantly brighter than in the same-sized region 5 μm from the E15 base epithelium (yellow) (p &lt; 0.001). Measurements from two different z slices from each of three samples were averaged for each E15 region. Data are represented as mean ± 1 SD. Scale bars, 25 μm.</ce:simple-para>
+      </ce:caption>
+      <ce:link locator="gr5"/>
+    </ce:figure>
+    <ce:figure id="fig6">
+      <ce:label>Figure 6</ce:label>
+      <ce:caption id="cap0035">
+        <ce:simple-para id="fspara0115">Epithelial Shape Directs Cluster Formation</ce:simple-para>
+        <ce:simple-para id="fspara0120">(A) Experimental schematic: a ring of E14 intestine (left) is cultured for 36 hr either as a control segment or after first being flipped inside out (right).</ce:simple-para>
+        <ce:simple-para id="fspara0125">(B) After 36 hr in culture, the cluster signal arises in the control rings (top), similar to what would be found in an E15 intestine. The rings that were flipped inside out before culture have an epithelial shape similar to E13 intestine and, concomitantly, an in situ pattern and phosphoSMAD staining that matches expression at E13. Proliferation (quantified as in <ce:cross-ref refid="fig4" id="crosref0570">Figure 4</ce:cross-ref>), Sox9 expression, and Lgr5 expression are all lost from the tips of folds that form in the control rings. See also <ce:cross-ref refid="figs2" id="crosref0575">Figure S2</ce:cross-ref>.</ce:simple-para>
+        <ce:simple-para id="fspara0130">(C) Experimental schematic: a slab of E10 intestine (left) is cultured for 36 hr either as a control segment (where wide ridges will be maintained) or under a fine grid that induces many small villi-like bumps (right).</ce:simple-para>
+        <ce:simple-para id="fspara0135">(D) After 36 hr in culture, the cluster gene expression and phosphoSMAD staining in control segments is nearly uniform under the epithelium. However, samples grown under the grid form villi-like bumps and display non-uniform expression of cluster genes and BMP activity with highest expression in areas of highest curvature. Proliferation and Sox9 expression are uniform in the control epithelium, but in the samples cultured under the grid, proliferation and Sox9 expression are lost from the tips of folds that form particularly in areas where the curvature is highest and where clusters of mesenchymal expression arise. Data are represented as mean ± 1 SD. Scale bars, 50 μm.</ce:simple-para>
+      </ce:caption>
+      <ce:link locator="gr6"/>
+    </ce:figure>
+    <ce:figure id="fig7">
+      <ce:label>Figure 7</ce:label>
+      <ce:caption id="cap0040">
+        <ce:simple-para id="fspara0140">Epithelial-Mesenchymal Signaling in a Deforming Field Drives Localization of Intestinal Stem Cells in Mouse</ce:simple-para>
+        <ce:simple-para id="fspara0145">(A) The caudal-most region of the small intestine exhibits no epithelial projections and no evidence of the outer, longitudinal smooth muscle in this domain, using SMA as a marker.</ce:simple-para>
+        <ce:simple-para id="fspara0150">(B) More rostrally, the first buckling of the endoderm is observed concurrent with the first appearance of the longitudinal smooth muscle staining; however, no cluster expression of PDGFα at this rostrocaudal level is seen, demonstrating that epithelial morphogenesis precedes villus cluster gene activation.</ce:simple-para>
+        <ce:simple-para id="fspara0155">(C) Even more rostrally, where additional longitudinal smooth muscle differentiation has occurred, deeper alcoves display strong villus cluster gene expression at their tips. Close-up views of the developing outer, longitudinal smooth muscle layer (arrowheads) are shown below.</ce:simple-para>
+        <ce:simple-para id="fspara0160">(D) Villus-like structures were generated through constraint with a mesh grid, resulting in the upregulation of the villus cluster marker PDGFRα when compared to control cultures grown without the grid.</ce:simple-para>
+        <ce:simple-para id="fspara0165">(E) Application of cyclopamine to E14.5 mouse guts grown in culture for 30 hr results in maintenance of progenitor identity at the tips of forming villi. Proliferation (Edu), Wnt responsiveness (Sox9), and stem cell markers (CD44 and LGR5) are all found along the folded epithelium (arrowhead) when cluster signals are blocked. Control segments show proper restriction to the base of folds. Scale bars, 50 μm.</ce:simple-para>
+      </ce:caption>
+      <ce:link locator="gr7"/>
+    </ce:figure>
+    <ce:figure id="figs1">
+      <ce:label>Figure S1</ce:label>
+      <ce:caption id="cap0045">
+        <ce:simple-para view="extended" id="fspara0170">The Progression of Patterns on the Luminal Surface of the Developing Intestine during Villi Formation in Both Chick and Mouse Relies on the Differentiation of Smooth Muscle, Related to <ce:cross-ref refid="fig1" id="crosref0580">Figures 1</ce:cross-ref> and <ce:cross-ref refid="fig2" id="crosref0585">2</ce:cross-ref></ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0175">The parallel green lines represent oriented smooth muscle layers differentiating coincident with each pattern.</ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0180">(A) In chick, the initial smooth lining of the gut tube is transformed in response to physical forces from a circumferentially oriented smooth muscle layer into a series of longitudinal parallel ridges. These are then deformed into a series of regular zigzag ridges as a result of compression from a longitudinally oriented smooth muscle layer. Finally, the differentiation of a 3<ce:sup>rd</ce:sup>, muscle layer causes zigzags to segment into individual villi.</ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0185">(B) Mouse villi appear to be established through similar physical forces derived from the smooth muscle layers. However, note the rapid, direct villi formation in mouse as compared to the stepwise progression in chick which occurs over several days.</ce:simple-para>
+      </ce:caption>
+      <ce:link locator="figs1"/>
+    </ce:figure>
+    <ce:figure id="figs2">
+      <ce:label>Figure S2</ce:label>
+      <ce:caption id="cap0050">
+        <ce:simple-para view="extended" id="fspara0190">Expression of ISC Marker Lgf5 Is Downstream of the Villus Cluster, which Forms as a Consequence of Epithelial Shape, Related to <ce:cross-ref refid="fig2" id="crosref0590">Figures 2</ce:cross-ref>, <ce:cross-ref refid="fig4" id="crosref0595">4</ce:cross-ref>, and <ce:cross-ref refid="fig6" id="crosref0600">6</ce:cross-ref></ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0195">(A) Single-molecule FISH for Lgr5 expression sections of chick intestine from the earliest formation of the gut tube (E6) when Lgr5 expression is uniform to hatch when Lgr5 is expressed predominantly in the intervillous space, quantified in <ce:cross-ref refid="fig2" id="crosref0605">Figure 2</ce:cross-ref>.</ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0200">(B) LGR5 single molecule FISH of E14 chick intestines cultured for 36 hr without (control) or with cyclopamine, quantified in <ce:cross-ref refid="fig4" id="crosref0610">Figure 4</ce:cross-ref>.</ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0205">(C) Single molecule FISH for Lgr5 expression sections of chick intestine cultured as control samples or after being flipped inside out, quantified in <ce:cross-ref refid="fig6" id="crosref0615">Figure 6</ce:cross-ref>.</ce:simple-para>
+      </ce:caption>
+      <ce:link locator="figs2"/>
+    </ce:figure>
+    <ce:figure id="figs3">
+      <ce:label>Figure S3</ce:label>
+      <ce:caption id="cap0055">
+        <ce:simple-para view="extended" id="fspara0210">Increase in Curvature Leads to Increased Steady-State Morphogen Concentration in the Underlying Mesoderm, Related to <ce:cross-ref refid="fig5" id="crosref0620">Figure 5</ce:cross-ref></ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0215">(A and D) The chick gut endodermal surface transitions from (A) flat to (D) zigzag shape.</ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0220">(C) is a hypothetical ridge with the same aspect ratio as in early zigzag state to discern the contribution of circumferential compression and longitudinal compression.</ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0225">(A′–C″) Simulated steady-state morphogen concentration in (A′) a flat surface shape without curvature (B′, C′) longitudinal ridge representing different (circumferential plane) aspect ratio at E13 and E14 respectively.</ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0230">(D′) and (D″) shows the simulated steady-state morphogen concentration for zigzag shape.</ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0235">(E) Basic diffusion-reaction partial differential equation in 1-D (upper) and 3-D (bottom) form. Color scale same for (A′-D″), and are in arbitrary units. See details in <ce:cross-ref refid="dtbox1" id="crosref0625">Extended Experimental Procedures</ce:cross-ref>.</ce:simple-para>
+      </ce:caption>
+      <ce:link locator="figs3"/>
+    </ce:figure>
+    <ce:figure id="figs4">
+      <ce:label>Figure S4</ce:label>
+      <ce:caption id="cap0060">
+        <ce:simple-para view="extended" id="fspara0240">Altering Cluster Signals in Culture Does Not Impact Cell Shape, Related to <ce:cross-ref refid="fig4" id="crosref0630">Figure 4</ce:cross-ref></ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0245">36 hr in culture with cyclopamine to block hedgehog signaling or Noggin to block BMP signaling does not lead to observable alterations in the global structure of the epithelium or in individual epithelial or mesenchymal cell shape, using membrane-bound β-catenin to outline cell contours.</ce:simple-para>
+      </ce:caption>
+      <ce:link locator="figs4"/>
+    </ce:figure>
+    <ce:figure id="figs5">
+      <ce:label>Figure S5</ce:label>
+      <ce:caption id="cap0065">
+        <ce:simple-para view="extended" id="fspara0250">Preventing Late Stages of Epithelial Morphogenesis by Blocking Muscle Formation Preserves Uniform Epithelial Progenitor Identity, Related to <ce:cross-ref refid="fig6" id="crosref0635">Figure 6</ce:cross-ref></ce:simple-para>
+        <ce:simple-para view="extended" id="fspara0255">Samples were cultured from ridge stage to late zigzag stage, with or without the presence of FK506, a compounds previously shown to prevent smooth muscle differentiation. Control cultures display activation of villus cluster gene expression (arrowhead) and therefore restricted distal proliferation (arrow). Without longitudinal muscle differentiation (asterisk), and hence without progressing beyond parallel ridges, the entire endoderm remains proliferative and villus cluster genes are never upregulated.</ce:simple-para>
+      </ce:caption>
+      <ce:link locator="figs5"/>
+    </ce:figure>
+    <ce:table xmlns="http://www.elsevier.com/xml/common/cals/dtd" xmlns:tb="http://www.elsevier.com/xml/common/table/dtd" id="tbl1" frame="topbot" rowsep="0" colsep="0">
+      <ce:label>Table 1</ce:label>
+      <ce:caption id="cecap50">
+        <ce:simple-para id="spara90" role="caption">Bactericidal activity characterised by joint Bayesian NLME modelling of the daily rate of change in mean count of log<ce:inf>10</ce:inf>CFU of <ce:italic>Mycobacterium tuberculosis</ce:italic> per mL sputum (efficacy analysis population)</ce:simple-para>
+      </ce:caption>
+      <ce:alt-text id="at2" role="summary">Table 2 shows results from the primary efficacy analysis—ie, the bactericidal activity assessed by CFU for days 0–56. The bactericidal activity of group MPa200Z was significantly greater than that of HRZE, as was the estimate of the daily decrease in log 10 CFU counts at days 7–56. The results from the secondary efficacy analysis (ie, by-patient analysis) support these findings. The estimates, as calculated from the adjusted ANOVA (ie, adjusted separately for site, HIV status, and log 10 TTP results at day 0) are similar to those calculated from the unadjusted ANOVA.</ce:alt-text>
+      <tgroup cols="5" altimg="si2.gif">
+        <colspec colnum="1" colname="col1"/>
+        <colspec colnum="2" colname="col2"/>
+        <colspec colnum="3" colname="col3"/>
+        <colspec colnum="4" colname="col4"/>
+        <colspec colnum="5" colname="col5"/>
+        <thead>
+          <row valign="top">
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd"/>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left" namest="col2" nameend="col4" rowsep="1">
+              <ce:bold>Patients with drug-susceptible tuberculosis</ce:bold>
+            </entry>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left" rowsep="1">
+              <ce:bold>Patients with drug-resistant tuberculosis</ce:bold>
+            </entry>
+          </row>
+          <row valign="top" rowsep="1">
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd"/>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">Moxifloxacin, 100 mg pretomanid, and pyrazinamide (n=56)</entry>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">Moxifloxacin, 200 mg pretomanid, and pyrazinamide (n=54)</entry>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">Isoniazid, rifampicin, pyrazinamide, and ethambutol (n=54)</entry>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">Moxifloxacin, 200 mg pretomanid, and pyrazinamide (n=9)</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row valign="top">
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left" namest="col1" nameend="col5" role="rowhead">
+              <ce:bold>Mean change in daily log</ce:bold>
+              <ce:inf>10</ce:inf>
+              <ce:bold>CFU counts for days 0–56</ce:bold>
+            </entry>
+          </row>
+          <row valign="top">
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">Posterior estimate (95% Bayesian credibility interval)</entry>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">0·133 (0·109–0·155)</entry>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">0·155 (0·133–0·178)</entry>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">0·112 (0·093–0·131)</entry>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">0·117 (0·070–0·174)</entry>
+          </row>
+          <row valign="top">
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left" namest="col1" nameend="col5" role="rowhead">
+              <ce:bold>Mean change in daily log</ce:bold>
+              <ce:inf>10</ce:inf>
+              <ce:bold>CFU counts for days 7–56</ce:bold>
+            </entry>
+          </row>
+          <row valign="top">
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">Posterior estimate (95% Bayesian credibility interval)</entry>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">0·115 (0·090–0·140)</entry>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">0·145 (0·120–0·171)</entry>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">0·103 (0·081–0·125)</entry>
+            <entry xmlns="http://www.elsevier.com/xml/common/dtd" align="left">0·104 (0·054–0·167)</entry>
+          </row>
+        </tbody>
+      </tgroup>
+      <ce:legend>
+        <ce:simple-para id="spara100">Data are derived from the joint Bayesian non-linear mixed effects regression model. The differences between moxifloxacin, 200 mg pretomanid, and pyrazinamide versus isoniazid, rifampicin, pyrazinamide, and ethambutol with respect to bactericidal activity assessed by CFU for days 0–56 (0·043, 95% Bayesian credibility interval 0·013–0·073) and 7–56 (0·041, 0·008–0·076) were significant. No other comparisons were significant. Patients with tuberculosis resistant to pyrazinamide or moxifloxacin at baseline were excluded. CFU=colony forming units. NLME=non-linear mixed effects modelling.</ce:simple-para>
+      </ce:legend>
+    </ce:table>
+  </ce:floats>
+  <head>
+    <ce:dochead id="dhead0010">
+      <ce:textfn>Article</ce:textfn>
+    </ce:dochead>
+    <ce:title id="title0010">Bending Gradients: How the Intestinal Stem Cell Gets Its Home</ce:title>
+    <ce:author-group id="augrp0010">
+      <ce:author id="au1">
+        <ce:given-name>Amy E.</ce:given-name>
+        <ce:surname>Shyer</ce:surname>
+        <ce:cross-ref refid="aff1" id="crosref0010">
+          <ce:sup>1</ce:sup>
+        </ce:cross-ref>
+        <ce:cross-ref refid="fn1" id="crosref0015">
+          <ce:sup>8</ce:sup>
+        </ce:cross-ref>
+      </ce:author>
+      <ce:author id="au2">
+        <ce:given-name>Tyler R.</ce:given-name>
+        <ce:surname>Huycke</ce:surname>
+        <ce:cross-ref refid="aff1" id="crosref0020">
+          <ce:sup>1</ce:sup>
+        </ce:cross-ref>
+      </ce:author>
+      <ce:author id="au3">
+        <ce:given-name>ChangHee</ce:given-name>
+        <ce:surname>Lee</ce:surname>
+        <ce:cross-ref refid="aff1" id="crosref0025">
+          <ce:sup>1</ce:sup>
+        </ce:cross-ref>
+      </ce:author>
+      <ce:author id="au4">
+        <ce:given-name>L.</ce:given-name>
+        <ce:surname>Mahadevan</ce:surname>
+        <ce:cross-ref refid="aff2" id="crosref0030">
+          <ce:sup>2</ce:sup>
+        </ce:cross-ref>
+        <ce:cross-ref refid="aff3" id="crosref0035">
+          <ce:sup>3</ce:sup>
+        </ce:cross-ref>
+        <ce:cross-ref refid="aff4" id="crosref0040">
+          <ce:sup>4</ce:sup>
+        </ce:cross-ref>
+        <ce:cross-ref refid="aff5" id="crosref0045">
+          <ce:sup>5</ce:sup>
+        </ce:cross-ref>
+        <ce:cross-ref refid="aff6" id="crosref0050">
+          <ce:sup>6</ce:sup>
+        </ce:cross-ref>
+        <ce:cross-ref refid="aff7" id="crosref0055">
+          <ce:sup>7</ce:sup>
+        </ce:cross-ref>
+      </ce:author>
+      <ce:author id="au5">
+        <ce:given-name>Clifford J.</ce:given-name>
+        <ce:surname>Tabin</ce:surname>
+        <ce:cross-ref refid="aff1" id="crosref0060">
+          <ce:sup>1</ce:sup>
+        </ce:cross-ref>
+        <ce:cross-ref refid="cor1" id="crosref0065">
+          <ce:sup>∗</ce:sup>
+        </ce:cross-ref>
+        <ce:e-address type="email" id="eadd0010">tabin@genetics.med.harvard.edu</ce:e-address>
+      </ce:author>
+      <ce:affiliation id="aff1">
+        <ce:label>1</ce:label>
+        <ce:textfn>Department of Genetics, Harvard Medical School, Boston, MA 02115, USA</ce:textfn>
+      </ce:affiliation>
+      <ce:affiliation id="aff2">
+        <ce:label>2</ce:label>
+        <ce:textfn>School of Engineering and Applied Sciences, Harvard University, Cambridge, MA 02138, USA</ce:textfn>
+      </ce:affiliation>
+      <ce:affiliation id="aff3">
+        <ce:label>3</ce:label>
+        <ce:textfn>Department of Organismic and Evolutionary Biology, Harvard University, Cambridge, MA 02138, USA</ce:textfn>
+      </ce:affiliation>
+      <ce:affiliation id="aff4">
+        <ce:label>4</ce:label>
+        <ce:textfn>Department of Physics, Harvard University, Cambridge, MA 02138, USA</ce:textfn>
+      </ce:affiliation>
+      <ce:affiliation id="aff5">
+        <ce:label>5</ce:label>
+        <ce:textfn>Wyss Institute for Biologically Inspired Engineering, Harvard University, Cambridge, MA 02138, USA</ce:textfn>
+      </ce:affiliation>
+      <ce:affiliation id="aff6">
+        <ce:label>6</ce:label>
+        <ce:textfn>Kavli Institute for Nanobio Science and Technology, Harvard University, Cambridge, MA 02138, USA</ce:textfn>
+      </ce:affiliation>
+      <ce:affiliation id="aff7">
+        <ce:label>7</ce:label>
+        <ce:textfn>Department of Systems Biology, Harvard Medical School, Boston, MA 02115, USA</ce:textfn>
+      </ce:affiliation>
+      <ce:correspondence id="cor1">
+        <ce:label>∗</ce:label>
+        <ce:text>Corresponding author</ce:text>
+      </ce:correspondence>
+      <ce:footnote id="fn1">
+        <ce:label>8</ce:label>
+        <ce:note-para id="ntpara0010">Present address: The Miller Institute for Basic Research in Science, Department of Molecular and Cellular Biology, University of California, Berkeley, Berkeley, CA 94720, USA</ce:note-para>
+      </ce:footnote>
+    </ce:author-group>
+    <ce:date-received day="17" month="6" year="2014"/>
+    <ce:date-revised day="28" month="10" year="2014"/>
+    <ce:date-accepted day="11" month="2" year="2015"/>
+    <ce:miscellaneous id="misc0010">Published: April 9, 2015</ce:miscellaneous>
+    <ce:abstract id="abs0010">
+      <ce:section-title id="sectitle0010">Summary</ce:section-title>
+      <ce:abstract-sec id="abssec0010">
+        <ce:simple-para id="abspara0010">We address the mechanism by which adult intestinal stem cells (ISCs) become localized to the base of each villus during embryonic development. We find that, early in gut development, proliferating progenitors expressing ISC markers are evenly distributed throughout the epithelium, in both the chick and mouse. However, as the villi form, the putative stem cells become restricted to the base of the villi. This shift in the localization is driven by mechanically influenced reciprocal signaling between the epithelium and underlying mesenchyme. Buckling forces physically distort the shape of the morphogenic field, causing local maxima of epithelial signals, in particular Shh, at the tip of each villus. This induces a suite of high-threshold response genes in the underlying mesenchyme to form a signaling center called the “villus cluster.” Villus cluster signals, notably Bmp4, feed back on the overlying epithelium to ultimately restrict the stem cells to the base of each villus.</ce:simple-para>
+      </ce:abstract-sec>
+      <ce:abstract-sec id="abssec0515">
+        <ce:section-title id="sectitle0515">Video Abstract</ce:section-title>
+        <ce:simple-para view="extended" id="abspara0515">
+          <ce:display>
+            <ce:e-component role="video-abstract" id="mmc2">
+              <ce:link locator="mmc2"/>
+            </ce:e-component>
+          </ce:display>
+        </ce:simple-para>
+      </ce:abstract-sec>
+    </ce:abstract>
+    <ce:abstract class="graphical" id="abs0015">
+      <ce:section-title id="sectitle0015">Graphical Abstract</ce:section-title>
+      <ce:abstract-sec id="abssec0015">
+        <ce:simple-para id="abspara0015">
+          <ce:display>
+            <ce:figure id="undfig1">
+              <ce:link locator="fx1"/>
+            </ce:figure>
+          </ce:display>
+        </ce:simple-para>
+      </ce:abstract-sec>
+    </ce:abstract>
+    <ce:abstract class="author-highlights" id="abs0020">
+      <ce:section-title id="sectitle0020">Highlights</ce:section-title>
+      <ce:abstract-sec id="abssec0020">
+        <ce:simple-para id="abspara0020">
+          <ce:list id="ulist0010">
+            <ce:list-item id="u0010">
+              <ce:label>•</ce:label>
+              <ce:para id="p0010">The entire embryonic gut epithelium expresses intestinal stem cell (ISC) markers</ce:para>
+            </ce:list-item>
+            <ce:list-item id="u0015">
+              <ce:label>•</ce:label>
+              <ce:para id="p0015">As villi form, BMP activity from underlying mesenchyme restricts ISCs to their base</ce:para>
+            </ce:list-item>
+            <ce:list-item id="u0020">
+              <ce:label>•</ce:label>
+              <ce:para id="p0020">The mesenchymal Bmp expression is induced at villus tips by Shh from the endoderm</ce:para>
+            </ce:list-item>
+            <ce:list-item id="u0025">
+              <ce:label>•</ce:label>
+              <ce:para id="p0025">Uniformly secreted Shh is concentrated by the physically driven villus architecture</ce:para>
+            </ce:list-item>
+          </ce:list>
+        </ce:simple-para>
+      </ce:abstract-sec>
+    </ce:abstract>
+    <ce:abstract class="teaser" id="abs0025">
+      <ce:abstract-sec id="abssec0025">
+        <ce:simple-para id="abspara0025">The buckling of the epithelial surface during the formation of intestinal villi creates pockets under the villus tips that concentrate the morphogen Shh, thereby restricting intestinal stem cells to the base.</ce:simple-para>
+      </ce:abstract-sec>
+    </ce:abstract>
+  </head>
+  <body>
+    <ce:sections>
+      <ce:section id="sec1">
+        <ce:section-title id="sectitle0025">Introduction</ce:section-title>
+        <ce:para id="p0030">Although studies of stem cells have revealed a great deal about maintenance and propagation, the origin of most adult stem cell populations remains an open question. Intestinal stem cells (ISCs) have been particularly well studied. A number of important factors have been described as being produced in the ISC niche to maintain their multipotency and proliferative potential, including canonical Wnt signaling (<ce:cross-ref refid="bib35" id="crosref0070">Spence et al., 2011</ce:cross-ref>). The identification of genetic ISC markers in the adult intestine, such as Lgr5, has made it possible to identify the location of these cells. In the adult Lgr5-positive ISCs reside in the intestinal crypt, found below the base of each (<ce:cross-ref refid="bib1" id="crosref0075">Barker et al., 2007</ce:cross-ref>). The earliest known expression of Lgr5 is just after birth in mouse (<ce:cross-ref refid="bib20" id="crosref0080">Kim et al., 2012</ce:cross-ref>). At this time, Lgr5 is expressed at the base of each villus, where the crypt will soon form. However, the expression patterns of this and other adult stem cell markers in amniotic embryos have not been systematically studied, and indeed, whether or not Lgr5-positive cells are even present prior to birth has remained uncertain.</ce:para>
+        <ce:para id="p0035">It is clear, however, that morphological villi arise before birth (or hatching in birds). Perhaps surprisingly, although stem cell proliferation and differentiation are critical for homeostatic maintenance of the villi, the initial formation of the villi does not appear to be a stem-cell-dependent phenomenon, at least in the chick. Morphogenesis of the lumen of the chick gut occurs in a stepwise progression wherein the initially smooth lining of the primitive gut tube is first transformed by compressive forces into a series of longitudinal parallel ridges. These are then deformed into a series of regular zigzag ridges. Finally, the zigzags segment to give rise to individual villi (<ce:cross-refs refid="bib6 bib34" id="crosrefs0010">Coulombre and Coulombre, 1958; Shyer et al., 2013</ce:cross-refs>) (<ce:cross-ref refid="figs1" id="crosref0085">Figure S1</ce:cross-ref><ce:float-anchor refid="figs1"/>A). A similar process occurs in the formation of human villi (<ce:cross-refs refid="bib16 bib24" id="crosrefs0015">Hilton, 1902; Lacroix et al., 1984</ce:cross-refs>). The formation of the ridges is driven by the differentiation of the first circumferential smooth muscle layer of the intestine. This forms a barrier restricting further expansion as the inner submucosal and endodermal layers continue to proliferate, resulting in their buckling. Similarly, the zigzags form due to compressive forces generated by further submucosal and endodermal growth when the second longitudinal smooth muscle layer differentiates, creating orthogonal barriers to expansion in both the longitudinal and radial directions. Finally, the arms of the zigzags each give rise to individual villi as the third, innermost layer of longitudinal smooth muscle differentiates in the context of a decrease in proliferation along the top of the zigzags (<ce:cross-ref refid="bib34" id="crosref0090">Shyer et al., 2013</ce:cross-ref>). This previous study thus addressed the mechanism by which villi first form in the developing chick gut. However, this work begs the question of why proliferation suddenly drops at the tips of the folds at the zigzag stage and also leaves unanswered the critical question of how stem cells are localized to the base of the villi as they form. These issues are the focus of this current study.</ce:para>
+      </ce:section>
+      <ce:section id="sec2">
+        <ce:section-title id="sectitle0030">Results</ce:section-title>
+        <ce:section id="sec2.1">
+          <ce:section-title id="sectitle0035">Intestinal Stem Cell Markers Are Expressed Uniformly in the Early Mammalian Gut and Are Refined during Villus Formation</ce:section-title>
+          <ce:para id="p0040">Although the definitive ISCs of the postnatal intestine are derived from the endoderm of the primitive gut tube and the early gut epithelium has been hypothesized to be a uniform stem-cell-like pool (<ce:cross-ref refid="bib7" id="crosref0095">Crosnier et al., 2006</ce:cross-ref>), it has remained unclear whether ISC markers are expressed at these early stages. To test this, we took advantage of a murine GFP knock-in allele of the best-studied ISC marker, Lgr5 (EGFP-IRES-creERT2) (<ce:cross-ref refid="bib1" id="crosref0100">Barker et al., 2007</ce:cross-ref>). Strikingly, Lgr5-expressing cells are found throughout the epithelium in the embryonic day 12.5 (E12.5) small intestine, just prior to villus formation (<ce:cross-ref refid="fig1" id="crosref0105">Figure 1</ce:cross-ref><ce:float-anchor refid="fig1"/>A). Over the following days of development, Lgr5 expression is lost in the forming villus tip and is progressively restricted to the space between villi as they form (<ce:cross-ref refid="fig1" id="crosref0110">Figure 1</ce:cross-ref>A). A second ISC marker, CD44 (<ce:cross-ref refid="bib18" id="crosref0115">Itzkovitz et al., 2012</ce:cross-ref>), follows a similar progression albeit with slightly delayed kinetics (<ce:cross-ref refid="fig1" id="crosref0120">Figure 1</ce:cross-ref>B).</ce:para>
+          <ce:para id="p0045">In the adult intestine, canonical Wnt signaling is essential for maintaining ISCs. In previous studies, markers for active Wnt signaling, such as Sox9, have been reported to be initially expressed uniformly throughout the embryonic gut but are then restricted to the intervillous space as villi form (<ce:cross-refs refid="bib3 bib10 bib12" id="crosrefs0020">Blache et al., 2004; Formeister et al., 2009; Furuyama et al., 2011</ce:cross-refs>). Moreover, previous reports have shown that epithelial proliferation follows the same progressive restriction from the tip of forming villi (<ce:cross-ref refid="bib7" id="crosref0125">Crosnier et al., 2006</ce:cross-ref>).</ce:para>
+          <ce:para id="p0050">These data suggest that the ISCs localized at the base of the villi at birth are remnants of a broader precursor stem cell population found throughout the early gut endoderm. To directly test whether this is the case, we made use of the inducible Cre present in the Lgr5 knock-in allele and crossed it into the background of a Rosa26-tdTomato floxed reporter that is irreversibly activated in the presence of Cre recombinase, marking the cells in which Cre is expressed and also their descendants. We labeled cells by inducing Cre activity at E13.5, a stage when the entire epithelium is proliferative and expresses Lgr5. We then sectioned guts of postnatal animals, a time when stem cells are localized to the base of the villi and to the inter-villus regions, and examined them for tdTomato expression. We observed staining at the base of the villi that colocalized with Lgr5 expression and, in many cases, also saw staining along the sides of the villi (<ce:cross-ref refid="fig1" id="crosref0130">Figure 1</ce:cross-ref>C) even though, at this stage, the epithelial cells of the villi do not actively express Lgr5. As the epithelial cells of the villi at this stage are known to be derived from the stem cells at their base, these data indicate that the embryonically labeled Lgr5-positive cells are indeed the progenitors of the post-natal intestinal stem cells <ce:cross-ref id="cecref440" refid="tbl1">Table 2</ce:cross-ref><ce:float-anchor refid="tbl1"/>.</ce:para>
+          <ce:para id="p0055">Although the villi in mouse appear to be established through similar compressive forces as in the chick (<ce:cross-ref refid="bib34" id="crosref0135">Shyer et al., 2013</ce:cross-ref>), they arise much more quickly and without the clear stepwise progression seen in the chick (<ce:cross-ref refid="figs1" id="crosref0140">Figure S1</ce:cross-ref>B). To investigate when in this process the stem cells are localized, we therefore switched systems to the chick.</ce:para>
+        </ce:section>
+        <ce:section id="sec2.2">
+          <ce:section-title id="sectitle0040">Stem Cells Are Restricted Late in Chick Endodermal Morphogenesis as Zigzags Become Compact and Begin to Morph into Pre-villus Bulges</ce:section-title>
+          <ce:para id="p0060">As Lgr5 expression is difficult to detect in the developing chick midgut, we utilized single-molecule fluorescent in situ hybridization (FISH) to locate Lgr5-expressing cells across chick intestinal development. Lgr5 is expressed uniformly throughout the early embryonic intestinal epithelium and continues as such through the early stages of epithelial morphogenesis into ridges and zigzags (<ce:cross-ref refid="fig2" id="crosref0145">Figures 2</ce:cross-ref><ce:float-anchor refid="fig2"/>A and <ce:cross-ref refid="figs2" id="crosref0150">S2</ce:cross-ref><ce:float-anchor refid="figs2"/>A). However, by E15, as the zigzags attain their maximal compaction just before they begin to morph into the bulges that will give rise to villi, Lgr5 expression is diminished in the tip of the epithelial fold. By hatching, expression is predominantly limited to the intervillous space (<ce:cross-ref refid="fig2" id="crosref0155">Figures 2</ce:cross-ref>A and <ce:cross-ref refid="figs2" id="crosref0160">S2</ce:cross-ref>A). Similarly, Sox9 is expressed uniformly in the early chick intestinal epithelium and is lost at the tips of the folds by E15 (<ce:cross-ref refid="fig2" id="crosref0165">Figure 2</ce:cross-ref>B). Thus, the localization of both putative stem cells and of the Wnt signaling that supports them becomes restricted just before the pre-villus bulges start to emerge. We have previously noted that this transition from zigzags to bulges also correlates with and, indeed, depends upon a progressive restriction of proliferation from the tips of the folded luminal surface E15 (<ce:cross-ref refid="bib34" id="crosref0170">Shyer et al., 2013</ce:cross-ref>).</ce:para>
+        </ce:section>
+        <ce:section id="sec2.3">
+          <ce:section-title id="sectitle0045">A Signaling Center Correlating with the Timing and Localization of Stem Cells in the Forming Gut</ce:section-title>
+          <ce:para id="p0065">A potential clue for how epithelial proliferation and stem cell identity might be regulated comes from the mouse, where lack of proliferation at the villus tip has previously been correlated with the presence of a signaling center in the distal mesenchyme of the nascent villi, called the “villus cluster” (<ce:cross-ref refid="bib19" id="crosref0175">Karlsson et al., 2000</ce:cross-ref>), which expresses PDGFRα, Gli1, Ptc1, Bmp2, and Bmp4 (<ce:cross-refs refid="bib19 bib39" id="crosrefs0025">Karlsson et al., 2000;Walton et al., 2012</ce:cross-refs>). In the chick, we find that the same suite of genes is expressed at a high level in the equivalent location at the tip of the highly folded epithelium at E15, although the same genes are expressed at a lower level at earlier time points in a narrow band directly under the entire epithelium (<ce:cross-ref refid="fig3" id="crosref0180">Figure 3</ce:cross-ref><ce:float-anchor refid="fig3"/>A). The time when the villus cluster genes are upregulated is the same stage as when the overlying distal epithelium loses stem cell marker expression and as when proliferation decreases in the distal domain of the epithelium (<ce:cross-ref refid="bib34" id="crosref0185">Shyer et al., 2013</ce:cross-ref>). The chick villus cluster includes cluster-specific expression of Foxf1, a transcription factor implicated in villi formation (<ce:cross-ref refid="bib29" id="crosref0190">Ormestad et al., 2006</ce:cross-ref>) but not previously observed in the cluster, as well as PDGFRα, Ptc1, and Bmp4 (<ce:cross-ref refid="fig3" id="crosref0195">Figure 3</ce:cross-ref>A). We also examined phospho-SMAD staining, as a reporter of Bmp activity, during chick gut morphogenesis. Phospho-SMAD reactivity is identified with a timing that correlates with the onset of high-level Bmp expression in the villus cluster and negatively correlates with the localization of Lgr5 expression (<ce:cross-ref refid="fig3" id="crosref0200">Figure 3</ce:cross-ref>B).</ce:para>
+          <ce:para id="p0070">It has recently been shown that, in mouse, the villus cluster expression of Bmp4 and the general Shh target Ptc1 are downstream of hedgehog signaling (<ce:cross-refs refid="bib39 bib29" id="crosrefs0030">Walton et al., 2012; Ormestad et al., 2006</ce:cross-refs>). Moreover, it has long been known that, at earlier stages in chick gut formation, Sonic hedgehog (Shh) is responsible for inducing expression of Bmp4 in the underlying mesenchynme (<ce:cross-ref refid="bib31" id="crosref0205">Roberts et al., 1995</ce:cross-ref>). Accordingly, we find that, in the chick, villus cluster-specific expression of Ptc1and BMP4, as well as Foxf1, is lost upon inhibition of Hedgehog signaling by cyclopamine and expanded in response to additional Shh protein (<ce:cross-ref refid="fig4" id="crosref0210">Figure 4</ce:cross-ref><ce:float-anchor refid="fig4"/>A). As expected, the decrease or increase of Bmp4 expression, in response to cyclopamine or Shh, respectively, is reflected by a concomitant respective loss of or broadening of phospho-SMAD reactivity (<ce:cross-ref refid="fig4" id="crosref0215">Figure 4</ce:cross-ref>B).</ce:para>
+        </ce:section>
+        <ce:section id="sec2.4">
+          <ce:section-title id="sectitle0050">A Feedback Loop from the Villus Cluster to the Epithelium Localizes Stem Cells to the Base of the Forming Villi</ce:section-title>
+          <ce:para id="p0075">To test whether signals from the villus cluster, in fact, direct the fate of cells in the neighboring epithelium, we excised a small segment of intestine from an E14 chick embryo, when progenitors are uniformly distributed and before the villus cluster has formed, and manipulated cluster signals in vitro during 36 hr of culture. Control cultures display strong Edu labeling, which is indicative of proliferation exclusively at the base of the fold, just like their E15.5 in vivo counterparts (<ce:cross-ref refid="fig4" id="crosref0220">Figure 4</ce:cross-ref>C). However, culturing in the presence of the hedgehog inhibitor cyclopamine or the Bmp inhibitor Noggin results in expansion of proliferation throughout the endoderm, including the villus tips (<ce:cross-ref refid="fig4" id="crosref0225">Figure 4</ce:cross-ref>C). Conversely, in explants cultured in the presence Shh or Bmp4, proliferation is absent not just from the tips of the villi, but from the entire endodermal layer. As shown above, Shh activity is responsible for inducing Bmp4 expression in the underlying mesenchyme. To confirm this epistatic relationship in this context, we simultaneously treated cultures with both Shh and Noggin. Application of both Shh and Noggin to gut segments in culture mimics the effects of Noggin alone, maintaining proliferation throughout the endoderm (<ce:cross-ref refid="fig4" id="crosref0230">Figure 4</ce:cross-ref>C). Thus, as expected, endodermally derived Shh activity is upstream of mesenchymal Bmp4 expression, and Bmp4 activity represses endodermal proliferation.</ce:para>
+          <ce:para id="p0080">Wnt signaling is an important niche signal for maintaining ISCs in the mature intestine. Moreover, mouse mutants with loss of villus cluster signals show an expansion of Wnt expression (<ce:cross-refs refid="bib26 bib29" id="crosrefs0035">Madison et al., 2005; Ormestad et al., 2006</ce:cross-refs>), suggesting that the presence of Bmp signaling at the tips of the villi may lead to the observed loss of ISCs in the overlying epithelium by reducing Wnt activity. Blocking Shh or BMP signaling resulted in uniform staining of the Wnt target Sox9 throughout the gut epithelium, whereas control gut tissue only showed Sox9 expression in the lower half of the villi (<ce:cross-ref refid="fig4" id="crosref0235">Figure 4</ce:cross-ref>D). Conversely, in explants cultured in the presence of Shh or Bmp4, Sox9 is absent in the endodermal layer (<ce:cross-ref refid="fig4" id="crosref0240">Figure 4</ce:cross-ref>D).</ce:para>
+          <ce:para id="p0085">To directly verify that this signaling cascade regulates ISC restriction, we assessed the expression of the ISC marker Lgr5 in the presence of repressed Shh activity. As anticipated, when cyclopamine is added, abolishing villus cluster gene expression, the resulting intestine segments maintain expression of Lgr5 throughout the folded epithelium, whereas expression is lost at the tip in control segments (<ce:cross-ref refid="fig4" id="crosref0245">Figures 4</ce:cross-ref>E and <ce:cross-ref refid="figs2" id="crosref0250">S2</ce:cross-ref>B).</ce:para>
+          <ce:para id="p0090">Together, these results support a model in which Shh activity in the gut endoderm induces villus cluster gene expression in the subadjacent mesenchyme at the tips of the villi. This signal center then produces Bmp4, which reciprocally feeds back on the endoderm to block Wnt activity and hence repress ISC identity and cell proliferation at the distal end of the growing villi.</ce:para>
+        </ce:section>
+        <ce:section id="sec2.5">
+          <ce:section-title id="sectitle0055">Physical Changes in the Morphology of the Lining of the Gut Create Local Maxima of Signaling Activity to Induce the Villus Cluster</ce:section-title>
+          <ce:para id="p0095">There is, however, an obvious problem with this model: we have shown that Shh is expressed uniformly throughout the gut endoderm at the stages of development under consideration (<ce:cross-ref refid="fig3" id="crosref0255">Figures 3</ce:cross-ref>B and <ce:cross-ref refid="fig4" id="crosref0260">4</ce:cross-ref>A), yet the putatively Shh-dependent villus cluster genes are only induced at the distal tips of the villi. A plausible model explaining this localized, elevated response to Shh takes note of the fact that a uniformly secreted protein will be at a higher concentration in locations where the target tissue is surrounded by morphogen-producing tissue (e.g., at the curved tip of the highly folded epithelium) than where it is only adjacent to the source of the morphogen on one side (e.g., at the base of the folds). This is supported by computational modeling, which shows that a highly folded epithelium, or finger-like pocket, indeed results in both an increase in a morphogen concentration gradient and a greater depth of high-level signaling below the endoderm, relative to a similarly scaled, wider fold (<ce:cross-ref refid="figs3" id="crosref0265">Figure S3</ce:cross-ref><ce:float-anchor refid="figs3"/> and <ce:cross-ref refid="dtbox1" id="crosref0270">Extended Experimental Procedures</ce:cross-ref>). The slow, stepwise nature of villi formation in chick allows for a detailed investigation of this hypothesis for how the villus cluster arises. During the stages in which the lumen takes on an increasingly compact zigzag topography (E13, E14, and E15) we find that the cross-sectional shape of these structures changes in concert (low peak, narrow peak, and rounded tip, respectively) (<ce:cross-ref refid="fig5" id="crosref0275">Figures 5</ce:cross-ref>A and 5B<ce:float-anchor refid="fig5"/>). This would be predicted to lead to increasingly concentrated gradients of endodermally derived signaling at the tip (schematized in <ce:cross-ref refid="fig5" id="crosref0280">Figure 5</ce:cross-ref>B).</ce:para>
+          <ce:para id="p0100">To directly test this idea, we examined the distribution of Shh with an antibody directed against this protein. Anti-Shh staining intensity was plotted along a line from the tip of the folded epithelium and orthogonal to it (<ce:cross-ref refid="fig5" id="crosref0285">Figure 5</ce:cross-ref>D). Prior to E15, anti-Shh reactivity is identified in the epithelium and the mesenchyme just subjacent to the endoderm. However, at the transition from zigzags to bulges, the mesenchyme in the distal domain of the folded tissue showed significantly elevated Shh protein accumulation. In addition, the shape of the gradient tapers off much more slowly within the highly folded epithelium of the E15 gut than within the broader fold seen at E13. This is consistent with expectations, since—in addition to Shh protein diffusing from the tip—the mesenchyme within the narrowly folded E15 epithelium is exposed to Shh secreted from the epithelium lateral to it, augmenting the gradient. At both stages, the highest level of Shh staining is observed within the epithelium itself, which is to be expected as the antibody will detect both extracellular and intracellular protein in the tissue producing the Shh. Importantly, however, the level of Shh produced by the epithelium, averaged for the nine sections assayed at each time point, is equivalent at E13 and E15. To further verify that the architecture of the tissue affects Shh protein accumulation, we compared the concentration of Shh protein 5 microns below the tip of the epithelial fold at E15 versus the concentration present at the same distance below the base of the fold. As expected, the intensity of staining is much higher within the fold, providing a mechanism explaining localized high-level Shh signaling at the epithelial tips.</ce:para>
+          <ce:para id="p0105">If the mesenchyme responds to Shh by activating villus cluster genes at a high threshold concentration, this would explain the observed localization of high-level villus cluster gene expression. Indeed, examination of the expression pattern of villus cluster markers such as PDGFα and Bmp4 gives results consistent with this model (<ce:cross-ref refid="fig5" id="crosref0290">Figure 5</ce:cross-ref>C). Consistent with epithelial morphogenesis acting upstream of increased Shh signaling and hence villus cluster gene activity, and not vice versa, after treating with cyclopamine to block hedgehog signaling, we observed no alteration in the global structure of the epithelium or in individual epithelial or mesenchymal cell shape, using membrane-bound β-catenin to outline cell contours (<ce:cross-ref refid="figs4" id="crosref0295">Figure S4</ce:cross-ref><ce:float-anchor refid="figs4"/>).</ce:para>
+          <ce:para id="p0110">To test whether the bending of the epithelium into more tightly curved domains, with consequent high levels of localized signaling, is indeed responsible for the upregulation of villus cluster genes in the tips of these structures, we undertook a simple experimental manipulation designed to “open” the normally tightly folded epithelium. Ringlets of embryonic intestine were excised at E14 and placed into culture in vitro. The folds in the epithelium arise due to constraint on the proliferating inner layers by subadjacent differentiated smooth muscle (<ce:cross-ref refid="bib34" id="crosref0300">Shyer et al., 2013</ce:cross-ref>). To alter this physical constraint, half of the rings were turned inside out, putting the endoderm and mesenchyme outside of the rings of smooth muscle, allowing the epithelium more length to take on a less folded form (<ce:cross-ref refid="fig6" id="crosref0305">Figure 6</ce:cross-ref><ce:float-anchor refid="fig6"/>A). Following 36 hr of culture, the inside-out ringlets indeed had a broader contour than their right-side-out counterparts. After culture, the ringlets were sectioned and processed for in situ hybridization with various villus cluster probes (Ptc1, Bmp4, PDGFRα, and Foxf1). Each of these was strongly expressed at the fold tips of the control ringlets, but all were expressed uniformly at a lower level under the epithelium in the inside-out ringlets (<ce:cross-ref refid="fig6" id="crosref0310">Figure 6</ce:cross-ref>B). Moreover, phospho-SMAD staining, indicative of Bmp upregulation in villus clusters, is also greatly diminished in the inside-out ringlets relative to control cultures (<ce:cross-ref refid="fig6" id="crosref0315">Figure 6</ce:cross-ref>B). These results suggest that the villus cluster forms in the mesenchyme at the tip of the fold because those cells are almost completely encapsulated by Shh-expressing epithelium, allowing high threshold responses to be activated.</ce:para>
+          <ce:para id="p0115">Preventing villus cluster formation by flipping the intestines inside out results in an absence of the localized Bmp signal that we demonstrated is responsible for restricting ISC localization within the gut epithelium. Thus, the inside-out ringlets of guts would be expected to maintain stem cell properties and proliferation throughout their epithelium. Indeed, such manipulations lead to maintenance of uniform proliferation throughout the epithelium, whereas proliferation is lost in the epithelium surrounding the cluster that forms in control rings (<ce:cross-ref refid="fig6" id="crosref0320">Figure 6</ce:cross-ref>B). Similarly, uniform expression of the Wnt target Sox9 and the ISC marker Lgr5 is maintained in the inside-out guts lacking villus cluster gene expression, whereas it is restricted from the folded tips in controls (<ce:cross-ref refid="fig6" id="crosref0325">Figures 6</ce:cross-ref>B and <ce:cross-ref refid="figs2" id="crosref0330">S2</ce:cross-ref>C).</ce:para>
+          <ce:para id="p0120">As a second way of preventing late stages of epithelial morphogenesis, we took advantage of a drug, FK506, that has been shown to block smooth muscle differentiation (<ce:cross-ref refid="bib11" id="crosref0335">Fukuda et al., 1998</ce:cross-ref>). As we previously showed (<ce:cross-ref refid="bib34" id="crosref0340">Shyer et al., 2013</ce:cross-ref>), differentiation of smooth muscle layers is necessary for generation of the compressive forces that buckle the endoderm into ridges, zigzags, and then villi. We cultured guts in vitro from ridge stage to late zigzag stage, with or without the presence of FK506. Consistent with the results described above, without longitudinal muscle differentiation, and hence without progressing beyond parallel ridges, the entire endoderm remains proliferative, and villus cluster genes are never upregulated. As in vivo, control cultures display restricted distal proliferation and activation of villus cluster gene expression (<ce:cross-ref refid="figs5" id="crosref0345">Figure S5</ce:cross-ref><ce:float-anchor refid="figs5"/>).</ce:para>
+          <ce:para id="p0125">These results indicate that the three-dimensional folding of the epithelium is necessary to locally increase Shh signaling (as seen in Ptc1 expression) and induce the villus cluster genes. To see if it is also sufficient, we sought to create villus-like structures at a stage when the epithelium is normally not as tightly folded. Slabs of embryonic gut were excised at E10, when the gut is folded into several wide ridges, and placed into culture in vitro. Half of the slabs were placed under a fine grid, causing the luminal surface to fold, with continued growth, into many small villus-like bumps, long before endogenous villus formation takes place (<ce:cross-ref refid="fig6" id="crosref0350">Figure 6</ce:cross-ref>C). Slabs were cultured for 36 hr and then processed for in situ hybridization with various villus cluster probes (Ptc1, Bmp4, Foxf1, and PDGFα). After 36 hr in culture, there is no change in expression of Shh itself, which continues to be expressed uniformly in the epithelium under these conditions (<ce:cross-ref refid="fig6" id="crosref0355">Figure 6</ce:cross-ref>D). However, while villus cluster gene expression in control segments is nearly uniform at a low level under the epithelium, samples grown under the grid display elevated expression in the mesenchyme under areas of highest epithelial curvature. PhosphoSMAD staining is observed in the same locations reflecting the change in BMP pathway activity (<ce:cross-ref refid="fig6" id="crosref0360">Figure 6</ce:cross-ref>D). Therefore, simply morphing the tissue into the necessary shape can induce villus cluster-like local maxima of Shh responsive genes. Further, whereas proliferation and Sox9 expression are uniform in the control epithelium, in the samples cultured under the grid, proliferation and Sox9 expression are lost from the tips of the folds, surrounding the areas where mesenchymal expression of cluster genes is highest (<ce:cross-ref refid="fig6" id="crosref0365">Figure 6</ce:cross-ref>D).</ce:para>
+          <ce:para id="p0130">Taken together, these results demonstrate that the villus cluster genes are induced at local maxima of Shh activity, resulting from the additive effect of signaling that is compounded through the folding of the overlying epithelium.</ce:para>
+        </ce:section>
+        <ce:section id="sec2.6">
+          <ce:section-title id="sectitle0060">Villus Formation in the Mouse</ce:section-title>
+          <ce:para id="p0135">To examine the universality of the mechanism we have described, we returned to the developing mouse gut. As previously described (<ce:cross-refs refid="bib33 bib39 bib34" id="crosrefs0040">Sbarbati, 1982; Walton et al., 2012; Shyer et al., 2013</ce:cross-refs>), the villi of the embryonic mouse gut form directly within the lumen without going through intermediate ridge and zigzag stages of epithelial folding. A critical question, in terms of the model we derived from the chick, is whether the epithelium buckles prior to expression of the villus cluster genes in mouse. To address this, we serially sectioned E14.5 mouse guts and carefully examined each section. This is the stage when villi first arise in the mouse midgut, forming in a rostral to caudal progression. Thus, at this stage, the caudal-most region of the small intestine exhibits no epithelial projections (<ce:cross-ref refid="fig7" id="crosref0370">Figure 7</ce:cross-ref><ce:float-anchor refid="fig7"/>A). Consistent with our previous studies showing that smooth muscle differentiation is required for villus formation (<ce:cross-ref refid="bib34" id="crosref0375">Shyer et al., 2013</ce:cross-ref>), we also see no evidence of the longitudinal smooth muscle in this domain, using smooth muscle actin (SMA) as a marker (<ce:cross-ref refid="fig7" id="crosref0380">Figure 7</ce:cross-ref>A). More rostrally, we see the first buckling of the endoderm into small “alcoves,” concomitant with the first appearance of the longitudinal smooth muscle staining (<ce:cross-ref refid="fig7" id="crosref0385">Figure 7</ce:cross-ref>B). However, careful examination of serial sections fails to detect any sign of expression of upregulation of the villus cluster gene PDGFRα at this rostrocaudal level (<ce:cross-ref refid="fig7" id="crosref0390">Figure 7</ce:cross-ref>B). It is only when one moves still further rostrally that one sees deeper alcoves displaying strong PDGFRα expression at their tips (<ce:cross-ref refid="fig7" id="crosref0395">Figure 7</ce:cross-ref>C). Thus, epithelial morphogenesis precedes villus cluster gene activation. These descriptive data are at least consistent with the activation of villus cluster gene expression in the mouse being a consequence of higher level Shh signaling in pockets of buckled epithelium.</ce:para>
+          <ce:para id="p0140">To directly test whether changing the architecture of the epithelium would affect villus cluster gene expression in the mouse, we returned to the experiment, creating premature pseudo-villi in the mouse gut by forcing growth through a fine grid at E13.5, prior to epithelial buckling. As in the chick, following 24 hr of incubation, the luminal surface folded into many small villus-like bumps extending through the holes in the grid. Whereas control guts did not show any signs of villus cluster gene expression following culture, samples grown under the grid showed strong upregulation of PGFRα at the tip of each pseudo-villus (<ce:cross-ref refid="fig7" id="crosref0400">Figure 7</ce:cross-ref>D).</ce:para>
+          <ce:para id="p0145">As described above, both proliferation and the stem cell marker Lgr5 are restricted from the tips of the forming mouse villi once villus cluster gene expression is activated. To see whether, as in chick, this is due to high-level Shh signaling, we cultured developing mouse guts in vitro and blocked the Shh pathway with cyclopamine. Cyclopamine treatment was sufficient to expand both proliferation and expression of stem cell markers, CD44, Sox9, and Lgr5, in the tips of the forming villi in the treated guts, whereas control guts cultured in the absence of cyclopamine appeared similar to their in vivo counterparts (<ce:cross-ref refid="fig7" id="crosref0405">Figure 7</ce:cross-ref>E).</ce:para>
+          <ce:para id="p0150">These data support the hypothesis that, as in chick, it is mechanical deformation of the gut epithelium that leads to high concentrations of Shh, hence induction of villus cluster genes in the mesenchyme and consequent restriction of stem cells in the underlying endoderm.</ce:para>
+        </ce:section>
+      </ce:section>
+      <ce:section id="sec3">
+        <ce:section-title id="sectitle0065">Discussion</ce:section-title>
+        <ce:para id="p0155">Our study has elucidated a series of steps integrating physical morphogenesis of the gut epithelium with restriction of stem cells to the base of the forming villi. Shh expressed by the endoderm is concentrated toward the tips of the buckling epithelial layer because of the repositioning of the source of the signal to surround the distal mesenchyme. This results in the induction of a signaling center, the villus cluster, as a high-threshold response. Bmp activity, emanating from the villus cluster, acts to oppose Wnt signaling and thereby leads to the sequestering of Wnt-supported proliferative ISCs to the base of the villi.</ce:para>
+        <ce:section id="sec3.1">
+          <ce:section-title id="sectitle0070">Localization of ISCs in Mice</ce:section-title>
+          <ce:para id="p0160">Intriguingly, although the intestinal lining of both birds and eutherian mammals is characterized by the presence of long finger-like villi, this morphology appears to have evolved convergently, as the gut morphology of lower animals, including fish (<ce:cross-ref refid="bib38" id="crosref0410">Walker et al., 2004</ce:cross-ref>), amphibians (<ce:cross-ref refid="bib27" id="crosref0415">McAvoy and Dixon, 1978</ce:cross-ref>), reptiles (<ce:cross-refs refid="bib9 bib22" id="crosrefs0045">Ferri et al., 1976; Kotzé and Soley, 1995</ce:cross-refs>), and even monotremes (<ce:cross-ref refid="bib23" id="crosref0420">Krause, 1975</ce:cross-ref>), include various forms of ridges and folds to increase the surface area of the lining of the gut, but not individual villi. The tight packing and long projections of individual villi that represent an optimized solution for increasing surface area (hence allowing maximal absorption of nutrients) may have been selected for independently in the two most highly metabolic lineages, mammals and birds. The stepwise progression of mucosal folds from ridges to zigzags to villi has been well described in the chick (<ce:cross-ref refid="bib6" id="crosref0425">Coulombre and Coulombre, 1958</ce:cross-ref>). A similar series of transitions, involving segmentation of pre-villus ridges to form villi, has been described for several mammals, including cattle (<ce:cross-ref refid="bib40" id="crosref0430">Winkler and Wille, 1998</ce:cross-ref>) and humans (<ce:cross-refs refid="bib16 bib24" id="crosrefs0050">Hilton,1902; Lacroix et al., 1984</ce:cross-refs>). In striking contrast, the villi of the murine intestine form directly from the floor of a smooth epithelium (<ce:cross-ref refid="bib33" id="crosref0435">Sbarbati, 1982</ce:cross-ref>). The process of villus formation in the mouse does, nonetheless, share at least some mechanistic aspects with the chick and other guts where villi form via segmentation. In both chick and mouse embryonic gut, villus formation is prevented by blocking differentiation of the smooth muscle (which, at least in chick, acts as a barrier to expansion of the epithelium, thereby causing mucosal buckling). Moreover, modeling of the physical properties of the embryonic mouse intestine indicates that compressive mechanical forces induced by constrained growth are sufficient to explain the emergence of villi in mice as in chick (<ce:cross-ref refid="bib34" id="crosref0440">Shyer et al., 2013</ce:cross-ref>).</ce:para>
+          <ce:para id="p0165">Consistent with this, we found that, concomitant with smooth muscle differentiation, the mouse epithelium buckles into small alcoves that could, in principle, lead to local elevated concentrations of Shh protein prior to the onset of villus cluster gene expression. As in the chick, stem cell markers and Wnt-responsive genes are expressed uniformly throughout the gut epithelium prior to this point and are downregulated at the tips of the forming villi as the villus cluster genes are expressed. Also, as in the chick, blocking the Shh pathway, and thus downstream BMP signaling, is sufficient to expand proliferation and the expression of Lgr5, suggesting that the presence of Shh signaling normally acts to restrict them from the villus tips. Finally, creating villus-like structures prematurely results in the upregulation of a marker of the villus cluster through geometric constraint. Although the central features involved in gut stem cell localization during villus formation, thus, appear to be the same in mice and chicks, there is some evidence that there may be differences as well. For example, formation of the villus cluster in the mouse appears to involve cell aggregation (<ce:cross-ref refid="bib39" id="crosref0445">Walton et al., 2012</ce:cross-ref>), as well as induction of gene expression, a feature we have not observed in the chick. Further work will be required to gain a fuller picture of how villus formation and stem cell location are achieved in mice and to integrate other findings with the results described here.</ce:para>
+        </ce:section>
+        <ce:section id="sec3.2">
+          <ce:section-title id="sectitle0075">Bmp Antagonism of Wnt Activity in Restricting Proliferation and Stem Cell Activity</ce:section-title>
+          <ce:para id="p0170">Our data show that the net result of the Shh-Bmp signaling cascade is a restriction of proliferation, as well as a decrease in expression of Wnt-dependent stem cell markers at the tips of the developing epithelial folds. We did not, in the context of this study, explore how this is achieved. However, a similar Bmp antagonism of Wnt activity has previously been described in the context of the adult intestinal stem cell niche. As we observed embryonically, Bmp ligands are also strongly produced by the inter-villus mesenchyme near the tips of the adult villi with a decreasing gradient toward the crypts (<ce:cross-refs refid="bib15 bib14 bib13 bib2" id="crosrefs0055">He et al., 2004; Hardwick et al., 2004; Haramis et al., 2004; Batts et al., 2006</ce:cross-refs>). Moreover, this Bmp activity in the adult villus acts to suppress Wnt signaling to control the balance of stem cell renewal and differentiation (<ce:cross-ref refid="bib15" id="crosref0450">He et al., 2004</ce:cross-ref>). In this context, the Bmp and Wnt pathways are integrated intracellularly at the level of a PTEN/Akt-dependent mechanism (<ce:cross-ref refid="bib37" id="crosref0455">Tian et al., 2005</ce:cross-ref>). It seems likely that this same or a similar mechanism is employed downstream of Bmp activity at the earlier stage investigated here.</ce:para>
+        </ce:section>
+        <ce:section id="sec3.3">
+          <ce:section-title id="sectitle0080">Mechanically Based Induction of Gene Expression</ce:section-title>
+          <ce:para id="p0175">The physical reshaping of morphogenic gradients represents an intriguing paradigm in the integration of mechanics and developmental signaling. Of course, in addition to this mechanism, many instances have been described wherein forces impact gene expression through mechanosensory signal transduction. In a formal sense, it is certainly possible that mechanosensory signaling also contributes to the activation of target gene expression during gut epithelial morphogenesis. However, we emphasize that ectopic action of Shh is sufficient to induce villus cluster gene expression and to restrict the location of stem cells and proliferation, while blocking Shh activity is sufficient to result in a loss of villus cluster gene expression and expansion of proliferation and stem cell localization. Moreover, addition of cyclopamine has no effect on the contour of the epithelium or the shape of individual epithelial cells (<ce:cross-ref refid="figs4" id="crosref0460">Figure S4</ce:cross-ref>). As the epithelium is bent equivalently under conditions with or without cyclopamine, the cells should be seeing equivalent strains and stresses, and hence similar mechanosensory signaling. Yet the cultures with cyclopamine lose villus cluster gene expression, whereas control cultures do not, clearly indicating that there is at least a major part of the process that is independent of mechanosensory transduction.</ce:para>
+        </ce:section>
+        <ce:section id="sec3.4">
+          <ce:section-title id="sectitle0085">Initiation of Discrete Signaling Centers</ce:section-title>
+          <ce:para id="p0180">Mesenchymal-epithelial crosstalk is an established principle in developmental biology—for example, the positive feedback loop between the mesenchymal zone of polarizing activity (ZPA) and epithelial apical epidermal ridge (AER) in limb development (<ce:cross-refs refid="bib25 bib28" id="crosrefs0060">Laufer et al., 1994; Niswander et al., 1994</ce:cross-refs>) or the reciprocal epithelial-mesenchymal signaling in tooth germ formation (<ce:cross-ref refid="bib36" id="crosref0465">Thesleff, 2003</ce:cross-ref>). A number of mechanisms have been described for establishing the localized signaling centers necessary for such interactions. These include reliance on upstream positional information, such as the posterior pre-pattern of Hox gene expression necessary to establish the mesenchymal ZPA signaling center in the limb (<ce:cross-refs refid="bib5 bib21" id="crosrefs0065">Charité et al., 1994; Knezevic et al., 1997</ce:cross-refs>), and lateral inhibition such as that seen in setting up the spacing of the enamel knot signal centers in tooth bud development (<ce:cross-ref refid="bib32" id="crosref0470">Salazar-Ciudad, 2012</ce:cross-ref>). However, the work here highlights a different mechanism involving the use of a uniformly produced signal, concentrated not by diffusion or feedback loops but by physical deformation of the morphogenic field. Employing the shape changes of the developing tissue to dictate where signals arise artfully links the process of building a structure with the proper placement of its molecularly defined cell types. In the case of the intestine, this mechanism assures that specialized cells, like ISCs, end up in the right location at the base of each villi as these structures take shape. Recently, it has been shown that tissue architecture can similarly concentrate signaling in the context of the developing zebrafish lateral line (<ce:cross-ref refid="bib8" id="crosref0475">Durdu et al., 2014</ce:cross-ref>), although, in this instance, the mechanisms that create the luminal pockets where morphogens can accumulate remain unclear and may not be related to upstream physical forces. Together, these studies suggest that local trapping of a broadly secreted signal may be a mechanism that is widely employed in a variety of embryological contexts.</ce:para>
+          <ce:para id="p0185">Finally, this study elucidates the embryonic origin of the localized adult intestinal stem cells. Because the origins of most adult stem cell populations are still unknown, our findings compel investigation into potential embryonic origins for other adult stem cells.</ce:para>
+        </ce:section>
+      </ce:section>
+      <ce:section id="sec4" role="materials-methods">
+        <ce:section-title id="sectitle0090">Experimental Procedures</ce:section-title>
+        <ce:section id="sec4.1">
+          <ce:section-title id="sectitle0095">Embryos and Dissections</ce:section-title>
+          <ce:para id="p0190">Fertile chicken eggs (White Leghorn eggs) were obtained from commercial sources. Eggs were incubated at 37.5°C. Timed pregnant CD1 mice were obtained from Charles River.</ce:para>
+        </ce:section>
+        <ce:section id="sec4.2">
+          <ce:section-title id="sectitle0100">Immunohistochemistry and Edu Staining</ce:section-title>
+          <ce:para id="p0195">Small intestines were collected from embryos at desired stages and fixed in 4% paraformaldehyde in PBS and embedded in OCT, allowing for 14 μm transverse sections of the gut tube. CD44 immunohistochemistry was performed with rat anti-CD44 (v6) (1:100 Biosciences) and detected using the Anti-Rat HRP-DAB Cell &amp; Tissue Staining Kit (R&amp;D Systems). The following antibodies were used for immunofluorescence staining at the listed concentrations: Sox9 (1:100, R&amp;D Systems), β-catenin (1:100, Sigma), PDGFα (1:100 in chick, 1:300 in mouse, Santa Cruz), FITC-conjugated smooth muscle actin (1:100, Abcam), phospho-SMAD 1/5 (1:300, Cell Signaling), and Shh (5E1, 1:20). Sections were incubated with primary antibody overnight at 4°C degrees and then incubated with Alexa secondary antibodies used at 1:300 for 2 hr at room temperature. DAPI (molecular probes) was used as a nuclear counter stain. 100 μM Edu (Invitrogen) was added to guts in culture, and samples were harvested after 4 hr of Edu incubation. Edu was detected in sectioned tissue using the Click-iT Edu system (Invitrogen).</ce:para>
+        </ce:section>
+        <ce:section id="sec4.3">
+          <ce:section-title id="sectitle0105">In Situ Hybridization and Single-Molecule FISH</ce:section-title>
+          <ce:para id="p0200">Tissue samples for section in situ hybridization were fixed overnight in 4% PFA. After fixation, the tissue was rinsed in PBS and incubated in 30% sucrose overnight at 4°C before being embedded in OCT. 14-μm-thick cryosections were collected for DIG-labeled RNA in situ and 10-μm-thick sections were collected for single-molecule FISH. DIG-labeled in situ were performed as described previously (<ce:cross-ref refid="bib4" id="crosref0480">Brent et al., 2003</ce:cross-ref>). Single-molecule FISH experiments were performed according to <ce:cross-ref refid="bib30" id="crosref0485">Raj et al. (2008)</ce:cross-ref> and <ce:cross-ref refid="bib17" id="crosref0490">Itzkovitz and van Oudenaarden (2011)</ce:cross-ref>.</ce:para>
+        </ce:section>
+        <ce:section id="sec4.4">
+          <ce:section-title id="sectitle0110">Organ Culture</ce:section-title>
+          <ce:para id="p0205">Chick intestines were dissected from the embryos of the desired stage in cold PBS, connective tissue was removed, and segments of intestines were placed on transwells (Costar 3428) or floating above an agar base in DMEM media supplemented with 1% pen/strep and 10% chick embryonic extract. Chick intestines were cultured for 36 hr (or as indicated in the figure legends) at 37°C with 5% CO<ce:inf>2</ce:inf>. Inside-out intestines were obtained by gently coaxing a ring of intestine to invert with forceps. To generate guts with artificial villi, segments of intestine were harvested from E10 embryos, when several ridges are present. These segments were sliced open to create a slab of intestine that was placed lumen side up on a transwell. A small piece of fine mesh was placed gently on top of the slab to induce villi-shaped bumps in culture. Mouse intestines were dissected from embryos and cultured in DMEM media supplemented with 1% pen/strep and 20% FBS in a BTC Engineering rotating incubator with 95% O<ce:inf>2</ce:inf>. Recombinant ligands: Shh (4 μg/ml; R&amp;D Systems) and BMP (1 μg/ml R and D Systems), and Inhibitors: cyclopamine (10 μM EMD Biosystems) and Noggin (1 μg/ml R and D Systems) FK506 (10 μM Sigma) were added at the beginning of culture.</ce:para>
+        </ce:section>
+        <ce:para view="extended" id="p0210">
+          <ce:display>
+            <ce:textbox role="e-extra" id="dtbox1">
+              <ce:label>Extended Experimental Procedures</ce:label>
+              <ce:textbox-body>
+                <ce:sections>
+                  <ce:para id="p0215">To test whether the physiological diffusion properties of morphogen and the changes of endodermal shape during villus development can account for reasonable differences of morphogen concentration in the underlying mesoderm, the numerical solution of steady-state concentration of morphogen were derived by computational simulation on a set of 3-dimensional meshes representing the various stages of villus formation. To preserve simplicity, the most basic form of diffusion-reaction equation was used, incorporating diffusion and first-order kinetics of degradation (<ce:cross-ref refid="figs3" id="crosref0495">Figure S3</ce:cross-ref>E) (<ce:cross-ref refid="bib43" id="crosref0500">Lander et al., 2002</ce:cross-ref>). The diffusion coefficient parameter D was taken directly from Sonig Hedgehog signaling literature (1.0x10<ce:sup>−7</ce:sup> cm<ce:sup>2</ce:sup>/s = 1.0x10<ce:sup>1</ce:sup>μm<ce:sup>2</ce:sup>/s). The degradation coefficient k is a result of A range of degradation coefficient parameters over three orders of magnitude (k = 2.0x10<ce:sup>−2</ce:sup> ∼2.0x10°), covering a broad physiological range based on the parameter ranges reported in simulating the signaling dynamics in the developing neural tube (<ce:cross-ref refid="bib44" id="crosref0505">Saha and Schaffer, 2006</ce:cross-ref>). All parameters in this range showed increase of morphogen concentration by increase of curvature. A representative simulation result and result with k = 0.2/s is shown in <ce:cross-ref refid="figs3" id="crosref0510">Figure S3</ce:cross-ref>.</ce:para>
+                  <ce:para id="p0220">To describe the geometry of the curvature, the aspect ratio (height/width of cross-section) of late ridge stage (E13), initial zigzag stage (E14) was measured based on the acquired images (<ce:cross-ref refid="bib34" id="crosref0515">Shyer et al., 2013</ce:cross-ref>), and the curvature was established by generating an ellipsoid cylinder or torus. The hypothetical ridge (<ce:cross-ref refid="figs4" id="crosref0520">Figure S4</ce:cross-ref>C) has the same height and major width (typically oriented normal to the longitudinal direction) as the zigzag shape (<ce:cross-ref refid="fig4" id="crosref0525">Figure 4</ce:cross-ref>D). The spatial dimension of diffusion coefficient and shape were simulated with μm as the unit. The surface represents the endodermal-mesenchymal boundary (the endodermal volume is treated as a sheet).</ce:para>
+                  <ce:para id="p0225">For the boundary conditions, the rate of secretion of Shh in the endoderm was assumed to be constant and the bottom of the mesenchymal compartment was set as a sink (concentration = 0), and the other boundaries were set as having no flux. Because the objective of the simulation is to simulate and visualize the relative magnitude and depth of steady-state morphogen concentration below the endodermal curvature compared to the flat shape, the rate of secretion (flux) was set dimensionless ( = 1 unit).</ce:para>
+                  <ce:para id="p0230">The 3-D shape and corresponding meshes were generated by CUBIT 13.0 (<ce:cross-ref refid="bib42" id="crosref0530">Blacker et al., 1994</ce:cross-ref>) and were coded for solving the diffusion-reaction equation by the open source finite element method library deal.II (<ce:inter-ref xlink:href="http://dealii.org" id="intref0010">http://dealii.org</ce:inter-ref>) (<ce:cross-ref refid="bib41" id="crosref0535">Bangerth et al., 2007</ce:cross-ref>). All shape and parameters result in quick convergence into steady-state concentration. The results were visualized using Paraview (<ce:cross-ref refid="bib45" id="crosref0540">Squillacote, 2007</ce:cross-ref>).</ce:para>
+                </ce:sections>
+              </ce:textbox-body>
+            </ce:textbox>
+          </ce:display>
+        </ce:para>
+      </ce:section>
+    </ce:sections>
+    <ce:acknowledgment id="ack0010">
+      <ce:section-title id="sectitle0115">Acknowledgments</ce:section-title>
+      <ce:para id="p0235">We thank Alan Rodrigues and Sandy Klemm for assistance with single-molecule FISH probe design and experiments, Jessica Lehoczky for help with mice, Maxwell Heiman for the use of his microscope, and Jinhyun Choo for help with the simulation. We also thank D. Gumucio and K. Walton for discussions and for sharing data prior to publication. This work was supported by grants from the NIH (HD047360) to C.J.T. and the MacArthur Foundation to L.M.</ce:para>
+    </ce:acknowledgment>
+    <ce:appendices>
+      <ce:section id="app1" view="compact-standard">
+        <ce:section-title id="sectitle0120">Supplemental Information</ce:section-title>
+        <ce:para id="p0240">Supplemental Information includes Extended Experimental Procedures and five figures and can be found with this article online at <ce:inter-ref xlink:href="doi:10.1016/j.cell.2015.03.041" id="intref0015">http://dx.doi.org/10.1016/j.cell.2015.03.041</ce:inter-ref>.</ce:para>
+      </ce:section>
+      <ce:section id="app2" view="extended">
+        <ce:section-title id="sectitle0125">Supplemental Information</ce:section-title>
+        <ce:para id="p0245">
+          <ce:display>
+            <ce:e-component id="mmc1" role="article-plus">
+              <ce:label>Document S1. Article plus Supplemental Information</ce:label>
+              <ce:link locator="mmc1"/>
+            </ce:e-component>
+          </ce:display>
+        </ce:para>
+      </ce:section>
+    </ce:appendices>
+  </body>
+  <tail>
+    <ce:bibliography id="cebib0010">
+      <ce:section-title id="sectitle0130">References</ce:section-title>
+      <ce:bibliography-sec id="cebibsec0010">
+        <ce:bib-reference id="bib1">
+          <ce:label>Barker et al., 2007</ce:label>
+          <sb:reference id="sref1">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>N.</ce:given-name>
+                  <ce:surname>Barker</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.H.</ce:given-name>
+                  <ce:surname>van Es</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.</ce:given-name>
+                  <ce:surname>Kuipers</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>P.</ce:given-name>
+                  <ce:surname>Kujala</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>M.</ce:given-name>
+                  <ce:surname>van den Born</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>M.</ce:given-name>
+                  <ce:surname>Cozijnsen</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>A.</ce:given-name>
+                  <ce:surname>Haegebarth</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.</ce:given-name>
+                  <ce:surname>Korving</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>H.</ce:given-name>
+                  <ce:surname>Begthel</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>P.J.</ce:given-name>
+                  <ce:surname>Peters</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>H.</ce:given-name>
+                  <ce:surname>Clevers</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Identification of stem cells in small intestine and colon by marker gene Lgr5</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Nature</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>449</sb:volume-nr>
+                </sb:series>
+                <sb:date>2007</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>1003</sb:first-page>
+                <sb:last-page>1007</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib2">
+          <ce:label>Batts et al., 2006</ce:label>
+          <sb:reference id="sref2">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>L.E.</ce:given-name>
+                  <ce:surname>Batts</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>D.B.</ce:given-name>
+                  <ce:surname>Polk</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>R.N.</ce:given-name>
+                  <ce:surname>Dubois</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>H.</ce:given-name>
+                  <ce:surname>Kulessa</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Bmp signaling is required for intestinal growth and morphogenesis</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Dev. Dyn.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>235</sb:volume-nr>
+                </sb:series>
+                <sb:date>2006</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>1563</sb:first-page>
+                <sb:last-page>1570</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib3">
+          <ce:label>Blache et al., 2004</ce:label>
+          <sb:reference id="sref3">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>P.</ce:given-name>
+                  <ce:surname>Blache</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>M.</ce:given-name>
+                  <ce:surname>van de Wetering</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>I.</ce:given-name>
+                  <ce:surname>Duluc</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.</ce:given-name>
+                  <ce:surname>Domon</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>P.</ce:given-name>
+                  <ce:surname>Berta</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.N.</ce:given-name>
+                  <ce:surname>Freund</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>H.</ce:given-name>
+                  <ce:surname>Clevers</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>P.</ce:given-name>
+                  <ce:surname>Jay</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>SOX9 is an intestine crypt transcription factor, is regulated by the Wnt pathway, and represses the CDX2 and MUC2 genes</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>J. Cell Biol.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>166</sb:volume-nr>
+                </sb:series>
+                <sb:date>2004</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>37</sb:first-page>
+                <sb:last-page>47</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib4">
+          <ce:label>Brent et al., 2003</ce:label>
+          <sb:reference id="sref4">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>A.E.</ce:given-name>
+                  <ce:surname>Brent</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>R.</ce:given-name>
+                  <ce:surname>Schweitzer</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.J.</ce:given-name>
+                  <ce:surname>Tabin</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>A somitic compartment of tendon progenitors</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Cell</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>113</sb:volume-nr>
+                </sb:series>
+                <sb:date>2003</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>235</sb:first-page>
+                <sb:last-page>248</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib5">
+          <ce:label>Charité et al., 1994</ce:label>
+          <sb:reference id="sref5">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>J.</ce:given-name>
+                  <ce:surname>Charité</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>W.</ce:given-name>
+                  <ce:surname>de Graaff</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Shen</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.</ce:given-name>
+                  <ce:surname>Deschamps</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Ectopic expression of Hoxb-8 causes duplication of the ZPA in the forelimb and homeotic transformation of axial structures</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Cell</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>78</sb:volume-nr>
+                </sb:series>
+                <sb:date>1994</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>589</sb:first-page>
+                <sb:last-page>601</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib6">
+          <ce:label>Coulombre and Coulombre, 1958</ce:label>
+          <sb:reference id="sref6">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>A.J.</ce:given-name>
+                  <ce:surname>Coulombre</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.L.</ce:given-name>
+                  <ce:surname>Coulombre</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Intestinal development. I. Morphogenesis of the villi and musculature</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>J. Embryol. Exp. Morphol.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>6</sb:volume-nr>
+                </sb:series>
+                <sb:date>1958</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>403</sb:first-page>
+                <sb:last-page>411</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib7">
+          <ce:label>Crosnier et al., 2006</ce:label>
+          <sb:reference id="sref7">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>C.</ce:given-name>
+                  <ce:surname>Crosnier</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>D.</ce:given-name>
+                  <ce:surname>Stamataki</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.</ce:given-name>
+                  <ce:surname>Lewis</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Organizing cell renewal in the intestine: stem cells, signals and combinatorial control</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Nat. Rev. Genet.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>7</sb:volume-nr>
+                </sb:series>
+                <sb:date>2006</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>349</sb:first-page>
+                <sb:last-page>359</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib8">
+          <ce:label>Durdu et al., 2014</ce:label>
+          <sb:reference id="sref8">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Durdu</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>M.</ce:given-name>
+                  <ce:surname>Iskar</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.</ce:given-name>
+                  <ce:surname>Revenu</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>N.</ce:given-name>
+                  <ce:surname>Schieber</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>A.</ce:given-name>
+                  <ce:surname>Kunze</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>P.</ce:given-name>
+                  <ce:surname>Bork</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>Y.</ce:given-name>
+                  <ce:surname>Schwab</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>D.</ce:given-name>
+                  <ce:surname>Gilmour</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Luminal signalling links cell communication to tissue architecture during organogenesis</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Nature</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>515</sb:volume-nr>
+                </sb:series>
+                <sb:date>2014</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>120</sb:first-page>
+                <sb:last-page>124</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib9">
+          <ce:label>Ferri et al., 1976</ce:label>
+          <sb:reference id="sref9">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Ferri</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>L.C.U.</ce:given-name>
+                  <ce:surname>Junqueira</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>L.F.</ce:given-name>
+                  <ce:surname>Medeiros</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>L.O.</ce:given-name>
+                  <ce:surname>Mederios</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Gross, microscopic and ultrastructural study of the intestinal tube of Xenodon merremii Wagler, 1824 (Ophidia)</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>J. Anat.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>121</sb:volume-nr>
+                </sb:series>
+                <sb:date>1976</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>291</sb:first-page>
+                <sb:last-page>301</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib10">
+          <ce:label>Formeister et al., 2009</ce:label>
+          <sb:reference id="sref10">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>E.J.</ce:given-name>
+                  <ce:surname>Formeister</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>A.L.</ce:given-name>
+                  <ce:surname>Sionas</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>D.K.</ce:given-name>
+                  <ce:surname>Lorance</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.L.</ce:given-name>
+                  <ce:surname>Barkley</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>G.H.</ce:given-name>
+                  <ce:surname>Lee</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.T.</ce:given-name>
+                  <ce:surname>Magness</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Distinct SOX9 levels differentially mark stem/progenitor populations and enteroendocrine cells of the small intestine epithelium</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Am. J. Physiol. Gastrointest. Liver Physiol.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>296</sb:volume-nr>
+                </sb:series>
+                <sb:date>2009</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>G1108</sb:first-page>
+                <sb:last-page>G1118</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib11">
+          <ce:label>Fukuda et al., 1998</ce:label>
+          <sb:reference id="sref11">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>K.</ce:given-name>
+                  <ce:surname>Fukuda</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>Y.</ce:given-name>
+                  <ce:surname>Tanigawa</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>G.</ce:given-name>
+                  <ce:surname>Fujii</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Yasugi</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Hirohashi</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>cFKBP/SMAP; a novel molecule involved in the regulation of smooth muscle differentiation</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Development</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>125</sb:volume-nr>
+                </sb:series>
+                <sb:date>1998</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>3535</sb:first-page>
+                <sb:last-page>3542</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib12">
+          <ce:label>Furuyama et al., 2011</ce:label>
+          <sb:reference id="sref12">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>K.</ce:given-name>
+                  <ce:surname>Furuyama</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>Y.</ce:given-name>
+                  <ce:surname>Kawaguchi</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>H.</ce:given-name>
+                  <ce:surname>Akiyama</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>M.</ce:given-name>
+                  <ce:surname>Horiguchi</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Kodama</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>T.</ce:given-name>
+                  <ce:surname>Kuhara</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Hosokawa</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>A.</ce:given-name>
+                  <ce:surname>Elbahrawy</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>T.</ce:given-name>
+                  <ce:surname>Soeda</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>M.</ce:given-name>
+                  <ce:surname>Koizumi</ce:surname>
+                </sb:author>
+                <sb:et-al/>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Continuous cell supply from a Sox9-expressing progenitor zone in adult liver, exocrine pancreas and intestine</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Nat. Genet.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>43</sb:volume-nr>
+                </sb:series>
+                <sb:date>2011</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>34</sb:first-page>
+                <sb:last-page>41</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib13">
+          <ce:label>Haramis et al., 2004</ce:label>
+          <sb:reference id="sref13">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>A.P.</ce:given-name>
+                  <ce:surname>Haramis</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>H.</ce:given-name>
+                  <ce:surname>Begthel</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>M.</ce:given-name>
+                  <ce:surname>van den Born</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.</ce:given-name>
+                  <ce:surname>van Es</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Jonkheer</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>G.J.</ce:given-name>
+                  <ce:surname>Offerhaus</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>H.</ce:given-name>
+                  <ce:surname>Clevers</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>De novo crypt formation and juvenile polyposis on BMP inhibition in mouse intestine</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Science</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>303</sb:volume-nr>
+                </sb:series>
+                <sb:date>2004</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>1684</sb:first-page>
+                <sb:last-page>1686</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib14">
+          <ce:label>Hardwick et al., 2004</ce:label>
+          <sb:reference id="sref14">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>C.J.H.</ce:given-name>
+                  <ce:surname>Hardwick</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>G.R.</ce:given-name>
+                  <ce:surname>Van Den Brink</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.A.</ce:given-name>
+                  <ce:surname>Bleuming</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>I.</ce:given-name>
+                  <ce:surname>Ballester</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.M.H.</ce:given-name>
+                  <ce:surname>Van Den Brande</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.J.</ce:given-name>
+                  <ce:surname>Keller</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>G.J.A.</ce:given-name>
+                  <ce:surname>Offerhaus</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.J.H.</ce:given-name>
+                  <ce:surname>Van Deventer</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>M.P.</ce:given-name>
+                  <ce:surname>Peppelenbosch</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Bone morphogenetic protein 2 is expressed by, and acts upon, mature epithelial cells in the colon</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Gastroenterology</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>126</sb:volume-nr>
+                </sb:series>
+                <sb:date>2004</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>111</sb:first-page>
+                <sb:last-page>121</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib15">
+          <ce:label>He et al., 2004</ce:label>
+          <sb:reference id="sref15">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>X.C.</ce:given-name>
+                  <ce:surname>He</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.</ce:given-name>
+                  <ce:surname>Zhang</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>W.G.</ce:given-name>
+                  <ce:surname>Tong</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>O.</ce:given-name>
+                  <ce:surname>Tawfik</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.</ce:given-name>
+                  <ce:surname>Ross</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>D.H.</ce:given-name>
+                  <ce:surname>Scoville</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>Q.</ce:given-name>
+                  <ce:surname>Tian</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>X.</ce:given-name>
+                  <ce:surname>Zeng</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>X.</ce:given-name>
+                  <ce:surname>He</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>L.M.</ce:given-name>
+                  <ce:surname>Wiedemann</ce:surname>
+                </sb:author>
+                <sb:et-al/>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>BMP signaling inhibits intestinal stem cell self-renewal through suppression of Wnt-beta-catenin signaling</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Nat. Genet.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>36</sb:volume-nr>
+                </sb:series>
+                <sb:date>2004</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>1117</sb:first-page>
+                <sb:last-page>1121</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib16">
+          <ce:label>Hilton, 1902</ce:label>
+          <sb:reference id="sref16">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>W.A.</ce:given-name>
+                  <ce:surname>Hilton</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>The morphology and development of intestinal folds and villi in vertebrates</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Am. J. Anat.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>1</sb:volume-nr>
+                </sb:series>
+                <sb:date>1902</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>459</sb:first-page>
+                <sb:last-page>505</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib17">
+          <ce:label>Itzkovitz and van Oudenaarden, 2011</ce:label>
+          <sb:reference id="sref17">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Itzkovitz</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>A.</ce:given-name>
+                  <ce:surname>van Oudenaarden</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Validating transcripts with probes and imaging technology</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Nat. Methods</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>8</sb:volume-nr>
+                </sb:series>
+                <sb:date>2011</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>S12</sb:first-page>
+                <sb:last-page>S19</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib18">
+          <ce:label>Itzkovitz et al., 2012</ce:label>
+          <sb:reference id="sref18">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Itzkovitz</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>I.C.</ce:given-name>
+                  <ce:surname>Blat</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>T.</ce:given-name>
+                  <ce:surname>Jacks</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>H.</ce:given-name>
+                  <ce:surname>Clevers</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>A.</ce:given-name>
+                  <ce:surname>van Oudenaarden</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Optimality in the development of intestinal crypts</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Cell</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>148</sb:volume-nr>
+                </sb:series>
+                <sb:date>2012</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>608</sb:first-page>
+                <sb:last-page>619</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib19">
+          <ce:label>Karlsson et al., 2000</ce:label>
+          <sb:reference id="sref19">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>L.</ce:given-name>
+                  <ce:surname>Karlsson</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>P.</ce:given-name>
+                  <ce:surname>Lindahl</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.K.</ce:given-name>
+                  <ce:surname>Heath</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.</ce:given-name>
+                  <ce:surname>Betsholtz</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Abnormal gastrointestinal development in PDGF-A and PDGFR-(alpha) deficient mice implicates a novel mesenchymal structure with putative instructive properties in villus morphogenesis</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Development</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>127</sb:volume-nr>
+                </sb:series>
+                <sb:date>2000</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>3457</sb:first-page>
+                <sb:last-page>3466</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib20">
+          <ce:label>Kim et al., 2012</ce:label>
+          <sb:reference id="sref20">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>T.H.</ce:given-name>
+                  <ce:surname>Kim</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Escudero</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>R.A.</ce:given-name>
+                  <ce:surname>Shivdasani</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Intact function of Lgr5 receptor-expressing intestinal stem cells in the absence of Paneth cells</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Proc. Natl. Acad. Sci. USA</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>109</sb:volume-nr>
+                </sb:series>
+                <sb:date>2012</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>3932</sb:first-page>
+                <sb:last-page>3937</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib21">
+          <ce:label>Knezevic et al., 1997</ce:label>
+          <sb:reference id="sref21">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>V.</ce:given-name>
+                  <ce:surname>Knezevic</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>R.</ce:given-name>
+                  <ce:surname>De Santo</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>K.</ce:given-name>
+                  <ce:surname>Schughart</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>U.</ce:given-name>
+                  <ce:surname>Huffstadt</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.</ce:given-name>
+                  <ce:surname>Chiang</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>K.A.</ce:given-name>
+                  <ce:surname>Mahon</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Mackem</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Hoxd-12 differentially affects preaxial and postaxial chondrogenic branches in the limb and regulates Sonic hedgehog in a positive feedback loop</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Development</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>124</sb:volume-nr>
+                </sb:series>
+                <sb:date>1997</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>4523</sb:first-page>
+                <sb:last-page>4536</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib22">
+          <ce:label>Kotzé and Soley, 1995</ce:label>
+          <sb:reference id="sref22">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>S.H.</ce:given-name>
+                  <ce:surname>Kotzé</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.T.</ce:given-name>
+                  <ce:surname>Soley</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Scanning electron microscopic study of intestinal mucosa of the Nile crocodile (Crocodylus niloticus)</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>J. Morphol.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>225</sb:volume-nr>
+                </sb:series>
+                <sb:date>1995</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>169</sb:first-page>
+                <sb:last-page>178</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib23">
+          <ce:label>Krause, 1975</ce:label>
+          <sb:reference id="sref23">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>W.J.</ce:given-name>
+                  <ce:surname>Krause</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Intestinal mucosa of the platypus, Ornithorhynchus anatinus</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Anat. Rec.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>181</sb:volume-nr>
+                </sb:series>
+                <sb:date>1975</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>251</sb:first-page>
+                <sb:last-page>265</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib24">
+          <ce:label>Lacroix et al., 1984</ce:label>
+          <sb:reference id="sref24">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>B.</ce:given-name>
+                  <ce:surname>Lacroix</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>M.</ce:given-name>
+                  <ce:surname>Kedinger</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>P.</ce:given-name>
+                  <ce:surname>Simon-Assmann</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>K.</ce:given-name>
+                  <ce:surname>Haffen</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Early organogenesis of human small intestine: scanning electron microscopy and brush border enzymology</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Gut</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>25</sb:volume-nr>
+                </sb:series>
+                <sb:date>1984</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>925</sb:first-page>
+                <sb:last-page>930</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib25">
+          <ce:label>Laufer et al., 1994</ce:label>
+          <sb:reference id="sref25">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>E.</ce:given-name>
+                  <ce:surname>Laufer</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.E.</ce:given-name>
+                  <ce:surname>Nelson</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>R.L.</ce:given-name>
+                  <ce:surname>Johnson</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>B.A.</ce:given-name>
+                  <ce:surname>Morgan</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.</ce:given-name>
+                  <ce:surname>Tabin</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Sonic hedgehog and Fgf-4 act through a signaling cascade and feedback loop to integrate growth and patterning of the developing limb bud</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Cell</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>79</sb:volume-nr>
+                </sb:series>
+                <sb:date>1994</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>993</sb:first-page>
+                <sb:last-page>1003</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib26">
+          <ce:label>Madison et al., 2005</ce:label>
+          <sb:reference id="sref26">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>B.B.</ce:given-name>
+                  <ce:surname>Madison</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>K.</ce:given-name>
+                  <ce:surname>Braunstein</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>E.</ce:given-name>
+                  <ce:surname>Kuizon</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>K.</ce:given-name>
+                  <ce:surname>Portman</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>X.T.</ce:given-name>
+                  <ce:surname>Qiao</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>D.L.</ce:given-name>
+                  <ce:surname>Gumucio</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Epithelial hedgehog signals pattern the intestinal crypt-villus axis</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Development</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>132</sb:volume-nr>
+                </sb:series>
+                <sb:date>2005</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>279</sb:first-page>
+                <sb:last-page>289</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib27">
+          <ce:label>McAvoy and Dixon, 1978</ce:label>
+          <sb:reference id="sref27">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>J.W.</ce:given-name>
+                  <ce:surname>McAvoy</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>K.E.</ce:given-name>
+                  <ce:surname>Dixon</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Cell specialization in the small intestinal epithelium of adult Xenopus laevis: structural aspects</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>J. Anat.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>125</sb:volume-nr>
+                </sb:series>
+                <sb:date>1978</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>155</sb:first-page>
+                <sb:last-page>169</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib28">
+          <ce:label>Niswander et al., 1994</ce:label>
+          <sb:reference id="sref28">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>L.</ce:given-name>
+                  <ce:surname>Niswander</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Jeffrey</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>G.R.</ce:given-name>
+                  <ce:surname>Martin</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.</ce:given-name>
+                  <ce:surname>Tickle</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>A positive feedback loop coordinates growth and patterning in the vertebrate limb</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Nature</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>371</sb:volume-nr>
+                </sb:series>
+                <sb:date>1994</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>609</sb:first-page>
+                <sb:last-page>612</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib29">
+          <ce:label>Ormestad et al., 2006</ce:label>
+          <sb:reference id="sref29">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>M.</ce:given-name>
+                  <ce:surname>Ormestad</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.</ce:given-name>
+                  <ce:surname>Astorga</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>H.</ce:given-name>
+                  <ce:surname>Landgren</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>T.</ce:given-name>
+                  <ce:surname>Wang</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>B.R.</ce:given-name>
+                  <ce:surname>Johansson</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>N.</ce:given-name>
+                  <ce:surname>Miura</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>P.</ce:given-name>
+                  <ce:surname>Carlsson</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Foxf1 and Foxf2 control murine gut development by limiting mesenchymal Wnt signaling and promoting extracellular matrix production</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Development</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>133</sb:volume-nr>
+                </sb:series>
+                <sb:date>2006</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>833</sb:first-page>
+                <sb:last-page>843</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib30">
+          <ce:label>Raj et al., 2008</ce:label>
+          <sb:reference id="sref30">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>A.</ce:given-name>
+                  <ce:surname>Raj</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>P.</ce:given-name>
+                  <ce:surname>van den Bogaard</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.A.</ce:given-name>
+                  <ce:surname>Rifkin</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>A.</ce:given-name>
+                  <ce:surname>van Oudenaarden</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Tyagi</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Imaging individual mRNA molecules using multiple singly labeled probes</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Nat. Methods</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>50</sb:volume-nr>
+                </sb:series>
+                <sb:date>2008</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>877</sb:first-page>
+                <sb:last-page>879</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib31">
+          <ce:label>Roberts et al., 1995</ce:label>
+          <sb:reference id="sref31">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>D.J.</ce:given-name>
+                  <ce:surname>Roberts</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>R.L.</ce:given-name>
+                  <ce:surname>Johnson</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>A.C.</ce:given-name>
+                  <ce:surname>Burke</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.E.</ce:given-name>
+                  <ce:surname>Nelson</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>B.A.</ce:given-name>
+                  <ce:surname>Morgan</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.</ce:given-name>
+                  <ce:surname>Tabin</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Sonic hedgehog is an endodermal signal inducing Bmp-4 and Hox genes during induction and regionalization of the chick hindgut</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Development</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>121</sb:volume-nr>
+                </sb:series>
+                <sb:date>1995</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>3163</sb:first-page>
+                <sb:last-page>3174</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib32">
+          <ce:label>Salazar-Ciudad, 2012</ce:label>
+          <sb:reference id="sref32">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>I.</ce:given-name>
+                  <ce:surname>Salazar-Ciudad</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Tooth patterning and evolution</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Curr. Opin. Genet. Dev.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>22</sb:volume-nr>
+                </sb:series>
+                <sb:date>2012</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>585</sb:first-page>
+                <sb:last-page>592</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib33">
+          <ce:label>Sbarbati, 1982</ce:label>
+          <sb:reference id="sref33">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>R.</ce:given-name>
+                  <ce:surname>Sbarbati</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Morphogenesis of the intestinal villi of the mouse embryo: chance and spatial necessity</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>J. Anat.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>135</sb:volume-nr>
+                </sb:series>
+                <sb:date>1982</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>477</sb:first-page>
+                <sb:last-page>499</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib34">
+          <ce:label>Shyer et al., 2013</ce:label>
+          <sb:reference id="sref34">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>A.E.</ce:given-name>
+                  <ce:surname>Shyer</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>T.</ce:given-name>
+                  <ce:surname>Tallinen</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>N.L.</ce:given-name>
+                  <ce:surname>Nerurkar</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>Z.</ce:given-name>
+                  <ce:surname>Wei</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>E.S.</ce:given-name>
+                  <ce:surname>Gil</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>D.L.</ce:given-name>
+                  <ce:surname>Kaplan</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.J.</ce:given-name>
+                  <ce:surname>Tabin</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>L.</ce:given-name>
+                  <ce:surname>Mahadevan</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Villification: how the gut gets its villi</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Science</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>342</sb:volume-nr>
+                </sb:series>
+                <sb:date>2013</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>212</sb:first-page>
+                <sb:last-page>218</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib35">
+          <ce:label>Spence et al., 2011</ce:label>
+          <sb:reference id="sref35">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>J.R.</ce:given-name>
+                  <ce:surname>Spence</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>R.</ce:given-name>
+                  <ce:surname>Lauf</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>N.F.</ce:given-name>
+                  <ce:surname>Shroyer</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Vertebrate intestinal endoderm development</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Dev Dyn.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>240</sb:volume-nr>
+                </sb:series>
+                <sb:date>2011</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>501</sb:first-page>
+                <sb:last-page>520</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib36">
+          <ce:label>Thesleff, 2003</ce:label>
+          <sb:reference id="sref36">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>I.</ce:given-name>
+                  <ce:surname>Thesleff</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Epithelial-mesenchymal signalling regulating tooth morphogenesis</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>J. Cell Sci.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>116</sb:volume-nr>
+                </sb:series>
+                <sb:date>2003</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>1647</sb:first-page>
+                <sb:last-page>1648</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib37">
+          <ce:label>Tian et al., 2005</ce:label>
+          <sb:reference id="sref37">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>Q.</ce:given-name>
+                  <ce:surname>Tian</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>X.C.</ce:given-name>
+                  <ce:surname>He</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>L.</ce:given-name>
+                  <ce:surname>Hood</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>L.</ce:given-name>
+                  <ce:surname>Li</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Bridging the BMP and Wnt pathways by PI3 kinase/Akt and 14-3-3zeta</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Cell Cycle</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>4</sb:volume-nr>
+                </sb:series>
+                <sb:date>2005</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>215</sb:first-page>
+                <sb:last-page>216</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib38">
+          <ce:label>Walker et al., 2004</ce:label>
+          <sb:reference id="sref38">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>R.L.</ce:given-name>
+                  <ce:surname>Walker</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>A.G.</ce:given-name>
+                  <ce:surname>Buret</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>C.L.</ce:given-name>
+                  <ce:surname>Jackson</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>K.G.-E.</ce:given-name>
+                  <ce:surname>Scott</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>R.</ce:given-name>
+                  <ce:surname>Bajwa</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>H.R.</ce:given-name>
+                  <ce:surname>Habibi</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Effects of growth hormone on leucine absorption, intestinal morphology, and ultrastructure of the goldish intestine</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Can. J. Physiol. Pharmacol.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>82</sb:volume-nr>
+                </sb:series>
+                <sb:date>2004</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>951</sb:first-page>
+                <sb:last-page>959</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib39">
+          <ce:label>Walton et al., 2012</ce:label>
+          <sb:reference id="sref39">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>K.D.</ce:given-name>
+                  <ce:surname>Walton</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>A.</ce:given-name>
+                  <ce:surname>Kolterud</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>M.J.</ce:given-name>
+                  <ce:surname>Czerwinski</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>M.J.</ce:given-name>
+                  <ce:surname>Bell</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>A.</ce:given-name>
+                  <ce:surname>Prakash</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>J.</ce:given-name>
+                  <ce:surname>Kushwaha</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>A.S.</ce:given-name>
+                  <ce:surname>Grosse</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>S.</ce:given-name>
+                  <ce:surname>Schnell</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>D.L.</ce:given-name>
+                  <ce:surname>Gumucio</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Hedgehog-responsive mesenchymal clusters direct patterning and emergence of intestinal villi</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Proc. Natl. Acad. Sci. USA</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>109</sb:volume-nr>
+                </sb:series>
+                <sb:date>2012</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>15817</sb:first-page>
+                <sb:last-page>15822</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib40">
+          <ce:label>Winkler and Wille, 1998</ce:label>
+          <sb:reference id="sref40">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>F.</ce:given-name>
+                  <ce:surname>Winkler</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>K.H.</ce:given-name>
+                  <ce:surname>Wille</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Uber die friihfetale Entwicklung der Diinndarm-Mukosa des Rindes (Bos pvimigenius taurus)</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Anat. Histol. Embryol.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>27</sb:volume-nr>
+                </sb:series>
+                <sb:date>1998</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>335</sb:first-page>
+                <sb:last-page>343</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bibliography-sec>
+          <ce:bib-reference id="bib40a">
+            <ce:label>Winkler and Wille, 1998</ce:label>
+            <sb:reference id="sref40a">
+              <sb:contribution>
+                <sb:authors>
+                  <sb:author>
+                    <ce:given-name>F.</ce:given-name>
+                    <ce:surname>Winkler</ce:surname>
+                  </sb:author>
+                  <sb:author>
+                    <ce:given-name>K.H.</ce:given-name>
+                    <ce:surname>Wille</ce:surname>
+                  </sb:author>
+                </sb:authors>
+                <sb:title>
+                  <sb:maintitle>Uber die friihfetale Entwicklung der Diinndarm-Mukosa des Rindes (Bos pvimigenius taurus)</sb:maintitle>
+                </sb:title>
+              </sb:contribution>
+              <sb:host>
+                <sb:issue>
+                  <sb:series>
+                    <sb:title>
+                      <sb:maintitle>Anat. Histol. Embryol.</sb:maintitle>
+                    </sb:title>
+                    <sb:volume-nr>27</sb:volume-nr>
+                  </sb:series>
+                  <sb:date>1998</sb:date>
+                </sb:issue>
+                <sb:pages>
+                  <sb:first-page>335</sb:first-page>
+                  <sb:last-page>343</sb:last-page>
+                </sb:pages>
+              </sb:host>
+            </sb:reference>
+          </ce:bib-reference>
+        </ce:bibliography-sec>
+      </ce:bibliography-sec>
+    </ce:bibliography>
+    <ce:further-reading view="extended" id="fread0010">
+      <ce:section-title id="sectitle0135">Supplemental References</ce:section-title>
+      <ce:further-reading-sec id="freads0010">
+        <ce:bib-reference id="bib41">
+          <ce:label>Bangerth et al., 2007</ce:label>
+          <sb:reference id="sref41">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>W.</ce:given-name>
+                  <ce:surname>Bangerth</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>R.</ce:given-name>
+                  <ce:surname>Hartmann</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>G.</ce:given-name>
+                  <ce:surname>Kanschat</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>deal.II-A General-purpose Object-oriented Finite Element Library</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>ACM Trans. Math. Softw.</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>
+                    <ce:italic>33</ce:italic>
+                  </sb:volume-nr>
+                </sb:series>
+                <sb:date>2007</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>24</sb:first-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib42">
+          <ce:label>Blacker et al., 1994</ce:label>
+          <sb:reference id="sref42">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>T.D.</ce:given-name>
+                  <ce:surname>Blacker</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>W.J.</ce:given-name>
+                  <ce:surname>Bohnhoff</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>T.L.</ce:given-name>
+                  <ce:surname>Edwards</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>CUBIT Mesh Generation Environment User’s Manual Vol. 1. SAND94-1100</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:book>
+                <sb:date>1994</sb:date>
+                <sb:publisher>
+                  <sb:name>Sandia National Laboratories</sb:name>
+                </sb:publisher>
+              </sb:book>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib43">
+          <ce:label>Lander et al., 2002</ce:label>
+          <sb:reference id="sref43">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>A.D.</ce:given-name>
+                  <ce:surname>Lander</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>Q.</ce:given-name>
+                  <ce:surname>Nie</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>F.Y.</ce:given-name>
+                  <ce:surname>Wan</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Do morphogen gradients arise by diffusion?</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Dev. Cell</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>
+                    <ce:italic>2</ce:italic>
+                  </sb:volume-nr>
+                </sb:series>
+                <sb:date>2002</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>785</sb:first-page>
+                <sb:last-page>796</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib44">
+          <ce:label>Saha and Schaffer, 2006</ce:label>
+          <sb:reference id="sref44">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>K.</ce:given-name>
+                  <ce:surname>Saha</ce:surname>
+                </sb:author>
+                <sb:author>
+                  <ce:given-name>D.V.</ce:given-name>
+                  <ce:surname>Schaffer</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>Signal dynamics in Sonic hedgehog tissue patterning</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:issue>
+                <sb:series>
+                  <sb:title>
+                    <sb:maintitle>Development</sb:maintitle>
+                  </sb:title>
+                  <sb:volume-nr>
+                    <ce:italic>133</ce:italic>
+                  </sb:volume-nr>
+                </sb:series>
+                <sb:date>2006</sb:date>
+              </sb:issue>
+              <sb:pages>
+                <sb:first-page>889</sb:first-page>
+                <sb:last-page>900</sb:last-page>
+              </sb:pages>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:bib-reference id="bib45">
+          <ce:label>Squillacote, 2007</ce:label>
+          <sb:reference id="sref45">
+            <sb:contribution>
+              <sb:authors>
+                <sb:author>
+                  <ce:given-name>A.H.</ce:given-name>
+                  <ce:surname>Squillacote</ce:surname>
+                </sb:author>
+              </sb:authors>
+              <sb:title>
+                <sb:maintitle>The ParaView Guide: A Parallel Visualization Application</sb:maintitle>
+              </sb:title>
+            </sb:contribution>
+            <sb:host>
+              <sb:book>
+                <sb:date>2007</sb:date>
+                <sb:publisher>
+                  <sb:name>Kitware</sb:name>
+                </sb:publisher>
+              </sb:book>
+            </sb:host>
+          </sb:reference>
+        </ce:bib-reference>
+        <ce:further-reading-sec id="freads0011">
+          <ce:bib-reference id="bib46">
+            <ce:label>Bangerth et al., 2007</ce:label>
+            <sb:reference id="sref46">
+              <sb:contribution>
+                <sb:authors>
+                  <sb:author>
+                    <ce:given-name>W.</ce:given-name>
+                    <ce:surname>Bangerth</ce:surname>
+                  </sb:author>
+                  <sb:author>
+                    <ce:given-name>R.</ce:given-name>
+                    <ce:surname>Hartmann</ce:surname>
+                  </sb:author>
+                  <sb:author>
+                    <ce:given-name>G.</ce:given-name>
+                    <ce:surname>Kanschat</ce:surname>
+                  </sb:author>
+                </sb:authors>
+                <sb:title>
+                  <sb:maintitle>deal.II-A General-purpose Object-oriented Finite Element Library</sb:maintitle>
+                </sb:title>
+              </sb:contribution>
+              <sb:host>
+                <sb:issue>
+                  <sb:series>
+                    <sb:title>
+                      <sb:maintitle>ACM Trans. Math. Softw.</sb:maintitle>
+                    </sb:title>
+                    <sb:volume-nr>
+                      <ce:italic>33</ce:italic>
+                    </sb:volume-nr>
+                  </sb:series>
+                  <sb:date>2007</sb:date>
+                </sb:issue>
+                <sb:pages>
+                  <sb:first-page>24</sb:first-page>
+                </sb:pages>
+              </sb:host>
+            </sb:reference>
+          </ce:bib-reference>
+        </ce:further-reading-sec>
+      </ce:further-reading-sec>
+    </ce:further-reading>
+  </tail>
+</article>
