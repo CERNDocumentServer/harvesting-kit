@@ -483,7 +483,6 @@ class EDPSciencesPackage(JatsPackage):
                                             ('d', 'Fulltext')])
 
 
-
 if __name__ == '__main__':
     filename = sys.argv[1]
     edp = EDPSciencesPackage()

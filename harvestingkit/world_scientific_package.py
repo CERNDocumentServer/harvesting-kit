@@ -19,6 +19,7 @@
 
 from __future__ import print_function
 
+import os
 import sys
 
 from xml.dom.minidom import parse
@@ -45,6 +46,7 @@ class WorldScientific(JatsPackage):
 
     def __init__(self, journal_mappings={}):
         """Create instance of WorldScientific package."""
+        self.url_prefix = "http://www.worldscientific.com/doi/pdf"
         super(WorldScientific, self).__init__(journal_mappings)
 
     def _get_date(self):
@@ -256,6 +258,13 @@ class WorldScientific(JatsPackage):
             sys.stderr.write(message)
             return ""
 
+    def _attach_fulltext(self, rec, doi):
+        """Attach fulltext FFT."""
+        url = os.path.join(self.url_prefix, doi)
+        record_add_field(rec, 'FFT',
+                         subfields=[('a', url),
+                                    ('t', 'INSPIRE-PUBLIC'),
+                                    ('d', 'Fulltext')])
 if __name__ == '__main__':
     filename = sys.argv[1]
     ws = WorldScientific()
