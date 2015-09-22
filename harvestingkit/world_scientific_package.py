@@ -21,6 +21,7 @@ from __future__ import print_function
 
 import os
 import sys
+import datetime
 
 from xml.dom.minidom import parse
 
@@ -40,6 +41,11 @@ from harvestingkit.bibrecord import (
 from harvestingkit.jats_package import JatsPackage
 
 
+class DateNotFoundException(Exception):
+
+    """Raised when publication date is not found in the document."""
+
+
 class WorldScientific(JatsPackage):
 
     """Parsing articles from World Scientific converting them to MARCXML."""
@@ -50,29 +56,39 @@ class WorldScientific(JatsPackage):
         super(WorldScientific, self).__init__(journal_mappings)
 
     def _get_date(self):
+        def _extract_date(date):
+            year = get_value_in_tag(date, 'year')
+            month = get_value_in_tag(date, 'month').zfill(2)
+            month = month if month != '00' else '01'
+            day = get_value_in_tag(date, 'day').zfill(2)
+            day = day if day != '00' else '01'
+            return '%s-%s-%s' % (year, month, day)
+
         for date in self.document.getElementsByTagName('date'):
             if date.getAttribute('date-type') == 'published':
-                year = get_value_in_tag(date, 'year')
-                month = get_value_in_tag(date, 'month').zfill(2)
-                day = get_value_in_tag(date, 'day').zfill(2)
-                return '%s-%s-%s' % (year, month, day)
+                return _extract_date(date)
         for date in self.document.getElementsByTagName('pub-date'):
             if date.getAttribute('pub-type') == 'ppub':
-                month = get_value_in_tag(date, 'month').zfill(2)
-                year = get_value_in_tag(date, 'year')
-                day = '01'
-                return '%s-%s-%s' % (year, month, day)
+                return _extract_date(date)
         for date in self.document.getElementsByTagName('pub-date'):
             if date.getAttribute('pub-type') == 'epub':
-                month = get_value_in_tag(date, 'month').zfill(2)
-                year = get_value_in_tag(date, 'year')
-                day = '01'
-                return '%s-%s-%s' % (year, month, day)
+                return _extract_date(date)
+        for date in self.document.getElementsByTagName('pub-date'):
+            if not date.getAttribute('pub-type'):
+                return _extract_date(date)
+
+        # Worst case, lets just return today
+        raise DateNotFoundException
 
     def get_date(self, filename):
         """Return the date of the article in file."""
-        self.document = parse(filename)
-        return self._get_date()
+        try:
+            self.document = parse(filename)
+            return self._get_date()
+        except DateNotFoundException:
+            print("Date problem found in {0}".format(filename))
+            return datetime.datetime.strftime(datetime.datetime.now(),
+                                              "%Y-%m-%d")
 
     def _get_authors(self):
         authors = []
