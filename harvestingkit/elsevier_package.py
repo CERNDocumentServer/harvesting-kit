@@ -422,21 +422,16 @@ class ElsevierPackage(object):
             print("Can't find abstract", file=sys.stderr)
 
     def get_keywords(self, xml_doc):
-        if self.CONSYN:
-            try:
-                head = xml_doc.getElementsByTagName("ja:head")[0]
-                keywords = head.getElementsByTagName("ce:keyword")
-                return [get_value_in_tag(keyword, "ce:text")
-                        for keyword in keywords]
-            except Exception:
-                print("Can't find keywords", file=sys.stderr)
+        head = xml_doc.getElementsByTagName("ja:head")
+        if not head: 
+            head = xml_doc.getElementsByTagName("cja:head")
+        if not head:
+            keywords = xml_doc.getElementsByTagName("ce:keyword")
         else:
-            try:
-                keywords = xml_doc.getElementsByTagName("ce:keyword")
-                return [get_value_in_tag(keyword, "ce:text")
-                        for keyword in keywords]
-            except Exception:
-                print("Can't find keywords", file=sys.stderr)
+            keywords = head[0].getElementsByTagName("ce:keyword")
+        return [get_value_in_tag(keyword, "ce:text") 
+                for keyword in keywords 
+                if get_value_in_tag(keyword, "ce:text")]
 
     def get_copyright(self, xml_doc):
         try:
@@ -940,11 +935,10 @@ class ElsevierPackage(object):
                     keyword = xml_to_text(listitem)
                     if keyword not in keywords:
                         keywords.append(keyword)
-            if keywords:
-                for keyword in keywords:
-                    record_add_field(rec, '653', ind1='1',
-                                     subfields=[('a', keyword),
-                                                ('9', 'author')])
+            for keyword in keywords:
+                record_add_field(rec, '653', ind1='1',
+                                 subfields=[('a', keyword),
+                                            ('9', 'author')])
             journal, dummy = fix_journal_name(journal.strip(),
                                               self.journal_mappings)
             subfields = []
