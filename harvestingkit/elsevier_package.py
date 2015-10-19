@@ -627,15 +627,16 @@ class ElsevierPackage(object):
 
     def get_publication_date(self, xml_doc):
         """Return the best effort start_date."""
-        start_date = get_value_in_tag(xml_doc, 'oa:openAccessEffective')
-        if start_date:
-            start_date = datetime.datetime.strptime(
-                start_date, "%Y-%m-%dT%H:%M:%SZ"
-            )
-            return start_date.strftime("%Y-%m-%d")
         start_date = get_value_in_tag(xml_doc, "prism:coverDate")
         if not start_date:
             start_date = get_value_in_tag(xml_doc, "prism:coverDisplayDate")
+            if not start_date:
+                start_date = get_value_in_tag(xml_doc, 'oa:openAccessEffective')
+                if start_date:
+                    start_date = datetime.datetime.strptime(
+                        start_date, "%Y-%m-%dT%H:%M:%SZ"
+                    )
+                    return start_date.strftime("%Y-%m-%d")
             import dateutil.parser
             try:
                 date = dateutil.parser.parse(start_date)
