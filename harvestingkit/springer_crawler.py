@@ -97,6 +97,8 @@ class SpringerCrawler(object):
         if series_title == 'NATO Science Series':
             series_title = 'NATO Sci.Ser.'
         title = self._find('h1', {'id': 'title'})
+        if not title:
+            title = self._find('h1', {'class' : 'ChapterTitle'})
         volume = self._find('span', {'id': 'book-volume'})
         if volume:
             volume = re.sub(r'\D', '', volume)
@@ -107,12 +109,16 @@ class SpringerCrawler(object):
         if issue:
             issue = issue.split()[1]
         year = self._find('span', {'id': 'copyright-year'})
+        if not year:
+            year = self._find('dd', {'id': 'abstract-about-book-chapter-copyright-year'})
         year = re.sub(r'\D', '', year)
         if not year:
             year = self._find('dd', {'id': 'abstract-about-cover-date'})
             year = re.sub(r'\D', '', year)[:4]
         abstract = self._find('div', {'class': 'abstract-content formatted'})
         page_range = self._find('span', {'id': 'page-range'})
+        if not page_range:
+            page_range = self._find('dd', {'id' : 'abstract-about-book-chapter-page-ranges'})
         if page_range:
             page_range = page_range.replace('pp', '').strip()
         #publisher = self._find('dd', {'id': 'abstract-about-publisher'})
