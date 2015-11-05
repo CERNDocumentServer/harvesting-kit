@@ -257,11 +257,18 @@ class APSPackageTests(unittest.TestCase):
              '', 'Phys.Rev.', 'D72', '043514', '2005', '21', '', '', '', [], '', '', []),
             (u'journal', '10.1103/PhysRevD.74.023508', [u'S. Weinberg'],
              '', 'Phys.Rev.', 'D74', '023508', '2006', '21', '', '', '', [], '', '', []),
+            (u'journal', '10.1088/0305-4470/35/5/312', [u'A. Romeo', u'A.A. Saharian'],
+             '', 'J.Phys.', 'A35', '1297', '2002', '22', '', '', '', [], '', '', []),
+            (u'book', '', [u'A.A. Saharian'], '', 
+             'The Generalized Abel-Plana Formula with Applications to Bessel Functions and Casimir Effect', 
+             '', '', '2008', '22', '', 
+             'Yerevan State University Publishing House', '', u'Yerevan,', '', '', []),
+            (u'report', '', [u'A. Romeo', u'A.A. Saharian'], 
+             '', '', '', '', '', '22', '', '', '', u'Report No ICTP/2007/082', '', '', [])
         ]
         for ref in self.aps.document.getElementsByTagName('ref'):
             for innerref in self.aps._get_reference(ref):
                 self.assertTrue(innerref in references)
-
     def test_article_type(self):
         """Check extracted article type."""
         self.assertEqual(self.aps._get_article_type(), 'research-article')

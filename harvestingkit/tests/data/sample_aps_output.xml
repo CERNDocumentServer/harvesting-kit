@@ -543,4 +543,29 @@
     <subfield code="s">Phys.Rev.,D74,023508</subfield>
     <subfield code="d">journal</subfield>
   </datafield>
+  <datafield tag="999" ind1="C" ind2="5">
+    <subfield code="a">10.1088/0305-4470/35/5/312</subfield>
+    <subfield code="h">A. Romeo</subfield>
+    <subfield code="h">A.A. Saharian</subfield>
+    <subfield code="y">2002</subfield>
+    <subfield code="o">22</subfield>
+    <subfield code="s">J.Phys.,A35,1297</subfield>
+    <subfield code="d">journal</subfield>
+  </datafield>
+  <datafield tag="999" ind1="C" ind2="5">
+    <subfield code="h">A.A. Saharian</subfield>
+    <subfield code="y">2008</subfield>
+    <subfield code="m">Yerevan,</subfield>
+    <subfield code="p">Yerevan State University Publishing House</subfield>
+    <subfield code="o">22</subfield>
+    <subfield code="t">The Generalized Abel-Plana Formula with Applications to Bessel Functions and Casimir Effect</subfield>
+    <subfield code="d">book</subfield>
+  </datafield>
+  <datafield tag="999" ind1="C" ind2="5">
+    <subfield code="h">A. Romeo</subfield>
+    <subfield code="h">A.A. Saharian</subfield>
+    <subfield code="m">Report No ICTP/2007/082</subfield>
+    <subfield code="o">22</subfield>
+    <subfield code="d">report</subfield>
+  </datafield>
 </record>
