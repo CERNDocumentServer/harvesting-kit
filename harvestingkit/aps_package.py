@@ -55,7 +55,8 @@ class ApsPackage(JatsPackage):
             report_no = ''
             for tag in innerref.getElementsByTagName('pub-id'):
                 if tag.getAttribute('pub-id-type') == 'other':
-                    report_no = tag.firstChild.data
+                    if tag.hasChildNodes():
+                        report_no = tag.firstChild.data
             doi = ''
             for tag in innerref.getElementsByTagName('pub-id'):
                 if tag.getAttribute('pub-id-type') == 'doi':
@@ -66,18 +67,14 @@ class ApsPackage(JatsPackage):
             for author_group in person_groups:
                 if author_group.getAttribute('person-group-type') == 'author':
                     for author in author_group.getElementsByTagName('string-name'):
-                        try:
+                        if author.hasChildNodes():
                             authors.append(author.firstChild.data)
-                        except AttributeError:
-                            pass
             editors = []
             for editor_group in person_groups:
                 if editor_group.getAttribute('person-group-type') == 'editor':
                     for editor in editor_group.getElementsByTagName('string-name'):
-                        try:
+                        if editor.hasChildNodes():
                             editors.append(editor.firstChild.data)
-                        except AttributeError:
-                            pass
             journal = get_value_in_tag(innerref, 'source')
             journal, volume = fix_journal_name(journal, self.journal_mappings)
             volume += get_value_in_tag(innerref, 'volume')
@@ -91,7 +88,8 @@ class ApsPackage(JatsPackage):
             arxiv = ''
             for tag in innerref.getElementsByTagName('pub-id'):
                 if tag.getAttribute('pub-id-type') == 'arxiv':
-                    arxiv = tag.firstChild.data
+                    if tag.hasChildNodes():
+                        arxiv = tag.firstChild.data
             arxiv = format_arxiv_id(arxiv)
             publisher = get_value_in_tag(innerref, 'publisher-name')
             publisher_location = get_value_in_tag(innerref, 'publisher-loc')

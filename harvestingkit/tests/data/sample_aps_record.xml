@@ -340,6 +340,12 @@
         <mixed-citation id="c21a" publication-type="journal"><object-id>21a</object-id><person-group person-group-type="author"><string-name>S. Weinberg</string-name></person-group>, <source>Phys. Rev. D</source><volume>72</volume><page-range>043514</page-range> (<year>2005</year>); <pub-id pub-id-type="coden">PRVDAQ</pub-id><issn>1550-7998</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevD.72.043514</pub-id></mixed-citation>
         <mixed-citation id="c21b" publication-type="journal" specific-use="authorjournal"><object-id>21b</object-id><person-group person-group-type="author"><string-name>S. Weinberg</string-name></person-group><source>Phys. Rev. D</source><volume>74</volume>, <page-range>023508</page-range> (<year>2006</year>).<pub-id pub-id-type="coden">PRVDAQ</pub-id><issn>1550-7998</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1103/PhysRevD.74.023508</pub-id></mixed-citation>
       </ref>
+      <ref id="c22">
+        <label>[22]</label>
+           <mixed-citation id="c22a" publication-type="journal"><object-id>22a</object-id><person-group person-group-type="author"><string-name>A. Romeo</string-name> and <string-name>A.A. Saharian</string-name></person-group>, <source>J. Phys. A</source> <volume>35</volume>, <page-range>1297</page-range> (<year>2002</year>); <pub-id pub-id-type="coden">JPHAC5</pub-id><issn>0305-4470</issn><pub-id pub-id-type="doi" specific-use="suppress-display">10.1088/0305-4470/35/5/312</pub-id></mixed-citation>
+            <mixed-citation id="c22b" publication-type="book"><object-id>22b</object-id><person-group person-group-type="author"><string-name>A.A. Saharian</string-name></person-group>, <source>The Generalized Abel-Plana Formula with Applications to Bessel Functions and Casimir Effect</source> (<publisher-name>Yerevan State University Publishing House</publisher-name>, Yerevan, <year>2008</year>); </mixed-citation>
+            <mixed-citation id="c22c" publication-type="report"><object-id>22c</object-id><person-group person-group-type="author"><string-name>A. Romeo</string-name> and <string-name>A.A. Saharian</string-name></person-group>, Report No. <pub-id pub-id-type="other"/>ICTP/2007/082.</mixed-citation>
+        </ref>
     </ref-list>
   </back>
 </article>
