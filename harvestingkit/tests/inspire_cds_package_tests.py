@@ -160,6 +160,15 @@ class TestINSPIRE2CDS(unittest.TestCase):
                                     filter_subfield_mode="e")
         )
 
+    def test_cds_id(self):
+        """Test for INSPIRE ID in 035."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertTrue(
+            record_get_field_values(self.converted_record,
+                                    tag="001")
+        )
+
     def test_pubnote(self):
         """Check that the 773 field is good."""
         from harvestingkit.bibrecord import record_get_field_values
@@ -246,6 +255,19 @@ class TestINSPIRE2CDS(unittest.TestCase):
                                     code="9",
                                     filter_subfield_code="9",
                                     filter_subfield_value="DESY",
+                                    filter_subfield_mode="e")
+        )
+
+    def test_nocds(self):
+        """Make sure that no CDS fields are there."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertFalse(
+            record_get_field_values(self.converted_record,
+                                    tag="035",
+                                    code="9",
+                                    filter_subfield_code="9",
+                                    filter_subfield_value="CDS",
                                     filter_subfield_mode="e")
         )
 

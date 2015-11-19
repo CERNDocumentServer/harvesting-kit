@@ -21,6 +21,10 @@
     <marc:subfield code="9">DESY</marc:subfield>
     <marc:subfield code="z">DA14-kp48u</marc:subfield>
   </marc:datafield>
+  <marc:datafield tag="035" ind1=" " ind2=" ">
+    <marc:subfield code="9">CDS</marc:subfield>
+    <marc:subfield code="a">1234</marc:subfield>
+  </marc:datafield>
   <marc:datafield tag="100" ind1=" " ind2=" ">
     <marc:subfield code="a">Şahin, Özkan</marc:subfield>
     <marc:subfield code="u">Uludag U.</marc:subfield>
