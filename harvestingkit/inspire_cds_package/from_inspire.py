@@ -191,6 +191,9 @@ class Inspire2CDS(MARCXMLConversion):
         # Clear out any existing ones.
         record_delete_fields(self.record, "980")
 
+        if not self.collections:
+            self.collections.add('ARTICLE')
+
         for collection in self.collections:
             record_add_field(self.record,
                              tag='980',
