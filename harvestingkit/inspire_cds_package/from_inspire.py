@@ -64,6 +64,21 @@ class Inspire2CDS(MARCXMLConversion):
             "PREPRINT": "11"
         }
         self.recid = None
+        self.conference_recid = None
+        self.conference_codes = None
+        self.conference_pages = None
+
+    def get_cnums(self):
+        return record_get_field_values(self.record, tag="773", code="w")
+
+    def update_conference_info(self):
+        if self.conference_recid:
+            subfields = [("b", str(self.conference_recid))]
+            if self.conference_codes:
+                subfields.append(("n", self.conference_codes[0]))
+            if self.conference_pages:
+                subfields.append(("k", self.conference_pages[0]))
+            record_add_field(self.record, "962", subfields=subfields)
 
     def get_record(self):
         """Override the base."""
@@ -88,11 +103,12 @@ class Inspire2CDS(MARCXMLConversion):
         self.update_hidden_notes()
         self.update_oai_info()
         self.update_cnum()
+        self.update_conference_info()
 
         self.fields_list = [
             "909", "541", "961",
             "970", "690", "695",
-            "981"
+            "981",
         ]
         self.strip_fields()
 
