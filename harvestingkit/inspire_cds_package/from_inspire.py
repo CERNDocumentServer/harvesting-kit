@@ -63,12 +63,29 @@ class Inspire2CDS(MARCXMLConversion):
             "THESIS": "14",
             "PREPRINT": "11"
         }
+        self.recid = None
+        self.conference_recid = None
+        self.conference_codes = None
+        self.conference_pages = None
+
+    def get_cnums(self):
+        return record_get_field_values(self.record, tag="773", code="w")
+
+    def update_conference_info(self):
+        if self.conference_recid:
+            subfields = [("b", str(self.conference_recid))]
+            if self.conference_codes:
+                subfields.append(("n", self.conference_codes[0]))
+            if self.conference_pages:
+                subfields.append(("k", self.conference_pages[0]))
+            record_add_field(self.record, "962", subfields=subfields)
 
     def get_record(self):
         """Override the base."""
-        self.update_system_numbers()
-        self.add_systemnumber("Inspire")
+        self.recid = self.get_recid()
         self.remove_controlfields()
+        self.update_system_numbers()
+        self.add_systemnumber("Inspire", recid=self.recid)
         self.add_control_number("003", "SzGeCERN")
         self.update_collections()
         self.update_languages()
@@ -86,11 +103,12 @@ class Inspire2CDS(MARCXMLConversion):
         self.update_hidden_notes()
         self.update_oai_info()
         self.update_cnum()
+        self.update_conference_info()
 
         self.fields_list = [
             "909", "541", "961",
             "970", "690", "695",
-            "981"
+            "981",
         ]
         self.strip_fields()
 
@@ -149,13 +167,18 @@ class Inspire2CDS(MARCXMLConversion):
     def update_system_numbers(self):
         """035 Externals."""
         scn_035_fields = record_get_field_instances(self.record, '035')
+        new_fields = []
         for field in scn_035_fields:
             subs = field_get_subfields(field)
             if '9' in subs:
-                for sub in subs['9']:
-                    if sub.lower() in ["inspire", "spirestex", "inspiretex", "desy"]:
-                        record_delete_field(self.record, tag="035",
-                                            field_position_global=field[4])
+                if subs['9'][0].lower() == "cds" and subs.get('a'):
+                    self.add_control_number("001", subs.get('a')[0])
+                if subs['9'][0].lower() in ["inspire", "spirestex", "inspiretex", "desy", "cds"]:
+                    continue
+            new_fields.append(field_get_subfield_instances(field))
+        record_delete_fields(self.record, tag="035")
+        for field in new_fields:
+            record_add_field(self.record, tag="035", subfields=field)
 
     def update_collections(self):
         """Try to determine which collections this record should belong to."""
@@ -183,6 +206,9 @@ class Inspire2CDS(MARCXMLConversion):
 
         # Clear out any existing ones.
         record_delete_fields(self.record, "980")
+
+        if not self.collections:
+            self.collections.add('ARTICLE')
 
         for collection in self.collections:
             record_add_field(self.record,
