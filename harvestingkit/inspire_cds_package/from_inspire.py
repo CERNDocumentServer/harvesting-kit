@@ -349,6 +349,8 @@ class Inspire2CDS(MARCXMLConversion):
             for idx, (key, value) in enumerate(subs):
                 if key == 'p':
                     journal_name = self.get_config_item(value, "journals")
+                    # Make sure journal names have the form (dot)(space) (I know it's horrible)
+                    journal_name = journal_name.replace('. ', '.').replace('.', '. ').replace('. ,', '.,').strip()
                 elif key == 'v':
                     volume_letter = value
                 else:
