@@ -29,7 +29,8 @@ from harvestingkit.bibrecord import (
     record_xml_output,
 )
 from harvestingkit.minidom_utils import (get_value_in_tag,
-                                         xml_to_text)
+                                         xml_to_text,
+                                         get_all_text)
 from harvestingkit.jats_package import JatsPackage
 
 
@@ -56,7 +57,7 @@ class ApsPackage(JatsPackage):
             for tag in innerref.getElementsByTagName('pub-id'):
                 if tag.getAttribute('pub-id-type') == 'other':
                     if tag.hasChildNodes():
-                        report_no = tag.firstChild.data
+                        report_no = get_all_text(tag)
             doi = ''
             for tag in innerref.getElementsByTagName('pub-id'):
                 if tag.getAttribute('pub-id-type') == 'doi':
@@ -68,13 +69,13 @@ class ApsPackage(JatsPackage):
                 if author_group.getAttribute('person-group-type') == 'author':
                     for author in author_group.getElementsByTagName('string-name'):
                         if author.hasChildNodes():
-                            authors.append(author.firstChild.data)
+                            authors.append(get_all_text(author))
             editors = []
             for editor_group in person_groups:
                 if editor_group.getAttribute('person-group-type') == 'editor':
                     for editor in editor_group.getElementsByTagName('string-name'):
                         if editor.hasChildNodes():
-                            editors.append(editor.firstChild.data)
+                            editors.append(get_all_text(editor))
             journal = get_value_in_tag(innerref, 'source')
             journal, volume = fix_journal_name(journal, self.journal_mappings)
             volume += get_value_in_tag(innerref, 'volume')
@@ -89,7 +90,7 @@ class ApsPackage(JatsPackage):
             for tag in innerref.getElementsByTagName('pub-id'):
                 if tag.getAttribute('pub-id-type') == 'arxiv':
                     if tag.hasChildNodes():
-                        arxiv = tag.firstChild.data
+                        arxiv = get_all_text(tag)
             arxiv = format_arxiv_id(arxiv)
             publisher = get_value_in_tag(innerref, 'publisher-name')
             publisher_location = get_value_in_tag(innerref, 'publisher-loc')
