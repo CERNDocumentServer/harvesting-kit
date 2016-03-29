@@ -448,6 +448,168 @@ class TestINSPIRE2CDSProceeding(unittest.TestCase):
         )
 
 
+class TestINSPIRE2CDSConference(unittest.TestCase):
+
+    """Test converted record data."""
+
+    def setUp(self):
+        """Load demo data."""
+        from harvestingkit.bibrecord import BibRecordPackage
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        self.inspire_conf_demo_data_path = pkg_resources.resource_filename(
+            'harvestingkit.tests',
+            os.path.join('data', 'sample_inspire_conf.xml')
+        )
+
+        bibrecs = BibRecordPackage(self.inspire_conf_demo_data_path)
+        bibrecs.parse()
+        self.parsed_record = bibrecs.get_records()[0]
+        self.package = Inspire2CDS(self.parsed_record)
+        self.recid = self.package.get_recid()
+        self.converted_record = self.package.get_record()
+
+    def test_conference_tag(self):
+        """Test for conference tag in 690C."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="690",
+                                    ind1="C",
+                                    code="a"),
+            ["CONFERENCE"]
+        )
+
+    def test_cnum(self):
+        """Make sure that CNUM is okay."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="035",
+                                    code="a",
+                                    filter_subfield_code="9",
+                                    filter_subfield_value="Inspire-CNUM"),
+            ["C16-03-21.3"]
+        )
+
+    def test_date(self):
+        """Test for proper date in 260."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="260",
+                                    code="c"),
+            ["2016"]
+        )
+
+    def test_collection(self):
+        """Test for proper collection in 980."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="980",
+                                    code="a"),
+            ["ANNOUNCEMENT"]
+        )
+
+    def test_conference_info(self):
+        """Test for proper info in 111."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="111",
+                                    code="a"),
+            ["Workshop on Topics in Three Dimensional Gravity"]
+        )
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="111",
+                                    code="9"),
+            ["20160321"]
+        )
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="111",
+                                    code="f"),
+            ["2016"]
+        )
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="111",
+                                    code="c"),
+            ["Miramare, Trieste, Italy"]
+        )
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="111",
+                                    code="g"),
+            ["miramare20160321"]
+        )
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="111",
+                                    code="d"),
+            ["21-24 Mar 2016"]
+        )
+
+    def test_conference_info_date_parsing(self):
+        """Test conversion with the special cases for dates."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """<collection>
+        <record>
+          <datafield tag="111" ind1=" " ind2=" ">
+            <subfield code="x">2016-03-21</subfield>
+            <subfield code="y">2016-03-24</subfield>
+            <subfield code="c">Somewhere, Someplace</subfield>
+          </datafield>
+          <datafield tag="111" ind1=" " ind2=" ">
+            <subfield code="x">2016-03-30</subfield>
+            <subfield code="y">2016-04-03</subfield>
+            <subfield code="c">Somewhere</subfield>
+          </datafield>
+          <datafield tag="111" ind1=" " ind2=" ">
+            <subfield code="x">2016-05-21</subfield>
+            <subfield code="c">Someplace</subfield>
+          </datafield>
+          <datafield tag="111" ind1=" " ind2=" ">
+            <subfield code="y">2016-03-21</subfield>
+          </datafield>
+          <datafield tag="111" ind1=" " ind2=" ">
+            <subfield code="x">2016-03-24</subfield>
+          </datafield>
+          <datafield tag="980" ind1=" " ind2=" ">
+            <subfield code="a">CONFERENCES</subfield>
+          </datafield>
+        </record>
+        </collection>
+        """
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+            fields_111_d = record_get_field_values(converted_record,
+                                                   tag="111",
+                                                   code="d")
+
+            assert len(fields_111_d) == 2
+            assert '21-24 Mar 2016' in fields_111_d
+            assert '30 Mar-03 Apr 2016' in fields_111_d
+
+
+            fields_111_g = record_get_field_values(converted_record,
+                                                   tag="111",
+                                                   code="g")
+            assert len(fields_111_g) == 3
+            assert 'somewhere20160330' in fields_111_g
+            assert 'somewhere20160321' in fields_111_g
+            assert 'someplace20160521' in fields_111_g
+
+
 class TestINSPIRE2CDSConferencePaper(unittest.TestCase):
 
     """Test converted record data."""

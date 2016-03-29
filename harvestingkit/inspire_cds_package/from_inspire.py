@@ -28,6 +28,8 @@
 
 from __future__ import print_function
 
+from datetime import datetime
+
 from ..bibrecord import (record_get_field_instances,
                          record_add_field,
                          record_get_field_values,
@@ -61,7 +63,8 @@ class Inspire2CDS(MARCXMLConversion):
             "PROCEEDINGS": "43",
             "ARTICLE": "13",
             "THESIS": "14",
-            "PREPRINT": "11"
+            "PREPRINT": "11",
+            "ANNOUNCEMENT": "41",
         }
         self.recid = None
         self.conference_recid = None
@@ -79,6 +82,98 @@ class Inspire2CDS(MARCXMLConversion):
             if self.conference_pages:
                 subfields.append(("k", self.conference_pages[0]))
             record_add_field(self.record, "962", subfields=subfields)
+
+    def update_conference_111(self):
+        scn_111_fields = record_get_field_instances(self.record, '111')
+        record_delete_fields(self.record, tag="111")
+        new_fields = []
+        for field in scn_111_fields:
+            subs = field_get_subfields(field)
+            new_subs = []
+            month = ""
+            day = ""
+            year = ""
+            place = ""
+            start_date = ""
+            end_date = ""
+            for code, values in subs.iteritems():
+                if not values:
+                    continue
+                if code == 'g':
+                    record_add_field(self.record, tag="035",
+                                     subfields=[('9', 'Inspire-CNUM'),
+                                                ('a', values[0])])
+                elif code == "x":
+                    date = values[0].split('-')
+                    if len(date) >= 1:
+                        year = date[0]
+                    if len(date) >= 2:
+                        month = date[1]
+                    if len(date) >= 3:
+                        day = date[2]
+                    date_stripped = "".join(date)
+                    new_subs.append(("9", date_stripped))
+                    if len(date_stripped) == 8:
+                        start_date = date_stripped
+
+                    if year:
+                        new_subs.append(("f", year))
+                        record_add_field(self.record, tag="260",
+                                         subfields=[('c', year)])
+                elif code == "y":
+                    date_stripped = "".join(values[0].split('-'))
+                    new_subs.append(("z", date_stripped))
+                    if len(date_stripped) == 8:
+                        end_date = date_stripped
+                elif code == "c":
+                    place_parts = [v.strip() for v in values[0].split(',')]
+                    if place_parts:
+                        place = place_parts[0].lower()
+                    new_subs.append((code, values[0]))
+                else:
+                    new_subs.append((code, values[0]))
+
+            if new_subs:
+                if day and month and year and place:
+                    new_subs.append(
+                        ('g', "{0}{1}{2}{3}".format(place, year, month, day))
+                    )
+                if start_date and end_date:
+                    if end_date[4:6] == start_date[4:6]:
+                        # same month
+                        date_format = "{0}-{1}".format(
+                            start_date[-2:],
+                            datetime.strptime(end_date, '%Y%m%d').strftime('%d %b %Y')
+                        )
+                    else:
+                        date_format = "{0}-{1}".format(
+                            datetime.strptime(start_date, '%Y%m%d').strftime('%d %b'),
+                            datetime.strptime(end_date, '%Y%m%d').strftime('%d %b %Y')
+                        )
+                    new_subs.append(
+                        ('d', date_format)
+                    )
+                record_add_field(self.record,
+                                 tag="111",
+                                 subfields=new_subs)
+
+    def update_conference_links(self):
+        scn_856_fields = record_get_field_instances(self.record,
+                                                    tag='856',
+                                                    ind1="4")
+        new_fields = []
+        for field in scn_856_fields:
+            subs = field_get_subfields(field)
+            new_subs = []
+            if 'y' not in subs:
+                new_subs.append(('y', 'Conference home page'))
+            for code, values in subs.iteritems():
+                new_subs.append((code, values[0]))
+            new_fields.append(new_subs)
+
+        record_delete_fields(self.record, tag="856")
+        for field in new_fields:
+            record_add_field(self.record, tag="856", ind1="4", subfields=field)
 
     def get_record(self):
         """Override the base."""
@@ -111,6 +206,11 @@ class Inspire2CDS(MARCXMLConversion):
             "981",
         ]
         self.strip_fields()
+
+        if "ANNOUNCEMENT" in self.collections:
+            self.update_conference_111()
+            self.update_conference_links()
+            record_add_field(self.record, "690", ind1="C", subfields=[("a", "CONFERENCE")])
 
         if "THESIS" in self.collections:
             self.update_thesis_information()
@@ -191,6 +291,9 @@ class Inspire2CDS(MARCXMLConversion):
             if 'PUBLISHED' in value.upper():
                 self.collections.add('ARTICLE')
 
+            if 'CONFERENCES' in value.upper():
+                self.collections.add('ANNOUNCEMENT')
+
             if 'PROCEEDINGS' in value.upper():
                 self.collections.add('PROCEEDINGS')
             elif 'CONFERENCEPAPER' in value.upper() and \
@@ -208,7 +311,7 @@ class Inspire2CDS(MARCXMLConversion):
         record_delete_fields(self.record, "980")
 
         if not self.collections:
-            self.collections.add('ARTICLE')
+            self.collections.add('PREPRINT')
 
         for collection in self.collections:
             record_add_field(self.record,

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://inspirehep.net/css/oai2.xsl.v1.0" ?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+<responseDate>2016-03-30T08:37:11Z</responseDate><request verb="GetRecord" metadataPrefix="marcxml" identifier="oai:inspirehep.net:1432633">http://inspirehep.net/oai2d</request><GetRecord>
+<record><header><identifier>oai:inspirehep.net:1432633</identifier><datestamp>2016-03-26T20:41:06Z</datestamp><setSpec>INSPIRE:Conferences</setSpec></header><metadata><marc:record xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd" type="Bibliographic">
+     <marc:leader>00000coc  2200000uu 4500</marc:leader>
+  <marc:controlfield tag="001">1432633</marc:controlfield>
+  <marc:controlfield tag="005">20160326214106.0</marc:controlfield>
+  <marc:datafield tag="856" ind1="4" ind2=" ">
+    <marc:subfield code="u">http://indico.ictp.it/event/7629/</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="909" ind1="C" ind2="O">
+    <marc:subfield code="o">oai:inspirehep.net:1432633</marc:subfield>
+    <marc:subfield code="p">INSPIRE:Conferences</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">NONCORE</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="980" ind1=" " ind2=" ">
+    <marc:subfield code="a">CONFERENCES</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="270" ind1=" " ind2=" ">
+    <marc:subfield code="b">ICTP</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="270" ind1=" " ind2=" ">
+    <marc:subfield code="m">smr2847@ictp.it</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="520" ind1=" " ind2=" ">
+    <marc:subfield code="a">Gravity in three dimensions has rather special features which makes it particularly suitable for addressing questions related to the quantization of gravity and puzzles concerning black hole physics. AdS3 gravity and in particular AdS3/CFT2 has played a crucial role in black hole microstate counting, and more recently in studying holographic entanglement entropy and higher spin theories.</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="650" ind1="1" ind2="7">
+    <marc:subfield code="a">Gravitation and Cosmology</marc:subfield>
+    <marc:subfield code="2">INSPIRE</marc:subfield>
+  </marc:datafield>
+  <marc:datafield tag="111" ind1=" " ind2=" ">
+    <marc:subfield code="a">Workshop on Topics in Three Dimensional Gravity</marc:subfield>
+    <marc:subfield code="c">Miramare, Trieste, Italy</marc:subfield>
+    <marc:subfield code="g">C16-03-21.3</marc:subfield>
+    <marc:subfield code="x">2016-03-21</marc:subfield>
+    <marc:subfield code="y">2016-03-24</marc:subfield>
+  </marc:datafield>
+</marc:record>
+</metadata></record></GetRecord>
+</OAI-PMH>
