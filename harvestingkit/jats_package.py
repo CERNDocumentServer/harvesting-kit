@@ -265,7 +265,7 @@ class JatsPackage(object):
                     subfields.append(('v', affiliations[aff]))
             if author[2]:
                 for note in author[2]:
-                    for email in author_emails[note]:
+                    for email in author_emails.get(note, []):
                         if email:
                             subfields.append(('m', email))
             if first_author:
