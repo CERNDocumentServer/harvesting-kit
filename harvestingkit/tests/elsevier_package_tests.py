@@ -183,7 +183,8 @@ class ElsevierPackageTests(unittest.TestCase):
                       ('[11]', ['Dehn, M.'], '', 'Acta Math. 69 1938', '135', '', '69', '1938', [], None, True, '', 'Acta Math.', '', [], ''),
                       ('[12]', [], '', '', '', '', '', '', 'D. Friedan and S. Shenker, unpublished.', None, [], '', '', '', [], ''),
                       ('[13]', [], '', '', '', '', '', '', 'J. Harvey, G. Moore, and C. Vafa, Nucl. Phys. B, to be published', None, [], '', '', '', [], ''),
-                      ('[14]', [], '', '', '', '', '', '', 'D. Kastor, E. Martinec and Z. Qiu, E. Fermi Institute preprint EFI-87-58.', None, [], '', '', '', [], '')]
+                      ('[14]', [], '', '', '', '', '', '', 'D. Kastor, E. Martinec and Z. Qiu, E. Fermi Institute preprint EFI-87-58.', None, [], '', '', '', [], ''),
+                      ('[15]', ['Adeva, B.'], '', 'Phys. Rev. D 58 1998', '112001', '', '58', '1998', [], None, True, '', 'Phys. Rev. D', '', [], '')]
         for ref in self.els.get_references(self.document):
             self.assertTrue(ref in references)
 
@@ -201,7 +202,6 @@ class ElsevierPackageTests(unittest.TestCase):
         with open(marc_file) as marc:
             result = marc.read()
         self.assertEqual(xml.strip(), result.strip())
-
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(ElsevierPackageTests)
