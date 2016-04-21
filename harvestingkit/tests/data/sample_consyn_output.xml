@@ -177,4 +177,11 @@
     <subfield code="m">D. Kastor, E. Martinec and Z. Qiu, E. Fermi Institute preprint EFI-87-58.</subfield>
     <subfield code="o">14</subfield>
   </datafield>
+  <datafield tag="999" ind1="C" ind2="5">
+    <subfield code="h">Adeva, B.</subfield>
+    <subfield code="v">58</subfield>
+    <subfield code="y">1998</subfield>
+    <subfield code="o">15</subfield>
+    <subfield code="s">Phys.Rev.,D58,112001</subfield>
+  </datafield>
 </record>

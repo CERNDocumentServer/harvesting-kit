@@ -487,6 +487,32 @@
 	 				<ce:textref>G. Moore and N. Seiberg, unpublished.</ce:textref>
 	 			</ce:other-ref>
 	 		</ce:bib-reference>
+			<ce:bib-reference id="bib15">
+                                <ce:label>[15]</ce:label>
+				<sb:reference id="bib33s1">
+				  <sb:contribution langtype="en">
+				    <sb:authors>
+				      <sb:author>
+					<ce:given-name>B.</ce:given-name>
+					<ce:surname>Adeva</ce:surname>
+				      </sb:author>
+				      <sb:et-al/>
+				    </sb:authors>
+				  </sb:contribution>
+				  <sb:host>
+				    <sb:issue>
+				      <sb:series>
+					<sb:title>
+					  <sb:maintitle>Phys. Rev. D</sb:maintitle>
+					</sb:title>
+					<sb:volume-nr>58</sb:volume-nr>
+				      </sb:series>
+				      <sb:date>1998</sb:date>
+				    </sb:issue>
+				    <sb:article-number>112001</sb:article-number>
+				  </sb:host>
+				</sb:reference>
+			</ce:bib-reference>
 	 	</ce:bibliography-sec>
 	 </ce:bibliography>
 	</ja:tail>

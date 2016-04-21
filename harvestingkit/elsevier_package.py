@@ -660,6 +660,8 @@ class ElsevierPackage(object):
     def _get_ref(self, ref, label):
         doi = get_value_in_tag(ref, "ce:doi")
         page = get_value_in_tag(ref, "sb:first-page")
+        if not page:
+            page = get_value_in_tag(ref, "sb:article-number")
         issue = get_value_in_tag(ref, "sb:issue")
         title = get_value_in_tag(ref, "sb:maintitle")
         volume = get_value_in_tag(ref, "sb:volume-nr")
