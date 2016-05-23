@@ -268,13 +268,7 @@ class FtpHandler(object):
 
         :returns: string representation of the filesize.
         """
-        result = []
-
-        def dir_callback(val):
-            result.append(val.split()[4])
-
-        self._ftp.dir(filename, dir_callback)
-        return result[0]
+        return self._sftp_client.lstat(filename).st_size
 
     def get_datestamp(self, filename):
         # datestamp = self._ftp.sendcmd('MDTM ' + filename)
@@ -333,11 +327,8 @@ class FtpHandler(object):
                          be stored.
         :type location: string
         """
-        current_folder = self._ftp.getcwd()
+        current_folder = self._sftp_client.getcwd()
         self.mkdir(location)
         self.cd(location)
-        fl = open(filename, 'rb')
-        filename = filename.split('/')[-1]
-        self._ftp.storbinary('STOR %s' % filename, fl)
-        fl.close()
+        self._sftp_client.put(filename, location)
         self.cd(current_folder)
