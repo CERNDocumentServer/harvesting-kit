@@ -45,29 +45,37 @@ class FtpHandler(object):
                                for authentication with the server.
     :type netrc_file: string
     """
-    def __init__(self, server, username='', passwd='', netrc_file='', sftp=False):
-        if sftp:
-            port = 22
-        else:
-            port = 21
+    def __init__(self, server, username='', passwd='', netrc_file='', port=21, sftp=False):
+        self.port = port
+        self.sftp = sftp
         server = urlparse(server)
         if server.netloc:
             server = server.netloc
         elif server.path:
             server = server.path
-        self._ftp = paramiko.Transport((server, port))
+        if self.sftp:
+            self._ftp = paramiko.Transport((server, self.port))
+        else:
+            self._ftp = FTP(server)
         self._username = username
         self._passwd = passwd
         if netrc_file:
             logininfo = netrc(netrc_file).authenticators(server)
             self._username, _, self._passwd = logininfo
         self.connect()
-        self._home = self._sftp_client.getcwd()
+        if self.sftp:
+            self._home = self._sftp_client.getcwd()
+        else:
+            self._home = self._ftp.pwd()
 
     def connect(self):
         """ Connects and logins to the server. """
-        self._ftp.connect(username=self._username, password=self._passwd)
-        self._sftp_client = paramiko.SFTPClient.from_transport(self._ftp)
+        if self.sftp:
+            self._ftp.connect(username=self._username, password=self._passwd)
+            self._sftp_client = paramiko.SFTPClient.from_transport(self._ftp)
+        else:
+            self._ftp.connect(port=self.port)
+            self._ftp.login(user=self._username, passwd=self._passwd)
 
     def close(self):
         """ Closes the connection to the server. """
@@ -104,14 +112,20 @@ class FtpHandler(object):
                               working directory.
         :type target_folder: string
         """
-        current_folder = self._sftp_client.getcwd()
+        if self.sftp:
+            current_folder = self._sftp_client.getcwd()
+        else:
+            current_folder = self._ftp.pwd()
 
         if not target_folder.startswith('/'):  # relative path
             target_folder = join(getcwd(), target_folder)
 
         folder = os.path.dirname(source_file)
         if folder:
-            self._sftp_client.chdir(folder)
+            if self.sftp:
+                self._sftp_client.chdir(folder)
+            else:
+                self.cd(folder)
 
         if folder.startswith("/"):
             folder = folder[1:]
@@ -124,15 +138,20 @@ class FtpHandler(object):
         source_file = os.path.basename(source_file)
         destination = join(destination_folder, source_file)
         try:
-            # with open(destination, 'wb') as result:
-            #     self._ftp.retrbinary('RETR %s' % (source_file,),
-            #                          result.write)
-            self._sftp_client.get(source_file, destination)
+            if self.sftp:
+                self._sftp_client.get(source_file, destination)
+            else:
+                with open(destination, 'wb') as result:
+                    self._ftp.retrbinary('RETR %s' % (source_file,),
+                                         result.write)
         except error_perm as e:  # source_file is a folder
             print(e)
             remove(join(target_folder, source_file))
             raise
-        self._sftp_client.chdir(current_folder)
+        if self.sftp:
+            self._sftp_client.chdir(current_folder)
+        else:
+            self._ftp.cwd(current_folder)
 
     def cd(self, folder):
         """ Changes the working directory on the server.
@@ -141,13 +160,19 @@ class FtpHandler(object):
         :type folder: string
         """
         if folder.startswith('/'):
-            self._sftp_client.chdir(folder)
+            if self.sftp:
+                self._sftp_client.chdir(folder)
+            else:
+                self._ftp.cwd(folder)
         else:
             for subfolder in folder.split('/'):
                 if subfolder:
-                    self._sftp_client.chdir(subfolder)
+                    if self.sftp:
+                        self._sftp_client.chdir(subfolder)
+                    else:
+                        self._ftp.cwd(subfolder)
 
-    def ls(self, folder='.'):
+    def ls(self, folder=''):
         """ Lists the files and folders of a specific directory
         default is the current working directory.
 
@@ -157,16 +182,27 @@ class FtpHandler(object):
         :returns: a tuple with the list of files in the folder
                   and the list of subfolders in the folder.
         """
-        current_folder = self._sftp_client.getcwd()
-        self._sftp_client.chdir(folder)
+        if self.sftp and folder == '':
+            folder = '.'
+
         files = []
         folders = []
         contents = []
-        contents = self._sftp_client.listdir()
 
-        files = filter(lambda a: str(self._sftp_client.lstat(a)).split()[0].startswith('-'), contents)
-        folders = filter(lambda a: str(self._sftp_client.lstat(a)).split()[0].startswith('d'), contents)
-        self._sftp_client.chdir(current_folder)
+        if self.sftp:
+            current_folder = self._sftp_client.getcwd()
+            self._sftp_client.chdir(folder)
+            contents = self._sftp_client.listdir()
+            files = filter(lambda a: str(self._sftp_client.lstat(a)).split()[0].startswith('-'), contents)
+            folders = filter(lambda a: str(self._sftp_client.lstat(a)).split()[0].startswith('d'), contents)
+            self._sftp_client.chdir(current_folder)
+        else:
+            current_folder = self._ftp.pwd()
+            self.cd(folder)
+            self._ftp.retrlines('LIST', lambda a: contents.append(a))
+            files = filter(lambda a: a.split()[0].startswith('-'), contents)
+            folders = filter(lambda a: a.split()[0].startswith('d'), contents)
+            self._ftp.cwd(current_folder)
         return files, folders
 
     def dir(self, folder='', prefix=''):
@@ -200,7 +236,11 @@ class FtpHandler(object):
         :param folder: the folder to be created.
         :type folder: string
         """
-        current_folder = self._sftp_client.getcwd()
+
+        if self.sftp:
+            current_folder = self._sftp_client.getcwd()
+        else:
+            current_folder = self._ftp.pwd()
         #creates the necessary folders on
         #the server if they don't exist
         folders = folder.split('/')
@@ -208,7 +248,10 @@ class FtpHandler(object):
             try:
                 self.cd(fld)
             except error_perm:  # folder does not exist
-                self._sftp_client.mkdir(fld)
+                if self.sftp:
+                    self._sftp_client.mkdir(fld)
+                else:
+                    self._ftp.mkd(fld)
                 self.cd(fld)
         self.cd(current_folder)
 
@@ -219,11 +262,17 @@ class FtpHandler(object):
         :type filename: string
         """
         try:
-            self._sftp_client.remove(filename)
+            if self.sftp:
+                self._sftp_client.remove(filename)
+            else:
+                self._ftp.delete(filename)
         except error_perm:  # target is either a directory
                             # either it does not exist
             try:
-                current_folder = self._sftp_client.getcwd()
+                if self.sftp:
+                    current_folder = self._sftp_client.getcwd()
+                else:
+                    current_folder = self._ftp.pwd()
                 self.cd(filename)
             except error_perm:
                 print('550 Delete operation failed %s '
@@ -240,7 +289,11 @@ class FtpHandler(object):
         :param foldername: the folder to be deleted.
         :type foldername: string
         """
-        current_folder = self._sftp_client.getcwd()
+        if self.sftp:
+            current_folder = self._sftp_client.getcwd()
+        else:
+            current_folder = self._ftp.pwd()
+
         try:
             self.cd(foldername)
         except error_perm:
@@ -249,16 +302,25 @@ class FtpHandler(object):
         else:
             self.cd(current_folder)
             try:
-                self._sftp_client.rmdir(foldername)
+                if self.sftp:
+                    self._sftp_client.rmdir(foldername)
+                else:
+                    self._ftp.rmd(foldername)
             except error_perm:  # folder not empty
                 self.cd(foldername)
                 contents = self.ls()
                 #delete the files
-                map(self._sftp_client.remove, contents[0])
+                if self.sftp:
+                    map(self._sftp_client.remove, contents[0])
+                else:
+                    map(self._ftp.delete, contents[0])
                 #delete the subfolders
                 map(self.rmdir, contents[1])
                 self.cd(current_folder)
-                self._sftp_client.rmdir(foldername)
+                if self.sftp:
+                    self._sftp_client.rmdir(foldername)
+                else:
+                    self._ftp.rmd(foldername)
 
     def get_filesize(self, filename):
         """ Returns the filesize of a file
@@ -268,14 +330,23 @@ class FtpHandler(object):
 
         :returns: string representation of the filesize.
         """
-        return self._sftp_client.lstat(filename).st_size
+        if self.sftp:
+            return self._sftp_client.lstat(filename).st_size
+        else:
+            result = []
+            def dir_callback(val):
+                result.append(val.split()[4])
+            self._ftp.dir(filename, dir_callback)
+            return result[0]
 
     def get_datestamp(self, filename):
-        # datestamp = self._ftp.sendcmd('MDTM ' + filename)
-        # datestamp = datetime.strptime(datestamp[4:],
-        #                              "%Y%m%d%H%M%S").strftime("%Y-%M-%d")
-        datestamp = datetime.fromtimestamp(self._sftp_client.lstat(filename).st_mtime)
-        return datestamp.strftime("%Y-%m-%d")
+        if self.sftp:
+            datestamp = datetime.fromtimestamp(self._sftp_client.lstat(filename).st_mtime)
+            return datestamp.strftime("%Y-%m-%d")
+        else:
+            datestamp = self._ftp.sendcmd('MDTM ' + filename)
+            return datetime.strptime(datestamp[4:],
+                                     "%Y%m%d%H%M%S").strftime("%Y-%M-%d")
 
     def check_pkgs_integrity(self, filelist, logger,
                              timeout=120, sleep_time=10):
@@ -327,8 +398,17 @@ class FtpHandler(object):
                          be stored.
         :type location: string
         """
-        current_folder = self._sftp_client.getcwd()
+        if self.sftp:
+            current_folder = self._sftp_client.getcwd()
+        else:
+            current_folder = self._ftp.pwd()
         self.mkdir(location)
         self.cd(location)
-        self._sftp_client.put(filename, location)
+        if self.sftp:
+            self._sftp_client.put(filename, location)
+        else:
+            fl = open(filename, 'rb')
+            filename = filename.split('/')[-1]
+            self._ftp.storbinary('STOR %s' % filename, fl)
+            fl.close()
         self.cd(current_folder)
