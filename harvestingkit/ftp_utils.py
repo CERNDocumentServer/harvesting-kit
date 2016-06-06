@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 ## This file is part of Harvesting Kit.
-## Copyright (C) 2014 CERN.
+## Copyright (C) 2014, 2016 CERN.
 ##
 ## Harvesting Kit is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -195,6 +195,8 @@ class FtpHandler(object):
             contents = self._sftp_client.listdir()
             files = filter(lambda a: str(self._sftp_client.lstat(a)).split()[0].startswith('-'), contents)
             folders = filter(lambda a: str(self._sftp_client.lstat(a)).split()[0].startswith('d'), contents)
+            files = map(lambda a: a.split(' ')[-1], files)
+            folders = map(lambda a: a.split(' ')[-1], folders)
             self._sftp_client.chdir(current_folder)
         else:
             current_folder = self._ftp.pwd()
@@ -202,6 +204,8 @@ class FtpHandler(object):
             self._ftp.retrlines('LIST', lambda a: contents.append(a))
             files = filter(lambda a: a.split()[0].startswith('-'), contents)
             folders = filter(lambda a: a.split()[0].startswith('d'), contents)
+            files = map(lambda a: a.split(' ')[-1], files)
+            folders = map(lambda a: a.split(' ')[-1], folders)
             self._ftp.cwd(current_folder)
         return files, folders
 
