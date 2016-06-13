@@ -638,6 +638,9 @@ class ElsevierPackage(object):
                     )
                     return start_date.strftime("%Y-%m-%d")
             import dateutil.parser
+            #dateutil.parser.parse cant process dates like April-June 2016
+            start_date = re.sub('([A-Z][a-z]+).*[A-Z][a-z]+ (\d{4})', 
+                                r'\1 \2', start_date)
             try:
                 date = dateutil.parser.parse(start_date)
             except ValueError:
