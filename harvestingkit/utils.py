@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2014, 2015 CERN.
+# Copyright (C) 2014, 2015, 2016 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -90,7 +90,7 @@ def escape_for_xml(data, tags_to_keep=None):
     """
     data = re.sub("&", "&amp;", data)
     if tags_to_keep:
-        data = re.sub("(<)(?!([\/]?{0}))".format("|[\/]?".join(tags_to_keep)), '&lt;', data)
+        data = re.sub(r"(<)(?![\/]?({0})\b)".format("|".join(tags_to_keep)), '&lt;', data)
     else:
         data = re.sub("<", "&lt;", data)
     return data
