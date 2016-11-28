@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 ## This file is part of Harvesting Kit.
-## Copyright (C) 2013, 2014 CERN.
+## Copyright (C) 2013, 2014, 2016 CERN.
 ##
 ## Harvesting Kit is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -99,7 +99,9 @@ class ContrastOutConnector(object):
             try:
                 self.ftp = FtpHandler(self.config.ELSEVIER.URL,
                                       self.config.ELSEVIER.LOGIN,
-                                      self.config.ELSEVIER.PASSWORD)
+                                      self.config.ELSEVIER.PASSWORD,
+                                      port = int(self.config.ELSEVIER.PORT),
+                                      sftp = self.config.ELSEVIER.SFTP)
                 self.logger.debug(('Successful connection to the '
                                    'Elsevier server'))
                 return

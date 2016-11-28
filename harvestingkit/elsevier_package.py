@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2013, 2014, 2015 CERN.
+# Copyright (C) 2013, 2014, 2015, 2016 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -37,7 +37,6 @@ from tempfile import (mkdtemp,
                       mkstemp)
 from zipfile import ZipFile
 from xml.dom.minidom import parse
-
 
 try:
     from invenio.errorlib import register_exception
@@ -423,14 +422,14 @@ class ElsevierPackage(object):
 
     def get_keywords(self, xml_doc):
         head = xml_doc.getElementsByTagName("ja:head")
-        if not head: 
+        if not head:
             head = xml_doc.getElementsByTagName("cja:head")
         if not head:
             keywords = xml_doc.getElementsByTagName("ce:keyword")
         else:
             keywords = head[0].getElementsByTagName("ce:keyword")
-        return [get_value_in_tag(keyword, "ce:text") 
-                for keyword in keywords 
+        return [get_value_in_tag(keyword, "ce:text")
+                for keyword in keywords
                 if get_value_in_tag(keyword, "ce:text")]
 
     def get_copyright(self, xml_doc):
