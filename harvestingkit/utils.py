@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2014, 2015, 2016 CERN.
+# Copyright (C) 2014, 2015, 2016, 2017 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -21,6 +21,7 @@
 
 import re
 import os
+import pkg_resources
 import htmlentitydefs
 import requests
 import subprocess
@@ -34,6 +35,15 @@ from lxml import etree
 from unidecode import unidecode
 
 from .config import COMMON_ACRONYMS, OA_LICENSES
+
+
+def make_user_agent(component=None):
+    """ create string suitable for HTTP User-Agent header """
+    packageinfo = pkg_resources.require("harvestingkit")[0]
+    useragent = "{0}/{1}".format(packageinfo.project_name, packageinfo.version)
+    if component is not None:
+        useragent += " {0}".format(component)
+    return useragent
 
 
 def create_record():

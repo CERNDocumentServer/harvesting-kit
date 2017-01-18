@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2014, 2015 CERN.
+# Copyright (C) 2014, 2015, 2017 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -37,7 +37,8 @@ from harvestingkit.utils import (record_add_field,
                                  return_letters_from_string,
                                  convert_html_subscripts_to_latex,
                                  safe_title,
-                                 license_is_oa)
+                                 license_is_oa,
+                                 make_user_agent)
 from harvestingkit.tests import journal_mappings
 
 
@@ -264,6 +265,12 @@ class UtilsTests(unittest.TestCase):
         )
         self.assertEqual(license_is_oa("APS"), False)
         self.assertEqual(license_is_oa("not OA"), False)
+
+
+    def test_make_user_agent(self):
+        """Test User-Agent string from package info."""
+        self.assertIn('HarvestingKit/', make_user_agent(), 'test UA product')
+        self.assertIn(' Elsevier', make_user_agent('Elsevier'), 'test UA component')
 
 
 if __name__ == '__main__':
