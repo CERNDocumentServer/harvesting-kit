@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2013, 2014, 2015 CERN.
+# Copyright (C) 2013, 2014, 2015, 2017 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -55,7 +55,7 @@ except ImportError:
                       "harvestingkit",
                       "log")
 
-from harvestingkit.utils import run_shell_command, create_logger
+from harvestingkit.utils import (create_logger, make_user_agent, run_shell_command)
 
 from harvestingkit.scoap3utils import (
     MissingFFTError,
@@ -574,7 +574,7 @@ class ElsevierPackage(object):
 
             return authors
 
-    def get_publication_information(self, xml_doc, path=''):
+    def get_publication_information(self, xml_doc, path='', timeout=60):
         if self.CONSYN:
             publication = get_value_in_tag(xml_doc, "prism:publicationName")
             doi = get_value_in_tag(xml_doc, "prism:doi")
@@ -593,13 +593,14 @@ class ElsevierPackage(object):
             except IndexError:
                 pass
             vol = get_value_in_tag(xml_doc, "prism:volume")
-            if vol is "":
+            if vol is "" and path is not "":
                 # if volume is not present try to harvest it
                 try:
                     session = requests.session()
                     url = 'http://www.sciencedirect.com/science/article/pii'\
                           + path.split('/')[-1]
-                    r = session.get(url)
+                    headers = {'user-agent': make_user_agent()}
+                    r = session.get(url, headers=headers, timeout=timeout)
                     parsed_html = BeautifulSoup(r.text)
                     info = parsed_html.body.find(
                         'p', attrs={'class': 'volIssue'}).text.split()
