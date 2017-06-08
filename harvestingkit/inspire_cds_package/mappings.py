@@ -2747,7 +2747,7 @@ mappings = {
         "inspire": "IEEE Trans.Anten.Propag."
       },
       {
-        "cds": "J. Cosmol. Astropart. Phys.",
+        "cds": "JCAP",
         "inspire": "JCAP"
       },
       {
@@ -3443,7 +3443,7 @@ mappings = {
         "inspire": "Sov.J.Nucl.Phys."
       },
       {
-        "cds": "J. High Energy Phys.",
+        "cds": "JHEP",
         "inspire": "JHEP"
       },
       {
@@ -11961,7 +11961,7 @@ mappings = {
         "inspire": "Jap.J.Math."
       },
       {
-        "cds": "J. Instrum.",
+        "cds": "JINST",
         "inspire": "JINST"
       },
       {
