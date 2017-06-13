@@ -295,7 +295,7 @@ class ElsevierPackage(object):
     def _add_references(self, xml_doc, rec, refextract_callback=None):
         for label, authors, doi, issue, page, title, volume, year,\
                 textref, ext_link, isjournal, comment, journal, publisher,\
-                editors, book_title in self.get_references(xml_doc):
+                editors, book_title, links in self.get_references(xml_doc):
             subfields = []
             if textref and not authors:
                 textref = textref.replace('\"', '\'')
@@ -361,6 +361,9 @@ class ElsevierPackage(object):
                         subfields.append(('s', journal))
                 if textref:
                     subfields.append(('m', textref))
+                if links:
+                    for link in links:
+                        subfields.append(('u', link))
                 if subfields:
                     record_add_field(rec, '999', ind1='C', ind2='5',
                                      subfields=subfields)
@@ -764,7 +767,7 @@ class ElsevierPackage(object):
         year = re.sub(r'\D', '', year)
         return (label, authors, doi, issue, page, title, volume,
                 year, textref, ext_link, isjournal, comment, journal,
-                publisher, editors, book_title)
+                publisher, editors, book_title, links)
 
     def get_references(self, xml_doc):
         for ref in xml_doc.getElementsByTagName("ce:bib-reference"):
