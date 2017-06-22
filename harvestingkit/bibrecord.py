@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2017 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -548,6 +548,7 @@ def record_add_field(rec, tag, ind1=' ', ind2=' ', controlfield_value='',
                 immediate_lower_tag = '000'
                 for rec_tag in rec:
                     if (tag not in ('FMT', 'FFT', 'BDR', 'BDM') and
+                            rec[rec_tag] and
                             immediate_lower_tag < rec_tag < tag):
                         immediate_lower_tag = rec_tag
 
