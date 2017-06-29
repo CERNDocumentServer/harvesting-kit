@@ -449,7 +449,7 @@ class ElsevierPackage(object):
         links = xml_doc.getElementsByTagName('ce:inter-ref')
         ret = None
         for link in links:
-            if name in link.getAttribute("xlink:href").encode(' utf-8'):
+            if name in link.getAttribute("xlink:href").encode('utf-8'):
                 ret = xml_to_text(link).strip()
         return ret
 
