@@ -166,25 +166,25 @@ class ElsevierPackageTests(unittest.TestCase):
 
     def test_references(self):
         """Test that references is good."""
-        references = [('[1]', ['Belavin, A.A.', 'Polyakov, A.M.', 'Zamolodchikov, A.B.'], '', 'Nucl. Phys. B 241 1984', '333', '', '241', '1984', [], None, True, '', 'Nucl. Phys. B', '', [], ''),
-                      ('[2]', ['Friedan, D.', 'Qiu, Z.', 'Shenker, S.H.'], '', 'Phys. Rev. Lett. 52 1984', '1575', '', '52', '1984', [], None, True, '', 'Phys. Rev. Lett.', '', [], ''),
-                      ('[3]', ['Cardy, J.L.'], '', 'Nucl. Phys. B 270 1986', '186', '', '270', '1986', [], None, True, '[FS16]', 'Nucl. Phys. B', '', [], ''),
-                      ('[3]', ['Capelli, A.', 'Itzykson, C.', 'Zuber, J.-B.'], '', 'Nucl. Phys. B 280 1987', '445', '', '280', '1987', [], None, True, '[FS 18]', 'Nucl. Phys. B', '', [], ''),
-                      ('[3]', ['Capelli, A.', 'Itzykson, C.', 'Zuber, J.-B.'], '', 'Commun. Math. Phys. 113 1987', '1', '', '113', '1987', [], None, True, '', 'Commun. Math. Phys.', '', [], ''),
-                      ('[3]', ['Gepner, D.'], '', 'Nucl. Phys. B 287 1987', '111', '', '287', '1987', [], None, True, '', 'Nucl. Phys. B', '', [], ''),
-                      ('[4]', [], '', '', '', '', '', '', 'G. Anderson and G. Moore, IAS preprint IASSNS-HEP-87/69.', None, [], '', '', '', [], ''),
-                      ('[5]', ['Friedan, D.', 'Shenker, S.'], '', 'Phys. Lett. B 175 1986', '287', '', '175', '1986', [], None, True, '', 'Phys. Lett. B', '', [], ''),
-                      ('[5]', ['Friedan, D.', 'Shenker, S.'], '', 'Nucl. Phys. B 281 1987', '509', '', '281', '1987', [], None, True, '', 'Nucl. Phys. B', '', [], ''),
-                      ('[6]', [], '', '', '', '', '', '', 'E. Martinec and S. Shenker, unpublished.', None, [], '', '', '', [], ''),
-                      ('[7]', ['Vafa, C.'], '', 'Phys. Lett. B 199 1987', '195', '', '199', '1987', [], None, True, '', 'Phys. Lett. B', '', [], ''),
-                      ('[8]', ['Harer, J.'], '', 'Inv. Math. 72 1983', '221', '', '72', '1983', [], None, True, '', 'Inv. Math.', '', [], ''),
-                      ('[9]', ['Tsuchiya, A.', 'Kanie, Y.'], '', 'Lett. Math. Phys. 13 1987', '303', '', '13', '1987', [], None, True, '', 'Lett. Math. Phys.', '', [], ''),
-                      ('[10]', [], '', '', '', '', '', '', 'E. Verlinde, to be published.', None, [], '', '', '', [], ''),
-                      ('[11]', ['Dehn, M.'], '', 'Acta Math. 69 1938', '135', '', '69', '1938', [], None, True, '', 'Acta Math.', '', [], ''),
-                      ('[12]', [], '', '', '', '', '', '', 'D. Friedan and S. Shenker, unpublished.', None, [], '', '', '', [], ''),
-                      ('[13]', [], '', '', '', '', '', '', 'J. Harvey, G. Moore, and C. Vafa, Nucl. Phys. B, to be published', None, [], '', '', '', [], ''),
-                      ('[14]', [], '', '', '', '', '', '', 'D. Kastor, E. Martinec and Z. Qiu, E. Fermi Institute preprint EFI-87-58.', None, [], '', '', '', [], ''),
-                      ('[15]', ['Adeva, B.'], '', 'Phys. Rev. D 58 1998', '112001', '', '58', '1998', [], None, True, '', 'Phys. Rev. D', '', [], '')]
+        references = [('[1]', ['Belavin, A.A.', 'Polyakov, A.M.', 'Zamolodchikov, A.B.'], '', 'Nucl. Phys. B 241 1984', '333', '', '241', '1984', [], None, True, '', 'Nucl. Phys. B', '', [], '', []),
+                      ('[2]', ['Friedan, D.', 'Qiu, Z.', 'Shenker, S.H.'], '', 'Phys. Rev. Lett. 52 1984', '1575', '', '52', '1984', [], None, True, '', 'Phys. Rev. Lett.', '', [], '', []),
+                      ('[3]', ['Cardy, J.L.'], '', 'Nucl. Phys. B 270 1986', '186', '', '270', '1986', [], None, True, '[FS16]', 'Nucl. Phys. B', '', [], '', []),
+                      ('[3]', ['Capelli, A.', 'Itzykson, C.', 'Zuber, J.-B.'], '', 'Nucl. Phys. B 280 1987', '445', '', '280', '1987', [], None, True, '[FS 18]', 'Nucl. Phys. B', '', [], '', []),
+                      ('[3]', ['Capelli, A.', 'Itzykson, C.', 'Zuber, J.-B.'], '', 'Commun. Math. Phys. 113 1987', '1', '', '113', '1987', [], None, True, '', 'Commun. Math. Phys.', '', [], '', []),
+                      ('[3]', ['Gepner, D.'], '', 'Nucl. Phys. B 287 1987', '111', '', '287', '1987', [], None, True, '', 'Nucl. Phys. B', '', [], '', []),
+                      ('[4]', [], '', '', '', '', '', '', 'G. Anderson and G. Moore, IAS preprint IASSNS-HEP-87/69.', None, [], '', '', '', [], '', []),
+                      ('[5]', ['Friedan, D.', 'Shenker, S.'], '', 'Phys. Lett. B 175 1986', '287', '', '175', '1986', [], None, True, '', 'Phys. Lett. B', '', [], '', []),
+                      ('[5]', ['Friedan, D.', 'Shenker, S.'], '', 'Nucl. Phys. B 281 1987', '509', '', '281', '1987', [], None, True, '', 'Nucl. Phys. B', '', [], '', []),
+                      ('[6]', [], '', '', '', '', '', '', 'E. Martinec and S. Shenker, unpublished.', None, [], '', '', '', [], '', []),
+                      ('[7]', ['Vafa, C.'], '', 'Phys. Lett. B 199 1987', '195', '', '199', '1987', [], None, True, '', 'Phys. Lett. B', '', [], '', []),
+                      ('[8]', ['Harer, J.'], '', 'Inv. Math. 72 1983', '221', '', '72', '1983', [], None, True, '', 'Inv. Math.', '', [], '', []),
+                      ('[9]', ['Tsuchiya, A.', 'Kanie, Y.'], '', 'Lett. Math. Phys. 13 1987', '303', '', '13', '1987', [], None, True, '', 'Lett. Math. Phys.', '', [], '', []),
+                      ('[10]', [], '', '', '', '', '', '', 'E. Verlinde, to be published.', None, [], '', '', '', [], '', []),
+                      ('[11]', ['Dehn, M.'], '', 'Acta Math. 69 1938', '135', '', '69', '1938', [], None, True, '', 'Acta Math.', '', [], '', []),
+                      ('[12]', [], '', '', '', '', '', '', 'D. Friedan and S. Shenker, unpublished.', None, [], '', '', '', [], '', []),
+                      ('[13]', [], '', '', '', '', '', '', 'J. Harvey, G. Moore, and C. Vafa, Nucl. Phys. B, to be published', None, [], '', '', '', [], '', []),
+                      ('[14]', [], '', '', '', '', '', '', 'D. Kastor, E. Martinec and Z. Qiu, E. Fermi Institute preprint EFI-87-58.', None, [], '', '', '', [], '', []),
+                      ('[15]', ['Adeva, B.'], '', 'Phys. Rev. D 58 1998', '112001', '', '58', '1998', [], None, True, '', 'Phys. Rev. D', '', [], '', [])]
         for ref in self.els.get_references(self.document):
             self.assertTrue(ref in references)
 
