@@ -449,7 +449,7 @@ class ElsevierPackage(object):
         links = xml_doc.getElementsByTagName('ce:inter-ref')
         ret = None
         for link in links:
-            if name in link.getAttribute("xlink:href").encode('utf-8'):
+            if name in link.getAttribute("xlink:href").encode(' utf-8'):
                 ret = xml_to_text(link).strip()
         return ret
 
@@ -695,7 +695,9 @@ class ElsevierPackage(object):
         comment = get_value_in_tag(ref, "sb:comment")
         links = []
         for link in ref.getElementsByTagName("ce:inter-ref"):
-            links.append(xml_to_text(link))
+            linktext = xml_to_text(link)
+            if re.search('^https?:\/\/', linktext):
+                links.append(linktext)
         title = ""
         try:
             container = ref.getElementsByTagName("sb:contribution")[0]
