@@ -374,8 +374,9 @@ class CDS2Inspire(MARCXMLConversion):
             new_subs = []
             for idx, (key, value) in enumerate(subs):
                 if key == 'p':
-                    new_subs.append((key, self.get_config_item(value,
-                                                               "journals")))
+                    journal_name = self.get_config_item(value, "journals")
+                    journal_name = journal_name.replace('.', '. ').strip()
+                    new_subs.append((key, journal_name))
                 else:
                     new_subs.append((key, value))
             record_delete_field(self.record, tag="773",

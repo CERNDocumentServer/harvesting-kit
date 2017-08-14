@@ -942,6 +942,11 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
                 ["dir.", "dir."]
             )
 
+    def test_journal_mappings(self):
+        """Test journal mappings"""
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+        self.assertEqual(Inspire2CDS.get_config_item('Nuovo Cim.', 'journals'), 'Nuovo Cimento')
+
 
 if __name__ == '__main__':
     unittest.main()
