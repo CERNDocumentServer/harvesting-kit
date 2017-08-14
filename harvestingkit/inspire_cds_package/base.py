@@ -90,10 +90,6 @@ class MARCXMLConversion(object):
         if config_dict:
             if key in config_dict:
                 return config_dict[key]
-            else:
-                res = [v for k, v in config_dict.items() if key in k]
-                if res:
-                    return res[0]
         return key
 
     @staticmethod
