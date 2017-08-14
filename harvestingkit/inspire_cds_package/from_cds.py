@@ -374,7 +374,7 @@ class CDS2Inspire(MARCXMLConversion):
             new_subs = []
             for idx, (key, value) in enumerate(subs):
                 if key == 'p':
-                    journal_name = self.get_config_item(value, "journals")
+                    journal_name = self.get_config_item(value, "journals", allow_substring=False)
                     journal_name = journal_name.replace('.', '. ').strip()
                     new_subs.append((key, journal_name))
                 else:
