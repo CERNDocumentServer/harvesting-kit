@@ -1,1 +1,2 @@
 include dtds/*.zip
+include harvestingkit/inspire_cds_package/journals_mappings.csv

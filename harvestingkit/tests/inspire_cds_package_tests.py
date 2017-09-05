@@ -380,6 +380,21 @@ class TestINSPIRE2CDS(unittest.TestCase):
             ["CERN", "INSPIRE:HEP", "ForCDS"]
         )
 
+    def test_no_journal_substring(self):
+        """Test for correct journal conversion without substring matching."""
+        from harvestingkit.bibrecord import record_add_field, record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+        rec = {}
+        record_add_field(rec, tag='773', subfields=[('p', 'J. Phys.')])
+        record_add_field(rec, tag='773', subfields=[('p', 'J.Phys.')])
+        r = Inspire2CDS(rec)
+        r.update_journals()
+        self.assertNotEqual(record_get_field_values(rec, '773', code='p'),
+            ['J. Phys.', 'Czechoslov. J. Phys.'])
+        self.assertEqual(record_get_field_values(rec, '773', code='p'),
+            ['J. Phys.', 'J. Phys.'])
+
+
 
 class TestINSPIRE2CDSProceeding(unittest.TestCase):
 
@@ -941,6 +956,11 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
                                         code="e"),
                 ["dir.", "dir."]
             )
+
+    def test_journal_mappings(self):
+        """Test journal mappings"""
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+        self.assertEqual(Inspire2CDS.get_config_item('Nuovo Cim.', 'journals'), 'Nuovo Cimento')
 
 
 if __name__ == '__main__':

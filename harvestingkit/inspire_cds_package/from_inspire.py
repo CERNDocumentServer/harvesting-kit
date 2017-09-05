@@ -451,7 +451,7 @@ class Inspire2CDS(MARCXMLConversion):
             journal_name = ""
             for idx, (key, value) in enumerate(subs):
                 if key == 'p':
-                    journal_name = self.get_config_item(value, "journals")
+                    journal_name = self.get_config_item(value, "journals", allow_substring=False)
                     # Make sure journal names have the form (dot)(space) (I know it's horrible)
                     journal_name = journal_name.replace('. ', '.').replace('.', '. ').replace('. ,', '.,').strip()
                 elif key == 'v':
