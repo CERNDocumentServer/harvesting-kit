@@ -24,9 +24,12 @@ from setuptools import setup, find_packages
 
 setup(
     name="HarvestingKit",
-    version="0.6.11",
+    version="0.6.12",
     packages=find_packages(),
-    package_data={'': ['data/*.xml']},
+    package_data={
+        '': ['data/*.xml'],
+        'harvestingkit.inspire_cds_package': ['*.csv'],
+    },
     data_files=[("dtds", ["dtds/ja5_art501.zip",
                           "dtds/ja5_art510.zip",
                           "dtds/ja5_art520.zip",
@@ -36,7 +39,7 @@ setup(
                           "dtds/si540.zip",
                           "dtds/A++V2.4.zip",
                           "dtds/jats-archiving-dtd-1.0.zip",
-                          "dtds/journal-publishing-dtd-2.3.zip"])],
+                          "dtds/journal-publishing-dtd-2.3.zip",])],
     install_requires=[
         "beautifulsoup4>=4.1.3",
         "Unidecode>=0.04.14",
