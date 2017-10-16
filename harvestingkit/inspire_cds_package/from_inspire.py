@@ -192,6 +192,7 @@ class Inspire2CDS(MARCXMLConversion):
         self.update_notes()
         self.update_experiments()
         self.update_isbn()
+        self.update_dois()
         self.update_links_and_ffts()
         self.update_date()
         self.update_date_year()
@@ -441,6 +442,19 @@ class Inspire2CDS(MARCXMLConversion):
             for idx, (key, value) in enumerate(field[0]):
                 if key == 'a':
                     field[0][idx] = ('a', value.replace("-", "").strip())
+
+    def update_dois(self):
+        """Remove duplicate BibMatch DOIs."""
+        dois = record_get_field_instances(self.record, '024', ind1="7")
+        all_dois = {}
+        for field in dois:
+            subs = field_get_subfield_instances(field)
+            subs_dict = dict(subs)
+            if subs_dict.get('a'):
+                if subs_dict['a'] in all_dois:
+                    record_delete_field(self.record, tag='024', ind1='7', field_position_global=field[4])
+                    continue
+                all_dois[subs_dict['a']] = field
 
     def update_journals(self):
         """773 journal translations."""

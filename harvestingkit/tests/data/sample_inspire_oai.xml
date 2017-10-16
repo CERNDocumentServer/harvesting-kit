@@ -13,6 +13,11 @@
     <marc:subfield code="2">DOI</marc:subfield>
     <marc:subfield code="a">10.1016/j.nima.2014.09.061</marc:subfield>
   </marc:datafield>
+  <marc:datafield tag="024" ind1="7" ind2=" ">
+    <marc:subfield code="2">DOI</marc:subfield>
+    <marc:subfield code="a">10.1016/j.nima.2014.09.061</marc:subfield>
+    <marc:subfield code="9">bibmatch</marc:subfield>
+  </marc:datafield>
   <marc:datafield tag="035" ind1=" " ind2=" ">
     <marc:subfield code="a">Sahin:2014haa</marc:subfield>
     <marc:subfield code="9">INSPIRETeX</marc:subfield>
