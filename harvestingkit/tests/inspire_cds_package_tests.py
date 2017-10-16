@@ -328,6 +328,18 @@ class TestINSPIRE2CDS(unittest.TestCase):
             ["9785949900109"]
         )
 
+    def test_duplicate_dois(self):
+        """Test for correct removal of duplicate DOIs."""
+        from harvestingkit.bibrecord import record_get_field_values
+
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="024",
+                                    ind1="7",
+                                    code="a"),
+            ["10.1016/j.nima.2014.09.061"]
+        )
+
     def test_fft(self):
         """Test for existence of FFT on PDF URL."""
         from harvestingkit.bibrecord import record_get_field_values
