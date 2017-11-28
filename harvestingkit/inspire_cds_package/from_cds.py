@@ -223,16 +223,14 @@ class CDS2Inspire(MARCXMLConversion):
         """Handle reportnumbers. """
         rep_088_fields = record_get_field_instances(self.record, '088')
         for field in rep_088_fields:
-            subs = field_get_subfields(field)
-            if '9' in subs:
-                for val in subs['9']:
-                    if val.startswith('P0') or val.startswith('CM-P0'):
-                        sf = [('9', 'CERN'), ('b', val)]
-                        record_add_field(self.record, '595', subfields=sf)
             for key, val in field[0]:
-                if key in ['a', '9'] and not val.startswith('SIS-'):
+                if key == '9' and (val.startswith('P0') or val.startswith('CM-P0')):
+                    subfields = [('9', 'CERN'), ('a', val)]
+                    record_add_field(self.record, '595', subfields=subfields)
+                elif key in ['a', '9'] and not val.startswith('SIS-'):
+                    subfield_tag = 'a' if key == 'a' else 'z'
                     record_add_field(
-                        self.record, '037', subfields=[('a', val)])
+                        self.record, '037', subfields=[(subfield_tag, val)])
         record_delete_fields(self.record, "088")
 
         # 037 Externals also...

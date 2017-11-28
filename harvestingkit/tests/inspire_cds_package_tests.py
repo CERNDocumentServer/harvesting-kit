@@ -975,5 +975,62 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
         self.assertEqual(Inspire2CDS.get_config_item('Nuovo Cim.', 'journals'), 'Nuovo Cimento')
 
 
+class TestCDS2Inspire(unittest.TestCase):
+    """Test converted record data."""
+    def test_reportnumbers_conversion_barcodes(self):
+        """Test reportnumber conversion."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_cds import CDS2Inspire
+
+        xml = """<collection>
+        <record>
+          <datafield tag="088" ind1=" " ind2=" ">
+            <subfield code="9">CM-P00081140</subfield>
+          </datafield>
+        </record></collection>
+        """
+        for record in CDS2Inspire.from_source(xml):
+            converted_record = record.get_record()
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="595",
+                                        code="a"),
+                ["CM-P00081140"]
+            )
+            self.assertNotEqual(
+                record_get_field_values(converted_record,
+                                        tag="037",
+                                        code="z"),
+                ["CM-P00081140"]
+            )
+
+    def test_reportnumbers_conversion_non_hidden(self):
+        """Test reportnumber conversion."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_cds import CDS2Inspire
+
+        xml = """<collection>
+        <record>
+          <datafield tag="088" ind1=" " ind2=" ">
+            <subfield code="a">TC-L-INT-70-7</subfield>
+          </datafield>
+        </record></collection>
+        """
+        for record in CDS2Inspire.from_source(xml):
+            converted_record = record.get_record()
+            self.assertNotEqual(
+                record_get_field_values(converted_record,
+                                        tag="595",
+                                        code="a"),
+                ["TC-L-INT-70-7"]
+            )
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="037",
+                                        code="a"),
+                ["TC-L-INT-70-7"]
+            )
+    
+
 if __name__ == '__main__':
     unittest.main()
