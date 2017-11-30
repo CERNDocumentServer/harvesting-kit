@@ -1031,6 +1031,96 @@ class TestCDS2Inspire(unittest.TestCase):
                 ["TC-L-INT-70-7"]
             )
     
+    def test_authors_conversion(self):
+        """Test author conversion."""
+        from harvestingkit.bibrecord import (record_get_field_instances,
+                                             field_get_subfields)
+        from harvestingkit.inspire_cds_package.from_cds import CDS2Inspire
+
+        xml = """<collection>
+        <record>
+        <datafield tag="100" ind1=" " ind2=" ">
+          <subfield code="a">Sawyer, Craig</subfield>
+          <subfield code="0">AUTHOR|(INSPIRE)INSPIRE-00337679</subfield>
+          <subfield code="0">AUTHOR|(SzGeCERN)703126</subfield>
+          <subfield code="g">Author</subfield>
+          <subfield code="u">Rutherford Appleton Laboratory</subfield>
+          <subfield code="m">craig.sawyer@cern.ch</subfield>
+        </datafield>
+        <datafield tag="700" ind1=" " ind2=" ">
+          <subfield code="a">Phillips, Peter William</subfield>
+          <subfield code="0">AUTHOR|(INSPIRE)INSPIRE-00116199</subfield>
+          <subfield code="0">AUTHOR|(SzGeCERN)444156</subfield>
+          <subfield code="g">Author, Presenter</subfield>
+          <subfield code="u">Rutherford Appleton Laboratory</subfield>
+          <subfield code="m">p.w.phillips@rl.ac.uk</subfield>
+        </datafield>
+        </record></collection>
+        """
+
+        expected_100 = {
+            'a': ["Sawyer, Craig"],
+            'i': ["INSPIRE-00337679"],
+            'j': ["CCID-703126"],
+            'g': ["Author"],
+            'm': ['craig.sawyer@cern.ch'],
+            'u': ["Rutherford Appleton Laboratory"],
+        }
+        expected_700 = {
+            'a': ["Phillips, Peter William"],
+            'i': ["INSPIRE-00116199"],
+            'j': ["CCID-444156"],
+            'g': ["Author, Presenter"],
+            'm': ["p.w.phillips@rl.ac.uk"],
+            'u': ["Rutherford Appleton Laboratory"],
+        }
+
+        for record in CDS2Inspire.from_source(xml):
+            converted_record = record.get_record()
+            subfields_100 = field_get_subfields(
+                record_get_field_instances(converted_record, "100")[0]
+            )
+            subfields_700 = field_get_subfields(
+                record_get_field_instances(converted_record, "700")[0]
+            )
+
+            self.assertEqual(subfields_100, expected_100)
+            self.assertEqual(subfields_700, expected_700)
+
+    def test_authors_conversion_ignores_beard_IDs(self):
+        """Test author conversion ignores BEARD IDs."""
+        from harvestingkit.bibrecord import (record_get_field_instances,
+                                             field_get_subfields)
+        from harvestingkit.inspire_cds_package.from_cds import CDS2Inspire
+
+        xml = """<collection>
+        <record>
+          <datafield tag="100" ind1=" " ind2=" ">
+            <subfield code="0">AUTHOR|(CDS)2077287</subfield>
+            <subfield code="9">#BEARD#</subfield>
+            <subfield code="a">Dietz-Laursonn, Erik</subfield>
+            <subfield code="i">INSPIRE-00271239</subfield>
+            <subfield code="j">CCID-695565</subfield>
+            <subfield code="u">Aachen, Tech. Hochsch.</subfield>
+            </datafield>
+        </record></collection>
+        """
+
+        expected = {
+            'a': ["Dietz-Laursonn, Erik"],
+            'u': ["Aachen, Tech. Hochsch."],
+            'i': ["INSPIRE-00271239"],
+            'j': ["CCID-695565"],
+        }
+
+        for record in CDS2Inspire.from_source(xml):
+            converted_record = record.get_record()
+            subfields_100 = field_get_subfields(
+                record_get_field_instances(converted_record, "100")[0]
+            )
+
+            self.assertEqual(subfields_100, expected)
+
 
 if __name__ == '__main__':
     unittest.main()

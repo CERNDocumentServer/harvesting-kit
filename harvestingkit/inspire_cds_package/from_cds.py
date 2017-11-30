@@ -61,6 +61,7 @@ class CDS2Inspire(MARCXMLConversion):
 
     # By setting the class variable here, we run it only once a session
     kbs = MARCXMLConversion.load_config("cds", "inspire")
+    re_ids = re.compile(r'\((?P<schema>.*?)\)(?P<id>.*)')
 
     def __init__(self, bibrec, strip_fields_list=None):
         """Create."""
@@ -169,6 +170,30 @@ class CDS2Inspire(MARCXMLConversion):
                     if 'p' in field_get_subfields(f773):
                         return True
         return False
+
+    def get_ids_from_0(self, subfield):
+        """Transform IDs from CDS into INSPIRE-style IDs."""
+        ids = {}
+        ids_i = []
+        ids_j = []
+        segments = subfield.split('|')
+
+        for segment in segments:
+            match = self.re_ids.match(segment)
+            if match:
+                ids[match.group('schema').upper()] = match.group('id')
+
+        for schema, id_ in ids.items():
+            if schema == 'INSPIRE':
+                ids_i.append(id_)
+            elif schema == 'SZGECERN':
+                ids_j.append('CCID-{}'.format(id_))
+            elif schema == 'CDS':
+                continue
+            else:
+                ids_j.append(id_)
+
+        return ids_i, ids_j
 
     def add_cms_link(self):
         """Special handling if record is a CMS NOTE."""
@@ -279,16 +304,36 @@ class CDS2Inspire(MARCXMLConversion):
                         break
 
     def update_authors(self):
-        """100 & 700 punctuate author names."""
+        """100 & 700 punctuate author names and move identifiers."""
         author_names = record_get_field_instances(self.record, '100')
         author_names.extend(record_get_field_instances(self.record, '700'))
-        for field in author_names:
+        for idx, field in enumerate(author_names):
             subs = field_get_subfields(field)
-            if 'i' not in subs or 'XX' in subs['i']:
-                if 'j' not in subs or 'YY' in subs['j']:
-                    for idx, (key, value) in enumerate(field[0]):
-                        if key == 'a':
-                            field[0][idx] = ('a', punctuate_authorname(value))
+            new_subs = []
+            for (key, value) in field[0]:
+                if key == 'a':
+                    new_subs.append(('a', punctuate_authorname(value)))
+                elif key == '0':
+                    if '#BEARD#' in subs.get('9', []):
+                        continue
+                    ids_i, ids_j = self.get_ids_from_0(value)
+                    new_subs.extend(('i', id_) for id_ in ids_i)
+                    new_subs.extend(('j', id_) for id_ in ids_j)
+                elif key == '9' and value == '#BEARD#':
+                    continue
+                else:
+                    new_subs.append((key, value))
+            author_names[idx] = field_swap_subfields(field, new_subs)
+            if idx == 0:
+                field_number = '100'
+                local_pos = 0
+            else:
+                field_number = '700'
+                local_pos = idx - 1
+            record_replace_field(
+                self.record, field_number, author_names[idx], field_position_local=local_pos
+            )
+
 
     def update_thesis_supervisors(self):
         """700 -> 701 Thesis supervisors."""
