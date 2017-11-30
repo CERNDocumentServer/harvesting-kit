@@ -35,6 +35,7 @@ from tempfile import mkstemp
 
 from ..bibrecord import (record_get_field_instances,
                          record_add_field,
+                         record_add_fields,
                          record_get_field_values,
                          record_delete_field,
                          record_delete_fields,
@@ -342,9 +343,9 @@ class CDS2Inspire(MARCXMLConversion):
         record_delete_fields(self.record, '700')
 
     def update_thesis_information(self):
-        """501 degree info - move subfields."""
-        fields_501 = record_get_field_instances(self.record, '502')
-        for idx, field in enumerate(fields_501):
+        """502 degree info - move subfields."""
+        fields_502 = record_get_field_instances(self.record, '502')
+        for idx, field in enumerate(fields_502):
             new_subs = []
             for key, value in field[0]:
                 if key == 'a':
@@ -355,7 +356,10 @@ class CDS2Inspire(MARCXMLConversion):
                     new_subs.append(('d', value))
                 else:
                     new_subs.append((key, value))
-            fields_501[idx] = field_swap_subfields(field, new_subs)
+            fields_502[idx] = field_swap_subfields(field, new_subs)
+            record_replace_field(
+                self.record, '502', fields_502[idx], field_position_local=idx
+            )
 
     def update_keywords(self):
         """653 Free Keywords."""

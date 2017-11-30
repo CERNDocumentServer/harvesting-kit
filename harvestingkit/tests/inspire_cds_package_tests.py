@@ -1121,6 +1121,39 @@ class TestCDS2Inspire(unittest.TestCase):
 
             self.assertEqual(subfields_100, expected)
 
+    def test_thesis_info_conversion(self):
+        """Test thesis information conversion."""
+        from harvestingkit.bibrecord import (record_get_field_instances,
+                                             field_get_subfields)
+        from harvestingkit.inspire_cds_package.from_cds import CDS2Inspire
+
+        xml = """<collection>
+        <record>
+          <datafield tag="502" ind1=" " ind2=" ">
+            <subfield code="a">PhD</subfield>
+            <subfield code="b">Hamburg U.</subfield>
+            <subfield code="c">2017</subfield>
+          </datafield>
+          <datafield tag="980" ind1=" " ind2=" ">
+            <subfield code="a">THESIS</subfield>
+          </datafield>
+        </record></collection>
+        """
+
+        expected = {
+            'b': ["PhD"],
+            'c': ["Hamburg U."],
+            'd': ["2017"],
+        }
+
+        for record in CDS2Inspire.from_source(xml):
+            converted_record = record.get_record()
+            subfields_502 = field_get_subfields(
+                record_get_field_instances(converted_record, "502")[0]
+            )
+
+            self.assertEqual(subfields_502, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
