@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2014, 2015, 2017 CERN.
+# Copyright (C) 2014, 2015, 2017, 2019 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -107,7 +107,7 @@ class UtilsTests(unittest.TestCase):
         """Test journal name handling."""
         self.assertEqual(fix_journal_name("A&A", journal_mappings), ('Astron.Astrophys.', ""))
         self.assertEqual(fix_journal_name("A&A B", journal_mappings), ('Astron.Astrophys.', "B"))
-        self.assertEqual(fix_journal_name("A&A.B", journal_mappings), ('A&A.', "B"))
+        self.assertEqual(fix_journal_name("A&A.B", journal_mappings), ('Astron.Astrophys.', "B"))
         self.assertEqual(fix_journal_name("A&AB.", journal_mappings), ("A&AB.", ""))
 
     def test_safe_title(self):

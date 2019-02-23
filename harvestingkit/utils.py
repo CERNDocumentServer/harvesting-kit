@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2014, 2015, 2016, 2017 CERN.
+# Copyright (C) 2014, 2015, 2016, 2017, 2019 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -170,14 +170,18 @@ def fix_journal_name(journal, knowledge_base):
             and (journal[-2] == '.' or journal[-2] == ' '):
         volume += journal[-1]
         journal = journal[:-1]
-    try:
-        journal = journal.strip()
+    journal = journal.strip()
+
+    if journal.upper() in knowledge_base:
         journal = knowledge_base[journal.upper()].strip()
-    except KeyError:
-        try:
-            journal = knowledge_base[journal].strip()
-        except KeyError:
-            pass
+    elif journal in knowledge_base:
+        journal = knowledge_base[journal].strip()
+    elif '.' in journal:
+        journalnodots = journal.replace('. ', ' ')
+        journalnodots = journalnodots.replace('.', ' ').strip().upper()
+        if journalnodots in knowledge_base:
+            journal = knowledge_base[journalnodots].strip()
+
     journal = journal.replace('. ', '.')
     return journal, volume
 
