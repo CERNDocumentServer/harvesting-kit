@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2013, 2014, 2015, 2017 CERN.
+# Copyright (C) 2013, 2014, 2015, 2017, 2019 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -80,9 +80,13 @@ CFG_ELSEVIER_ART501_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art501.zip')
 CFG_ELSEVIER_ART510_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art510.zip')
 CFG_ELSEVIER_ART520_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art520.zip')
 CFG_ELSEVIER_ART540_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art540.zip')
+CFG_ELSEVIER_ART550_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art550.zip')
+CFG_ELSEVIER_ART560_PATH = join(CFG_SCOAP3DTDS_PATH, 'ja5_art560.zip')
 CFG_ELSEVIER_SI510_PATH = join(CFG_SCOAP3DTDS_PATH, 'si510.zip')
 CFG_ELSEVIER_SI520_PATH = join(CFG_SCOAP3DTDS_PATH, 'si520.zip')
 CFG_ELSEVIER_SI540_PATH = join(CFG_SCOAP3DTDS_PATH, 'si540.zip')
+CFG_ELSEVIER_SI550_PATH = join(CFG_SCOAP3DTDS_PATH, 'si550.zip')
+CFG_ELSEVIER_SI560_PATH = join(CFG_SCOAP3DTDS_PATH, 'si560.zip')
 CFG_ELSEVIER_JID_MAP = {'PLB': 'Physics letters B',
                         'NUPHB': 'Nuclear Physics B',
                         'CEMGE': 'Chemical Geology',
@@ -238,7 +242,7 @@ class ElsevierPackage(object):
         if exists(join(path, 'resolved_issue.xml')):
             return
         issue_xml_content = open(join(path, 'issue.xml')).read()
-        sis = ['si510.dtd', 'si520.dtd', 'si540.dtd']
+        sis = ['si510.dtd', 'si520.dtd', 'si540.dtd', 'si550.dtd', 'si560.dtd']
         tmp_extracted = 0
         for si in sis:
             if si in issue_xml_content:
@@ -247,7 +251,8 @@ class ElsevierPackage(object):
 
         if not tmp_extracted:
             message = "It looks like the path " + path
-            message += " does not contain an si510, si520 or si540 in issue.xml file"
+            message += " does not contain an %s in issue.xml file" % \
+                ', '.join([si.split('.')[0] for si in sis])
             self.logger.error(message)
             raise ValueError(message)
         command = ["xmllint", "--format", "--loaddtd",
@@ -270,7 +275,8 @@ class ElsevierPackage(object):
         if exists(join(path, 'resolved_main.xml')):
             return
         main_xml_content = open(join(path, 'main.xml')).read()
-        arts = ['art501.dtd','art510.dtd','art520.dtd','art540.dtd']
+        arts = ['art501.dtd', 'art510.dtd', 'art520.dtd', 'art540.dtd',
+                'art550.dtd', 'art560.dtd']
         tmp_extracted = 0
         for art in arts:
             if art in main_xml_content:
@@ -279,7 +285,8 @@ class ElsevierPackage(object):
 
         if not tmp_extracted:
             message = "It looks like the path " + path
-            message += "does not contain an art501, art510, art520 or art540 in main.xml file"
+            message += "does not contain an %s in main.xml file" % \
+                ', '.join([art.split('.')[0] for art in arts])
             self.logger.error(message)
             raise ValueError(message)
         command = ["xmllint", "--format", "--loaddtd",
