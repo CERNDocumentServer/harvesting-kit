@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2014, 2015 CERN.
+# Copyright (C) 2014, 2015, 2019 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -43,6 +43,19 @@ class ElsevierScoap3PackageTests(unittest.TestCase):
             'harvestingkit.tests',
             os.path.join('data', 'sample_elsevier_540_document_output.xml')
         ))
+        self.document550 = parse(pkg_resources.resource_filename(
+            'harvestingkit.tests',
+            os.path.join('data', 'sample_elsevier_550_document_output.xml')
+        ))
+        self.document560 = parse(pkg_resources.resource_filename(
+            'harvestingkit.tests',
+            os.path.join('data', 'sample_elsevier_560_document_output.xml')
+        ))
+        self.document560_1 = parse(pkg_resources.resource_filename(
+            'harvestingkit.tests',
+            os.path.join('data', 'sample_elsevier_560_document_output_1.xml')
+        ))
+
 
     ## tests for documents
     def test_doi(self):
@@ -53,6 +66,14 @@ class ElsevierScoap3PackageTests(unittest.TestCase):
          """Test that doi is good."""
          self.assertEqual(self.els._get_doi(self.document540), '10.1016/j.cell.2015.03.041')
 
+    def test_550_doi(self):
+         """Test that doi is good."""
+         self.assertEqual(self.els._get_doi(self.document550), '10.1016/j.nuclphysb.2018.12.001')
+
+    def test_560_doi(self):
+         """Test that doi is good."""
+         self.assertEqual(self.els._get_doi(self.document560), '10.1016/j.physletb.2019.06.020')
+
     def test_title(self):
         """Test that title is good."""
         self.assertEqual(self.els.get_title(self.document), 'F-theory vacua with <math altimg="si1.gif" xmlns="http://www.w3.org/1998/Math/MathML"><msub><mrow><mi mathvariant="double-struck">Z</mi></mrow><mrow><mn>3</mn></mrow></msub></math> gauge symmetry')
@@ -61,6 +82,14 @@ class ElsevierScoap3PackageTests(unittest.TestCase):
         """Test that title is good."""
         self.assertEqual(self.els.get_title(self.document540), 'Bending Gradients: How the Intestinal Stem Cell Gets Its Home')
 
+    def test_550_title(self):
+        """Test that title is good."""
+        self.assertEqual(self.els.get_title(self.document550), 'Revisiting RGEs for general gauge theories')
+
+    def test_560_title(self):
+        """Test that title is good."""
+        self.assertEqual(self.els.get_title(self.document560), 'A two Higgs doublet model for dark matter and neutrino masses')
+
     def test_doctype(self):
         """Test that doctype is good."""
         self.assertEqual(self.els.get_doctype(self.document), '')
@@ -68,6 +97,14 @@ class ElsevierScoap3PackageTests(unittest.TestCase):
     def test_540_doctype(self):
         """Test that doctype is good."""
         self.assertEqual(self.els.get_doctype(self.document540), '')
+
+    def test_550_doctype(self):
+        """Test that doctype is good."""
+        self.assertEqual(self.els.get_doctype(self.document550), '')
+
+    def test_560_doctype(self):
+        """Test that doctype is good."""
+        self.assertEqual(self.els.get_doctype(self.document560), '')
 
     def test_abstract(self):
         """Test that abstract is good."""
@@ -179,6 +216,14 @@ class ElsevierScoap3PackageTests(unittest.TestCase):
         """Test that copyright is good."""
         self.assertEqual(self.els.get_copyright(self.document540), 'Elsevier Inc.')
 
+    def test_550_copyright(self):
+        """Test that copyright is good."""
+        self.assertEqual(self.els.get_copyright(self.document550), 'The Authors')
+
+    def test_560_copyright(self):
+        """Test that copyright is good."""
+        self.assertEqual(self.els.get_copyright(self.document560), '')
+
     #Need to find a better example package for DTD5.2 version - this on doesnt have issue.xml and we have unmatching issue and main files
     @unittest.skip("Issue and main xml are not matching")
     def test_publication_information(self):
@@ -197,7 +242,7 @@ class ElsevierScoap3PackageTests(unittest.TestCase):
         self.assertEqual(self.els.get_publication_information(self.document), publication_information)
 
     def test_540_publication_information(self):
-        """Test that pubinfo is good."""
+        """Test that pubinfo 540 is good."""
         self.els._found_issues = [pkg_resources.resource_filename('harvestingkit.tests', os.path.join('data', 'sample_elsevier_540_issue'))]
         self.els._build_doi_mapping()
         publication_information = ('CELL',
@@ -210,6 +255,36 @@ class ElsevierScoap3PackageTests(unittest.TestCase):
                                    '2015-04-23',
                                    '10.1016/j.cell.2015.03.041')
         self.assertEqual(self.els.get_publication_information(self.document540), publication_information)
+
+    def test_550_publication_information(self):
+        """Test that pubinfo 550 is good."""
+        self.els._found_issues = [pkg_resources.resource_filename('harvestingkit.tests', os.path.join('data', 'sample_elsevier_550_issue'))]
+        self.els._build_doi_mapping()
+        publication_information = ('Nuclear Physics B',
+                                   '0550-3213',
+                                   '939',
+                                   '',
+                                   '1',
+                                   '48',
+                                   '2019',
+                                   '2019-02',
+                                   '10.1016/j.nuclphysb.2018.12.001')
+        self.assertEqual(self.els.get_publication_information(self.document550), publication_information)
+
+    def test_560_publication_information(self):
+        """Test that pubinfo 560 is good."""
+        self.els._found_issues = [pkg_resources.resource_filename('harvestingkit.tests', os.path.join('data', 'sample_elsevier_560_issue'))]
+        self.els._build_doi_mapping()
+        publication_information = ('Physics letters B',
+                                   '0370-2693',
+                                   '795',
+                                   '',
+                                   '1',
+                                   '6',
+                                   '2019',
+                                   '2019-08-10',
+                                   '10.1016/j.physletb.2019.05.043')
+        self.assertEqual(self.els.get_publication_information(self.document560_1), publication_information)
 
     @unittest.skip("Not done yet")
     def test_references(self):
