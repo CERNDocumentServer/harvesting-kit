@@ -928,6 +928,7 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
                 ["2005"]
             )
 
+    @unittest.skip("Mapping tag 701 -> 700 disabled")
     def test_thesis_conversion_supervisors(self):
         """Test link conversion with the special case for $w."""
         from harvestingkit.bibrecord import record_get_field_values

@@ -215,7 +215,8 @@ class Inspire2CDS(MARCXMLConversion):
 
         if "THESIS" in self.collections:
             self.update_thesis_information()
-            self.update_thesis_supervisors()
+            # disabled on request of the CERN Library (SNOW: RQF1302222)
+            # self.update_thesis_supervisors()
 
         if "PROCEEDINGS" in self.collections:
             # Special proceeding syntax
