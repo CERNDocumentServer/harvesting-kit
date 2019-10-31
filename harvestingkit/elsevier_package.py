@@ -592,6 +592,8 @@ class ElsevierPackage(object):
             issue = get_value_in_tag(xml_doc, "prism:number")
             first_page = get_value_in_tag(xml_doc, "prism:startingPage")
             last_page = get_value_in_tag(xml_doc, "prism:endingPage")
+            if not first_page:
+                first_page = get_value_in_tag(xml_doc, "bam:articleNumber")
             journal = publication.split(",")[0]
             journal, volume = fix_journal_name(journal, self.journal_mappings)
             try:
