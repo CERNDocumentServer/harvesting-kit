@@ -24,7 +24,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="HarvestingKit",
-    version="0.6.16",
+    version="0.6.17",
     packages=find_packages(),
     package_data={
         '': ['data/*.xml'],
