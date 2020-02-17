@@ -200,11 +200,12 @@ class Inspire2CDS(MARCXMLConversion):
         self.update_oai_info()
         self.update_cnum()
         self.update_conference_info()
+        self.update_collaboration()
 
         self.fields_list = [
             "909", "541", "961",
             "970", "690", "695",
-            "981",
+            "981", "999",
         ]
         self.strip_fields()
 
@@ -436,6 +437,16 @@ class Inspire2CDS(MARCXMLConversion):
                     del field[0][idx]
             if subs.get("u", None) == "CERN":
                 self.tag_as_cern = True
+
+    def update_collaboration(self):
+        """Add " Collaboration" to the value of the field 710__g."""
+        collabs = record_get_field_instances(self.record, '710')
+        for field in collabs:
+            subs = field_get_subfield_instances(field)
+            for idx, (key, value) in enumerate(subs):
+                if key == "g" and value and "Collaboration" not in value:
+                    field[0][idx] = ("g", value + " Collaboration")
+
 
     def update_isbn(self):
         """Remove dashes from ISBN."""

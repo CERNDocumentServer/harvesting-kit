@@ -781,7 +781,7 @@
     <marc:subfield code="u">Brussels U., IIHE</marc:subfield>
   </marc:datafield>
   <marc:datafield tag="710" ind1=" " ind2=" ">
-    <marc:subfield code="g">CHORUS Collaboration</marc:subfield>
+    <marc:subfield code="g">CHORUS</marc:subfield>
   </marc:datafield>
   <marc:datafield tag="773" ind1=" " ind2=" ">
     <marc:subfield code="c">105-110</marc:subfield>

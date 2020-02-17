@@ -981,6 +981,67 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
         from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
         self.assertEqual(Inspire2CDS.get_config_item('Nuovo Cim.', 'journals'), 'Nuovo Cimento')
 
+    def test_add_collaboration_to_710g(self):
+        """Append ' Collaboration' string to the collaboration name."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """
+        <collection>
+            <record>
+                <datafield tag="710" ind1=" " ind2=" ">
+                    <subfield code="g">ATLAS</subfield>
+                </datafield>
+                <datafield tag="710" ind1=" " ind2=" ">
+                    <subfield code="g">CMS Collaboration</subfield>
+                </datafield>
+                <datafield tag="800" ind1=" " ind2=" ">
+                    <subfield code="g">another field</subfield>
+                </datafield>
+            </record>
+        </collection>
+        """
+
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+
+            tags_710g = record_get_field_values(converted_record,
+                                                tag="710",
+                                                code="g")
+
+            self.assertEqual(tags_710g, ["ATLAS Collaboration", "CMS Collaboration"])
+
+    def test_ignore_999(self):
+        """Test ignore tag 999."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """
+        <collection>
+            <record>
+                <datafield tag="999" ind1="C" ind2="5">
+                    <subfield code="h">I. Krajcar Bronić, B. Grosswendt Nuclear</subfield>
+                    <subfield code="m">Instruments and Methods in Physics Research Section B 142 , p. 219 Article | PDF (618 K) | View Record in Scopus | Citing articles (12)</subfield>
+                    <subfield code="o">16</subfield>
+                    <subfield code="y">1998</subfield>
+                </datafield>
+                <datafield tag="999" ind1=" " ind2=" ">
+                    <subfield code="o">16</subfield>
+                    <subfield code="y">1998</subfield>
+                </datafield>
+                <datafield tag="999" ind1=" " ind2="3">
+                    <subfield code="o">16</subfield>
+                    <subfield code="y">1998</subfield>
+                </datafield>
+            </record>
+        </collection>
+        """
+
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+
+            tag_999 = record_get_field_values(converted_record, tag="999")
+            self.assertEqual(tag_999, [])
 
 if __name__ == '__main__':
     unittest.main()
