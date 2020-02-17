@@ -62,6 +62,8 @@
     <marc:subfield code="2">INSPIRE</marc:subfield>
   </marc:datafield>
   <marc:datafield tag="693" ind1=" " ind2=" ">
+    <marc:subfield code="b">T9</marc:subfield>
+    <marc:subfield code="b">T10</marc:subfield>
     <marc:subfield code="e">CERN-LHC-CMS</marc:subfield>
   </marc:datafield>
   <marc:datafield tag="700" ind1=" " ind2=" ">

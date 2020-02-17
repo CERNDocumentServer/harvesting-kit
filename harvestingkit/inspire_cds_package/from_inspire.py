@@ -375,6 +375,7 @@ class Inspire2CDS(MARCXMLConversion):
         # 693 Remove if 'not applicable'
         for field in record_get_field_instances(self.record, '693'):
             subs = field_get_subfields(field)
+            experiment_testbeams = subs.get("b", [])
             acc_experiment = subs.get("e", [])
             if not acc_experiment:
                 acc_experiment = subs.get("a", [])
@@ -397,7 +398,7 @@ class Inspire2CDS(MARCXMLConversion):
                                                          "experiments")
             if not translated_experiment:
                 continue
-            new_subs = []
+            new_subs = [("b", n) for n in experiment_testbeams]
             if "---" in translated_experiment:
                 experiment_a, experiment_e = translated_experiment.split("---")
                 new_subs.append(("a", experiment_a.replace("-", " ")))

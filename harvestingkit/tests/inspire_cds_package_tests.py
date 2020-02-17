@@ -313,6 +313,12 @@ class TestINSPIRE2CDS(unittest.TestCase):
         self.assertEqual(
             record_get_field_values(self.converted_record,
                                     tag="693",
+                                    code="b"),
+            ["T9", "T10"]
+        )
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="693",
                                     code="e"),
             ["CMS"]
         )
