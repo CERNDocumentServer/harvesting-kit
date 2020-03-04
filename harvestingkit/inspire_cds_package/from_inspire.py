@@ -201,6 +201,7 @@ class Inspire2CDS(MARCXMLConversion):
         self.update_cnum()
         self.update_conference_info()
         self.update_collaboration()
+        self.update_document_type()
 
         self.fields_list = [
             "909", "541", "961",
@@ -439,13 +440,28 @@ class Inspire2CDS(MARCXMLConversion):
                 self.tag_as_cern = True
 
     def update_collaboration(self):
-        """Add " Collaboration" to the value of the field 710__g."""
+        """Add "Collaboration" to the value of the field 710__g."""
         collabs = record_get_field_instances(self.record, '710')
         for field in collabs:
             subs = field_get_subfield_instances(field)
             for idx, (key, value) in enumerate(subs):
                 if key == "g" and value and "Collaboration" not in value:
                     field[0][idx] = ("g", value + " Collaboration")
+
+    def update_document_type(self):
+        """Change document type to ARTICLE if 773 c,p,v,y exist"""
+        collabs = record_get_field_instances(self.record, '773')
+        must_have_keys = ["c", "p", "v", "y"]
+        for field in collabs:
+            subs = field_get_subfield_instances(field)
+            for idx, (key, value) in enumerate(subs):
+                if key in must_have_keys and value:
+                    must_have_keys.remove(key)
+                if len(must_have_keys) == 0:
+                    record_delete_fields(self.record, "980")
+                    record_add_field(self.record,
+                                    tag='980',
+                                    subfields=[('a', "ARTICLE")])
 
 
     def update_isbn(self):
