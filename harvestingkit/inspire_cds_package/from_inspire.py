@@ -419,9 +419,6 @@ class Inspire2CDS(MARCXMLConversion):
             subs = field_get_subfields(field)
             for val in subs.get("a", []):
                 if "arXiv" not in val:
-                    record_delete_field(self.record,
-                                        tag="037",
-                                        field_position_global=field[4])
                     new_subs = [(code, val[0]) for code, val in subs.items()]
                     record_add_field(self.record, "088", subfields=new_subs)
                     break
@@ -483,7 +480,6 @@ class Inspire2CDS(MARCXMLConversion):
                 new_subs.append(('3', new_value))
                 record_delete_field(self.record, tag='542')
                 record_add_field(self.record, tag='542', subfields=new_subs)
-                import ipdb; ipdb.sset_trace()
 
     def update_isbn(self):
         """Remove dashes from ISBN."""
@@ -560,7 +556,7 @@ class Inspire2CDS(MARCXMLConversion):
                     new_subs.append(('c', value))
                 else:
                     new_subs.append((key, value))
-            delete_field(self.record, tag="502",
+            record_delete_field(self.record, tag="502",
                                 field_position_global=field[4])
             record_add_field(self.record, "502", subfields=new_subs)
 
