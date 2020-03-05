@@ -1010,6 +1010,36 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
 
             self.assertEqual(tags_710g, ["ATLAS Collaboration", "CMS Collaboration"])
 
+    def test_article_to_publication(self):
+        """Test 542__e -> 542__3 Article is converted to Publication."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """
+        <collection>
+            <record>
+                <datafield tag="542" ind1=" " ind2=" ">
+                    <subfield code="a">Another Field</subfield>
+                    <subfield code="e">Article</subfield>
+                </datafield>
+            </record>
+            <record>
+                <datafield tag="542" ind1=" " ind2=" ">
+                    <subfield code="e">AnotherValue</subfield>
+                </datafield>
+            </record>
+        </collection>
+        """
+        rec1, rec2 = Inspire2CDS.from_source(xml)
+
+        converted_rec1 = rec1.get_record()
+        rec1_value = record_get_field_values(converted_rec1, tag="542", code="3")
+        self.assertEqual(rec1_value, ["publication"])
+
+        converted_rec2 = rec2.get_record()
+        rec2_value = record_get_field_values(converted_rec2, tag="542", code="3")
+        self.assertEqual(rec2_value, ["anothervalue"])
+
     def test_article_773(self):
         """Test if tag 773 has c,p,v,y then doc_type is ARTICLE."""
         from harvestingkit.bibrecord import record_get_field_values

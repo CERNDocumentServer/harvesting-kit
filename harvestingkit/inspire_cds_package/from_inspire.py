@@ -202,6 +202,7 @@ class Inspire2CDS(MARCXMLConversion):
         self.update_conference_info()
         self.update_collaboration()
         self.update_document_type()
+        self.update_542()
 
         self.fields_list = [
             "909", "541", "961",
@@ -449,20 +450,40 @@ class Inspire2CDS(MARCXMLConversion):
                     field[0][idx] = ("g", value + " Collaboration")
 
     def update_document_type(self):
-        """Change document type to ARTICLE if 773 c,p,v,y exist"""
-        collabs = record_get_field_instances(self.record, '773')
+        """Change document type to ARTICLE if 773 c,p,v,y exist."""
+        fields = record_get_field_instances(self.record, '773')
         must_have_keys = ["c", "p", "v", "y"]
-        for field in collabs:
+        for field in fields:
             subs = field_get_subfield_instances(field)
             for idx, (key, value) in enumerate(subs):
                 if key in must_have_keys and value:
                     must_have_keys.remove(key)
                 if len(must_have_keys) == 0:
                     record_delete_fields(self.record, "980")
-                    record_add_field(self.record,
-                                    tag='980',
-                                    subfields=[('a', "ARTICLE")])
+                    record_add_field(
+                        self.record, tag='980', subfields=[('a', "ARTICLE")]
+                    )
 
+    def update_542(self):
+        """Change 542__e from Article to Publication."""
+        fields = record_get_field_instances(self.record, '542')
+        for field in fields:
+            subs = field_get_subfield_instances(field)
+            new_subs = []
+            for idx, (key, value) in enumerate(subs):
+                if key != 'e':
+                    new_subs.append((key, value))
+                    continue
+
+                new_value = value.strip().lower()
+                if new_value == 'article':
+                    new_value = "publication"
+
+                # Convert map code e -> 3
+                new_subs.append(('3', new_value))
+                record_delete_field(self.record, tag='542')
+                record_add_field(self.record, tag='542', subfields=new_subs)
+                import ipdb; ipdb.sset_trace()
 
     def update_isbn(self):
         """Remove dashes from ISBN."""
@@ -539,7 +560,7 @@ class Inspire2CDS(MARCXMLConversion):
                     new_subs.append(('c', value))
                 else:
                     new_subs.append((key, value))
-            record_delete_field(self.record, tag="502",
+            delete_field(self.record, tag="502",
                                 field_position_global=field[4])
             record_add_field(self.record, "502", subfields=new_subs)
 
