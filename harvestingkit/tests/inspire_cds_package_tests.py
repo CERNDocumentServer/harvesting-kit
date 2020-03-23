@@ -1033,12 +1033,14 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
         rec1, rec2 = Inspire2CDS.from_source(xml)
 
         converted_rec1 = rec1.get_record()
-        rec1_value = record_get_field_values(converted_rec1, tag="542", code="3")
-        self.assertEqual(rec1_value, ["publication"])
+        rec1_3_value = record_get_field_values(converted_rec1, tag="542", code="3")
+        self.assertEqual(rec1_3_value, ["publication"])
+        rec1_a_value = record_get_field_values(converted_rec1, tag="542", code="a")
+        self.assertEqual(rec1_a_value, ["Another Field"])
 
         converted_rec2 = rec2.get_record()
         rec2_value = record_get_field_values(converted_rec2, tag="542", code="3")
-        self.assertEqual(rec2_value, ["anothervalue"])
+        self.assertEqual(rec2_value, ["AnotherValue"])
 
     def test_article_773(self):
         """Test if tag 773 has c,p,v,y then doc_type is ARTICLE."""
@@ -1055,6 +1057,21 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
                     <subfield code="y">2015</subfield>
                     <subfield code="c">021302</subfield>
                 </datafield>
+                <datafield tag="980" ind1=" " ind2=" ">
+                    <subfield code="a">PUBLISHED</subfield>
+                </datafield>
+            </record>
+            <record>
+                <datafield tag="773" ind1=" " ind2=" ">
+                    <subfield code="x">Phys. Rev. D 91 (2015) 021302 (Rapid Communication)</subfield>
+                    <subfield code="v">D91</subfield>
+                    <subfield code="p">Phys.Rev.</subfield>
+                    <subfield code="y">2015</subfield>
+                    <subfield code="c">021302</subfield>
+                </datafield>
+                <datafield tag="980" ind1=" " ind2=" ">
+                    <subfield code="a">CONFERENCEPAPER</subfield>
+                </datafield>
             </record>
             <record>
                 <datafield tag="773" ind1=" " ind2=" ">
@@ -1064,16 +1081,22 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
         </collection>
         """
 
-        for record in Inspire2CDS.from_source(xml):
-            converted_record = record.get_record()
-            if (
-                record_get_field_values(converted_record, tag="773", code="c") and
-                record_get_field_values(converted_record, tag="773", code="p") and
-                record_get_field_values(converted_record, tag="773", code="v") and
-                record_get_field_values(converted_record, tag="773", code="y")
-            ):
-                tag_980 = record_get_field_values(converted_record, tag="980", code="a")
-                self.assertEqual(tag_980, ["ARTICLE"])
+        records = list(Inspire2CDS.from_source(xml))
+
+        rec1 = records[0]
+        converted_record = rec1.get_record()
+        tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        self.assertEqual(tag_980, ["ARTICLE"])
+
+        rec2 = records[1]
+        converted_record = rec2.get_record()
+        tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        self.assertEqual(sorted(tag_980), sorted(["ConferencePaper", "ARTICLE"]))
+
+        rec3 = records[2]
+        converted_record = rec3.get_record()
+        tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        self.assertEqual(tag_980, ["PREPRINT"])
 
     def test_reportnumbers(self):
         """Test report number moved to 037__a and 088__a."""

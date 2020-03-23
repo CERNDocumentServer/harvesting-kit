@@ -201,7 +201,6 @@ class Inspire2CDS(MARCXMLConversion):
         self.update_cnum()
         self.update_conference_info()
         self.update_collaboration()
-        self.update_document_type()
         self.update_542()
 
         self.fields_list = [
@@ -287,29 +286,37 @@ class Inspire2CDS(MARCXMLConversion):
 
     def update_collections(self):
         """Try to determine which collections this record should belong to."""
+        def should_add_article():
+            """Return True if the record contains all must have keys."""
+            must_have_keys = set(["c", "p", "v", "y"])
+            f773 = record_get_field_instances(self.record, '773')
+            found_keys = set()
+            for field in f773:
+                for subfield in field_get_subfields(field):
+                    found_keys.add(subfield[0])
+            return must_have_keys.issubset(found_keys)
+
         for value in record_get_field_values(self.record, '980', code='a'):
-            if 'NOTE' in value.upper():
+            v = value.upper()
+            if 'NOTE' in v:
                 self.collections.add('NOTE')
-            if 'THESIS' in value.upper():
+            if 'THESIS' in v:
                 self.collections.add('THESIS')
-
-            if 'PUBLISHED' in value.upper():
+            if 'PUBLISHED' in v:
                 self.collections.add('ARTICLE')
-
-            if 'CONFERENCES' in value.upper():
+            if 'CONFERENCES' in v:
                 self.collections.add('ANNOUNCEMENT')
-
-            if 'PROCEEDINGS' in value.upper():
+            if 'PROCEEDINGS' in v:
                 self.collections.add('PROCEEDINGS')
-            elif 'CONFERENCEPAPER' in value.upper() and \
+            elif 'CONFERENCEPAPER' in v and \
                  "ConferencePaper" not in self.collections:
                 self.collections.add('ConferencePaper')
-                if self.is_published() and "ARTICLE" not in self.collections:
+                if "ARTICLE" not in self.collections and should_add_article():
                     self.collections.add('ARTICLE')
                 else:
                     self.collections.add('PREPRINT')
 
-            if "HIDDEN" in value.upper():
+            if "HIDDEN" in v:
                 self.hidden = True
 
         # Clear out any existing ones.
@@ -419,6 +426,9 @@ class Inspire2CDS(MARCXMLConversion):
             subs = field_get_subfields(field)
             for val in subs.get("a", []):
                 if "arXiv" not in val:
+                    record_delete_field(self.record,
+                                        tag="037",
+                                        field_position_global=field[4])
                     new_subs = [(code, val[0]) for code, val in subs.items()]
                     record_add_field(self.record, "088", subfields=new_subs)
                     break
@@ -446,40 +456,19 @@ class Inspire2CDS(MARCXMLConversion):
                 if key == "g" and value and "Collaboration" not in value:
                     field[0][idx] = ("g", value + " Collaboration")
 
-    def update_document_type(self):
-        """Change document type to ARTICLE if 773 c,p,v,y exist."""
-        fields = record_get_field_instances(self.record, '773')
-        must_have_keys = ["c", "p", "v", "y"]
-        for field in fields:
-            subs = field_get_subfield_instances(field)
-            for idx, (key, value) in enumerate(subs):
-                if key in must_have_keys and value:
-                    must_have_keys.remove(key)
-                if len(must_have_keys) == 0:
-                    record_delete_fields(self.record, "980")
-                    record_add_field(
-                        self.record, tag='980', subfields=[('a', "ARTICLE")]
-                    )
-
     def update_542(self):
-        """Change 542__e from Article to Publication."""
-        fields = record_get_field_instances(self.record, '542')
-        for field in fields:
+        """Change 542__e -> 542__3 and 542__e:Article to 542__3:publication."""
+        for field in record_get_field_instances(self.record, '542'):
             subs = field_get_subfield_instances(field)
-            new_subs = []
-            for idx, (key, value) in enumerate(subs):
+            for idx, (key, value) in enumerate(field[0]):
                 if key != 'e':
-                    new_subs.append((key, value))
                     continue
-
-                new_value = value.strip().lower()
-                if new_value == 'article':
-                    new_value = "publication"
-
-                # Convert map code e -> 3
-                new_subs.append(('3', new_value))
-                record_delete_field(self.record, tag='542')
-                record_add_field(self.record, tag='542', subfields=new_subs)
+                # delete '__e'
+                del field[0][idx]
+                # change 'article' -> 'publication'
+                v = 'publication' if value.strip().lower() == 'article' else value
+                # add '__3'
+                record_add_field(self.record, "542", subfields=[("3", v)])
 
     def update_isbn(self):
         """Remove dashes from ISBN."""
