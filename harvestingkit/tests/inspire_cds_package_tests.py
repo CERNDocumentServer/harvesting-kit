@@ -1098,43 +1098,6 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
         tag_980 = record_get_field_values(converted_record, tag="980", code="a")
         self.assertEqual(tag_980, ["PREPRINT"])
 
-    def test_reportnumbers(self):
-        """Test report number moved to 037__a and 088__a."""
-        from harvestingkit.bibrecord import record_get_field_values
-        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
-
-        report_number = "LHCb-PAPER-2019-030"
-
-        xml = """
-        <collection>
-            <record>
-                <datafield tag="037" ind1=" " ind2=" ">
-                    <subfield code="a">{0}</subfield>
-                </datafield>
-            </record>
-            <record>
-                <datafield tag="037" ind1=" " ind2=" ">
-                    <subfield code="9">arXiv:reportnumber</subfield>
-                    <subfield code="a">{0}</subfield>
-                </datafield>
-            </record>
-            <record>
-                <datafield tag="037" ind1=" " ind2=" ">
-                    <subfield code="9">arXiv:reportnumber</subfield>
-                    <subfield code="a">{0}</subfield>
-                </datafield>
-            </record>
-
-        </collection>
-        """.format(report_number)
-
-        for record in Inspire2CDS.from_source(xml):
-            converted_record = record.get_record()
-            tag_037__a = record_get_field_values(converted_record, tag="037", code="a")
-            tag_088__a = record_get_field_values(converted_record, tag="088", code="a")
-            self.assertEqual(tag_037__a, [report_number])
-            self.assertEqual(tag_088__a, [report_number])
-
     def test_ignore_999(self):
         """Test ignore tag 999."""
         from harvestingkit.bibrecord import record_get_field_values

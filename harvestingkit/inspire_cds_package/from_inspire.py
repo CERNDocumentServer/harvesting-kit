@@ -184,7 +184,6 @@ class Inspire2CDS(MARCXMLConversion):
         self.add_control_number("003", "SzGeCERN")
         self.update_collections()
         self.update_languages()
-        self.update_reportnumbers()
         self.update_authors()
         self.update_journals()
         self.update_subject_categories("INSPIRE", "SzGeCERN", "categories_cds")
@@ -418,20 +417,6 @@ class Inspire2CDS(MARCXMLConversion):
             record_delete_field(self.record, tag="693",
                                 field_position_global=field[4])
             record_add_field(self.record, "693", subfields=new_subs)
-
-    def update_reportnumbers(self):
-        """Update reportnumbers."""
-        report_037_fields = record_get_field_instances(self.record, '037')
-        for field in report_037_fields:
-            subs = field_get_subfields(field)
-            for val in subs.get("a", []):
-                if "arXiv" not in val:
-                    record_delete_field(self.record,
-                                        tag="037",
-                                        field_position_global=field[4])
-                    new_subs = [(code, val[0]) for code, val in subs.items()]
-                    record_add_field(self.record, "088", subfields=new_subs)
-                    break
 
     def update_authors(self):
         """100 & 700 punctuate author names."""
