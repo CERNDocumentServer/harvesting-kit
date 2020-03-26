@@ -313,6 +313,12 @@ class TestINSPIRE2CDS(unittest.TestCase):
         self.assertEqual(
             record_get_field_values(self.converted_record,
                                     tag="693",
+                                    code="b"),
+            ["T9", "T10"]
+        )
+        self.assertEqual(
+            record_get_field_values(self.converted_record,
+                                    tag="693",
                                     code="e"),
             ["CMS"]
         )
@@ -405,7 +411,6 @@ class TestINSPIRE2CDS(unittest.TestCase):
             ['J. Phys.', 'Czechoslov. J. Phys.'])
         self.assertEqual(record_get_field_values(rec, '773', code='p'),
             ['J. Phys.', 'J. Phys.'])
-
 
 
 class TestINSPIRE2CDSProceeding(unittest.TestCase):
@@ -974,6 +979,156 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
         """Test journal mappings"""
         from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
         self.assertEqual(Inspire2CDS.get_config_item('Nuovo Cim.', 'journals'), 'Nuovo Cimento')
+
+    def test_add_collaboration_to_710g(self):
+        """Append ' Collaboration' string to the collaboration name."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """
+        <collection>
+            <record>
+                <datafield tag="710" ind1=" " ind2=" ">
+                    <subfield code="g">ATLAS</subfield>
+                </datafield>
+                <datafield tag="710" ind1=" " ind2=" ">
+                    <subfield code="g">CMS Collaboration</subfield>
+                </datafield>
+                <datafield tag="800" ind1=" " ind2=" ">
+                    <subfield code="g">another field</subfield>
+                </datafield>
+            </record>
+        </collection>
+        """
+
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+
+            tags_710g = record_get_field_values(converted_record,
+                                                tag="710",
+                                                code="g")
+
+            self.assertEqual(tags_710g, ["ATLAS Collaboration", "CMS Collaboration"])
+
+    def test_article_to_publication(self):
+        """Test 542__e -> 542__3 Article is converted to Publication."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """
+        <collection>
+            <record>
+                <datafield tag="542" ind1=" " ind2=" ">
+                    <subfield code="a">Another Field</subfield>
+                    <subfield code="e">Article</subfield>
+                </datafield>
+            </record>
+            <record>
+                <datafield tag="542" ind1=" " ind2=" ">
+                    <subfield code="e">AnotherValue</subfield>
+                </datafield>
+            </record>
+        </collection>
+        """
+        rec1, rec2 = Inspire2CDS.from_source(xml)
+
+        converted_rec1 = rec1.get_record()
+        rec1_3_value = record_get_field_values(converted_rec1, tag="542", code="3")
+        self.assertEqual(rec1_3_value, ["publication"])
+        rec1_a_value = record_get_field_values(converted_rec1, tag="542", code="a")
+        self.assertEqual(rec1_a_value, ["Another Field"])
+
+        converted_rec2 = rec2.get_record()
+        rec2_value = record_get_field_values(converted_rec2, tag="542", code="3")
+        self.assertEqual(rec2_value, ["AnotherValue"])
+
+    def test_article_773(self):
+        """Test if tag 773 has c,p,v,y then doc_type is ARTICLE."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """
+        <collection>
+            <record>
+                <datafield tag="773" ind1=" " ind2=" ">
+                    <subfield code="x">Phys. Rev. D 91 (2015) 021302 (Rapid Communication)</subfield>
+                    <subfield code="v">D91</subfield>
+                    <subfield code="p">Phys.Rev.</subfield>
+                    <subfield code="y">2015</subfield>
+                    <subfield code="c">021302</subfield>
+                </datafield>
+                <datafield tag="980" ind1=" " ind2=" ">
+                    <subfield code="a">PUBLISHED</subfield>
+                </datafield>
+            </record>
+            <record>
+                <datafield tag="773" ind1=" " ind2=" ">
+                    <subfield code="x">Phys. Rev. D 91 (2015) 021302 (Rapid Communication)</subfield>
+                    <subfield code="v">D91</subfield>
+                    <subfield code="p">Phys.Rev.</subfield>
+                    <subfield code="y">2015</subfield>
+                    <subfield code="c">021302</subfield>
+                </datafield>
+                <datafield tag="980" ind1=" " ind2=" ">
+                    <subfield code="a">CONFERENCEPAPER</subfield>
+                </datafield>
+            </record>
+            <record>
+                <datafield tag="773" ind1=" " ind2=" ">
+                    <subfield code="w">C10-09-06.10</subfield>
+                </datafield>
+            </record>
+        </collection>
+        """
+
+        records = list(Inspire2CDS.from_source(xml))
+
+        rec1 = records[0]
+        converted_record = rec1.get_record()
+        tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        self.assertEqual(tag_980, ["ARTICLE"])
+
+        rec2 = records[1]
+        converted_record = rec2.get_record()
+        tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        self.assertEqual(sorted(tag_980), sorted(["ConferencePaper", "ARTICLE"]))
+
+        rec3 = records[2]
+        converted_record = rec3.get_record()
+        tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        self.assertEqual(tag_980, ["PREPRINT"])
+
+    def test_ignore_999(self):
+        """Test ignore tag 999."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """
+        <collection>
+            <record>
+                <datafield tag="999" ind1="C" ind2="5">
+                    <subfield code="h">I. Krajcar Bronić, B. Grosswendt Nuclear</subfield>
+                    <subfield code="m">Instruments and Methods in Physics Research Section B 142 , p. 219 Article | PDF (618 K) | View Record in Scopus | Citing articles (12)</subfield>
+                    <subfield code="o">16</subfield>
+                    <subfield code="y">1998</subfield>
+                </datafield>
+                <datafield tag="999" ind1=" " ind2=" ">
+                    <subfield code="o">16</subfield>
+                    <subfield code="y">1998</subfield>
+                </datafield>
+                <datafield tag="999" ind1=" " ind2="3">
+                    <subfield code="o">16</subfield>
+                    <subfield code="y">1998</subfield>
+                </datafield>
+            </record>
+        </collection>
+        """
+
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+
+            tag_999 = record_get_field_values(converted_record, tag="999")
+            self.assertEqual(tag_999, [])
 
 
 if __name__ == '__main__':

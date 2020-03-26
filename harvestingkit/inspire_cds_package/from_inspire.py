@@ -184,7 +184,6 @@ class Inspire2CDS(MARCXMLConversion):
         self.add_control_number("003", "SzGeCERN")
         self.update_collections()
         self.update_languages()
-        self.update_reportnumbers()
         self.update_authors()
         self.update_journals()
         self.update_subject_categories("INSPIRE", "SzGeCERN", "categories_cds")
@@ -200,11 +199,13 @@ class Inspire2CDS(MARCXMLConversion):
         self.update_oai_info()
         self.update_cnum()
         self.update_conference_info()
+        self.update_collaboration()
+        self.update_542()
 
         self.fields_list = [
             "909", "541", "961",
             "970", "690", "695",
-            "981",
+            "981", "999",
         ]
         self.strip_fields()
 
@@ -284,29 +285,37 @@ class Inspire2CDS(MARCXMLConversion):
 
     def update_collections(self):
         """Try to determine which collections this record should belong to."""
+        def should_add_article():
+            """Return True if the record contains all must have keys."""
+            must_have_keys = set(["c", "p", "v", "y"])
+            f773 = record_get_field_instances(self.record, '773')
+            found_keys = set()
+            for field in f773:
+                for subfield in field_get_subfields(field):
+                    found_keys.add(subfield[0])
+            return must_have_keys.issubset(found_keys)
+
         for value in record_get_field_values(self.record, '980', code='a'):
-            if 'NOTE' in value.upper():
+            v = value.upper()
+            if 'NOTE' in v:
                 self.collections.add('NOTE')
-            if 'THESIS' in value.upper():
+            if 'THESIS' in v:
                 self.collections.add('THESIS')
-
-            if 'PUBLISHED' in value.upper():
+            if 'PUBLISHED' in v:
                 self.collections.add('ARTICLE')
-
-            if 'CONFERENCES' in value.upper():
+            if 'CONFERENCES' in v:
                 self.collections.add('ANNOUNCEMENT')
-
-            if 'PROCEEDINGS' in value.upper():
+            if 'PROCEEDINGS' in v:
                 self.collections.add('PROCEEDINGS')
-            elif 'CONFERENCEPAPER' in value.upper() and \
+            elif 'CONFERENCEPAPER' in v and \
                  "ConferencePaper" not in self.collections:
                 self.collections.add('ConferencePaper')
-                if self.is_published() and "ARTICLE" not in self.collections:
+                if "ARTICLE" not in self.collections and should_add_article():
                     self.collections.add('ARTICLE')
                 else:
                     self.collections.add('PREPRINT')
 
-            if "HIDDEN" in value.upper():
+            if "HIDDEN" in v:
                 self.hidden = True
 
         # Clear out any existing ones.
@@ -375,6 +384,7 @@ class Inspire2CDS(MARCXMLConversion):
         # 693 Remove if 'not applicable'
         for field in record_get_field_instances(self.record, '693'):
             subs = field_get_subfields(field)
+            experiment_testbeams = subs.get("b", [])
             acc_experiment = subs.get("e", [])
             if not acc_experiment:
                 acc_experiment = subs.get("a", [])
@@ -397,7 +407,7 @@ class Inspire2CDS(MARCXMLConversion):
                                                          "experiments")
             if not translated_experiment:
                 continue
-            new_subs = []
+            new_subs = [("b", n) for n in experiment_testbeams]
             if "---" in translated_experiment:
                 experiment_a, experiment_e = translated_experiment.split("---")
                 new_subs.append(("a", experiment_a.replace("-", " ")))
@@ -407,20 +417,6 @@ class Inspire2CDS(MARCXMLConversion):
             record_delete_field(self.record, tag="693",
                                 field_position_global=field[4])
             record_add_field(self.record, "693", subfields=new_subs)
-
-    def update_reportnumbers(self):
-        """Update reportnumbers."""
-        report_037_fields = record_get_field_instances(self.record, '037')
-        for field in report_037_fields:
-            subs = field_get_subfields(field)
-            for val in subs.get("a", []):
-                if "arXiv" not in val:
-                    record_delete_field(self.record,
-                                        tag="037",
-                                        field_position_global=field[4])
-                    new_subs = [(code, val[0]) for code, val in subs.items()]
-                    record_add_field(self.record, "088", subfields=new_subs)
-                    break
 
     def update_authors(self):
         """100 & 700 punctuate author names."""
@@ -435,6 +431,29 @@ class Inspire2CDS(MARCXMLConversion):
                     del field[0][idx]
             if subs.get("u", None) == "CERN":
                 self.tag_as_cern = True
+
+    def update_collaboration(self):
+        """Add "Collaboration" to the value of the field 710__g."""
+        collabs = record_get_field_instances(self.record, '710')
+        for field in collabs:
+            subs = field_get_subfield_instances(field)
+            for idx, (key, value) in enumerate(subs):
+                if key == "g" and value and "Collaboration" not in value:
+                    field[0][idx] = ("g", value + " Collaboration")
+
+    def update_542(self):
+        """Change 542__e -> 542__3 and 542__e:Article to 542__3:publication."""
+        for field in record_get_field_instances(self.record, '542'):
+            subs = field_get_subfield_instances(field)
+            for idx, (key, value) in enumerate(field[0]):
+                if key != 'e':
+                    continue
+                # delete '__e'
+                del field[0][idx]
+                # change 'article' -> 'publication'
+                v = 'publication' if value.strip().lower() == 'article' else value
+                # add '__3'
+                record_add_field(self.record, "542", subfields=[("3", v)])
 
     def update_isbn(self):
         """Remove dashes from ISBN."""
