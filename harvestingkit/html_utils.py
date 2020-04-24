@@ -42,45 +42,65 @@ class MathMLParser(HTMLParser):
 
     """Special HTML stripper that allows MathML."""
 
-    mathml_elements = set([
-        'annotation', 'annotation-xml', 'maction', 'math',
-        'merror', 'mfenced', 'mfrac', 'mi', 'mmultiscripts',
-        'mn', 'mo', 'mover', 'mpadded',
-        'mphantom', 'mprescripts', 'mroot', 'mrow', 'mspace', 'msqrt',
-        'mstyle', 'msub', 'msubsup', 'msup', 'mtable', 'mtd', 'mtext',
-        'mtr', 'munder', 'munderover', 'none', 'semantics'
-    ])
+    mathml_elements = set(['msline', 'mlongdiv', 'mstyle', 'mlabeledtr',
+                           'mover', 'mglyph', 'msrow', 'mscarries', 'msgroup',
+                           'mrow', 'annotation-xml', 'mphantom',
+                           'mmultiscripts', 'msqrt', 'msub', 'mpadded',
+                           'mtable', 'munder', 'math', 'msubsup', 'mfenced',
+                           'mspace', 'mroot', 'maligngroup', 'msup', 'mfrac',
+                           'munderover', 'mstack', 'annotation', 'semantics',
+                           'none', 'mprescripts', 'mtr', 'mo', 'mn', 'mi',
+                           'malignmark', 'mtd', 'ms', 'maction', 'merror',
+                           'menclose', 'mscarry', 'mtext'])
 
-    def __init__(self):
+    def __init__(self, escape_html=False):
         """Set initial values."""
         HTMLParser.__init__(self)
         self.reset()
         self.fed = []
+        self.escape_html = escape_html
 
     def handle_data(self, d):
         """Return representation of pure text data."""
-        self.fed.append(d)
+        if self.escape_html:
+            self.fed.append(escape_for_xml(d))
+        else:
+            self.fed.append(d)
 
     def handle_starttag(self, tag, attrs):
         """Return representation of html start tag and attributes."""
+        final_attr = ""
+        for key, value in attrs:
+            final_attr += ' {0}="{1}"'.format(key, value)
+        final_tag = "<{0}{1}>".format(tag, final_attr)
         if tag in self.mathml_elements:
-            final_attr = ""
-            for key, value in attrs:
-                final_attr += ' {0}="{1}"'.format(key, value)
-            self.fed.append("<{0}{1}>".format(tag, final_attr))
+            self.fed.append(final_tag)
+        elif self.escape_html:
+            self.fed.append(escape_for_xml(final_tag))
 
     def handle_endtag(self, tag):
         """Return representation of html end tag."""
+        final_tag = "</{0}>".format(tag)
         if tag in self.mathml_elements:
-            self.fed.append("</{0}>".format(tag))
+            self.fed.append(final_tag)
+        elif self.escape_html:
+            self.fed.append(escape_for_xml(final_tag))
 
     def handle_entityref(self, name):
         """Return representation of entities."""
-        self.fed.append('&%s;' % name)
+        final_entity = '&%s;' % name
+        if self.escape_html:
+            self.fed.append(escape_for_xml(final_entity))
+        else:
+            self.fed.append(final_entity)
 
     def handle_charref(self, name):
         """Return representation of numeric entities."""
-        self.fed.append('&#%s;' % name)
+        final_charref = '&#%s;' % name
+        if self.escape_html:
+            self.fed.append(escape_for_xml(final_charref))
+        else:
+            self.fed.append(final_charref)
 
     def get_data(self):
         """Return all the stripped data."""
