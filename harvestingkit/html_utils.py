@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2020 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -63,6 +63,7 @@ class MathMLParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         """Return representation of html start tag and attributes."""
+        tag = tag.replace('mml:', '')
         if tag in self.mathml_elements:
             final_attr = ""
             for key, value in attrs:
@@ -71,6 +72,7 @@ class MathMLParser(HTMLParser):
 
     def handle_endtag(self, tag):
         """Return representation of html end tag."""
+        tag = tag.replace('mml:', '')
         if tag in self.mathml_elements:
             self.fed.append("</{0}>".format(tag))
 
