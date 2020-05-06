@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2014, 2015 CERN.
+# Copyright (C) 2014, 2015, 2020 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -43,6 +43,12 @@ class HTMLUtilsTests(unittest.TestCase):
                 u' of representation spaces with arbitrary complex spin.')
         self.assertEqual(MathMLParser.html_to_text(data), data)
 
+    def test_mathml_mml(self):
+        """Test that MathML with mml namespace prefix is handled."""
+        abstract = u"""<p>The determination of the Higgs self-coupling is one of the key ingredients for understanding the mechanism behind the electroweak symmetry breaking. An indirect method for constraining the Higgs trilinear self-coupling via single Higgs production at next-to-leading order (NLO) has been proposed in order to avoid the drawbacks of studies with double Higgs production. In this paper we study the Higgs self-interaction through the vector boson fusion (VBF) process <inline-formula><mml:math display="inline"><mml:msup><mml:mi>e</mml:mi><mml:mo>-</mml:mo></mml:msup><mml:mi>p</mml:mi><mml:mo stretchy="false">\u2192</mml:mo><mml:msub><mml:mi>\u03bd</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mi>h</mml:mi><mml:mi>j</mml:mi></mml:math></inline-formula> at the future LHeC. At NLO level, we compute analytically the scattering amplitudes for relevant processes, in particular those induced by the Higgs self-interaction. A Monte\xa0Carlo simulation and a statistical analysis utilizing the analytic results are then carried out for Higgs production through VBF and decay to <inline-formula><mml:math display="inline"><mml:mi>b</mml:mi><mml:mover accent="true"><mml:mi>b</mml:mi><mml:mo stretchy="false">\xaf</mml:mo></mml:mover></mml:math></inline-formula>, which yield for the trilinear Higgs self-coupling rescaling parameter <inline-formula><mml:math display="inline"><mml:msub><mml:mi>\u03ba</mml:mi><mml:mi>\u03bb</mml:mi></mml:msub></mml:math></inline-formula> the limit [<inline-formula><mml:math display="inline"><mml:mrow><mml:mo>-</mml:mo><mml:mn>0.57</mml:mn></mml:mrow></mml:math></inline-formula>, 2.98] with <inline-formula><mml:math display="inline"><mml:mn>2</mml:mn><mml:mtext>\u2009</mml:mtext><mml:mtext>\u2009</mml:mtext><mml:msup><mml:mi>ab</mml:mi><mml:mrow><mml:mo>-</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msup></mml:math></inline-formula> integrated luminosity. If we assume about 10% of the signal survives the event selection cuts, and include all the background, the constraint will be broadened to [<inline-formula><mml:math display="inline"><mml:mrow><mml:mo>-</mml:mo><mml:mn>2.11</mml:mn></mml:mrow></mml:math></inline-formula>, 4.63].</p>"""
+        expected = u"""The determination of the Higgs self-coupling is one of the key ingredients for understanding the mechanism behind the electroweak symmetry breaking. An indirect method for constraining the Higgs trilinear self-coupling via single Higgs production at next-to-leading order (NLO) has been proposed in order to avoid the drawbacks of studies with double Higgs production. In this paper we study the Higgs self-interaction through the vector boson fusion (VBF) process <math display="inline"><msup><mi>e</mi><mo>-</mo></msup><mi>p</mi><mo stretchy="false">\u2192</mo><msub><mi>\u03bd</mi><mi>e</mi></msub><mi>h</mi><mi>j</mi></math> at the future LHeC. At NLO level, we compute analytically the scattering amplitudes for relevant processes, in particular those induced by the Higgs self-interaction. A Monte\xa0Carlo simulation and a statistical analysis utilizing the analytic results are then carried out for Higgs production through VBF and decay to <math display="inline"><mi>b</mi><mover accent="true"><mi>b</mi><mo stretchy="false">\xaf</mo></mover></math>, which yield for the trilinear Higgs self-coupling rescaling parameter <math display="inline"><msub><mi>\u03ba</mi><mi>\u03bb</mi></msub></math> the limit [<math display="inline"><mrow><mo>-</mo><mn>0.57</mn></mrow></math>, 2.98] with <math display="inline"><mn>2</mn><mtext>\u2009</mtext><mtext>\u2009</mtext><msup><mi>ab</mi><mrow><mo>-</mo><mn>1</mn></mrow></msup></math> integrated luminosity. If we assume about 10% of the signal survives the event selection cuts, and include all the background, the constraint will be broadened to [<math display="inline"><mrow><mo>-</mo><mn>2.11</mn></mrow></math>, 4.63]."""
+        self.assertEqual(MathMLParser.html_to_text(abstract), expected)
+
     def test_html(self):
         """Test that HTML is stripped."""
         data = (u'<p><roman>CH</roman><sub>3</sub><roman>NH</roman><sub>3</sub>'
@@ -62,7 +68,7 @@ class HTMLUtilsTests(unittest.TestCase):
 
     def test_xml_encoding(self):
         """Test that HTML entities are kept."""
-        data = "This & that and 2<y<3 is > there."
+        data = "This & that and 2&lt;y&lt;3 is > there."
         expected_data = "This &amp; that and 2&lt;y&lt;3 is > there."
         self.assertEqual(MathMLParser.html_to_text(data), expected_data)
 
