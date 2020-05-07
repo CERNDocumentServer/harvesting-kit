@@ -444,7 +444,7 @@ class Inspire2CDS(MARCXMLConversion):
     def update_542(self):
         """Change 542__e -> 542__3 and 542__e:Article to 542__3:publication."""
         fields = record_get_field_instances(self.record, '542')
-        for field_idx, field in enumerate(fields):
+        for field in fields:
             subs = field_get_subfield_instances(field)
             for idx, (key, value) in enumerate(subs):
                 if key != 'e':
