@@ -443,17 +443,17 @@ class Inspire2CDS(MARCXMLConversion):
 
     def update_542(self):
         """Change 542__e -> 542__3 and 542__e:Article to 542__3:publication."""
-        for field in record_get_field_instances(self.record, '542'):
+        fields = record_get_field_instances(self.record, '542')
+        for field_idx, field in enumerate(fields):
             subs = field_get_subfield_instances(field)
-            for idx, (key, value) in enumerate(field[0]):
+            for idx, (key, value) in enumerate(subs):
                 if key != 'e':
                     continue
-                # delete '__e'
-                del field[0][idx]
                 # change 'article' -> 'publication'
                 v = 'publication' if value.strip().lower() == 'article' else value
-                # add '__3'
-                record_add_field(self.record, "542", subfields=[("3", v)])
+
+                # update '__e'
+                field[0][idx] = ("3", v)
 
     def update_isbn(self):
         """Remove dashes from ISBN."""
