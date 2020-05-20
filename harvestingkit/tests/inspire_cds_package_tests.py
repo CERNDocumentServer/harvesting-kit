@@ -350,10 +350,11 @@ class TestINSPIRE2CDS(unittest.TestCase):
         """Test for existence of FFT on PDF URL."""
         from harvestingkit.bibrecord import record_get_field_values
 
-        self.assertTrue(
+        self.assertEqual(
             record_get_field_values(self.converted_record,
                                     tag="FFT",
-                                    code="a")
+                                    code="a"),
+            ["http://old.inspirehep.net/record/1333477/files/Issue13_Paper_Veneziano.pdf"]
         )
         # Some other URL should be there
         self.assertTrue(

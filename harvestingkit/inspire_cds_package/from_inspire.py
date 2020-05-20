@@ -25,8 +25,9 @@
 >>> bibrecs.parse()
 >>> cds_xml = Inspire2CDS.convert(bibrecs.get_records())
 """
-
 from __future__ import print_function
+
+import re
 
 from datetime import datetime
 
@@ -605,6 +606,7 @@ class Inspire2CDS(MARCXMLConversion):
             url = url[0]
             if "inspirehep.net/record" in url and url.endswith("pdf"):
                 # We have an FFT from INSPIRE
+                url = re.sub("^https?://inspirehep\.net", "http://old.inspirehep.net", url)
                 newsubs.append(('a', url))
                 description = subs.get("y", [])
                 if description:
