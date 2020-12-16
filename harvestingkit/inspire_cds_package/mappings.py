@@ -222,6 +222,10 @@ mappings = {
     ],
     "experiments": [
       {
+        "cds": "CERN LHC---",
+        "inspire": "CERN-LHC"
+      },
+      {
         "cds": "CERN LHC---ATLAS",
         "inspire": "CERN-LHC-ATLAS"
       },
@@ -254,7 +258,7 @@ mappings = {
         "inspire": "CERN-nTOF"
       },
       {
-        "cds": "CAST",
+        "cds": "---CAST",
         "inspire": "CERN-CAST"
       },
       {
@@ -286,7 +290,7 @@ mappings = {
         "inspire": "OPERA"
       },
       {
-        "cds": "Not applicable---RD",
+        "cds": "---RD",
         "inspire": "CERN-RD-0"
       },
       {

@@ -757,7 +757,7 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
                 record_get_field_values(converted_record,
                                         tag="693",
                                         code="a"),
-                ["Not applicable"]
+                []
             )
             self.assertEqual(
                 record_get_field_values(converted_record,
@@ -792,6 +792,62 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
                                         tag="693",
                                         code="e"),
                 ["CAST"]
+            )
+
+    def test_experiments_conversion_with_no_e(self):
+        """Test experiments conversion with no $$e."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """<collection>
+        <record>
+        <datafield tag="693" ind1=" " ind2=" ">
+            <subfield code="e">CERN-LHC</subfield>
+        </datafield>
+        </record></collection>
+        """
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="693",
+                                        code="a"),
+                ["CERN LHC"]
+            )
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="693",
+                                        code="e"),
+                []
+            )
+
+    def test_experiments_conversion_with_both_a_and_e(self):
+        """Test experiments conversion with both $$a and $$e."""
+        from harvestingkit.bibrecord import record_get_field_values
+        from harvestingkit.inspire_cds_package.from_inspire import Inspire2CDS
+
+        xml = """<collection>
+        <record>
+        <datafield tag="693" ind1=" " ind2=" ">
+            <subfield code="e">CERN-LHC-TOTEM</subfield>
+        </datafield>
+        </record></collection>
+        """
+        for record in Inspire2CDS.from_source(xml):
+            converted_record = record.get_record()
+
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="693",
+                                        code="a"),
+                ["CERN LHC"]
+            )
+            self.assertEqual(
+                record_get_field_values(converted_record,
+                                        tag="693",
+                                        code="e"),
+                ["TOTEM"]
             )
 
     def test_pubnote_conversion_with_pos_special_case(self):
