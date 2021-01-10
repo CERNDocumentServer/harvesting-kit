@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2013, 2014, 2015, 2017, 2019 CERN.
+# Copyright (C) 2013, 2014, 2015, 2017, 2019, 2021 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -427,7 +427,8 @@ class ElsevierPackage(object):
     def get_abstract(self, xml_doc):
         try:
             abstract_sec = xml_doc.getElementsByTagName("ce:abstract-sec")[0]
-            return get_value_in_tag(abstract_sec, "ce:simple-para")
+            paras = abstract_sec.getElementsByTagName("ce:simple-para")
+            return '\n\n  '.join((xml_to_text(c) for c in paras))
         except Exception:
             print("Can't find abstract", file=sys.stderr)
 

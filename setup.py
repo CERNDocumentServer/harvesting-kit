@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Harvesting Kit.
-# Copyright (C) 2013, 2014, 2015, 2016, 2017, 2019, 2020 CERN.
+# Copyright (C) 2013, 2014, 2015, 2016, 2017, 2019, 2020, 2021 CERN.
 #
 # Harvesting Kit is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -24,7 +24,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="HarvestingKit",
-    version="0.6.21",
+    version="0.6.22",
     packages=find_packages(),
     package_data={
         '': ['data/*.xml'],
