@@ -372,7 +372,7 @@ class TestINSPIRE2CDS(unittest.TestCase):
                                     tag="690",
                                     ind1="C",
                                     code="a"),
-            ["CERN"]
+            ["ARTICLE", "CERN"]
         )
 
     def test_oai_tag(self):
@@ -730,7 +730,7 @@ class TestINSPIRE2CDSConferencePaper(unittest.TestCase):
                                     tag="690",
                                     ind1="C",
                                     code="a"),
-            ["CERN"]
+            ["ARTICLE", "CERN"]
         )
 
 
@@ -1157,6 +1157,67 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
                     <subfield code="w">C10-09-06.10</subfield>
                 </datafield>
             </record>
+            <record>
+                <datafield tag="773" ind1=" " ind2=" ">
+                    <subfield code="x">Phys. Rev. D 91 (2015) 021302 (Rapid Communication)</subfield>
+                    <subfield code="v">D91</subfield>
+                    <subfield code="p">Phys.Rev.</subfield>
+                    <subfield code="y">2015</subfield>
+                    <subfield code="c">021302</subfield>
+                </datafield>
+                <datafield tag="980" ind1=" " ind2=" ">
+                    <subfield code="a">PREPRINT</subfield>
+                </datafield>
+                <datafield tag="960" ind1=" " ind2=" ">
+                    <subfield code="a">11</subfield>
+                </datafield>
+                <datafield tag="690" ind1="C" ind2=" ">
+                    <subfield code="a">PREPRINT</subfield>
+                </datafield>
+            </record>
+             <record>
+                <datafield tag="773" ind1=" " ind2=" ">
+                    <subfield code="x">Phys. Rev. D 91 (2015) 021302 (Rapid Communication)</subfield>
+                </datafield>
+                  <datafield tag="980" ind1=" " ind2=" ">
+                    <subfield code="a">Citeable</subfield>
+                  </datafield>
+            </record>
+            <record>
+                <datafield tag="773" ind1=" " ind2=" ">
+                    <subfield code="p">Case Studies in Thermal Engineering</subfield>
+                    <subfield code="v">13</subfield>
+                    <subfield code="y">2019</subfield>
+                </datafield>
+                <datafield tag="980" ind1=" " ind2=" ">
+                    <subfield code="a">CONFERENCEPAPER</subfield>
+                </datafield>
+            </record>
+            <record>
+                <datafield tag="980" ind1=" " ind2=" ">
+                    <subfield code="a">CONFERENCEPAPER</subfield>
+                </datafield>
+                <datafield tag="962" ind1=" " ind2=" ">
+                    <subfield code="k">NOT EMPTY</subfield>
+                </datafield>
+            </record>
+            <record>
+                <datafield tag="980" ind1=" " ind2=" ">
+                    <subfield code="a">CONFERENCEPAPER</subfield>
+                </datafield>
+                <datafield tag="980" ind1=" " ind2=" ">
+                    <subfield code="a">PREPRINT</subfield>
+                </datafield>
+                <datafield tag="960" ind1=" " ind2=" ">
+                    <subfield code="a">11</subfield>
+                </datafield>
+                <datafield tag="690" ind1="C" ind2=" ">
+                    <subfield code="a">PREPRINT</subfield>
+                </datafield>
+                <datafield tag="962" ind1=" " ind2=" ">
+                    <subfield code="k">NOT EMPTY</subfield>
+                </datafield>
+            </record>
         </collection>
         """
 
@@ -1165,17 +1226,77 @@ class TestINSPIRE2CDSGeneric(unittest.TestCase):
         rec1 = records[0]
         converted_record = rec1.get_record()
         tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        tag_690 = record_get_field_values(converted_record, tag="690", ind1="C", code="a")
+        tag_960 = record_get_field_values(converted_record, tag="960", code="a")
+        self.assertEqual(tag_960, ["13"])
+        self.assertEqual(tag_690, ["ARTICLE"])
         self.assertEqual(tag_980, ["ARTICLE"])
 
         rec2 = records[1]
         converted_record = rec2.get_record()
         tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        tag_690 = record_get_field_values(converted_record, tag="690", ind1="C", code="a")
+        tag_960 = record_get_field_values(converted_record, tag="960", code="a")
+        self.assertEqual(tag_960, ["13"])
+        self.assertEqual(tag_690, ["ARTICLE"])
         self.assertEqual(sorted(tag_980), sorted(["ConferencePaper", "ARTICLE"]))
 
         rec3 = records[2]
         converted_record = rec3.get_record()
         tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        tag_690 = record_get_field_values(converted_record, tag="690", ind1="C", code="a")
+        tag_960 = record_get_field_values(converted_record, tag="960", code="a")
+        self.assertEqual(tag_960, ["11"])
+        self.assertEqual(tag_690, ["PREPRINT"])
         self.assertEqual(tag_980, ["PREPRINT"])
+
+        rec4 = records[3]
+        converted_record = rec4.get_record()
+        tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        tag_690 = record_get_field_values(converted_record, tag="690", ind1="C", code="a")
+        tag_960 = record_get_field_values(converted_record, tag="960", code="a")
+        self.assertEqual(tag_960, ["13"])
+        self.assertEqual(tag_690, ["ARTICLE"])
+        self.assertEqual(tag_980, ["ARTICLE"])
+
+        rec5 = records[4]
+        converted_record = rec5.get_record()
+        tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        tag_690 = record_get_field_values(converted_record, tag="690", ind1="C", code="a")
+        tag_960 = record_get_field_values(converted_record, tag="960", code="a")
+        self.assertEqual(tag_960, ["11"])
+        self.assertEqual(tag_690, ["PREPRINT"])
+        self.assertEqual(tag_980, ["PREPRINT"])
+
+        rec6 = records[5]
+        converted_record = rec6.get_record()
+        tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        tag_690 = record_get_field_values(converted_record, tag="690", ind1="C", code="a")
+        tag_960 = record_get_field_values(converted_record, tag="960", code="a")
+        self.assertEqual(tag_960, ["11"])
+        self.assertEqual(tag_690, ["PREPRINT"])
+        self.assertEqual(tag_980, ["PREPRINT", "ConferencePaper"])
+
+        rec7 = records[6]
+        converted_record = rec7.get_record()
+        tag_980 = record_get_field_values(converted_record, tag="980",
+                                          code="a")
+        tag_690 = record_get_field_values(converted_record, tag="690",
+                                          ind1="C", code="a")
+        tag_960 = record_get_field_values(converted_record, tag="960",
+                                          code="a")
+        self.assertEqual(tag_960, ["13"])
+        self.assertEqual(tag_690, ["ARTICLE"])
+        self.assertEqual(tag_980, ["ARTICLE", "ConferencePaper"])
+
+        rec8 = records[7]
+        converted_record = rec8.get_record()
+        tag_980 = record_get_field_values(converted_record, tag="980", code="a")
+        tag_690 = record_get_field_values(converted_record, tag="690", ind1="C", code="a")
+        tag_960 = record_get_field_values(converted_record, tag="960", code="a")
+        self.assertEqual(tag_960, ["13"])
+        self.assertEqual(tag_690, ["ARTICLE"])
+        self.assertEqual(tag_980, ["ARTICLE", "ConferencePaper"])
 
     def test_ignore_999(self):
         """Test ignore tag 999."""

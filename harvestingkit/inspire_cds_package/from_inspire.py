@@ -225,6 +225,13 @@ class Inspire2CDS(MARCXMLConversion):
             self.update_author_to_proceeding()
             record_add_field(self.record, "690", ind1="C", subfields=[("a", "CONFERENCE")])
 
+        if "ARTICLE" in self.collections:
+            record_add_field(self.record, "690", ind1="C", subfields=[("a", "ARTICLE")])
+
+        if "PREPRINT" in self.collections:
+            record_add_field(self.record, "690", ind1="C",
+                             subfields=[("a", "PREPRINT")])
+
         # 690 tags
         if self.tag_as_cern:
             record_add_field(self.record, "690", ind1="C", subfields=[("a", "CERN")])
@@ -285,18 +292,35 @@ class Inspire2CDS(MARCXMLConversion):
 
     def update_collections(self):
         """Try to determine which collections this record should belong to."""
-        def should_add_article():
-            """Return True if the record contains all must have keys."""
-            must_have_keys = set(["c", "p", "v", "y"])
-            f773 = record_get_field_instances(self.record, '773')
+
+        def field_has_keys(field_instances, keys):
             found_keys = set()
-            for field in f773:
+            for field in field_instances:
                 for subfield in field_get_subfields(field):
                     found_keys.add(subfield[0])
-            return must_have_keys.issubset(found_keys)
+            return keys.issubset(found_keys)
+
+        def should_add_article():
+            """Return True if the record contains all must have keys."""
+            must_have_keys = set(["c", "p", "y"])
+            f773 = record_get_field_instances(self.record, '773')
+            return field_has_keys(f773, must_have_keys)
+
+        def should_conference_paper_become_article():
+            """Return True if the record should be an article."""
+            must_have_keys_773 = set(["c"])
+            must_have_keys_962 = set(["k"])
+            f773 = record_get_field_instances(self.record, '773')
+            f962 = record_get_field_instances(self.record, '962')
+            has_773__c = field_has_keys(f773, must_have_keys_773)
+            has_962__k = field_has_keys(f962, must_have_keys_962)
+
+            return has_773__c or has_962__k
 
         for value in record_get_field_values(self.record, '980', code='a'):
             v = value.upper()
+            if should_add_article():
+                self.collections.add('ARTICLE')
             if 'NOTE' in v:
                 self.collections.add('NOTE')
             if 'THESIS' in v:
@@ -310,9 +334,11 @@ class Inspire2CDS(MARCXMLConversion):
             elif 'CONFERENCEPAPER' in v and \
                  "ConferencePaper" not in self.collections:
                 self.collections.add('ConferencePaper')
-                if "ARTICLE" not in self.collections and should_add_article():
+                if should_conference_paper_become_article():
                     self.collections.add('ARTICLE')
                 else:
+                    if 'ARTICLE' in self.collections:
+                        self.collections.remove('ARTICLE')
                     self.collections.add('PREPRINT')
 
             if "HIDDEN" in v:
@@ -320,6 +346,7 @@ class Inspire2CDS(MARCXMLConversion):
 
         # Clear out any existing ones.
         record_delete_fields(self.record, "980")
+        record_delete_field(self.record, "960")
 
         if not self.collections:
             self.collections.add('PREPRINT')
