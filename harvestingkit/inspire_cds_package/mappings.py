@@ -366,6 +366,10 @@ mappings = {
       {
         "cds": "Nuclear Physics - Theory",
         "inspire": "Theory-Nucl"
+      },
+      {
+        "cds": "Quantum Technology",
+        "inspire": "Quantum Physics"
       }
     ],
     "categories_inspire": [
@@ -460,6 +464,10 @@ mappings = {
       {
         "cds": "Nuclear Physics - Theory",
         "inspire": "Theory-Nucl"
+      },
+      {
+        "cds": "Quantum Physics",
+        "inspire": "Quantum Technology"
       }
     ],
   }
