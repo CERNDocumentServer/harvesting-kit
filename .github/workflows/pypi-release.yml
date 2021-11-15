@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build-n-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install LibXML2
+        run: |
+          sudo apt update
+          sudo apt-get install libxml2-utils
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python 2.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 2.7
+
+      - name: Install dependencies
+        run: |
+          pip install python-coveralls
+          pip install nose
+          pip install -I coverage
+          pip install .
+
+      - name: Build package
+        run: |
+          python setup.py sdist bdist_wheel
+
+      - name: pypi-publish
+        uses: pypa/gh-action-pypi-publish@v1.3.1
+        with:
+          user: __token__
+          password: ${{ secrets.pypi_token }}
+
